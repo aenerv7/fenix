@@ -39,7 +39,7 @@ import org.mozilla.fenix.whatsnew.WhatsNew
 import org.mozilla.geckoview.BuildConfig as GeckoViewBuildConfig
 
 /**
- * Displays the logo and information about the app, including library versions.
+ * Displays information about the app, including library versions.
  */
 class AboutFragment(
     private val toastHandler: ToastHandler = DefaultToastHandler(),
@@ -77,7 +77,7 @@ class AboutFragment(
             )
         }
 
-        setupDebugMenu(binding.wordmark, view.context.components.settings, lifecycle)
+        setupDebugMenu(binding.aboutContent, view.context.components.settings, lifecycle)
 
         populateAboutHeader()
         aboutPageAdapter?.submitList(populateAboutList())

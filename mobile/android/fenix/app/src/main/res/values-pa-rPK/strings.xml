@@ -50,7 +50,7 @@
   <!-- Text for the menu button to remove a recently saved bookmark from the user's home screen -->
   <string name="home_bookmarks_menu_item_remove">ہٹاؤ</string>
   <!-- About content. %1$s is the name of the app (for example "Firefox"). -->
-  <string name="about_content" tools:ignore="BrandUsage">%1$s ایپ موزلے ولوں تیار کیتی اے۔</string>
+  <string name="about_content" tools:ignore="BrandUsage">%1$s نوں Mozilla ولوں تیار کیتے Firefox توں aenerv7@GitHub نے تبدیل کیتا اے۔</string>
   <!-- Private Browsing -->
   <string name="private_browsing_common_myths">نجی ورتوں بارے عام فرضی گلاں</string>
   <!--

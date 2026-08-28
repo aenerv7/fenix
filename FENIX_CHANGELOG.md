@@ -9,6 +9,7 @@ Upstream baseline: `FIREFOX-ANDROID_154_0_1_RELEASE`
 - Changed the Android application ID to `github.aenerv7.fenix`.
 - Changed the user-facing application name to `Fenix`.
 - Removed the Firefox logo and wordmark from the new-tab homepage.
+- Replaced the About page's Firefox wordmark with localized fork attribution.
 - Removed the upstream `-default` suffix from the displayed version.
 - Kept Focus outside the supported build and release scope.
 
@@ -35,6 +36,7 @@ Upstream baseline: `FIREFOX-ANDROID_154_0_1_RELEASE`
 ### Tab groups
 
 - Kept links opened by a grouped tab in that tab group by default.
+- Kept tabs opened with the configurable toolbar shortcut in the current group, while leaving other new-tab buttons ungrouped.
 - Added context-menu actions for opening a link in the current group or creating a new group.
 - Scoped group selection mode to tabs in the expanded group.
 - Added group multi-select actions, including “Remove from group”.

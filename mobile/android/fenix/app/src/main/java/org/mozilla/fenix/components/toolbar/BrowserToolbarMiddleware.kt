@@ -130,6 +130,7 @@ import org.mozilla.fenix.components.toolbar.PageEndActionsInteractions.ReaderMod
 import org.mozilla.fenix.components.toolbar.PageOriginInteractions.OriginClicked
 import org.mozilla.fenix.components.toolbar.TabCounterInteractions.AddNewPrivateTab
 import org.mozilla.fenix.components.toolbar.TabCounterInteractions.AddNewTab
+import org.mozilla.fenix.components.toolbar.TabCounterInteractions.AddNewTabFromToolbarShortcut
 import org.mozilla.fenix.components.toolbar.TabCounterInteractions.CloseCurrentTab
 import org.mozilla.fenix.components.toolbar.TabCounterInteractions.TabCounterClicked
 import org.mozilla.fenix.components.toolbar.TabCounterInteractions.TabCounterLongClicked
@@ -141,6 +142,7 @@ import org.mozilla.fenix.nimbus.FxNimbus
 import org.mozilla.fenix.settings.ShortcutType
 import org.mozilla.fenix.summarization.SummarizationNavigator
 import org.mozilla.fenix.summarization.onboarding.SummarizationFeatureDiscoveryConfiguration
+import org.mozilla.fenix.tabgroups.TabGroupLinkUseCases
 import org.mozilla.fenix.tabstray.ext.isActiveDownload
 import org.mozilla.fenix.tabstray.redux.state.Page
 import org.mozilla.fenix.translations.TranslationsEnabledSettings
@@ -180,6 +182,7 @@ internal sealed class TabCounterInteractions : BrowserToolbarEvent {
     data class TabCounterClicked(override val source: Source) : TabCounterInteractions()
     data class TabCounterLongClicked(override val source: Source) : TabCounterInteractions()
     data class AddNewTab(override val source: Source) : TabCounterInteractions()
+    data class AddNewTabFromToolbarShortcut(override val source: Source) : TabCounterInteractions()
     data class AddNewPrivateTab(override val source: Source) : TabCounterInteractions()
     data object CloseCurrentTab : TabCounterInteractions()
 }
@@ -245,6 +248,7 @@ class BrowserToolbarMiddleware(
     private val bookmarksStorage: BookmarksStorage,
     private val trackingProtectionUseCases: TrackingProtectionUseCases,
     private val useCases: UseCases,
+    private val tabGroupLinkUseCases: TabGroupLinkUseCases,
     private val sessionUseCases: SessionUseCases = SessionUseCases(browserStore),
     private val shareUseCases: ShareUseCases,
     private val nimbusComponents: NimbusComponents,
@@ -336,6 +340,17 @@ class BrowserToolbarMiddleware(
             }
             is AddNewTab -> {
                 openNewTab(Normal)
+                next(action)
+            }
+            is AddNewTabFromToolbarShortcut -> {
+                val selectedTab = browserStore.state.selectedTab
+                if (selectedTab == null || selectedTab.content.private || !settings.tabGroupsEnabled) {
+                    openNewTab(Normal)
+                } else {
+                    scope.launch {
+                        openNewTabFromToolbarShortcut(selectedTab.id)
+                    }
+                }
                 next(action)
             }
             is AddNewPrivateTab -> {
@@ -902,6 +917,17 @@ class BrowserToolbarMiddleware(
         }
     }
 
+    private suspend fun openNewTabFromToolbarShortcut(parentTabId: String) {
+        if (!tabGroupLinkUseCases.isTabInGroup(parentTabId)) {
+            openNewTab(Normal)
+        } else {
+            useCases.fenixBrowserUseCases.addNewHomepageTab(
+                private = false,
+                parentId = parentTabId,
+            )
+        }
+    }
+
     private fun observeProgressBarUpdates(store: Store<BrowserToolbarState, BrowserToolbarAction>) {
         browserStore.observeWhileActive {
             distinctUntilChangedBy { it.selectedTab?.content?.progress }
@@ -1132,6 +1158,7 @@ class BrowserToolbarMiddleware(
     @VisibleForTesting
     internal enum class ToolbarAction {
         NewTab,
+        NewTabShortcut,
         Back,
         Forward,
         RefreshOrStop,
@@ -1162,7 +1189,9 @@ class BrowserToolbarMiddleware(
         toolbarAction: ToolbarAction,
         source: Source = Source.Unknown,
     ): Action = when (toolbarAction) {
-        ToolbarAction.NewTab -> ActionButtonRes(
+        ToolbarAction.NewTab,
+        ToolbarAction.NewTabShortcut,
+            -> ActionButtonRes(
             drawableResId = iconsR.drawable.mozac_ic_plus_24,
             contentDescription = if (browsingModeManager.mode == Private) {
                 R.string.home_screen_shortcut_open_new_private_tab_2
@@ -1171,6 +1200,8 @@ class BrowserToolbarMiddleware(
             },
             onClick = if (browsingModeManager.mode == Private) {
                 AddNewPrivateTab(source)
+            } else if (toolbarAction == ToolbarAction.NewTabShortcut) {
+                AddNewTabFromToolbarShortcut(source)
             } else {
                 AddNewTab(source)
             },
@@ -1421,14 +1452,14 @@ class BrowserToolbarMiddleware(
     internal suspend fun ShortcutType.toToolbarAction(
         forToolbar: Boolean = true,
     ) = when (this) {
-        ShortcutType.NEW_TAB -> ToolbarAction.NewTab
+        ShortcutType.NEW_TAB -> ToolbarAction.NewTabShortcut
         ShortcutType.SHARE -> ToolbarAction.Share
         ShortcutType.BOOKMARK -> getBookmarkAction()
         ShortcutType.TRANSLATE -> when (isTranslationsFeatureAvailable()) {
             true -> ToolbarAction.Translate
             else -> when (forToolbar) {
                 // The first available options in settings.
-                true -> ToolbarAction.NewTab
+                true -> ToolbarAction.NewTabShortcut
                 else -> getBookmarkAction()
             }
         }
@@ -1438,7 +1469,7 @@ class BrowserToolbarMiddleware(
             summarizationFeatureSettings.canShowFeature -> ToolbarAction.Summarize
             // The tab strip already provides a new tab button, so fall back to the default tab strip shortcut.
             settings.isTabStripEnabled -> ToolbarAction.Share
-            else -> ToolbarAction.NewTab
+            else -> ToolbarAction.NewTabShortcut
         }
         ShortcutType.NONE -> null
     }

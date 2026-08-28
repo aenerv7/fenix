@@ -30,6 +30,7 @@ import org.mozilla.fenix.components.toolbar.PageEndActionsInteractions.ReaderMod
 import org.mozilla.fenix.components.toolbar.StartPageActions.SiteInfoClicked
 import org.mozilla.fenix.components.toolbar.TabCounterInteractions.AddNewPrivateTab
 import org.mozilla.fenix.components.toolbar.TabCounterInteractions.AddNewTab
+import org.mozilla.fenix.components.toolbar.TabCounterInteractions.AddNewTabFromToolbarShortcut
 import org.mozilla.fenix.components.toolbar.TabCounterInteractions.TabCounterClicked
 import org.mozilla.fenix.components.toolbar.TabCounterInteractions.TabCounterLongClicked
 import org.mozilla.fenix.helpers.FenixGleanTestRule
@@ -78,6 +79,9 @@ class BrowserToolbarTelemetryMiddlewareTest {
 
         buildStore.dispatch(AddNewTab(Source.NavigationBar))
         assertTelemetryRecorded(Source.NavigationBar, item = ToolbarActionRecord.AddNewTab.action)
+
+        buildStore.dispatch(AddNewTabFromToolbarShortcut(Source.AddressBar.BrowserEnd))
+        assertTelemetryRecorded(Source.AddressBar.BrowserEnd, item = ToolbarActionRecord.AddNewTab.action)
     }
 
     @Test

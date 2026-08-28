@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import mozilla.components.browser.state.search.SearchEngine
 import mozilla.components.browser.state.selector.getNormalOrPrivateTabs
+import mozilla.components.browser.state.selector.selectedTab
 import mozilla.components.browser.state.state.selectedOrDefaultSearchEngine
 import mozilla.components.browser.state.store.BrowserStore
 import mozilla.components.compose.browser.toolbar.concept.Action
@@ -77,12 +78,14 @@ import org.mozilla.fenix.home.toolbar.DisplayActions.VoiceSearchClicked
 import org.mozilla.fenix.home.toolbar.PageOriginInteractions.OriginClicked
 import org.mozilla.fenix.home.toolbar.TabCounterInteractions.AddNewPrivateTab
 import org.mozilla.fenix.home.toolbar.TabCounterInteractions.AddNewTab
+import org.mozilla.fenix.home.toolbar.TabCounterInteractions.AddNewTabFromToolbarShortcut
 import org.mozilla.fenix.home.toolbar.TabCounterInteractions.TabCounterClicked
 import org.mozilla.fenix.home.toolbar.TabCounterInteractions.TabCounterLongClicked
 import org.mozilla.fenix.nimbus.FxNimbus
 import org.mozilla.fenix.search.BrowserToolbarSearchMiddleware
 import org.mozilla.fenix.search.ext.searchEngineShortcuts
 import org.mozilla.fenix.settings.ShortcutType
+import org.mozilla.fenix.tabgroups.TabGroupLinkUseCases
 import org.mozilla.fenix.tabstray.redux.state.Page
 import org.mozilla.fenix.translations.TranslationsEnabledSettings
 import org.mozilla.fenix.utils.Settings
@@ -105,6 +108,7 @@ internal sealed class TabCounterInteractions : BrowserToolbarEvent {
     data class TabCounterClicked(override val source: Source) : TabCounterInteractions()
     data class TabCounterLongClicked(override val source: Source) : TabCounterInteractions()
     data class AddNewTab(override val source: Source) : TabCounterInteractions()
+    data class AddNewTabFromToolbarShortcut(override val source: Source) : TabCounterInteractions()
     data class AddNewPrivateTab(override val source: Source) : TabCounterInteractions()
 }
 
@@ -135,6 +139,7 @@ class BrowserToolbarMiddleware(
     private val browserStore: BrowserStore,
     private val clipboard: ClipboardHandler,
     private val useCases: UseCases,
+    private val tabGroupLinkUseCases: TabGroupLinkUseCases,
     private val navController: NavController,
     private val browsingModeManager: BrowsingModeManager,
     private val settings: Settings,
@@ -212,6 +217,17 @@ class BrowserToolbarMiddleware(
                 openNewTab(store, Normal)
                 next(action)
             }
+            is AddNewTabFromToolbarShortcut -> {
+                val selectedTab = browserStore.state.selectedTab
+                if (selectedTab == null || selectedTab.content.private || !settings.tabGroupsEnabled) {
+                    openNewTab(store, Normal)
+                } else {
+                    scope.launch {
+                        openNewTabFromToolbarShortcut(store, selectedTab.id)
+                    }
+                }
+                next(action)
+            }
             is AddNewPrivateTab -> {
                 openNewTab(store, Private)
                 next(action)
@@ -258,6 +274,20 @@ class BrowserToolbarMiddleware(
         browsingMode?.let { browsingModeManager.mode = it }
         store.dispatch(SearchQueryUpdated(BrowserToolbarQuery(searchTerms ?: ""), true))
         appStore.dispatch(SearchStarted())
+    }
+
+    private suspend fun openNewTabFromToolbarShortcut(
+        store: Store<BrowserToolbarState, BrowserToolbarAction>,
+        parentTabId: String,
+    ) {
+        if (!tabGroupLinkUseCases.isTabInGroup(parentTabId)) {
+            openNewTab(store, Normal)
+        } else {
+            useCases.fenixBrowserUseCases.addNewHomepageTab(
+                private = false,
+                parentId = parentTabId,
+            )
+        }
     }
 
     private fun observeSearchStateUpdates(store: Store<BrowserToolbarState, BrowserToolbarAction>) {
@@ -523,6 +553,7 @@ class BrowserToolbarMiddleware(
         FakeBookmark,
         FakeShare,
         NewTab,
+        NewTabShortcut,
         FakeTranslate,
         FakeHomepage,
         FakeBack,
@@ -584,7 +615,9 @@ class BrowserToolbarMiddleware(
             onClick = FakeClicked,
         )
 
-        HomeToolbarAction.NewTab -> ActionButtonRes(
+        HomeToolbarAction.NewTab,
+        HomeToolbarAction.NewTabShortcut,
+            -> ActionButtonRes(
             drawableResId = iconsR.drawable.mozac_ic_plus_24,
             contentDescription = if (browsingModeManager.mode == Private) {
                 R.string.home_screen_shortcut_open_new_private_tab_2
@@ -593,6 +626,8 @@ class BrowserToolbarMiddleware(
             },
             onClick = if (browsingModeManager.mode == Private) {
                 AddNewPrivateTab(source)
+            } else if (action == HomeToolbarAction.NewTabShortcut) {
+                AddNewTabFromToolbarShortcut(source)
             } else {
                 AddNewTab(source)
             },
@@ -636,7 +671,7 @@ class BrowserToolbarMiddleware(
 
     @VisibleForTesting
     internal suspend fun ShortcutType.toHomeToolbarAction() = when (this) {
-        ShortcutType.NEW_TAB -> HomeToolbarAction.NewTab
+        ShortcutType.NEW_TAB -> HomeToolbarAction.NewTabShortcut
         ShortcutType.SHARE -> HomeToolbarAction.FakeShare
         ShortcutType.BOOKMARK -> HomeToolbarAction.FakeBookmark
         ShortcutType.TRANSLATE -> when (isTranslationsFeatureAvailable()) {

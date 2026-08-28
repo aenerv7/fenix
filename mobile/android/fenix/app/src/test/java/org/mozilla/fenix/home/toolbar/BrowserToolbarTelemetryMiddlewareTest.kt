@@ -18,6 +18,7 @@ import org.mozilla.fenix.home.toolbar.BrowserToolbarTelemetryMiddleware.ToolbarA
 import org.mozilla.fenix.home.toolbar.DisplayActions.MenuClicked
 import org.mozilla.fenix.home.toolbar.TabCounterInteractions.AddNewPrivateTab
 import org.mozilla.fenix.home.toolbar.TabCounterInteractions.AddNewTab
+import org.mozilla.fenix.home.toolbar.TabCounterInteractions.AddNewTabFromToolbarShortcut
 import org.mozilla.fenix.home.toolbar.TabCounterInteractions.TabCounterClicked
 import org.mozilla.fenix.home.toolbar.TabCounterInteractions.TabCounterLongClicked
 import org.mozilla.fenix.telemetry.SOURCE_ADDRESS_BAR
@@ -65,6 +66,9 @@ class BrowserToolbarTelemetryMiddlewareTest {
 
         buildStore.dispatch(AddNewTab(Source.NavigationBar))
         assertTelemetryRecorded(Source.NavigationBar, item = ToolbarActionRecord.AddNewTab.action)
+
+        buildStore.dispatch(AddNewTabFromToolbarShortcut(Source.AddressBar.BrowserEnd))
+        assertTelemetryRecorded(Source.AddressBar.BrowserEnd, item = ToolbarActionRecord.AddNewTab.action)
     }
 
     @Test

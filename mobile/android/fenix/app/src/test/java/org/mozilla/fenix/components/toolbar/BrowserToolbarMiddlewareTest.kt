@@ -165,6 +165,7 @@ import org.mozilla.fenix.components.toolbar.PageEndActionsInteractions.ReaderMod
 import org.mozilla.fenix.components.toolbar.PageOriginInteractions.OriginClicked
 import org.mozilla.fenix.components.toolbar.TabCounterInteractions.AddNewPrivateTab
 import org.mozilla.fenix.components.toolbar.TabCounterInteractions.AddNewTab
+import org.mozilla.fenix.components.toolbar.TabCounterInteractions.AddNewTabFromToolbarShortcut
 import org.mozilla.fenix.components.toolbar.TabCounterInteractions.CloseCurrentTab
 import org.mozilla.fenix.components.toolbar.TabCounterInteractions.TabCounterClicked
 import org.mozilla.fenix.components.toolbar.TabCounterInteractions.TabCounterLongClicked
@@ -175,6 +176,7 @@ import org.mozilla.fenix.helpers.FenixGleanTestRule
 import org.mozilla.fenix.settings.ShortcutType
 import org.mozilla.fenix.summarization.SummarizationNavigator
 import org.mozilla.fenix.summarization.onboarding.SummarizationFeatureDiscoveryConfiguration
+import org.mozilla.fenix.tabgroups.TabGroupLinkUseCases
 import org.mozilla.fenix.tabstray.redux.state.Page
 import org.mozilla.fenix.tabstray.ui.AccessPoint
 import org.mozilla.fenix.translations.TranslationsEnabledSettings
@@ -213,6 +215,7 @@ class BrowserToolbarMiddlewareTest {
     private val readerModeController: ReaderModeController = mockk(relaxed = true)
     private val summarizationNavigator: SummarizationNavigator = mockk(relaxed = true)
     private val useCases: UseCases = mockk(relaxed = true)
+    private val tabGroupLinkUseCases: TabGroupLinkUseCases = mockk(relaxed = true)
     val nimbusEventsStore: NimbusEventStore = mockk {
         every { recordEvent(any()) } just Runs
     }
@@ -516,6 +519,66 @@ class BrowserToolbarMiddlewareTest {
 
         verify { useCases.fenixBrowserUseCases.addNewHomepageTab(false) }
     }
+
+    @Test
+    fun `GIVEN selected tab is grouped WHEN clicking the new tab toolbar shortcut THEN add homepage tab with grouped parent`() =
+        runTest(testDispatcher) {
+            settings.tabGroupsEnabled = true
+            settings.toolbarSimpleShortcutKey = ShortcutType.NEW_TAB.value
+            val groupedTab = createTab("https://example.com")
+            val browserStore = BrowserStore(
+                BrowserState(
+                    tabs = listOf(groupedTab),
+                    selectedTabId = groupedTab.id,
+                ),
+            )
+            val browserUseCases: FenixBrowserUseCases = mockk(relaxed = true)
+            val useCases: UseCases = mockk {
+                every { fenixBrowserUseCases } returns browserUseCases
+            }
+            coEvery { tabGroupLinkUseCases.isTabInGroup(groupedTab.id) } returns true
+            val toolbarStore = buildStore(
+                buildMiddleware(
+                    browserStore = browserStore,
+                    useCases = useCases,
+                ),
+            )
+
+            val newTabShortcut = toolbarStore.state.displayState.browserActionsEnd[0] as ActionButtonRes
+            assertEquals(AddNewTabFromToolbarShortcut(Source.AddressBar.BrowserEnd), newTabShortcut.onClick)
+            toolbarStore.dispatch(newTabShortcut.onClick as BrowserToolbarEvent)
+            testDispatcher.scheduler.advanceUntilIdle()
+
+            coVerify { tabGroupLinkUseCases.isTabInGroup(groupedTab.id) }
+            verify {
+                browserUseCases.addNewHomepageTab(
+                    private = false,
+                    parentId = groupedTab.id,
+                )
+            }
+        }
+
+    @Test
+    fun `GIVEN selected tab is not grouped WHEN clicking the new tab toolbar shortcut THEN keep normal new tab behavior`() =
+        runTest(testDispatcher) {
+            settings.tabGroupsEnabled = true
+            settings.toolbarSimpleShortcutKey = ShortcutType.NEW_TAB.value
+            val selectedTab = createTab("https://example.com")
+            val browserStore = BrowserStore(
+                BrowserState(
+                    tabs = listOf(selectedTab),
+                    selectedTabId = selectedTab.id,
+                ),
+            )
+            coEvery { tabGroupLinkUseCases.isTabInGroup(selectedTab.id) } returns false
+            val toolbarStore = buildStore(buildMiddleware(browserStore = browserStore))
+
+            val newTabShortcut = toolbarStore.state.displayState.browserActionsEnd[0] as ActionButtonRes
+            toolbarStore.dispatch(newTabShortcut.onClick as BrowserToolbarEvent)
+            testDispatcher.scheduler.advanceUntilIdle()
+
+            verify { navController.navigate(BrowserFragmentDirections.actionGlobalHome(focusOnAddressBar = true)) }
+        }
 
     @Test
     fun `WHEN clicking the new tab button with homepage search bar enabled THEN navigate to home screen without focus`() {
@@ -2600,6 +2663,16 @@ class BrowserToolbarMiddlewareTest {
     }
 
     @Test
+    fun `GIVEN default state WHEN building NewTabShortcut action THEN return grouped toolbar shortcut action`() {
+        val middleware = buildMiddleware()
+        val result = middleware.buildAction(
+            toolbarAction = ToolbarAction.NewTabShortcut,
+        ) as ActionButtonRes
+
+        assertEquals(AddNewTabFromToolbarShortcut(Source.Unknown), result.onClick)
+    }
+
+    @Test
     fun `GIVEN no history WHEN building Back action THEN returns DISABLED Back ActionButton with long-click`() {
         val middleware = buildMiddleware()
         val result = middleware.buildAction(
@@ -2959,7 +3032,7 @@ class BrowserToolbarMiddlewareTest {
         val menuButton = navigationActions[4] as ActionButtonRes
         assertEquals(expectedBookmarkButton(Source.NavigationBar), bookmarkButton)
         assertEquals(expectedShareButton(Source.NavigationBar), shareButton)
-        assertEquals(expectedNewTabButton(Source.NavigationBar), newTabButton)
+        assertEquals(expectedRegularNewTabButton(Source.NavigationBar), newTabButton)
         assertEqualsTabCounterButton(
             expectedTabCounterButton(source = Source.NavigationBar),
             tabCounterButton,
@@ -3770,7 +3843,7 @@ class BrowserToolbarMiddlewareTest {
         val homepage = with(middleware) { ShortcutType.HOMEPAGE.toToolbarAction() }
         val back = with(middleware) { ShortcutType.BACK.toToolbarAction() }
 
-        assertEquals(ToolbarAction.NewTab, newTab)
+        assertEquals(ToolbarAction.NewTabShortcut, newTab)
         assertEquals(ToolbarAction.Share, share)
         assertEquals(ToolbarAction.Translate, translate)
         assertEquals(ToolbarAction.Homepage, homepage)
@@ -3785,7 +3858,7 @@ class BrowserToolbarMiddlewareTest {
 
         val translate = with(middleware) { ShortcutType.TRANSLATE.toToolbarAction() }
 
-        assertEquals(ToolbarAction.NewTab, translate)
+        assertEquals(ToolbarAction.NewTabShortcut, translate)
     }
 
     private fun assertEqualsTabCounterButton(expected: TabCounterAction, actual: TabCounterAction) {
@@ -3959,6 +4032,12 @@ class BrowserToolbarMiddlewareTest {
     private fun expectedNewTabButton(source: Source = Source.AddressBar.BrowserEnd) = ActionButtonRes(
         drawableResId = iconsR.drawable.mozac_ic_plus_24,
         contentDescription = R.string.home_screen_shortcut_open_new_tab_2,
+        onClick = AddNewTabFromToolbarShortcut(source),
+    )
+
+    private fun expectedRegularNewTabButton(source: Source = Source.AddressBar.BrowserEnd) = ActionButtonRes(
+        drawableResId = iconsR.drawable.mozac_ic_plus_24,
+        contentDescription = R.string.home_screen_shortcut_open_new_tab_2,
         onClick = AddNewTab(source),
     )
 
@@ -4016,6 +4095,7 @@ class BrowserToolbarMiddlewareTest {
         trackingProtectionUseCases: TrackingProtectionUseCases = this.trackingProtectionUseCases,
         bookmarksStorage: BookmarksStorage = this.bookmarksStorage,
         useCases: UseCases = this.useCases,
+        tabGroupLinkUseCases: TabGroupLinkUseCases = this.tabGroupLinkUseCases,
         sessionUseCases: SessionUseCases = SessionUseCases(browserStore),
         shareUseCases: ShareUseCases = this.shareUseCases,
         nimbusComponents: NimbusComponents = this.nimbusComponents,
@@ -4042,6 +4122,7 @@ class BrowserToolbarMiddlewareTest {
         bookmarksStorage = bookmarksStorage,
         trackingProtectionUseCases = trackingProtectionUseCases,
         useCases = useCases,
+        tabGroupLinkUseCases = tabGroupLinkUseCases,
         sessionUseCases = sessionUseCases,
         shareUseCases = shareUseCases,
         nimbusComponents = nimbusComponents,

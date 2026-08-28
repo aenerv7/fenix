@@ -62,6 +62,7 @@ object HomeToolbarStoreBuilder {
                     browserStore = browserStore,
                     clipboard = context.components.clipboardHandler,
                     useCases = context.components.useCases,
+                    tabGroupLinkUseCases = context.components.core.tabGroupLinkUseCases,
                     navController = navController,
                     browsingModeManager = browsingModeManager,
                     settings = context.components.settings,

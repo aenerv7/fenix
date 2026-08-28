@@ -14,6 +14,7 @@ import org.mozilla.fenix.GleanMetrics.Toolbar
 import org.mozilla.fenix.home.toolbar.DisplayActions.MenuClicked
 import org.mozilla.fenix.home.toolbar.TabCounterInteractions.AddNewPrivateTab
 import org.mozilla.fenix.home.toolbar.TabCounterInteractions.AddNewTab
+import org.mozilla.fenix.home.toolbar.TabCounterInteractions.AddNewTabFromToolbarShortcut
 import org.mozilla.fenix.home.toolbar.TabCounterInteractions.TabCounterClicked
 import org.mozilla.fenix.home.toolbar.TabCounterInteractions.TabCounterLongClicked
 import org.mozilla.fenix.telemetry.ACTION_ADD_NEW_PRIVATE_TAB
@@ -46,6 +47,9 @@ class BrowserToolbarTelemetryMiddleware : Middleware<BrowserToolbarState, Browse
                 trackToolbarEvent(ToolbarActionRecord.TabCounterLongClicked, action.source)
             }
             is AddNewTab -> {
+                trackToolbarEvent(ToolbarActionRecord.AddNewTab, action.source)
+            }
+            is AddNewTabFromToolbarShortcut -> {
                 trackToolbarEvent(ToolbarActionRecord.AddNewTab, action.source)
             }
             is AddNewPrivateTab -> {

@@ -12,6 +12,8 @@ import android.speech.RecognizerIntent
 import androidx.navigation.NavController
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import io.mockk.every
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
@@ -90,11 +92,13 @@ import org.mozilla.fenix.home.toolbar.DisplayActions.VoiceSearchClicked
 import org.mozilla.fenix.home.toolbar.PageOriginInteractions.OriginClicked
 import org.mozilla.fenix.home.toolbar.TabCounterInteractions.AddNewPrivateTab
 import org.mozilla.fenix.home.toolbar.TabCounterInteractions.AddNewTab
+import org.mozilla.fenix.home.toolbar.TabCounterInteractions.AddNewTabFromToolbarShortcut
 import org.mozilla.fenix.home.toolbar.TabCounterInteractions.TabCounterClicked
 import org.mozilla.fenix.home.toolbar.TabCounterInteractions.TabCounterLongClicked
 import org.mozilla.fenix.search.fixtures.assertSearchSelectorEquals
 import org.mozilla.fenix.search.fixtures.buildExpectedSearchSelector
 import org.mozilla.fenix.settings.ShortcutType
+import org.mozilla.fenix.tabgroups.TabGroupLinkUseCases
 import org.mozilla.fenix.tabstray.redux.state.Page
 import org.mozilla.fenix.translations.TranslationsEnabledSettings
 import org.mozilla.fenix.utils.Settings
@@ -922,12 +926,51 @@ class BrowserToolbarMiddlewareTest {
     }
 
     @Test
+    fun `GIVEN selected homepage tab is grouped WHEN clicking new tab shortcut THEN add homepage tab with grouped parent`() =
+        runTest(testDispatcher) {
+            every { testContext.components.settings.tabGroupsEnabled } returns true
+            val groupedTab = createTab("https://example.com")
+            val browserStore = BrowserStore(
+                BrowserState(
+                    tabs = listOf(groupedTab),
+                    selectedTabId = groupedTab.id,
+                ),
+            )
+            val browserUseCases: FenixBrowserUseCases = mockk(relaxed = true)
+            val useCases: UseCases = mockk {
+                every { fenixBrowserUseCases } returns browserUseCases
+            }
+            val tabGroupLinkUseCases: TabGroupLinkUseCases = mockk(relaxed = true)
+            coEvery { tabGroupLinkUseCases.isTabInGroup(groupedTab.id) } returns true
+            val (middleware, toolbarStore) = buildMiddlewareAndAddToStore(
+                browserStore = browserStore,
+                useCases = useCases,
+                tabGroupLinkUseCases = tabGroupLinkUseCases,
+            )
+            val shortcut = middleware.buildHomeAction(
+                action = HomeToolbarAction.NewTabShortcut,
+            ) as ActionButtonRes
+
+            assertEquals(AddNewTabFromToolbarShortcut(Source.Unknown), shortcut.onClick)
+            toolbarStore.dispatch(shortcut.onClick as BrowserToolbarEvent)
+            testDispatcher.scheduler.advanceUntilIdle()
+
+            coVerify { tabGroupLinkUseCases.isTabInGroup(groupedTab.id) }
+            verify {
+                browserUseCases.addNewHomepageTab(
+                    private = false,
+                    parentId = groupedTab.id,
+                )
+            }
+        }
+
+    @Test
     fun `toHomeToolbarAction maps ShortcutType to HomeToolbarAction`() = runTest {
         val (middleware, _) = buildMiddlewareAndAddToStore()
 
         with(middleware) {
             assertEquals(
-                HomeToolbarAction.NewTab,
+                HomeToolbarAction.NewTabShortcut,
                 ShortcutType.NEW_TAB.toHomeToolbarAction(),
             )
             assertEquals(
@@ -987,6 +1030,7 @@ class BrowserToolbarMiddlewareTest {
         browserStore: BrowserStore = this.browserStore,
         clipboard: ClipboardHandler = mockk(),
         useCases: UseCases = mockk(),
+        tabGroupLinkUseCases: TabGroupLinkUseCases = mockk(relaxed = true),
         navController: NavController = mockk(),
         browsingModeManager: BrowsingModeManager = this.browsingModeManager,
         settings: Settings = testContext.components.settings,
@@ -1000,6 +1044,7 @@ class BrowserToolbarMiddlewareTest {
             browserStore = browserStore,
             clipboard = clipboard,
             useCases = useCases,
+            tabGroupLinkUseCases = tabGroupLinkUseCases,
             navController = navController,
             browsingModeManager = browsingModeManager,
             settings = settings,
@@ -1020,6 +1065,7 @@ class BrowserToolbarMiddlewareTest {
         browserStore: BrowserStore = this.browserStore,
         clipboard: ClipboardHandler = mockk(),
         useCases: UseCases = mockk(),
+        tabGroupLinkUseCases: TabGroupLinkUseCases = mockk(relaxed = true),
         navController: NavController = mockk(),
         browsingModeManager: BrowsingModeManager = this.browsingModeManager,
         settings: Settings = testContext.components.settings,
@@ -1032,6 +1078,7 @@ class BrowserToolbarMiddlewareTest {
         browserStore = browserStore,
         clipboard = clipboard,
         useCases = useCases,
+        tabGroupLinkUseCases = tabGroupLinkUseCases,
         navController = navController,
         browsingModeManager = browsingModeManager,
         settings = settings,

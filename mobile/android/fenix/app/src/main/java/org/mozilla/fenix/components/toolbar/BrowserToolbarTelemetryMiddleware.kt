@@ -28,6 +28,7 @@ import org.mozilla.fenix.components.toolbar.PageEndActionsInteractions.ReaderMod
 import org.mozilla.fenix.components.toolbar.StartPageActions.SiteInfoClicked
 import org.mozilla.fenix.components.toolbar.TabCounterInteractions.AddNewPrivateTab
 import org.mozilla.fenix.components.toolbar.TabCounterInteractions.AddNewTab
+import org.mozilla.fenix.components.toolbar.TabCounterInteractions.AddNewTabFromToolbarShortcut
 import org.mozilla.fenix.components.toolbar.TabCounterInteractions.TabCounterClicked
 import org.mozilla.fenix.components.toolbar.TabCounterInteractions.TabCounterLongClicked
 import org.mozilla.fenix.telemetry.ACTION_ADD_BOOKMARK_CLICKED
@@ -78,6 +79,9 @@ class BrowserToolbarTelemetryMiddleware : Middleware<BrowserToolbarState, Browse
                 trackToolbarEvent(ToolbarActionRecord.TabCounterLongClicked, action.source)
             }
             is AddNewTab -> {
+                trackToolbarEvent(ToolbarActionRecord.AddNewTab, action.source)
+            }
+            is AddNewTabFromToolbarShortcut -> {
                 trackToolbarEvent(ToolbarActionRecord.AddNewTab, action.source)
             }
             is AddNewPrivateTab -> {

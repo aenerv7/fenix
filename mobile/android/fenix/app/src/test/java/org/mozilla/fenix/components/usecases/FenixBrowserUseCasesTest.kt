@@ -349,6 +349,25 @@ class FenixBrowserUseCasesTest {
     }
 
     @Test
+    fun `GIVEN a parent tab WHEN adding a homepage tab THEN preserve the parent relationship`() {
+        val parentId = "parent-tab"
+
+        useCases.addNewHomepageTab(
+            private = false,
+            parentId = parentId,
+        )
+
+        verify {
+            tabsUseCases.addTab.invoke(
+                url = ABOUT_HOME_URL,
+                title = homepageTitle,
+                private = false,
+                parentId = parentId,
+            )
+        }
+    }
+
+    @Test
     fun `WHEN navigate to homepage use case is invoked THEN load the ABOUT_HOME URL`() {
         useCases.navigateToHomepage()
 
