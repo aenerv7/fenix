@@ -6,10 +6,8 @@
 
 package org.mozilla.fenix.ui.robots
 
-import android.content.Intent
 import android.util.Log
 import androidx.compose.ui.test.junit4.ComposeTestRule
-import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
@@ -17,7 +15,6 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.hasSibling
@@ -36,15 +33,11 @@ import androidx.test.uiautomator.UiObject
 import androidx.test.uiautomator.UiScrollable
 import androidx.test.uiautomator.UiSelector
 import androidx.test.uiautomator.Until
-import junit.framework.AssertionFailedError
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.endsWith
 import org.hamcrest.Matchers.allOf
 import org.mozilla.fenix.R
-import org.mozilla.fenix.helpers.AppAndSystemHelper.forceCloseApp
-import org.mozilla.fenix.helpers.AppAndSystemHelper.isPackageInstalled
 import org.mozilla.fenix.helpers.Constants.LISTS_MAXSWIPES
-import org.mozilla.fenix.helpers.Constants.PackageName.GOOGLE_PLAY_SERVICES
 import org.mozilla.fenix.helpers.Constants.RETRY_COUNT
 import org.mozilla.fenix.helpers.Constants.TAG
 import org.mozilla.fenix.helpers.DataGenerationHelper.getStringResource
@@ -60,7 +53,6 @@ import org.mozilla.fenix.helpers.TestHelper.packageName
 import org.mozilla.fenix.helpers.TestHelper.scrollToElementByText
 import org.mozilla.fenix.helpers.click
 import org.mozilla.fenix.helpers.ext.waitNotNull
-import org.mozilla.fenix.settings.SupportUtils
 
 /**
  * Implementation of Robot Pattern for the settings menu.
@@ -433,37 +425,9 @@ class SettingsRobot {
         Log.i(TAG, "verifyAboutHeading: Verified that the \"About\" heading is visible")
     }
 
-    fun verifyRateOnGooglePlay() {
-        settingsList().scrollToEnd(LISTS_MAXSWIPES)
-        assertUIObjectExists(rateOnGooglePlayHeading())
-    }
-
     fun verifyAboutFirefoxPreview() {
         settingsList().scrollToEnd(LISTS_MAXSWIPES)
         assertUIObjectExists(aboutFirefoxHeading())
-    }
-
-    fun verifyGooglePlayRedirect(composeTestRule: ComposeTestRule) {
-        if (isPackageInstalled(GOOGLE_PLAY_SERVICES)) {
-            Log.i(TAG, "verifyGooglePlayRedirect: $GOOGLE_PLAY_SERVICES is installed")
-            try {
-                Log.i(TAG, "verifyGooglePlayRedirect: Trying to verify intent to: $GOOGLE_PLAY_SERVICES")
-                intended(
-                    allOf(
-                        hasAction(Intent.ACTION_VIEW),
-                        hasData(SupportUtils.RATE_APP_URL.toUri()),
-                    ),
-                )
-                Log.i(TAG, "verifyGooglePlayRedirect: Verified intent to: $GOOGLE_PLAY_SERVICES")
-            } catch (e: AssertionFailedError) {
-                Log.i(TAG, "verifyGooglePlayRedirect: AssertionFailedError caught, executing fallback methods")
-                BrowserRobot(composeTestRule).verifyRateOnGooglePlayURL()
-            } finally {
-                forceCloseApp(GOOGLE_PLAY_SERVICES)
-            }
-        } else {
-            BrowserRobot(composeTestRule).verifyRateOnGooglePlayURL()
-        }
     }
 
     fun verifySettingsOptionSummary(setting: String, summary: String) {
@@ -795,14 +759,6 @@ private fun toggleDefaultBrowserSwitch() {
 
 private fun openLinksInAppsButton() = onView(withText(R.string.preferences_open_links_in_apps))
 
-private fun rateOnGooglePlayHeading(): UiObject {
-    val rateOnGooglePlay = mDevice.findObject(UiSelector().text("Rate on Google Play"))
-    settingsList().scrollToEnd(LISTS_MAXSWIPES)
-    rateOnGooglePlay.waitForExists(waitingTime)
-
-    return rateOnGooglePlay
-}
-
 private fun aboutFirefoxHeading(): UiObject {
     for (i in 1..RETRY_COUNT) {
         try {
@@ -820,10 +776,6 @@ private fun aboutFirefoxHeading(): UiObject {
 }
 
 fun swipeToBottom() = onView(withId(R.id.recycler_view)).perform(ViewActions.swipeUp())
-
-fun clickRateButtonGooglePlay() {
-    rateOnGooglePlayHeading().click()
-}
 
 private fun addonsManagerButton() = onView(withText(R.string.preferences_extensions))
 

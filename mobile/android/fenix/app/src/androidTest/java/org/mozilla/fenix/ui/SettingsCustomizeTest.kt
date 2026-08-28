@@ -379,7 +379,7 @@ class SettingsCustomizeTest {
         navigationToolbar(composeTestRule) {
             verifyTheNavigationBarHomepageButton()
         }.clickTheNavigationBarHomepageButton {
-            verifyHomeWordmark()
+            verifyHomeScreen()
             navigationToolbar(composeTestRule) {
             }.enterURLAndEnterToBrowser(secondPage.url) {
             }

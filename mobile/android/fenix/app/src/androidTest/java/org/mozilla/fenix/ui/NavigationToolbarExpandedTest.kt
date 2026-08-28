@@ -63,7 +63,7 @@ class NavigationToolbarExpandedTest {
     @Test
     fun verifyTheExpandedToolbarHomepageItemsTest() {
         homeScreen(composeTestRule) {
-            verifyHomeWordmark()
+            verifyHomeScreen()
             verifyToolbarPosition(bottomPosition = false)
         }
         navigationToolbar(composeTestRule) {
@@ -248,7 +248,7 @@ class NavigationToolbarExpandedTest {
     @Test
     fun verifyTheExpandedToolbarHomepageItemsInLandscapeModeTest() {
         homeScreen(composeTestRule) {
-            verifyHomeWordmark()
+            verifyHomeScreen()
             verifyToolbarPosition(bottomPosition = false)
         }
         setScreenOrientation(composeTestRule, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
@@ -564,7 +564,7 @@ class NavigationToolbarExpandedTest {
     fun verifyTheExpandedToolbarHomepageItemsWithEdgeToEdgeTest() {
         homeScreen(composeTestRule) {
             verifyEdgeToEdgeWallpaperApplied(composeTestRule)
-            verifyHomeWordmark()
+            verifyHomeScreen()
             verifyToolbarPosition(bottomPosition = false)
         }
         navigationToolbar(composeTestRule) {

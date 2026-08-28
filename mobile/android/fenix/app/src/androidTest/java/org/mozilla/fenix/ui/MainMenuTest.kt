@@ -629,7 +629,7 @@ class MainMenuTest {
         }.clickSettingsButton {
             verifySettingsToolbar()
         }.goBack(composeTestRule) {
-            verifyHomeWordmark()
+            verifyHomeScreen()
         }
     }
 
@@ -687,7 +687,7 @@ class MainMenuTest {
             restartApp(composeTestRule.activityRule)
         }
         homeScreen(composeTestRule) {
-            verifyHomeWordmark()
+            verifyHomeScreen()
         }
     }
 

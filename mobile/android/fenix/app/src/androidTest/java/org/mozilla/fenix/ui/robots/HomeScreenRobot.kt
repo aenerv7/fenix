@@ -73,8 +73,6 @@ import org.mozilla.fenix.home.topsites.TopSitesTestTag.TOP_SITE_CARD_FAVICON
 import org.mozilla.fenix.home.ui.HomepageTestTag.HOMEPAGE
 import org.mozilla.fenix.home.ui.HomepageTestTag.HOMEPAGE_PRIVATE_BROWSING_LEARN_MORE_LINK
 import org.mozilla.fenix.home.ui.HomepageTestTag.HOMEPAGE_STORY
-import org.mozilla.fenix.home.ui.HomepageTestTag.HOMEPAGE_WORDMARK_LOGO
-import org.mozilla.fenix.home.ui.HomepageTestTag.HOMEPAGE_WORDMARK_TEXT
 import org.mozilla.fenix.home.ui.HomepageTestTag.POCKET_STORIES
 import org.mozilla.fenix.home.ui.HomepageTestTag.PRIVATE_BROWSING_HOMEPAGE_BUTTON
 import org.mozilla.fenix.tabstray.TabsTrayTestTag
@@ -100,16 +98,11 @@ class HomeScreenRobot(private val composeTestRule: ComposeTestRule) {
         )
     }
 
-    fun verifyHomeScreenAppBarItems() =
-        assertUIObjectExists(homeScreen(), privateBrowsingButton(), homepageWordmarkLogo(), homepageWordmarkText())
+    fun verifyHomeScreenAppBarItems() = assertUIObjectExists(homeScreen(), privateBrowsingButton())
 
     fun verifyHomePrivateBrowsingButton() = assertUIObjectExists(privateBrowsingButton())
     fun verifyHomeMenuButton() = assertUIObjectExists(menuButton())
 
-    fun verifyHomeWordmark() {
-        Log.i(TAG, "verifyHomeWordmark: Scrolled 3x to the beginning of the home screen")
-        assertUIObjectExists(homepageWordmarkLogo(), homepageWordmarkText())
-    }
     fun verifyHomeComponent() {
         Log.i(TAG, "verifyHomeComponent: Trying to verify home screen view is visible")
         this@HomeScreenRobot.composeTestRule.onNodeWithTag(HOMEPAGE).assertIsDisplayed()
@@ -1056,12 +1049,6 @@ private fun isPrivateModeEnabled(): Boolean {
         false
     }
 }
-
-private fun homepageWordmarkLogo() =
-    itemWithResId(HOMEPAGE_WORDMARK_LOGO)
-
-private fun homepageWordmarkText() =
-    itemWithResId(HOMEPAGE_WORDMARK_TEXT)
 
 private fun navigationToolbar() =
     itemWithResId("$packageName:id/composable_toolbar")

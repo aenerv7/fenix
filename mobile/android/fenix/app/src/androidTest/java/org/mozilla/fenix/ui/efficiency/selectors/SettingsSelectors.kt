@@ -195,13 +195,6 @@ object SettingsSelectors {
         groups = listOf("aboutSection", "requiresScroll"),
     )
 
-    val RATE_ON_GOOGLE_PLAY_BUTTON = Selector(
-        strategy = SelectorStrategy.UIAUTOMATOR_WITH_TEXT_CONTAINS,
-        value = "Google Play",
-        description = "The Rate on Google Play Button",
-        groups = listOf("aboutSection", "requiresScroll", "googlePlay"),
-    )
-
     val ABOUT_FIREFOX_BUTTON = Selector(
         strategy = SelectorStrategy.UIAUTOMATOR_WITH_TEXT_CONTAINS,
         value = "About Firefox",
@@ -293,7 +286,6 @@ object SettingsSelectors {
         SITE_SETTINGS_BUTTON,
         ABOUT_FIREFOX_BUTTON,
         ABOUT_SECTION_TITLE,
-        RATE_ON_GOOGLE_PLAY_BUTTON,
         SEARCH_DEFAULT_SUMMARY,
         TABS_DEFAULT_SUMMARY,
         ETP_DEFAULT_SUMMARY,

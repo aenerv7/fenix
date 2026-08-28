@@ -46,18 +46,8 @@ import mozilla.components.ui.icons.R as iconsR
 @Composable
 fun HomepageHeader(
     browsingMode: BrowsingMode,
-    isSportsWidgetEnabled: Boolean,
     browsingModeChanged: (BrowsingMode) -> Unit,
-    onLogoClicked: () -> Unit,
 ) {
-    // In normal mode the wordmark and private-browsing button follow the wallpaper text color; in
-    // private mode there is no wallpaper, so the wordmark is untinted and the button uses its
-    // dedicated private-mode icon color.
-    val wordmarkTextColor = if (browsingMode.isPrivate) {
-        null
-    } else {
-        WallpaperTheme.onWallpaper
-    }
     val privateBrowsingButtonColor = if (browsingMode.isPrivate) {
         colorResource(getAttr(iconsR.attr.mozac_ic_private_mode_circle_fill_icon_color))
     } else {
@@ -71,13 +61,6 @@ fun HomepageHeader(
             .padding(start = 16.dp, end = 16.dp, top = 18.dp, bottom = 32.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        WordmarkLogo(
-            isSportsWidgetEnabled = isSportsWidgetEnabled,
-            onLogoClicked = onLogoClicked,
-        )
-
-        WordmarkText(wordmarkTextColor)
-
         Spacer(modifier = Modifier.weight(1f))
 
         PrivateBrowsingButton(
@@ -137,9 +120,7 @@ private fun HomepageHeaderPreview(
         Surface {
             HomepageHeader(
                 browsingMode = BrowsingMode.Normal,
-                isSportsWidgetEnabled = true,
                 browsingModeChanged = {},
-                onLogoClicked = {},
             )
         }
     }

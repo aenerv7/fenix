@@ -97,7 +97,6 @@ import org.mozilla.fenix.components.accounts.FenixFxAEntryPoint
 import org.mozilla.fenix.components.appstate.AppAction
 import org.mozilla.fenix.components.appstate.AppAction.ContentRecommendationsAction
 import org.mozilla.fenix.components.appstate.AppAction.MessagingAction.MicrosurveyAction
-import org.mozilla.fenix.components.appstate.AppAction.ReviewPromptAction.CheckIfEligibleForReviewPrompt
 import org.mozilla.fenix.components.appstate.AppAction.SportsWidgetAction
 import org.mozilla.fenix.components.appstate.AppState
 import org.mozilla.fenix.components.components
@@ -163,7 +162,6 @@ import org.mozilla.fenix.pbmlock.NavigationOrigin
 import org.mozilla.fenix.pbmlock.observePrivateModeLock
 import org.mozilla.fenix.perf.MarkersFragmentLifecycleCallbacks
 import org.mozilla.fenix.perf.StartupTimeline
-import org.mozilla.fenix.reviewprompt.ShowReviewPromptBinding
 import org.mozilla.fenix.search.awesomebar.AwesomeBarComposable
 import org.mozilla.fenix.snackbar.FenixSnackbarDelegate
 import org.mozilla.fenix.snackbar.SnackbarBinding
@@ -261,7 +259,6 @@ class HomeFragment : Fragment() {
     private val tabsCleanupFeature = ViewBoundFeatureWrapper<TabsCleanupFeature>()
     private val thumbnailsFeature = ViewBoundFeatureWrapper<HomepageThumbnailIntegration>()
     private val snackbarBinding = ViewBoundFeatureWrapper<SnackbarBinding>()
-    private val showReviewPromptBinding = ViewBoundFeatureWrapper<ShowReviewPromptBinding>()
     private val topSitesBinding = ViewBoundFeatureWrapper<TopSitesBinding>()
     private val trackersBlockedFeature = ViewBoundFeatureWrapper<TrackersBlockedFeature>()
     private val ipProtectionWarningBinding = ViewBoundFeatureWrapper<IPProtectionWarningBinding>()
@@ -529,7 +526,6 @@ class HomeFragment : Fragment() {
         initBookmarksFeature(view = view)
         initHistoryMetadataFeature(view = view)
         initThumbnailsFeature(view = view)
-        initReviewPromptBinding(view = view)
         initTabsCleanupFeature(view = view)
         initSnackbarBinding(view = view)
         initIpProtectionBindings(view = view)
@@ -931,9 +927,6 @@ class HomeFragment : Fragment() {
         // We only want this observer live just before we navigate away to the collection creation screen
         requireComponents.core.tabCollectionStorage.unregister(collectionStorageObserver)
 
-        // Trigger review prompt logic and show the appropriate prompt variation if applicable
-        requireComponents.appStore.dispatch(CheckIfEligibleForReviewPrompt)
-
         if (requireComponents.termsOfUseManager.shouldShowTermsOfUsePromptOnHomepage()) {
             findNavController().navigate(
                 BrowserFragmentDirections.actionGlobalTermsOfUseDialog(Surface.HOMEPAGE_NEW_TAB),
@@ -1209,20 +1202,6 @@ class HomeFragment : Fragment() {
                 appStore = requireComponents.appStore,
             ),
             owner = this,
-            view = view,
-        )
-    }
-
-    private fun initReviewPromptBinding(view: View) {
-        showReviewPromptBinding.set(
-            feature = ShowReviewPromptBinding(
-                appStore = requireComponents.appStore,
-                promptController = requireComponents.playStoreReviewPromptController,
-                activityRef = WeakReference(activity),
-                uiScope = viewLifecycleOwner.lifecycleScope,
-                navigationDirection = { findNavController().navigate(it) },
-            ),
-            owner = viewLifecycleOwner,
             view = view,
         )
     }

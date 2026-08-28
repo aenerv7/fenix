@@ -4,7 +4,6 @@
 
 package org.mozilla.fenix.ui
 
-import androidx.test.uiautomator.UiSelector
 import org.junit.Rule
 import org.junit.Test
 import org.mozilla.fenix.Config
@@ -13,10 +12,7 @@ import org.mozilla.fenix.helpers.AppAndSystemHelper.runWithCondition
 import org.mozilla.fenix.helpers.FenixTestRule
 import org.mozilla.fenix.helpers.HomeActivityIntentTestRule
 import org.mozilla.fenix.helpers.HomeActivityTestRule
-import org.mozilla.fenix.helpers.TestHelper.mDevice
-import org.mozilla.fenix.helpers.TestHelper.waitForAppWindowToBeUpdated
 import org.mozilla.fenix.helpers.perf.DetectMemoryLeaksRule
-import org.mozilla.fenix.ui.robots.clickRateButtonGooglePlay
 import org.mozilla.fenix.ui.robots.homeScreen
 import androidx.compose.ui.test.junit4.v2.AndroidComposeTestRule as AndroidComposeTestRuleV2
 
@@ -47,23 +43,7 @@ class SettingsAboutTest {
         }.openThreeDotMenu {
         }.clickSettingsButton {
             verifyAboutHeading()
-            verifyRateOnGooglePlay()
             verifyAboutFirefoxPreview()
-        }
-    }
-
-    // TestRail link: https://mozilla.testrail.io/index.php?/cases/view/246966
-    @SkipLeaks(reasons = ["https://bugzilla.mozilla.org/show_bug.cgi?id=2011974"])
-    @Test
-    fun verifyRateOnGooglePlayButtonTest() {
-        homeScreen(composeTestRule) {
-        }.openThreeDotMenu {
-        }.clickSettingsButton {
-            clickRateButtonGooglePlay()
-            verifyGooglePlayRedirect(composeTestRule)
-            // press back to return to the app, or accept ToS if still visible
-            mDevice.pressBack()
-            dismissGooglePlayToS()
         }
     }
 
@@ -184,11 +164,5 @@ class SettingsAboutTest {
             verifyAboutToolbar()
             verifyLibrariesUsedLink()
         }
-    }
-}
-
-private fun dismissGooglePlayToS() {
-    if (mDevice.findObject(UiSelector().textContains("Terms of Service")).exists()) {
-        mDevice.findObject(UiSelector().textContains("ACCEPT")).click()
     }
 }

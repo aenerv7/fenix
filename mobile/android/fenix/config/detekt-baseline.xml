@@ -120,7 +120,6 @@
     <ID>ForbiddenSuppress:RegionTools.kt$@Suppress("LongMethod")</ID>
     <ID>ForbiddenSuppress:ReorderableGrid.kt$@Suppress("MagicNumber")</ID>
     <ID>ForbiddenSuppress:ReorderableList.kt$ListReorderState$@Suppress("CognitiveComplexMethod")</ID>
-    <ID>ForbiddenSuppress:ReviewPromptMiddleware.kt$ReviewPromptMiddleware$@Suppress("CognitiveComplexMethod")</ID>
     <ID>ForbiddenSuppress:SavedLoginsScreen.kt$@Suppress("LongMethod", "CognitiveComplexMethod")</ID>
     <ID>ForbiddenSuppress:SearchEngineFragment.kt$SearchEngineFragment$@Suppress("LongMethod")</ID>
     <ID>ForbiddenSuppress:SearchEngineShortcuts.kt$@Suppress("LongMethod")</ID>
@@ -203,11 +202,6 @@
     <ID>HardcodedPaddingUsage:ContinuousOnboardingScreen.kt$(16.dp)</ID>
     <ID>HardcodedPaddingUsage:CountdownPromoCard.kt$(16.dp)</ID>
     <ID>HardcodedPaddingUsage:CrashTools.kt$(all = 16.dp)</ID>
-    <ID>HardcodedPaddingUsage:CustomReviewPrompt.kt$(16.dp)</ID>
-    <ID>HardcodedPaddingUsage:CustomReviewPrompt.kt$(bottom = 16.dp)</ID>
-    <ID>HardcodedPaddingUsage:CustomReviewPrompt.kt$(horizontal = 10.dp)</ID>
-    <ID>HardcodedPaddingUsage:CustomReviewPrompt.kt$(horizontal = 20.dp)</ID>
-    <ID>HardcodedPaddingUsage:CustomReviewPrompt.kt$(vertical = 16.dp)</ID>
     <ID>HardcodedPaddingUsage:CustomTabMenu.kt$( start = 8.dp, top = if (isBottomToolbar) 0.dp else 8.dp, end = 8.dp, bottom = if (isBottomToolbar) 84.dp else 16.dp, )</ID>
     <ID>HardcodedPaddingUsage:CustomTabMenu.kt$(top = 4.dp)</ID>
     <ID>HardcodedPaddingUsage:CustomTabMenu.kt$(top = 8.dp, bottom = 4.dp)</ID>
@@ -406,7 +400,6 @@
     <ID>HardcodedPaddingUsage:WebCompatReporter.kt$(horizontal = 16.dp, vertical = 12.dp)</ID>
     <ID>HardcodedPaddingUsage:WebCompatReporter.kt$(vertical = 6.dp)</ID>
     <ID>HardcodedPaddingUsage:WebCompatReporterPreviewSheet.kt$(top = 72.dp)</ID>
-    <ID>HardcodedPaddingUsage:Wordmark.kt$(end = 10.dp)</ID>
     <ID>LongMethod:BrowserToolbarMiddleware.kt$BrowserToolbarMiddleware$@VisibleForTesting internal fun buildHomeAction( action: HomeToolbarAction, source: Source = Source.Unknown, ): Action</ID>
     <ID>MaterialTextButtonUsage:AppLinksPromptFragment.kt$import androidx.compose.material3.TextButton</ID>
     <ID>MaterialTextButtonUsage:HomeSectionHeader.kt$import androidx.compose.material3.TextButton</ID>

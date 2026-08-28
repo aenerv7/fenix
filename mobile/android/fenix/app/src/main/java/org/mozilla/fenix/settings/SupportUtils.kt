@@ -21,8 +21,6 @@ import java.util.Locale
 import com.google.android.material.R as materialR
 
 object SupportUtils {
-    const val RATE_APP_URL = "market://details?id=" + BuildConfig.APPLICATION_ID
-    const val FENIX_PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=${BuildConfig.APPLICATION_ID}"
     const val GOOGLE_URL = "https://www.google.com/"
     const val GOOGLE_US_URL = "https://www.google.com/webhp?client=firefox-b-1-m&channel=ts"
     const val GOOGLE_XX_URL = "https://www.google.com/webhp?client=firefox-b-m&channel=ts"

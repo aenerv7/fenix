@@ -51,7 +51,7 @@ class HomeScreenTest {
     @Test
     fun homeScreenItemsTest() {
         homeScreen(composeTestRule) {
-            verifyHomeWordmark()
+            verifyHomeScreen()
             verifyHomePrivateBrowsingButton()
             verifyExistingTopSitesTabs("Wikipedia")
             verifyExistingTopSitesTabs("Google")

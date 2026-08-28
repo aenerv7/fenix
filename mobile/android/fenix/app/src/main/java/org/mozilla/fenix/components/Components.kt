@@ -12,7 +12,6 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.getSystemService
-import com.google.android.play.core.review.ReviewManagerFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -96,7 +95,6 @@ import org.mozilla.fenix.perf.StartupActivityLog
 import org.mozilla.fenix.perf.StartupStateProvider
 import org.mozilla.fenix.perf.StrictModeManager
 import org.mozilla.fenix.perf.lazyMonitored
-import org.mozilla.fenix.reviewprompt.ReviewPromptMiddleware
 import org.mozilla.fenix.search.VoiceSearchAIControlFeature
 import org.mozilla.fenix.settings.ai.AIControlsSearchProvider
 import org.mozilla.fenix.settings.datachoices.DataChoicesSearchProvider
@@ -273,13 +271,6 @@ class Components(private val context: Context) {
     val settings by lazyMonitored { Settings(context) }
     val fenixOnboarding by lazyMonitored { FenixOnboarding(context) }
 
-    val playStoreReviewPromptController by lazyMonitored {
-        PlayStoreReviewPromptController(
-            manager = ReviewManagerFactory.create(context),
-            numberOfAppLaunches = { settings.numberOfAppLaunches },
-        )
-    }
-
     val appStartReasonProvider by lazyMonitored {
         AppStartReasonProvider(
             processInfoProvider = DefaultProcessInfoProvider(),
@@ -339,18 +330,6 @@ class Components(private val context: Context) {
                 HomeTelemetryMiddleware(),
                 SetupChecklistPreferencesMiddleware(DefaultSetupChecklistRepository(context, settings)),
                 SetupChecklistTelemetryMiddleware(),
-                ReviewPromptMiddleware(
-                    continuousOnboardingInProgress = {
-                        val continuousOnboardingCompleted = settings.seventhDayOnboardingCompletedTimestamp != -1L
-                        settings.continuousOnboardingFeatureEnabled && !continuousOnboardingCompleted
-                    },
-                    shouldShowCustomPrompt = { settings.customReviewPromptUiEnabled && settings.isTelemetryEnabled },
-                    disableCustomPrompt = { settings.customReviewPromptUiEnabled = false },
-                    createJexlHelper = nimbus::createJexlHelper,
-                    nimbusEventStore = nimbus.events,
-                ).also {
-                    settings.migrateLastReviewPromptTimePrefIfNeeded(nimbus.events)
-                },
                 AppVisualCompletenessMiddleware(performance.visualCompletenessQueue),
                 SportsWidgetMiddleware(
                     sportsRepository = WorldCupMatchesRepository(

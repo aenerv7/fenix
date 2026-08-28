@@ -11,11 +11,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Icon
@@ -30,7 +27,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
@@ -45,7 +41,6 @@ import org.mozilla.fenix.home.ui.HomepageTestTag.PRIVATE_BROWSING_HOMEPAGE_BUTTO
 import org.mozilla.fenix.theme.FirefoxTheme
 import org.mozilla.fenix.theme.PreviewThemeProvider
 import org.mozilla.fenix.theme.Theme
-import org.mozilla.fenix.wallpapers.WallpaperTheme
 import mozilla.components.ui.icons.R as iconsR
 
 private const val NEWS_BUTTON_ANIMATION_TRANSITION_DURATION = 600
@@ -60,10 +55,7 @@ private const val NEWS_BUTTON_ANIMATION_DELAY = 500L
  * @param onPrivateModeTapped Callback for when the private mode button is tapped.
  * @param onStoriesTapped Callback for when the stories button is tapped.
  * @param onNewsAnimationShown Callback invoked when the news button animation starts playing.
- * @param onLogoClicked Callback for when the logo is clicked.
- * @param isSportsWidgetEnabled Whether to show the Firefox sports logo or not.
  */
-@Suppress("LongParameterList")
 @Composable
 fun ExperimentalHomepageHeader(
     showStoriesButton: Boolean,
@@ -71,8 +63,6 @@ fun ExperimentalHomepageHeader(
     onPrivateModeTapped: () -> Unit,
     onStoriesTapped: () -> Unit,
     onNewsAnimationShown: () -> Unit,
-    onLogoClicked: () -> Unit,
-    isSportsWidgetEnabled: Boolean,
 ) {
     Box(
         modifier = Modifier
@@ -98,22 +88,6 @@ fun ExperimentalHomepageHeader(
                 )
             }
         }
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .padding(all = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Spacer(modifier = Modifier.height(28.dp))
-
-            WordmarkAndLogo(
-                wordmarkTextColor = WallpaperTheme.onWallpaper,
-                onLogoClicked = onLogoClicked,
-                isSportsWidgetEnabled = isSportsWidgetEnabled,
-            )
-        }
     }
 }
 
@@ -133,25 +107,6 @@ fun ExperimentalPrivateHomepageHeader(onHomeTapped: () -> Unit) {
         horizontalArrangement = Arrangement.End,
     ) {
         HomeButton(onHomeTapped)
-    }
-}
-
-@Composable
-private fun WordmarkAndLogo(
-    wordmarkTextColor: Color?,
-    modifier: Modifier = Modifier,
-    onLogoClicked: () -> Unit,
-    isSportsWidgetEnabled: Boolean,
-) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        WordmarkLogo(
-            onLogoClicked = onLogoClicked,
-            isSportsWidgetEnabled = isSportsWidgetEnabled,
-        )
-        WordmarkText(wordmarkTextColor)
     }
 }
 
@@ -237,8 +192,6 @@ private fun HomepageHeaderPreview(
                 onPrivateModeTapped = {},
                 onStoriesTapped = {},
                 onNewsAnimationShown = {},
-                onLogoClicked = {},
-                isSportsWidgetEnabled = false,
             )
         }
     }

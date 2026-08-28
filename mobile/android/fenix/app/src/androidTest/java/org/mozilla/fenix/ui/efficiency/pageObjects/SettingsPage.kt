@@ -78,14 +78,6 @@ class SettingsPage(composeRule: AndroidComposeTestRule<HomeActivityIntentTestRul
         )
         NavigationRegistry.register(
             from = pageName,
-            to = "GooglePlayPage",
-            steps = listOf(
-                NavigationStep.Swipe(SettingsSelectors.RATE_ON_GOOGLE_PLAY_BUTTON),
-                NavigationStep.Click(SettingsSelectors.RATE_ON_GOOGLE_PLAY_BUTTON),
-            ),
-        )
-        NavigationRegistry.register(
-            from = pageName,
             to = "SettingsAboutPage",
             steps = listOf(
                 NavigationStep.Swipe(SettingsSelectors.ABOUT_FIREFOX_BUTTON),

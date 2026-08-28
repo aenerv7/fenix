@@ -8,6 +8,7 @@ Upstream baseline: `FIREFOX-ANDROID_154_0_1_RELEASE`
 
 - Changed the Android application ID to `github.aenerv7.fenix`.
 - Changed the user-facing application name to `Fenix`.
+- Removed the Firefox logo and wordmark from the new-tab homepage.
 - Removed the upstream `-default` suffix from the displayed version.
 - Kept Focus outside the supported build and release scope.
 
@@ -25,6 +26,11 @@ Upstream baseline: `FIREFOX-ANDROID_154_0_1_RELEASE`
 - Removed the Android autofill service and its configuration activities.
 - Removed password, address, and credit-card data from the default sync scope.
 - Removed related shortcuts, intents, background initialization, and settings indexing.
+
+### App-store integration
+
+- Removed the settings entry for rating the app on Google Play.
+- Removed automatic review prompts, Play Review SDK integration, store fallbacks, and rating telemetry.
 
 ### Tab groups
 

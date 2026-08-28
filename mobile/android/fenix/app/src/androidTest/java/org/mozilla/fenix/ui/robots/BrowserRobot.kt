@@ -178,10 +178,6 @@ class BrowserRobot(private val composeTestRule: ComposeTestRule) {
         }
     }
 
-    fun verifyRateOnGooglePlayURL() {
-        verifyUrl("play.google.com/store/apps/details?id=org.mozilla.fenix")
-    }
-
     fun verifyCustomSearchEngineLearnMoreURL() {
         try {
             verifyUrl("support.mozilla.org/en-US/kb/manage-my-default-search-engines-firefox-android")
