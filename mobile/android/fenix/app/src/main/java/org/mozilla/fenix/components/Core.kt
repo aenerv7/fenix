@@ -138,6 +138,7 @@ import org.mozilla.fenix.summarization.eligibility.DefaultSummarizationEligibili
 import org.mozilla.fenix.summarization.eligibility.SummarizationEligibilityChecker
 import org.mozilla.fenix.summarization.onboarding.FenixSummarizationFeatureConfiguration
 import org.mozilla.fenix.summarization.onboarding.SummarizationFeatureDiscoveryConfiguration
+import org.mozilla.fenix.tabgroups.TabGroupLinkUseCases
 import org.mozilla.fenix.tabgroups.storage.redux.middleware.TabGroupMiddleware
 import org.mozilla.fenix.tabgroups.storage.repository.DefaultTabGroupRepository
 import org.mozilla.fenix.telemetry.TelemetryMiddleware
@@ -174,7 +175,7 @@ class Core(
             fontInflationEnabled = context.components.settings.shouldUseAutoSize,
             suspendMediaWhenInactive = false,
             forceUserScalableContent = context.components.settings.forceEnableZoom,
-            loginAutofillEnabled = context.components.settings.shouldAutofillLogins,
+            loginAutofillEnabled = false,
             enterpriseRootsEnabled = context.components.settings.allowThirdPartyRootCerts,
             clearColor = ContextCompat.getColor(
                 context,
@@ -304,8 +305,6 @@ class Core(
     val geckoRuntime: GeckoRuntime by lazyMonitored {
         GeckoProvider.getOrCreateRuntime(
             context,
-            lazyAutofillStorage,
-            lazyPasswordsStorage,
             trackingProtectionPolicyFactory.createTrackingProtectionPolicy(),
         )
     }
@@ -410,7 +409,11 @@ class Core(
                     homepageTitle = context.getString(R.string.tab_tray_homepage_tab),
                 ),
                 BrowserVisualCompletenessMiddleware(visualCompletenessQueue),
-                TabGroupMiddleware(tabGroupRepository = tabGroupRepository),
+                TabGroupMiddleware(
+                    tabGroupRepository = tabGroupRepository,
+                    tabGroupLinkUseCases = tabGroupLinkUseCases,
+                    isTabGroupingEnabled = { context.components.settings.tabGroupsEnabled },
+                ),
             )
 
         BrowserStore(
@@ -681,6 +684,8 @@ class Core(
     }
 
     val tabGroupRepository by lazyMonitored { DefaultTabGroupRepository(context) }
+
+    val tabGroupLinkUseCases by lazyMonitored { TabGroupLinkUseCases(tabGroupRepository) }
 
     /**
      * Summarization eligibility checker

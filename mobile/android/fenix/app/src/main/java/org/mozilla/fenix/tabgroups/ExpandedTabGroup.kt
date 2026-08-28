@@ -4,11 +4,15 @@
 
 package org.mozilla.fenix.tabgroups
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -16,13 +20,20 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
@@ -33,9 +44,17 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntRect
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupPositionProvider
+import androidx.compose.ui.window.PopupProperties
 import mozilla.components.compose.base.annotation.FlexibleWindowLightDarkPreview
 import mozilla.components.compose.base.button.IconButton
+import mozilla.components.compose.base.snackbar.Snackbar
 import org.mozilla.fenix.R
 import org.mozilla.fenix.tabstray.LocalTabManagementFeatureHelper
 import org.mozilla.fenix.tabstray.TabsTrayTestTag
@@ -61,6 +80,11 @@ import mozilla.components.ui.icons.R as iconsR
  * @param onEditTabGroupClick Invoked when the user clicks to edit the [group].
  * @param onCloseTabGroupClick Invoked when the user clicks to close a tab group.
  * @param tabInteractionHandler Handler for tab interactions.
+ * @param selectionMode The current tab selection mode.
+ * @param onItemLongClick Invoked when the user long clicks a tab.
+ * @param selectionBanner The multi-select toolbar shown in a fixed overlay above the expanded group.
+ * @param selectionMenu The multi-select menu shown in a separate overlay above the toolbar.
+ * @param snackbarHostState Snackbar state rendered above the multi-select toolbar.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,15 +96,21 @@ fun ExpandedTabGroup(
     onEditTabGroupClick: () -> Unit,
     onCloseTabGroupClick: () -> Unit,
     tabInteractionHandler: TabInteractionHandler,
+    selectionMode: TabsTrayState.Mode = TabsTrayState.Mode.Normal,
+    onItemLongClick: (TabsTrayItem) -> Unit = {},
+    selectionBanner: @Composable (Boolean, (Boolean) -> Unit) -> Unit = { _, _ -> },
+    selectionMenu: @Composable (Boolean, (Boolean) -> Unit) -> Unit = { _, _ -> },
+    snackbarHostState: SnackbarHostState? = null,
 ) {
-    Column(
-        modifier = Modifier
-            .testTag(TabsTrayTestTag.TAB_GROUP_BOTTOM_SHEET_ROOT)
-            .padding(
-                start = FirefoxTheme.layout.space.dynamic200,
-                end = FirefoxTheme.layout.space.dynamic200,
-            ),
-    ) {
+    var selectionMenuExpanded by remember { mutableStateOf(false) }
+
+    LaunchedEffect(selectionMode) {
+        if (selectionMode !is TabsTrayState.Mode.Select) {
+            selectionMenuExpanded = false
+        }
+    }
+
+    Column(modifier = Modifier.testTag(TabsTrayTestTag.TAB_GROUP_BOTTOM_SHEET_ROOT)) {
         ViewTabGroupHeader(
             title = group.title,
             groupTheme = group.theme,
@@ -88,6 +118,10 @@ fun ExpandedTabGroup(
             onDeleteTabGroupClick = onDeleteTabGroupClick,
             onEditTabGroupClick = onEditTabGroupClick,
             onCloseTabGroupClick = onCloseTabGroupClick,
+            modifier = Modifier.padding(
+                start = FirefoxTheme.layout.space.dynamic200,
+                end = FirefoxTheme.layout.space.dynamic200,
+            ),
         )
 
         TabLayout(
@@ -98,12 +132,15 @@ fun ExpandedTabGroup(
             displayTabGroupOnboarding = false,
             liveReorderEnabled = true,
             selectedItemIndex = group.initialScrollIndex,
-            selectionMode = TabsTrayState.Mode.Normal,
+            selectionMode = selectionMode,
             tabInteractionHandler = tabInteractionHandler,
-            modifier = Modifier,
+            modifier = Modifier.padding(
+                start = FirefoxTheme.layout.space.dynamic200,
+                end = FirefoxTheme.layout.space.dynamic200,
+            ),
             onTabClose = onTabClose,
             onItemClick = onItemClick,
-            onItemLongClick = { item -> }, // Ignore long click
+            onItemLongClick = onItemLongClick,
             onDeleteTabGroupClick = { }, // Ignore tab group deletes
             onEditTabGroupClick = { }, // Ignore tab group edits
             onCloseTabGroupClick = { }, // Ignore tab group closes
@@ -112,6 +149,68 @@ fun ExpandedTabGroup(
             focusEnabled = true, // Drag and drop is not possible in this view, so focus should never be suppressed
         )
     }
+
+    if (selectionMode is TabsTrayState.Mode.Select || snackbarHostState?.currentSnackbarData != null) {
+        val snackbarData = snackbarHostState?.currentSnackbarData
+        val density = LocalDensity.current
+        val navigationBarBottomInset = WindowInsets.navigationBars.getBottom(density)
+
+        Popup(
+            onDismissRequest = { selectionMenuExpanded = false },
+            popupPositionProvider = FixedBottomPopupPositionProvider(),
+            properties = PopupProperties(
+                focusable = selectionMenuExpanded,
+                dismissOnBackPress = selectionMenuExpanded,
+                dismissOnClickOutside = selectionMenuExpanded,
+                clippingEnabled = false,
+            ),
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag(TabsTrayTestTag.TAB_GROUP_FIXED_OVERLAY),
+            ) {
+                snackbarHostState?.let { hostState ->
+                    if (snackbarData != null) {
+                        SnackbarHost(hostState = hostState) { snackbarData ->
+                            Snackbar(snackbarData = snackbarData)
+                        }
+                    }
+                }
+
+                if (selectionMode is TabsTrayState.Mode.Select) {
+                    selectionBanner(selectionMenuExpanded) { expanded ->
+                        selectionMenuExpanded = expanded
+                    }
+                }
+
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(with(density) { navigationBarBottomInset.toDp() })
+                        .background(MaterialTheme.colorScheme.surface),
+                )
+            }
+        }
+    }
+
+    selectionMenu(
+        selectionMode is TabsTrayState.Mode.Select && selectionMenuExpanded,
+    ) { expanded ->
+        selectionMenuExpanded = expanded
+    }
+}
+
+internal class FixedBottomPopupPositionProvider : PopupPositionProvider {
+    override fun calculatePosition(
+        anchorBounds: IntRect,
+        windowSize: IntSize,
+        layoutDirection: LayoutDirection,
+        popupContentSize: IntSize,
+    ): IntOffset = IntOffset(
+        x = ((windowSize.width - popupContentSize.width) / 2).coerceAtLeast(0),
+        y = (windowSize.height - popupContentSize.height).coerceAtLeast(0),
+    )
 }
 
 @Composable
@@ -122,9 +221,10 @@ private fun ViewTabGroupHeader(
     onDeleteTabGroupClick: () -> Unit,
     onEditTabGroupClick: () -> Unit,
     onCloseTabGroupClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(
                 top = FirefoxTheme.layout.space.static150,

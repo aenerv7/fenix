@@ -388,6 +388,32 @@ class TabsTrayStoreReducerTest {
     }
 
     @Test
+    fun `WHEN expanded tab group is dismissed in select mode THEN exit selection and navigate to root`() {
+        val tab = createTab("https://mozilla.org")
+        val group = createTabGroup(tabs = mutableListOf(tab))
+        val initialState = TabsTrayState(
+            mode = Mode.Select(selectedTabs = setOf(tab)),
+            backStack = listOf(
+                TabManagerNavDestination.Root,
+                TabManagerNavDestination.ExpandedTabGroup(group),
+            ),
+        )
+
+        val resultState = TabsTrayReducer.reduce(
+            state = initialState,
+            action = TabsTrayAction.NavigateBackInvoked,
+        )
+
+        assertEquals(
+            initialState.copy(
+                mode = Mode.Normal,
+                backStack = listOf(TabManagerNavDestination.Root),
+            ),
+            resultState,
+        )
+    }
+
+    @Test
     fun `WHEN navigating back from add to tab group in multiselect mode THEN only the sheet is dismissed and the group state is updated`() {
         val initialState = TabsTrayState(
             mode = Mode.Select(selectedTabs = setOf(createTab("https://mozilla.org"))),
@@ -796,6 +822,56 @@ class TabsTrayStoreReducerTest {
             ),
             actual = result.mode,
         )
+    }
+
+    @Test
+    fun `GIVEN a tab group tab is long clicked THEN selection is scoped to that group`() {
+        val firstTab = createTab(url = "mozilla.org", id = "tab-1")
+        val secondTab = createTab(url = "example.com", id = "tab-2")
+        val outsideTab = createTab(url = "example.org", id = "tab-3")
+        val group = createTabGroup(
+            id = "group-1",
+            tabs = mutableListOf(firstTab, secondTab),
+        )
+
+        val selectedState = TabsTrayReducer.reduce(
+            state = TabsTrayState(
+                mode = Mode.Normal,
+                tabGroupState = TabsTrayState.TabGroupState(groups = listOf(group)),
+            ),
+            action = TabsTrayAction.TabGroupTabLongClicked(
+                tab = firstTab,
+                groupId = "group-1",
+            ),
+        )
+
+        assertEquals(
+            Mode.Select(
+                selectedTabs = setOf(firstTab),
+                tabGroupId = "group-1",
+            ),
+            selectedState.mode,
+        )
+
+        val updatedState = TabsTrayReducer.reduce(
+            state = selectedState,
+            action = TabsTrayAction.AddSelectTab(secondTab),
+        )
+
+        assertEquals(
+            Mode.Select(
+                selectedTabs = setOf(firstTab, secondTab),
+                tabGroupId = "group-1",
+            ),
+            updatedState.mode,
+        )
+
+        val unchangedState = TabsTrayReducer.reduce(
+            state = updatedState,
+            action = TabsTrayAction.AddSelectTab(outsideTab),
+        )
+
+        assertEquals(updatedState, unchangedState)
     }
 
     @Test

@@ -179,7 +179,7 @@ fun LongFoxGameScreen() {
                     soundOn = soundOn,
                     onToggleSoundOn = { coroutineScope.launch { longFoxDataStore.toggleSoundOn() } },
                     startGame = startGame,
-                    shareHiscore = { coroutineScope.launch { longFoxDataStore.shareHiscore(it) }}
+                    shareHiscore = { coroutineScope.launch { longFoxDataStore.shareHiscore(it) } },
                 )
             } else {
                 GameCanvas(gameState)
@@ -193,7 +193,8 @@ fun LongFoxGameScreen() {
                 active = gameState.justEaten,
             )
         }
-        Row(modifier = Modifier
+        Row(
+            modifier = Modifier
             .windowInsetsPadding(WindowInsets.statusBars)
             .padding(12.dp)
             .fillMaxWidth(),
@@ -205,7 +206,7 @@ fun LongFoxGameScreen() {
                 Icon(
                     painter = painterResource(id = R.drawable.outline_arrow_back_24),
                     contentDescription = stringResource(R.string.back),
-                    tint = Color.White
+                    tint = Color.White,
                 )
             }
             if (gameState.score > 0) {

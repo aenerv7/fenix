@@ -19,7 +19,9 @@ class SoundEffectsPlayer(private val context: Context, private val soundOn: Bool
 
     private val activePlayers = mutableSetOf<MediaPlayer>()
 
-    fun playSound(@RawRes soundResId: Int) {
+    fun playSound(
+        @RawRes soundResId: Int,
+    ) {
         if (!soundOn) return
         MediaPlayer.create(context, soundResId)?.apply {
             activePlayers.add(this)

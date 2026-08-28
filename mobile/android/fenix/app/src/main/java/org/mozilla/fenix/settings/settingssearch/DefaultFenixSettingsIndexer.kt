@@ -353,7 +353,6 @@ class DefaultFenixSettingsIndexer(
         val defaultPreferenceFileInformationList = listOf(
             PreferenceFileInformation.GeneralPreferences,
             PreferenceFileInformation.AccessibilityPreferences,
-            PreferenceFileInformation.AutofillPreferences,
             PreferenceFileInformation.CustomizationPreferences,
             PreferenceFileInformation.DefaultSearchEnginePreferences,
             PreferenceFileInformation.DownloadsSettingsPreferences,
@@ -364,7 +363,6 @@ class DefaultFenixSettingsIndexer(
             PreferenceFileInformation.SiteSettingsPreferences,
             PreferenceFileInformation.TabsPreferences,
             PreferenceFileInformation.TrackingProtectionPreferences,
-            PreferenceFileInformation.SaveLoginsPreferences,
             PreferenceFileInformation.DataChoicesPreferences,
             PreferenceFileInformation.AIControlsPreferences,
             PreferenceFileInformation.FirefoxLabsPreferences,

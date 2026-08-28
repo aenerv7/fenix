@@ -33,6 +33,7 @@ internal object TabsTrayReducer {
             is TabsTrayAction.ExitSelectMode,
             is TabsTrayAction.AddSelectTab,
             is TabsTrayAction.TabItemLongClicked,
+            is TabsTrayAction.TabGroupTabLongClicked,
             is TabsTrayAction.RemoveSelectTab,
                 -> handleSelectionModeActions(state, action)
 
@@ -168,6 +169,19 @@ internal object TabsTrayReducer {
                 )
             }
 
+            is TabsTrayAction.TabGroupTabLongClicked -> {
+                if (action.tab.private || state.mode.selectedTabs.isNotEmpty()) {
+                    state
+                } else {
+                    state.copy(
+                        mode = TabsTrayState.Mode.Select(
+                            selectedTabs = setOf(action.tab),
+                            tabGroupId = action.groupId,
+                        ),
+                    )
+                }
+            }
+
             is TabsTrayAction.RemoveSelectTab -> {
                 val selectedTabs = state.mode.selectedTabs - action.tab
                 state.copy(
@@ -177,6 +191,7 @@ internal object TabsTrayReducer {
                         TabsTrayState.Mode.Select(
                             selectedTabs = selectedTabs,
                             selectedTabGroups = state.mode.selectedTabGroups,
+                            tabGroupId = (state.mode as? TabsTrayState.Mode.Select)?.tabGroupId,
                         )
                     },
                 )
@@ -219,10 +234,22 @@ internal object TabsTrayReducer {
     }
 
     private fun addTabSelection(state: TabsTrayState, tab: TabsTrayItem.Tab): TabsTrayState {
+        val selectedGroupId = (state.mode as? TabsTrayState.Mode.Select)?.tabGroupId
+        if (selectedGroupId != null) {
+            val tabBelongsToSelectedGroup = state.tabGroupState.groups
+                .find { it.id == selectedGroupId }
+                ?.tabs
+                ?.any { it.id == tab.id } == true
+            if (!tabBelongsToSelectedGroup) {
+                return state
+            }
+        }
+
         return state.copy(
             mode = TabsTrayState.Mode.Select(
                 selectedTabs = state.mode.selectedTabs + tab,
                 selectedTabGroups = state.mode.selectedTabGroups,
+                tabGroupId = (state.mode as? TabsTrayState.Mode.Select)?.tabGroupId,
             ),
         )
     }
@@ -232,6 +259,7 @@ internal object TabsTrayReducer {
             mode = TabsTrayState.Mode.Select(
                 selectedTabs = state.mode.selectedTabs + group.tabs,
                 selectedTabGroups = state.mode.selectedTabGroups + group,
+                tabGroupId = (state.mode as? TabsTrayState.Mode.Select)?.tabGroupId,
             ),
         )
     }
@@ -297,6 +325,11 @@ internal object TabsTrayReducer {
                 tabGroupState = state.tabGroupState.copy(
                     dragProcessingState = DragProcessingState.COMPLETED,
                 ),
+                backStack = state.popBackStack(),
+            )
+
+            lastBackStackEntry is TabManagerNavDestination.ExpandedTabGroup -> state.copy(
+                mode = TabsTrayState.Mode.Normal,
                 backStack = state.popBackStack(),
             )
 

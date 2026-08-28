@@ -498,23 +498,73 @@ class BrowserFragment : BaseBrowserFragment(), UserInteractionHandler, SystemIns
             requireContext(),
             { true },
         )
-
-        return ContextMenuCandidate.defaultCandidates(
+        val tabsUseCases = context.components.useCases.tabsUseCases
+        val tabGroupLinkUseCases = context.components.core.tabGroupLinkUseCases
+        val snackbarDelegate = ContextMenuSnackbarDelegate()
+        val defaultCandidates = ContextMenuCandidate.defaultCandidates(
             context = context,
-            tabsUseCases = context.components.useCases.tabsUseCases,
+            tabsUseCases = tabsUseCases,
             contextMenuUseCases = context.components.useCases.contextMenuUseCases,
             snackBarParentView = view,
-            snackbarDelegate = ContextMenuSnackbarDelegate(),
+            snackbarDelegate = snackbarDelegate,
             downloadsLocation = {
                 DownloadLocationManager(
                     requireComponents.settings,
                     requireContext().contentResolver,
                 ).defaultLocation
             },
-        ) + ContextMenuCandidate.createOpenInExternalAppCandidate(
-            requireContext(),
-            contextMenuCandidateAppLinksUseCases,
-        ) + createOpenWithGoogleLensCandidate(context)
+        )
+        val openInNewTabCandidate = ContextMenuCandidate.createOpenInNewTabCandidate(
+            context = context,
+            tabsUseCases = tabsUseCases,
+            snackBarParentView = view,
+            snackbarDelegate = snackbarDelegate,
+            parentId = { null },
+        )
+        val openInTabGroupCandidate = ContextMenuCandidate.createOpenInNewTabCandidate(
+            context = context,
+            tabsUseCases = tabsUseCases,
+            snackBarParentView = view,
+            snackbarDelegate = snackbarDelegate,
+            additionalValidation = { _, _ -> context.components.settings.tabGroupsEnabled },
+            parentId = { null },
+            onTabCreated = { parent, tabId ->
+                viewLifecycleOwner.lifecycleScope.launch {
+                    tabGroupLinkUseCases.addTabToGroupOrCreateGroup(
+                        parentTabId = parent.id,
+                        tabId = tabId,
+                        newGroupTitle = { groupNumber ->
+                            context.getString(R.string.create_tab_group_form_default_name, groupNumber)
+                        },
+                    )
+                }
+            },
+        ).copy(
+            id = "fenix.contextmenu.open_in_tab_group",
+            label = context.getString(R.string.context_menu_open_link_in_tab_group),
+            labelProvider = { parent, _ ->
+                val label = if (tabGroupLinkUseCases.isTabInGroup(parent.id)) {
+                    R.string.context_menu_open_link_in_tab_group
+                } else {
+                    R.string.context_menu_open_link_in_new_tab_group
+                }
+                context.getString(label)
+            },
+        )
+
+        val candidatesWithTabGroup = defaultCandidates.flatMap { candidate ->
+            if (candidate.id == openInNewTabCandidate.id) {
+                listOf(openInTabGroupCandidate, openInNewTabCandidate)
+            } else {
+                listOf(candidate)
+            }
+        }
+
+        return candidatesWithTabGroup +
+            ContextMenuCandidate.createOpenInExternalAppCandidate(
+                requireContext(),
+                contextMenuCandidateAppLinksUseCases,
+            ) + createOpenWithGoogleLensCandidate(context)
     }
 
     private fun createOpenWithGoogleLensCandidate(context: Context) = ContextMenuCandidate(

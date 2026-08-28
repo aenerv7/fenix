@@ -100,6 +100,28 @@ sealed interface TabGroupAction : TabsTrayAction {
     data class SelectedTabsAddedToGroup(val groupId: String) : TabGroupAction, TabsStorageAction
 
     /**
+     * Fired when the selected tabs are removed from their tab group.
+     *
+     * @property groupId The ID of the group containing the selected tabs.
+     */
+    data class SelectedTabsRemovedFromGroup(val groupId: String) : TabGroupAction, TabsStorageAction
+
+    /**
+     * Fired when closing selected tabs leaves their tab group empty.
+     *
+     * @property groupId The ID of the emptied group.
+     */
+    data class SelectedTabsClosedFromGroup(val groupId: String) : TabGroupAction, TabsStorageAction
+
+    /**
+     * Restores closed tabs to their original tab group after an undo.
+     */
+    data class RestoreTabsToGroup(
+        val group: TabsTrayItem.TabGroup,
+        val tabIds: List<String>,
+    ) : TabGroupAction, TabsStorageAction
+
+    /**
      * Fired when the user performs an action to add a single item to an existing Tab Group, such as a drag and drop.
      *
      * @property tabId The ID of the tab.

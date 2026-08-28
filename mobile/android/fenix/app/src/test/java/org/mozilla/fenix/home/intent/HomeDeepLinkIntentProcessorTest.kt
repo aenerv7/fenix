@@ -180,14 +180,6 @@ class HomeDeepLinkIntentProcessorTest {
     }
 
     @Test
-    fun `process settings_logins deep link`() {
-        assertTrue(processorHome.process(testIntent("settings_logins"), navController, out, settings))
-
-        verify { navController.navigate(NavGraphDirections.actionGlobalSavedLoginsAuthFragment()) }
-        verify { out wasNot Called }
-    }
-
-    @Test
     fun `process settings_tracking_protection deep link`() {
         assertTrue(processorHome.process(testIntent("settings_tracking_protection"), navController, out, settings))
 

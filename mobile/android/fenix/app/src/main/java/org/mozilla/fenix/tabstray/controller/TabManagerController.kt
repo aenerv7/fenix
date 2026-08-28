@@ -20,6 +20,7 @@ import mozilla.components.browser.storage.sync.Tab
 import mozilla.components.concept.base.profiler.Profiler
 import mozilla.components.concept.engine.prompt.ShareData
 import mozilla.components.concept.engine.utils.ABOUT_HOME_URL
+import mozilla.components.concept.storage.BookmarkNode
 import mozilla.components.feature.accounts.push.CloseTabsUseCases
 import mozilla.components.feature.downloads.ui.DownloadCancelDialogFragment
 import mozilla.components.feature.tabs.TabsUseCases
@@ -58,6 +59,8 @@ import org.mozilla.fenix.tabstray.data.TabsTrayItem
 import org.mozilla.fenix.tabstray.data.toTabList
 import org.mozilla.fenix.tabstray.ext.isActiveDownload
 import org.mozilla.fenix.tabstray.ext.isSelect
+import org.mozilla.fenix.tabstray.navigation.TabManagerNavDestination
+import org.mozilla.fenix.tabstray.redux.action.TabGroupAction
 import org.mozilla.fenix.tabstray.redux.action.TabsTrayAction
 import org.mozilla.fenix.tabstray.redux.state.Page
 import org.mozilla.fenix.tabstray.redux.state.TabsTrayState
@@ -231,6 +234,7 @@ interface TabManagerController :
  * @param mainDispatcher [CoroutineContext] used for UI operations.
  * @param collectionStorage Storage layer for interacting with collections.
  * @param showUndoSnackbarForTab Lambda used to display an undo snackbar when a normal or private tab is closed.
+ * @param showUndoSnackbarForTabGroup Lambda used to display an undo snackbar when tabs in a group are closed.
  * @param showUndoSnackbarForInactiveTab Lambda used to display an undo snackbar when an inactive tab is closed.
  * @param showUndoSnackbarForSyncedTab Lambda used to display an undo snackbar when a synced tab is closed.
  * @property showCancelledDownloadWarning Lambda used to display a cancelled download warning.
@@ -259,10 +263,15 @@ class DefaultTabManagerController(
     private val mainDispatcher: CoroutineContext = Dispatchers.Main,
     private val collectionStorage: TabCollectionStorage,
     private val showUndoSnackbarForTab: (Boolean) -> Unit,
+    private val showUndoSnackbarForTabGroup: (
+        isPrivate: Boolean,
+        group: TabsTrayItem.TabGroup,
+        tabIds: List<String>,
+    ) -> Unit = { isPrivate, _, _ -> showUndoSnackbarForTab(isPrivate) },
     private val showUndoSnackbarForInactiveTab: (Int) -> Unit,
     private val showUndoSnackbarForSyncedTab: (CloseTabsUseCases.UndoableOperation) -> Unit,
     internal val showCancelledDownloadWarning: (downloadCount: Int, tabId: String?, source: String?) -> Unit,
-    private val showBookmarkSnackbar: (tabSize: Int, parentFolderTitle: String?) -> Unit,
+    private val showBookmarkSnackbar: (tabSize: Int, parentFolder: BookmarkNode?) -> Unit,
     private val showCollectionSnackbar: (
         tabSize: Int,
         isNewCollection: Boolean,
@@ -427,13 +436,32 @@ class DefaultTabManagerController(
     }
 
     override fun handleDeleteSelectedTabsClicked() {
-        val tabs = tabsTrayStore.state.mode.selectedTabs
+        val state = tabsTrayStore.state
+        val tabs = state.mode.selectedTabs
+        val expandedGroupDestination = state.backStack.lastOrNull() as? TabManagerNavDestination.ExpandedTabGroup
+        val expandedGroup = expandedGroupDestination?.let { destination ->
+            state.tabGroupState.groups.find { it.id == destination.group.id } ?: destination.group
+        }
+        val selectedTabIds = tabs.mapTo(mutableSetOf()) { it.id }
+        val emptiedGroupId = expandedGroup
+            ?.takeIf { group ->
+                group.tabs.isNotEmpty() && group.tabs.all { it.id in selectedTabIds }
+            }
+            ?.id
 
         TabsTray.closeSelectedTabs.record(TabsTray.CloseSelectedTabsExtra(tabCount = tabs.size))
 
-        deleteMultipleTabs(tabs)
+        if (expandedGroup != null) {
+            deleteMultipleTabsFromGroup(tabs = tabs, group = expandedGroup)
+        } else {
+            deleteMultipleTabs(tabs)
+        }
 
-        tabsTrayStore.dispatch(TabsTrayAction.ExitSelectMode)
+        if (emptiedGroupId != null) {
+            tabsTrayStore.dispatch(TabGroupAction.SelectedTabsClosedFromGroup(groupId = emptiedGroupId))
+        } else {
+            tabsTrayStore.dispatch(TabsTrayAction.ExitSelectMode)
+        }
     }
 
     /**
@@ -441,6 +469,25 @@ class DefaultTabManagerController(
      */
     @VisibleForTesting
     internal fun deleteMultipleTabs(tabs: Collection<TabsTrayItem.Tab>) {
+        deleteMultipleTabs(tabs = tabs, showUndoSnackbar = showUndoSnackbarForTab)
+    }
+
+    @VisibleForTesting
+    internal fun deleteMultipleTabsFromGroup(
+        tabs: Collection<TabsTrayItem.Tab>,
+        group: TabsTrayItem.TabGroup,
+    ) {
+        val isPrivate = tabs.any { it.private }
+        val excludedTabIds = if (isPrivate) emptySet() else getExcludedNormalTabIds()
+
+        tabsUseCases.removeTabs(excludedTabIds = excludedTabIds, ids = tabs.map { it.id })
+        showUndoSnackbarForTabGroup(isPrivate, group, tabs.map { it.id })
+    }
+
+    private fun deleteMultipleTabs(
+        tabs: Collection<TabsTrayItem.Tab>,
+        showUndoSnackbar: (Boolean) -> Unit,
+    ) {
         val isPrivate = tabs.any { it.private }
         val isNormal = !isPrivate
 
@@ -450,7 +497,7 @@ class DefaultTabManagerController(
             val excludedTabIds = if (isNormal) getExcludedNormalTabIds() else emptySet()
 
             tabsUseCases.removeTabs(excludedTabIds = excludedTabIds, ids = tabs.map { it.id })
-            showUndoSnackbarForTab(isPrivate)
+            showUndoSnackbar(isPrivate)
         } else {
             dismissTabManagerAndNavigateHome(if (isPrivate) ALL_PRIVATE_TABS else ALL_ACTIVE_NORMAL_TABS)
         }
@@ -492,7 +539,7 @@ class DefaultTabManagerController(
                 }
                 val parentNode = results.firstOrNull()?.parentNode
                 withContext(mainDispatcher) {
-                    showBookmarkSnackbar(tabs.size, parentNode?.title)
+                    showBookmarkSnackbar(tabs.size, parentNode)
                 }
             }.getOrElse {
                 // silently fail

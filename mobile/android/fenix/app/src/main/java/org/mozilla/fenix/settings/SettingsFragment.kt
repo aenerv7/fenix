@@ -167,7 +167,6 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
                 getString(R.string.pref_key_search_browsing_history),
                 getString(R.string.pref_key_show_clipboard_suggestions),
                 getString(R.string.pref_key_open_links_in_a_private_tab),
-                getString(R.string.pref_key_sync_logins),
                 getString(R.string.pref_key_sync_bookmarks),
                 getString(R.string.pref_key_sync_history),
                 getString(R.string.pref_key_show_voice_search),
@@ -320,13 +319,6 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
             requirePreference<Preference>(R.string.pref_key_tabs)
         tabSettingsPreference.summary = settings.getTabTimeoutString()
 
-        val autofillPreference = requirePreference<Preference>(R.string.pref_key_credit_cards)
-        autofillPreference.title = if (settings.addressFeature) {
-            getString(R.string.preferences_autofill)
-        } else {
-            getString(R.string.preferences_credit_cards_2)
-        }
-
         val openLinksInAppsSettingsPreference =
             requirePreference<Preference>(R.string.pref_key_open_links_in_apps)
         openLinksInAppsSettingsPreference.summary = settings.getOpenLinksInAppsString()
@@ -385,18 +377,8 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
                 SettingsFragmentDirections.actionSettingsFragmentToCustomizationFragment()
             }
 
-            resources.getString(R.string.pref_key_passwords) -> {
-                SettingsMetrics.passwords.record()
-                SettingsFragmentDirections.actionSettingsFragmentToSavedLoginsAuthFragment()
-            }
-
             resources.getString(R.string.pref_key_email_masks) -> {
                 SettingsFragmentDirections.actionSettingsFragmentToEmailMasksSettingsFragment()
-            }
-
-            resources.getString(R.string.pref_key_credit_cards) -> {
-                SettingsMetrics.autofill.record()
-                SettingsFragmentDirections.actionSettingsFragmentToAutofillSettingFragment()
             }
 
             resources.getString(R.string.pref_key_accessibility) -> {

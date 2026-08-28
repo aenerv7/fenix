@@ -107,12 +107,6 @@ class MenuTelemetryMiddleware(
                 ),
             )
 
-            MenuAction.Navigate.Passwords -> Events.browserMenuAction.record(
-                Events.BrowserMenuActionExtra(
-                    item = "passwords",
-                ),
-            )
-
             MenuAction.Navigate.Settings -> {
                 when (accessPoint) {
                     MenuAccessPoint.Browser -> Events.browserMenuAction.record(

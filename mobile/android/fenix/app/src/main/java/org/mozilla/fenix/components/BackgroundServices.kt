@@ -42,8 +42,6 @@ import mozilla.components.service.fxa.store.SyncState
 import mozilla.components.service.fxa.store.SyncStore
 import mozilla.components.service.fxa.store.SyncStoreSupport
 import mozilla.components.service.fxa.sync.GlobalSyncableStoreProvider
-import mozilla.components.service.sync.autofill.AutofillCreditCardsAddressesStorage
-import mozilla.components.service.sync.logins.SyncableLoginsStorage
 import mozilla.components.support.utils.RunWhenReadyQueue
 import mozilla.telemetry.glean.private.NoExtras
 import org.mozilla.fenix.Config
@@ -80,9 +78,7 @@ class BackgroundServices(
     crashReporter: CrashReporter,
     historyStorage: Lazy<PlacesHistoryStorage>,
     bookmarkStorage: Lazy<PlacesBookmarksStorage>,
-    passwordsStorage: Lazy<SyncableLoginsStorage>,
     remoteTabsStorage: Lazy<RemoteTabsStorage>,
-    creditCardsStorage: Lazy<AutofillCreditCardsAddressesStorage>,
     strictMode: StrictModeManager,
 ) {
     // Allows executing tasks which depend on the account manager, but do not need to eagerly initialize it.
@@ -118,34 +114,15 @@ class BackgroundServices(
         setOfNotNull(
             SyncEngine.History,
             SyncEngine.Bookmarks,
-            SyncEngine.Passwords,
             SyncEngine.Tabs,
-            SyncEngine.CreditCards,
-            if (settings.isAddressSyncEnabled) SyncEngine.Addresses else null,
         )
     private val syncConfig =
         SyncConfig(supportedEngines, PeriodicSyncConfig(periodMinutes = 240)) // four hours
 
-    private val creditCardKeyProvider by lazyMonitored { creditCardsStorage.value.crypto }
-    private val passwordKeyProvider by lazyMonitored { passwordsStorage.value.crypto }
-
     init {
-        // Make the "history", "bookmark", "passwords", "tabs", "credit cards" stores
-        // accessible to workers spawned by the sync manager.
         GlobalSyncableStoreProvider.configureStore(SyncEngine.History to historyStorage)
         GlobalSyncableStoreProvider.configureStore(SyncEngine.Bookmarks to bookmarkStorage)
-        GlobalSyncableStoreProvider.configureStore(
-            storePair = SyncEngine.Passwords to passwordsStorage,
-            keyProvider = lazy { passwordKeyProvider },
-        )
         GlobalSyncableStoreProvider.configureStore(SyncEngine.Tabs to remoteTabsStorage)
-        GlobalSyncableStoreProvider.configureStore(
-            storePair = SyncEngine.CreditCards to creditCardsStorage,
-            keyProvider = lazy { creditCardKeyProvider },
-        )
-        if (settings.isAddressSyncEnabled) {
-            GlobalSyncableStoreProvider.configureStore(SyncEngine.Addresses to creditCardsStorage)
-        }
     }
 
     private val telemetryAccountObserver = TelemetryAccountObserver(

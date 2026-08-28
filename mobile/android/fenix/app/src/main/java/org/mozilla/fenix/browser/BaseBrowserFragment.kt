@@ -4,26 +4,21 @@
 
 package org.mozilla.fenix.browser
 
-import android.app.KeyguardManager
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.os.storage.StorageManager
-import android.provider.Settings
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.accessibility.AccessibilityManager
-import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.CallSuper
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
-import androidx.biometric.BiometricManager
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
@@ -31,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.content.getSystemService
 import androidx.core.text.HtmlCompat
 import androidx.core.view.OnApplyWindowInsetsListener
 import androidx.core.view.isVisible
@@ -43,9 +37,7 @@ import androidx.preference.PreferenceManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.map
@@ -71,10 +63,6 @@ import mozilla.components.compose.browser.toolbar.store.BrowserToolbarStore
 import mozilla.components.concept.base.crash.Breadcrumb
 import mozilla.components.concept.engine.permission.SitePermissions
 import mozilla.components.concept.engine.prompt.ShareData
-import mozilla.components.concept.storage.Address
-import mozilla.components.concept.storage.CreditCardEntry
-import mozilla.components.concept.storage.Login
-import mozilla.components.concept.storage.LoginEntry
 import mozilla.components.feature.accounts.push.SendTabUseCases
 import mozilla.components.feature.app.links.AppLinksFeature
 import mozilla.components.feature.app.links.RedirectDialogData
@@ -93,14 +81,7 @@ import mozilla.components.feature.ipprotection.IPProtectionWarningBinding
 import mozilla.components.feature.media.fullscreen.MediaSessionFullscreenFeature
 import mozilla.components.feature.privatemode.feature.SecureWindowFeature
 import mozilla.components.feature.prompts.PromptFeature
-import mozilla.components.feature.prompts.PromptFeature.Companion.PIN_REQUEST
-import mozilla.components.feature.prompts.address.AddressDelegate
-import mozilla.components.feature.prompts.address.AddressSelectBar
-import mozilla.components.feature.prompts.concept.AutocompletePrompt
 import mozilla.components.feature.prompts.concept.EmailMaskPromptView
-import mozilla.components.feature.prompts.concept.PasswordPromptView
-import mozilla.components.feature.prompts.creditcard.CreditCardDelegate
-import mozilla.components.feature.prompts.creditcard.CreditCardSelectBar
 import mozilla.components.feature.prompts.dialog.FullScreenNotificationToast
 import mozilla.components.feature.prompts.dialog.GestureNavUtils
 import mozilla.components.feature.prompts.emailmask.EmailMaskDelegate
@@ -108,10 +89,6 @@ import mozilla.components.feature.prompts.emailmask.EmailMaskPromptBarView
 import mozilla.components.feature.prompts.file.AndroidPhotoPicker
 import mozilla.components.feature.prompts.identitycredential.DialogColors
 import mozilla.components.feature.prompts.identitycredential.DialogColorsProvider
-import mozilla.components.feature.prompts.login.LoginDelegate
-import mozilla.components.feature.prompts.login.LoginSelectBar
-import mozilla.components.feature.prompts.login.SuggestStrongPasswordBar
-import mozilla.components.feature.prompts.login.SuggestStrongPasswordDelegate
 import mozilla.components.feature.prompts.share.ShareDelegate
 import mozilla.components.feature.pwa.feature.WebAppHideToolbarFeature
 import mozilla.components.feature.readerview.ReaderViewFeature
@@ -129,10 +106,6 @@ import mozilla.components.lib.state.ext.consumeFlow
 import mozilla.components.lib.state.ext.consumeFrom
 import mozilla.components.lib.state.ext.flowScoped
 import mozilla.components.lib.state.helpers.StoreProvider.Companion.fragmentStore
-import mozilla.components.service.sync.autofill.DefaultCreditCardValidationDelegate
-import mozilla.components.service.sync.logins.DefaultLoginValidationDelegate
-import mozilla.components.service.sync.logins.LoginsApiException
-import mozilla.components.service.sync.logins.SyncableLoginsStorage
 import mozilla.components.support.base.feature.ActivityResultHandler
 import mozilla.components.support.base.feature.PermissionsFeature
 import mozilla.components.support.base.feature.UserInteractionHandler
@@ -146,7 +119,6 @@ import mozilla.components.support.ktx.kotlinx.coroutines.flow.ifAnyChanged
 import mozilla.components.support.locale.ActivityContextWrapper
 import mozilla.components.support.utils.DefaultDownloadFileUtils
 import mozilla.components.ui.widgets.behavior.EngineViewClippingBehavior
-import mozilla.components.ui.widgets.withCenterAlignedButtons
 import mozilla.telemetry.glean.private.NoExtras
 import org.mozilla.fenix.BuildConfig
 import org.mozilla.fenix.FeatureFlags
@@ -163,8 +135,6 @@ import org.mozilla.fenix.R
 import org.mozilla.fenix.ReaderViewBinding
 import org.mozilla.fenix.bindings.FindInPageBinding
 import org.mozilla.fenix.bindings.SummarizeToolbarCFRBinding
-import org.mozilla.fenix.biometricauthentication.AuthenticationStatus
-import org.mozilla.fenix.biometricauthentication.BiometricAuthenticationManager
 import org.mozilla.fenix.browser.applinks.AppLinksPromptFragment
 import org.mozilla.fenix.browser.browsingmode.BrowsingMode
 import org.mozilla.fenix.browser.permissions.FenixSitePermissionLearnMoreUrlProvider
@@ -175,9 +145,7 @@ import org.mozilla.fenix.browser.store.BrowserScreenState
 import org.mozilla.fenix.browser.store.BrowserScreenStore
 import org.mozilla.fenix.browser.tabstrip.TabStrip
 import org.mozilla.fenix.components.AppStore
-import org.mozilla.fenix.components.FenixAutocompletePrompt
 import org.mozilla.fenix.components.FenixEmailMaskPrompt
-import org.mozilla.fenix.components.FenixSuggestStrongPasswordPrompt
 import org.mozilla.fenix.components.FindInPageIntegration
 import org.mozilla.fenix.components.accounts.FxaWebChannelIntegration
 import org.mozilla.fenix.components.appstate.AppAction
@@ -208,10 +176,8 @@ import org.mozilla.fenix.ext.hideToolbar
 import org.mozilla.fenix.ext.isToolbarAtBottom
 import org.mozilla.fenix.ext.nav
 import org.mozilla.fenix.ext.pixelSizeFor
-import org.mozilla.fenix.ext.registerForActivityResult
 import org.mozilla.fenix.ext.requireComponents
 import org.mozilla.fenix.ext.runIfFragmentIsAttached
-import org.mozilla.fenix.ext.secure
 import org.mozilla.fenix.ext.tabClosedUndoMessage
 import org.mozilla.fenix.ext.updateMicrosurveyPromptForConfigurationChange
 import org.mozilla.fenix.messaging.FenixMessageSurfaceId
@@ -226,7 +192,6 @@ import org.mozilla.fenix.pbmlock.observePrivateModeLock
 import org.mozilla.fenix.perf.MarkersFragmentLifecycleCallbacks
 import org.mozilla.fenix.search.awesomebar.AwesomeBarComposable
 import org.mozilla.fenix.settings.SupportUtils
-import org.mozilla.fenix.settings.biometric.BiometricPromptFeature
 import org.mozilla.fenix.settings.downloads.DownloadLocationManager
 import org.mozilla.fenix.snackbar.FenixSnackbarDelegate
 import org.mozilla.fenix.snackbar.SnackbarBinding
@@ -237,7 +202,6 @@ import org.mozilla.fenix.theme.ThemeManager
 import org.mozilla.fenix.utils.allowUndo
 import org.mozilla.fenix.wifi.SitePermissionsWifiIntegration
 import java.lang.ref.WeakReference
-import kotlin.coroutines.cancellation.CancellationException
 import androidx.appcompat.R as appcompatR
 import com.google.android.material.R as materialR
 import mozilla.components.feature.downloads.R as downloadsR
@@ -259,14 +223,9 @@ abstract class BaseBrowserFragment :
     private var _binding: FragmentBrowserBinding? = null
     internal val binding get() = _binding!!
 
-    private var loginSelectBar: AutocompletePrompt<Login>? = null
-    private var addressSelectBar: AutocompletePrompt<Address>? = null
-    private var creditCardSelectBar: AutocompletePrompt<CreditCardEntry>? = null
-    private var suggestStrongPasswordBar: PasswordPromptView? = null
     private var emailMaskBar: EmailMaskPromptView? = null
     private var currentMicrosurvey: MicrosurveyUIData? = null
     internal var blackScreenOverlay: ComposeView? = null
-    private lateinit var startForResult: ActivityResultLauncher<Intent>
 
     @VisibleForTesting
     @Suppress("VariableNaming")
@@ -323,7 +282,6 @@ abstract class BaseBrowserFragment :
     private val searchFeature = ViewBoundFeatureWrapper<SearchFeature>()
     private val webAuthnFeature = ViewBoundFeatureWrapper<WebAuthnFeature>()
     private val screenOrientationFeature = ViewBoundFeatureWrapper<ScreenOrientationFeature>()
-    private val biometricPromptFeature = ViewBoundFeatureWrapper<BiometricPromptFeature>()
     private val crashContentIntegration = ViewBoundFeatureWrapper<CrashContentIntegration>()
     private val readerViewBinding = ViewBoundFeatureWrapper<ReaderViewBinding>()
     private val openInFirefoxBinding = ViewBoundFeatureWrapper<OpenInFirefoxBinding>()
@@ -352,8 +310,6 @@ abstract class BaseBrowserFragment :
     protected val browserScreenStore by buildBrowserScreenStore()
 
     private var downloadDialog: AlertDialog? = null
-
-    private var lastSavedGeneratedPassword: String? = null
 
     protected open val isSandboxCustomTab: Boolean = false
 
@@ -407,15 +363,6 @@ abstract class BaseBrowserFragment :
 
         val originalContext = ActivityContextWrapper.getOriginalContext(requireActivity())
         binding.engineView.setActivityContext(originalContext)
-
-        startForResult = registerForActivityResult { result ->
-            listOf(
-                promptsFeature,
-                webAuthnFeature,
-            ).any {
-                it.onActivityResult(PIN_REQUEST, result.data, result.resultCode)
-            }
-        }
 
         // DO NOT MOVE ANYTHING BELOW THIS addMarker CALL!
         requireComponents.core.engine.profiler?.addMarker(
@@ -920,70 +867,12 @@ abstract class BaseBrowserFragment :
             tabId = customTabSessionId,
         )
 
-        biometricPromptFeature.set(
-            feature = BiometricPromptFeature(
-                context = context,
-                fragment = this,
-                onAuthFailure = {
-                    promptsFeature.get()?.onBiometricResult(isAuthenticated = false)
-                },
-                onAuthSuccess = {
-                    promptsFeature.get()?.onBiometricResult(isAuthenticated = true)
-                },
-            ),
-            owner = this,
-            view = view,
-        )
-
         val colorsProvider = DialogColorsProvider {
             DialogColors(
                 title = ThemeManager.resolveAttributeColor(attribute = materialR.attr.colorOnSurface),
                 description = ThemeManager.resolveAttributeColor(attribute = materialR.attr.colorOnSurfaceVariant),
             )
         }
-
-        loginSelectBar = FenixAutocompletePrompt(
-            viewProvider = {
-                view.findViewById(R.id.loginSelectBar) ?: (binding.loginSelectBarStub.inflate() as LoginSelectBar)
-            },
-            toolbarPositionProvider = {
-                requireComponents.settings.toolbarPosition
-            },
-            onShow = ::onAutocompleteBarShow,
-        )
-
-        addressSelectBar = FenixAutocompletePrompt(
-            viewProvider = {
-                view.findViewById(R.id.addressSelectBar)
-                    ?: binding.addressSelectBarStub.inflate() as AddressSelectBar
-            },
-            toolbarPositionProvider = {
-                requireComponents.settings.toolbarPosition
-            },
-            onShow = ::onAutocompleteBarShow,
-        )
-
-        creditCardSelectBar = FenixAutocompletePrompt(
-            viewProvider = {
-                view.findViewById(R.id.creditCardSelectBar)
-                    ?: binding.creditCardSelectBarStub.inflate() as CreditCardSelectBar
-            },
-            toolbarPositionProvider = {
-                requireComponents.settings.toolbarPosition
-            },
-            onShow = ::onAutocompleteBarShow,
-        )
-
-        suggestStrongPasswordBar = FenixSuggestStrongPasswordPrompt(
-            viewProvider = {
-                view.findViewById(R.id.suggestStrongPasswordBar)
-                    ?: binding.suggestStrongPasswordBarStub.inflate() as SuggestStrongPasswordBar
-            },
-            toolbarPositionProvider = {
-                requireComponents.settings.toolbarPosition
-            },
-            onShow = ::onAutocompleteBarShow,
-        )
 
         emailMaskBar = FenixEmailMaskPrompt(
             viewProvider = {
@@ -1008,26 +897,6 @@ abstract class BaseBrowserFragment :
                 identityCredentialColorsProvider = colorsProvider,
                 tabsUseCases = requireComponents.useCases.tabsUseCases,
                 fileUploadsDirCleaner = requireComponents.core.fileUploadsDirCleaner,
-                creditCardValidationDelegate = DefaultCreditCardValidationDelegate(
-                    context.components.core.lazyAutofillStorage,
-                ),
-                loginValidationDelegate = DefaultLoginValidationDelegate(
-                    context.components.core.lazyPasswordsStorage,
-                ),
-                isLoginAutofillEnabled = {
-                    context.components.settings.shouldAutofillLogins
-                },
-                isSaveLoginEnabled = {
-                    context.components.settings.shouldPromptToSaveLogins
-                },
-                isCreditCardAutofillEnabled = {
-                    context.components.settings.shouldAutofillCreditCardDetails
-                },
-                isAddressAutofillEnabled = {
-                    context.components.settings.addressFeature &&
-                        context.components.settings.shouldAutofillAddressDetails
-                },
-                loginExceptionStorage = context.components.core.loginExceptionStorage,
                 shareDelegate = object : ShareDelegate {
                     override fun showShareSheet(
                         context: Context,
@@ -1058,19 +927,6 @@ abstract class BaseBrowserFragment :
                 },
                 onNeedToRequestPermissions = { permissions ->
                     requestPermissions(permissions, REQUEST_CODE_PROMPT_PERMISSIONS)
-                },
-                loginDelegate = object : LoginDelegate {
-                    override val loginPickerView
-                        get() = loginSelectBar
-                    override val onManageLogins = {
-                        val directions =
-                            NavGraphDirections.actionGlobalSavedLoginsAuthFragment()
-                        findNavController().navigate(directions)
-                    }
-                },
-                suggestStrongPasswordDelegate = object : SuggestStrongPasswordDelegate {
-                    override val strongPasswordPromptViewListenerView
-                        get() = suggestStrongPasswordBar
                 },
                 emailMaskDelegate = object : EmailMaskDelegate {
                     override val emailMaskPromptViewListenerView
@@ -1109,46 +965,6 @@ abstract class BaseBrowserFragment :
                 },
                 isEmailMaskFeatureEnabled = { context.components.settings.isEmailMaskFeatureEnabled },
                 isSuggestEmailMaskEnabled = { requireComponents.emailMasksRepository.isSuggestionEnabled() },
-                shouldAutomaticallyShowSuggestedPassword = {
-                    context.components.settings.isFirstTimeEngagingWithSignup
-                },
-                onFirstTimeEngagedWithSignup = {
-                    context.components.settings.isFirstTimeEngagingWithSignup = false
-                },
-                onSaveLoginWithStrongPassword = { url, password ->
-                    handleOnSaveLoginWithGeneratedStrongPassword(
-                        passwordsStorage = context.components.core.passwordsStorage,
-                        url = url,
-                        password = password,
-                    )
-                },
-                hideUpdateFragmentAfterSavingGeneratedPassword = { username, password ->
-                    hideUpdateFragmentAfterSavingGeneratedPassword(
-                        username,
-                        password,
-                    )
-                },
-                removeLastSavedGeneratedPassword = { removeLastSavedGeneratedPassword() },
-                creditCardDelegate = object : CreditCardDelegate {
-                    override val creditCardPickerView
-                        get() = creditCardSelectBar
-                    override val onManageCreditCards = {
-                        val directions =
-                            NavGraphDirections.actionGlobalAutofillSettingFragment()
-                        findNavController().navigate(directions)
-                    }
-                    override val onSelectCreditCard = {
-                        showBiometricPrompt(context)
-                    }
-                },
-                addressDelegate = object : AddressDelegate {
-                    override val addressPickerView
-                        get() = addressSelectBar
-                    override val onManageAddresses = {
-                        val directions = NavGraphDirections.actionGlobalAutofillSettingFragment()
-                        findNavController().navigate(directions)
-                    }
-                },
                 androidPhotoPicker = AndroidPhotoPicker(
                     requireContext(),
                     singleMediaPicker,
@@ -1578,67 +1394,6 @@ abstract class BaseBrowserFragment :
         }
     }
 
-    /**
-     * Shows a biometric prompt and fallback to prompting for the password.
-     */
-    private fun showBiometricPrompt(context: Context) {
-        if (BiometricPromptFeature.canUseFeature(BiometricManager.from(context))) {
-            biometricPromptFeature.get()
-                ?.requestAuthentication(getString(R.string.credit_cards_biometric_prompt_unlock_message_2))
-            return
-        }
-
-        // Fallback to prompting for password with the KeyguardManager
-        val manager = context.getSystemService<KeyguardManager>()
-        if (manager?.isKeyguardSecure == true) {
-            showPinVerification(manager)
-        } else {
-            // Warn that the device has not been secured
-            if (context.components.settings.shouldShowSecurityPinWarning) {
-                showPinDialogWarning(context)
-            } else {
-                promptsFeature.get()?.onBiometricResult(isAuthenticated = true)
-            }
-        }
-    }
-
-    /**
-     * Shows a pin request prompt. This is only used when BiometricPrompt is unavailable.
-     */
-    @Suppress("DEPRECATION")
-    private fun showPinVerification(manager: KeyguardManager) {
-        val intent = manager.createConfirmDeviceCredentialIntent(
-            getString(R.string.credit_cards_biometric_prompt_message_pin),
-            getString(R.string.credit_cards_biometric_prompt_unlock_message_2),
-        )
-
-        startForResult.launch(intent)
-    }
-
-    /**
-     * Shows a dialog warning about setting up a device lock PIN.
-     */
-    private fun showPinDialogWarning(context: Context) {
-        MaterialAlertDialogBuilder(context).apply {
-            setTitle(getString(R.string.credit_cards_warning_dialog_title_2))
-            setMessage(getString(R.string.credit_cards_warning_dialog_message_3))
-
-            setNegativeButton(getString(R.string.credit_cards_warning_dialog_later)) { _: DialogInterface, _ ->
-                promptsFeature.get()?.onBiometricResult(isAuthenticated = false)
-            }
-
-            setPositiveButton(getString(R.string.credit_cards_warning_dialog_set_up_now)) { it: DialogInterface, _ ->
-                it.dismiss()
-                promptsFeature.get()?.onBiometricResult(isAuthenticated = false)
-                startActivity(Intent(Settings.ACTION_SECURITY_SETTINGS))
-            }
-
-            create()
-        }.show().withCenterAlignedButtons().secure(activity)
-
-        context.components.settings.incrementSecureWarningCount()
-    }
-
     private fun closeFindInPageBarOnNavigation(
         store: BrowserStore,
         mainDispatcher: CoroutineDispatcher = Dispatchers.Main,
@@ -1967,11 +1722,6 @@ abstract class BaseBrowserFragment :
         }
         hideToolbar()
 
-        BiometricAuthenticationManager.biometricAuthenticationNeededInfo.shouldShowAuthenticationPrompt =
-            true
-        BiometricAuthenticationManager.biometricAuthenticationNeededInfo.authenticationStatus =
-            AuthenticationStatus.NOT_AUTHENTICATED
-
         getSafeCurrentTab()?.id?.let {
             requireComponents.core.store.dispatch(
                 ContentAction.UpdateExpandedToolbarStateAction(
@@ -2061,7 +1811,6 @@ abstract class BaseBrowserFragment :
     final override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(KEY_CUSTOM_TAB_SESSION_ID, customTabSessionId)
-        outState.putString(LAST_SAVED_GENERATED_PASSWORD, lastSavedGeneratedPassword)
     }
 
     /**
@@ -2074,7 +1823,6 @@ abstract class BaseBrowserFragment :
                 customTabSessionId = it
             }
         }
-        lastSavedGeneratedPassword = savedInstanceState?.getString(LAST_SAVED_GENERATED_PASSWORD)
     }
 
     /**
@@ -2342,10 +2090,6 @@ abstract class BaseBrowserFragment :
         binding.engineView.setActivityContext(null)
         requireContext().accessibilityManager.removeAccessibilityStateChangeListener(this)
 
-        loginSelectBar = null
-        addressSelectBar = null
-        creditCardSelectBar = null
-        suggestStrongPasswordBar = null
         emailMaskBar = null
 
         _findInPageLauncher = null
@@ -2384,7 +2128,6 @@ abstract class BaseBrowserFragment :
         private const val REQUEST_CODE_DOWNLOAD_PERMISSIONS = 1
         private const val REQUEST_CODE_PROMPT_PERMISSIONS = 2
         private const val REQUEST_CODE_APP_PERMISSIONS = 3
-        private const val LAST_SAVED_GENERATED_PASSWORD = "last_saved_generated_password"
 
         val onboardingLinksList: List<String> = listOf(
             SupportUtils.getMozillaPageUrl(SupportUtils.MozillaPage.PRIVACY_NOTICE),
@@ -2430,52 +2173,6 @@ abstract class BaseBrowserFragment :
         val isSameTab = downloadState.sessionId == (getCurrentTab()?.id ?: false)
 
         return isValidStatus && isSameTab
-    }
-
-    private fun handleOnSaveLoginWithGeneratedStrongPassword(
-        passwordsStorage: SyncableLoginsStorage,
-        url: String,
-        password: String,
-    ) {
-        lastSavedGeneratedPassword = password
-        val loginToSave = LoginEntry(
-            origin = url,
-            httpRealm = url,
-            username = "",
-            password = password,
-        )
-        var saveLoginJob: Deferred<Unit>? = null
-        lifecycleScope.launch(Dispatchers.IO) {
-            saveLoginJob = async {
-                try {
-                    passwordsStorage.add(loginToSave)
-                } catch (loginException: LoginsApiException) {
-                    loginException.printStackTrace()
-                    Log.e(
-                        "Add new login",
-                        "Failed to add new login with generated password.",
-                        loginException,
-                    )
-                }
-                saveLoginJob?.await()
-            }
-            saveLoginJob.invokeOnCompletion {
-                if (it is CancellationException) {
-                    saveLoginJob.cancel()
-                }
-            }
-        }
-    }
-
-    private fun hideUpdateFragmentAfterSavingGeneratedPassword(
-        username: String,
-        password: String,
-    ): Boolean {
-        return username.isEmpty() && password == lastSavedGeneratedPassword
-    }
-
-    private fun removeLastSavedGeneratedPassword() {
-        lastSavedGeneratedPassword = null
     }
 
     private fun launchFindInPageFeature(view: View, store: BrowserStore) {

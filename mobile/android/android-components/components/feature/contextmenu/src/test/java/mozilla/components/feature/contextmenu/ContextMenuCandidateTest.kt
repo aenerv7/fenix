@@ -63,6 +63,21 @@ class ContextMenuCandidateTest {
     }
 
     @Test
+    fun `resolveLabel uses the label provider`() = kotlinx.coroutines.test.runTest {
+        val tab = createTab("https://www.mozilla.org", id = "grouped-tab")
+        val hitResult = HitResult.UNKNOWN("https://www.mozilla.org")
+        val candidate = ContextMenuCandidate(
+            id = "test-id",
+            label = "Default label",
+            showFor = { _, _ -> true },
+            action = { _, _ -> },
+            labelProvider = { parent, _ -> "Label for ${parent.id}" },
+        )
+
+        assertEquals("Label for grouped-tab", candidate.resolveLabel(tab, hitResult))
+    }
+
+    @Test
     fun `Default candidates sanity check`() {
         val candidates = ContextMenuCandidate.defaultCandidates(
             context = testContext,
@@ -201,6 +216,36 @@ class ContextMenuCandidateTest {
         assertEquals(2, store.state.tabs.size)
         assertEquals("https://firefox.com", store.state.tabs.last().content.url)
         assertEquals("1", store.state.tabs.last().contextId)
+        assertEquals(store.state.tabs.first().id, store.state.tabs.last().parentId)
+    }
+
+    @Test
+    fun `Candidate Open Link in New Tab supports a custom parent and tab created callback`() {
+        val parent = createTab("https://www.mozilla.org")
+        val store = BrowserStore(
+            initialState = BrowserState(tabs = listOf(parent)),
+            middleware = EngineMiddleware.create(engine = mock()),
+        )
+        var callbackParentId: String? = null
+        var callbackTabId: String? = null
+        val openInNewTab = ContextMenuCandidate.createOpenInNewTabCandidate(
+            context = testContext,
+            tabsUseCases = TabsUseCases(store),
+            snackBarParentView = CoordinatorLayout(testContext),
+            snackbarDelegate = snackbarDelegate,
+            parentId = { null },
+            onTabCreated = { callbackParent, callbackTab ->
+                callbackParentId = callbackParent.id
+                callbackTabId = callbackTab
+            },
+        )
+
+        openInNewTab.action(parent, HitResult.UNKNOWN("https://firefox.com"))
+
+        val createdTab = store.state.tabs.last()
+        assertNull(createdTab.parentId)
+        assertEquals(parent.id, callbackParentId)
+        assertEquals(createdTab.id, callbackTabId)
     }
 
     @Test

@@ -53,6 +53,15 @@ object TabGroupActionReducer {
                 mode = TabsTrayState.Mode.Normal,
                 backStack = state.backStack.popTabGroupFlow(),
             )
+            is TabGroupAction.SelectedTabsRemovedFromGroup -> state.copy(
+                mode = TabsTrayState.Mode.Normal,
+                backStack = listOf(TabManagerNavDestination.Root),
+            )
+            is TabGroupAction.SelectedTabsClosedFromGroup -> state.copy(
+                mode = TabsTrayState.Mode.Normal,
+                backStack = listOf(TabManagerNavDestination.Root),
+            )
+            is TabGroupAction.RestoreTabsToGroup -> state
             is TabGroupAction.DeleteClicked -> state.copy(
                 backStack = state.backStack + DeleteTabGroupConfirmationDialog(group = action.group),
             )
@@ -214,6 +223,7 @@ object TabGroupActionReducer {
                 TabsTrayState.Mode.Select(
                     selectedTabs = selectedTabs,
                     selectedTabGroups = selectedTabGroups,
+                    tabGroupId = currentState.mode.tabGroupId,
                 )
             }
 

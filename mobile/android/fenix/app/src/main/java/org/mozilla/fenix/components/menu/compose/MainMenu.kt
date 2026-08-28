@@ -110,7 +110,6 @@ import mozilla.components.ui.icons.R as iconsR
  * @param onBookmarksMenuClick Invoked when the user clicks on the bookmarks menu item.
  * @param onHistoryMenuClick Invoked when the user clicks on the history menu item.
  * @param onDownloadsMenuClick Invoked when the user clicks on the downloads menu item.
- * @param onPasswordsMenuClick Invoked when the user clicks on the passwords menu item.
  * @param onQuitMenuClick Invoked when the user clicks on the quit menu item.
  * @param onBackButtonClick Invoked when the user clicks on the back button.
  * @param onForwardButtonClick Invoked when the user clicks on the forward button.
@@ -165,7 +164,6 @@ fun MainMenu(
     onBookmarksMenuClick: () -> Unit,
     onHistoryMenuClick: () -> Unit,
     onDownloadsMenuClick: () -> Unit,
-    onPasswordsMenuClick: () -> Unit,
     onQuitMenuClick: () -> Unit,
     onBackButtonClick: (longPress: Boolean) -> Unit,
     onForwardButtonClick: (longPress: Boolean) -> Unit,
@@ -314,7 +312,6 @@ fun MainMenu(
             onBookmarksMenuClick = onBookmarksMenuClick,
             onHistoryMenuClick = onHistoryMenuClick,
             onDownloadsMenuClick = onDownloadsMenuClick,
-            onPasswordsMenuClick = onPasswordsMenuClick,
         )
 
         MenuGroup {
@@ -511,7 +508,6 @@ private fun LibraryMenuGroup(
     onBookmarksMenuClick: () -> Unit,
     onHistoryMenuClick: () -> Unit,
     onDownloadsMenuClick: () -> Unit,
-    onPasswordsMenuClick: () -> Unit,
 ) {
     val spacerWidth = 2.dp
 
@@ -532,7 +528,7 @@ private fun LibraryMenuGroup(
             .semantics {
                 this.collectionInfo = CollectionInfo(
                     rowCount = 1,
-                    columnCount = 4,
+                    columnCount = 3,
                 )
             },
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -571,22 +567,9 @@ private fun LibraryMenuGroup(
             isHighlighted = isDownloadHighlighted,
             iconRes = iconsR.drawable.mozac_ic_download_24,
             labelRes = R.string.library_downloads,
-            shape = middleShape,
+            shape = rightShape,
             index = 2,
             onClick = onDownloadsMenuClick,
-        )
-
-        Spacer(Modifier.width(spacerWidth))
-
-        LibraryMenuItem(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight(),
-            iconRes = iconsR.drawable.mozac_ic_login_24,
-            labelRes = R.string.browser_menu_passwords,
-            shape = rightShape,
-            index = 3,
-            onClick = onPasswordsMenuClick,
         )
     }
 }
@@ -770,7 +753,6 @@ private fun MenuDialogPreview(
                 onBookmarksMenuClick = {},
                 onHistoryMenuClick = {},
                 onDownloadsMenuClick = {},
-                onPasswordsMenuClick = {},
                 onQuitMenuClick = {},
                 onBackButtonClick = {},
                 onForwardButtonClick = {},
@@ -836,7 +818,6 @@ private fun MenuDialogPrivatePreview(
                 onBookmarksMenuClick = {},
                 onHistoryMenuClick = {},
                 onDownloadsMenuClick = {},
-                onPasswordsMenuClick = {},
                 onQuitMenuClick = {},
                 onBackButtonClick = {},
                 onForwardButtonClick = {},

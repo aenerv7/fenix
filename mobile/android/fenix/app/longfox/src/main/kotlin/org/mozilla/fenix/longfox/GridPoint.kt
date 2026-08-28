@@ -23,6 +23,7 @@ data class GridPoint(val x: Int, val y: Int) {
     fun isAbove(secondPoint: GridPoint): Boolean = y < secondPoint.y
     fun isBelow(secondPoint: GridPoint): Boolean = y > secondPoint.y
     fun isLeftOf(secondPoint: GridPoint): Boolean = x < secondPoint.x
+
     @Suppress("unused")
     fun isRightOf(secondPoint: GridPoint): Boolean = x > secondPoint.x
 

@@ -4,12 +4,8 @@
 
 package org.mozilla.fenix.settings.account
 
-import android.app.KeyguardManager
 import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
 import android.os.Bundle
-import android.provider.Settings
 import android.text.InputFilter
 import android.text.format.DateUtils
 import android.view.View
@@ -22,7 +18,6 @@ import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import mozilla.appservices.syncmanager.SyncTelemetry
@@ -39,7 +34,6 @@ import mozilla.components.service.fxa.sync.SyncStatusObserver
 import mozilla.components.service.fxa.sync.getLastSynced
 import mozilla.components.service.fxa.sync.setLastSynced
 import mozilla.components.support.ktx.android.content.getColorFromAttr
-import mozilla.components.ui.widgets.withCenterAlignedButtons
 import mozilla.telemetry.glean.private.NoExtras
 import org.mozilla.fenix.GleanMetrics.SyncAccount
 import org.mozilla.fenix.R
@@ -51,7 +45,6 @@ import org.mozilla.fenix.ext.components
 import org.mozilla.fenix.ext.getPreferenceKey
 import org.mozilla.fenix.ext.pixelSizeFor
 import org.mozilla.fenix.ext.requireComponents
-import org.mozilla.fenix.ext.secure
 import org.mozilla.fenix.ext.showToolbar
 import org.mozilla.fenix.settings.SupportUtils
 import org.mozilla.fenix.settings.requirePreference
@@ -111,10 +104,7 @@ class AccountSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFr
         super.onStop()
         val allEngines = listOf(
             SyncEngine.Bookmarks,
-            SyncEngine.Addresses,
-            SyncEngine.CreditCards,
             SyncEngine.History,
-            SyncEngine.Passwords,
             SyncEngine.Tabs,
         )
         val enabledEngines = mutableListOf<String>()
@@ -253,10 +243,7 @@ class AccountSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFr
         fun SyncEngine.prefId(): Int = when (this) {
             SyncEngine.History -> R.string.pref_key_sync_history
             SyncEngine.Bookmarks -> R.string.pref_key_sync_bookmarks
-            SyncEngine.Passwords -> R.string.pref_key_sync_logins
             SyncEngine.Tabs -> R.string.pref_key_sync_tabs
-            SyncEngine.CreditCards -> R.string.pref_key_sync_credit_cards
-            SyncEngine.Addresses -> R.string.pref_key_sync_address
             else -> throw IllegalStateException("Accessing internal sync engines")
         }
 
@@ -264,7 +251,6 @@ class AccountSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFr
             SyncEngine.History,
             SyncEngine.Bookmarks,
             SyncEngine.Tabs,
-            SyncEngine.Addresses,
         ).forEach {
             requirePreference<CheckBoxPreference>(it.prefId()).apply {
                 setOnPreferenceChangeListener { _, newValue ->
@@ -272,44 +258,6 @@ class AccountSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFr
                     true
                 }
             }
-        }
-
-        // 'Passwords' and 'Credit card' listeners are special, since we also display a pin protection warning.
-        listOf(
-            SyncEngine.Passwords,
-            SyncEngine.CreditCards,
-        ).forEach {
-            requirePreference<CheckBoxPreference>(it.prefId()).apply {
-                setOnPreferenceChangeListener { _, newValue ->
-                    updateSyncEngineStateWithPinWarning(it, newValue as Boolean)
-                    true
-                }
-            }
-        }
-    }
-
-    /**
-     * Prompts the user if they do not have a password/pin set up to secure their device, and
-     * updates the state of the sync engine with the new checkbox value.
-     *
-     * Currently used for logins and credit cards.
-     *
-     * @param syncEngine the sync engine whose preference has changed.
-     * @param newValue the value denoting whether or not to sync the specified preference.
-     */
-    private fun updateSyncEngineStateWithPinWarning(
-        syncEngine: SyncEngine,
-        newValue: Boolean,
-    ) {
-        val manager = activity?.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-
-        if (manager.isKeyguardSecure ||
-            !newValue ||
-            !requireComponents.settings.shouldShowSecurityPinWarningSync
-        ) {
-            updateSyncEngineState(syncEngine, newValue)
-        } else {
-            showPinDialogWarning(syncEngine, newValue)
         }
     }
 
@@ -328,70 +276,21 @@ class AccountSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFr
     }
 
     /**
-     * Creates and shows a warning dialog that prompts the user to create a pin/password to
-     * secure their device when none is detected. The user has the option to continue with
-     * updating their sync preferences (updates the [SyncEngine] state) or navigating to
-     * device security settings to create a pin/password.
-     *
-     * @param syncEngine the sync engine whose preference has changed.
-     * @param newValue the new value of the sync preference, where true indicates sync for that
-     * preference and false indicates not synced.
-     */
-    private fun showPinDialogWarning(syncEngine: SyncEngine, newValue: Boolean) {
-        context?.let {
-            MaterialAlertDialogBuilder(it).apply {
-                setTitle(getString(R.string.logins_warning_dialog_title_2))
-                setMessage(
-                    getString(R.string.logins_warning_dialog_message_2),
-                )
-
-                setNegativeButton(getString(R.string.logins_warning_dialog_later)) { _: DialogInterface, _ ->
-                    updateSyncEngineState(syncEngine, newValue)
-                }
-
-                setPositiveButton(getString(R.string.logins_warning_dialog_set_up_now)) { it: DialogInterface, _ ->
-                    it.dismiss()
-                    val intent = Intent(
-                        Settings.ACTION_SECURITY_SETTINGS,
-                    )
-                    startActivity(intent)
-                }
-                create().withCenterAlignedButtons()
-            }.show().secure(activity)
-            it.components.settings.incrementShowLoginsSecureWarningSyncCount()
-        }
-    }
-
-    /**
      * Updates the status of all [SyncEngine] states.
      */
     private fun updateSyncEngineStates() {
-        val settings = requireComponents.settings
         val syncEnginesStatus = SyncEnginesStorage(requireContext()).getStatus()
         requirePreference<CheckBoxPreference>(R.string.pref_key_sync_bookmarks).apply {
             isEnabled = syncEnginesStatus.containsKey(SyncEngine.Bookmarks)
             isChecked = syncEnginesStatus.getOrElse(SyncEngine.Bookmarks) { true }
         }
-        requirePreference<CheckBoxPreference>(R.string.pref_key_sync_credit_cards).apply {
-            isEnabled = syncEnginesStatus.containsKey(SyncEngine.CreditCards)
-            isChecked = syncEnginesStatus.getOrElse(SyncEngine.CreditCards) { true }
-        }
         requirePreference<CheckBoxPreference>(R.string.pref_key_sync_history).apply {
             isEnabled = syncEnginesStatus.containsKey(SyncEngine.History)
             isChecked = syncEnginesStatus.getOrElse(SyncEngine.History) { true }
         }
-        requirePreference<CheckBoxPreference>(R.string.pref_key_sync_logins).apply {
-            isEnabled = syncEnginesStatus.containsKey(SyncEngine.Passwords)
-            isChecked = syncEnginesStatus.getOrElse(SyncEngine.Passwords) { true }
-        }
         requirePreference<CheckBoxPreference>(R.string.pref_key_sync_tabs).apply {
             isEnabled = syncEnginesStatus.containsKey(SyncEngine.Tabs)
             isChecked = syncEnginesStatus.getOrElse(SyncEngine.Tabs) { true }
-        }
-        requirePreference<CheckBoxPreference>(R.string.pref_key_sync_address).apply {
-            isVisible = settings.isAddressSyncEnabled
-            isEnabled = syncEnginesStatus.containsKey(SyncEngine.Addresses)
-            isChecked = syncEnginesStatus.getOrElse(SyncEngine.Addresses) { true }
         }
     }
 

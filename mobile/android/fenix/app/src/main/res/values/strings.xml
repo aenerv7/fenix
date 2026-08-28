@@ -1252,6 +1252,8 @@
     <string name="library_downloads">Downloads</string>
     <!-- Option in library to open Bookmarks page -->
     <string name="library_bookmarks">Bookmarks</string>
+    <!-- Localized title for the mobile bookmarks root folder. -->
+    <string name="library_mobile_bookmarks">Mobile Bookmarks</string>
     <!-- Option in library to open Desktop Bookmarks root page -->
     <string name="library_desktop_bookmarks_root">Desktop Bookmarks</string>
     <!-- Option in library to open Desktop Bookmarks "menu" page -->
@@ -1426,6 +1428,8 @@
     <string name="tab_manager_multiselect_menu_item_add_to_collection">Add to collection</string>
     <!-- Text shown in the multiselect menu for adding selected tabs to a tab group. -->
     <string name="tab_manager_multiselect_menu_item_add_to_tab_group">Add to group</string>
+    <!-- Text shown in the multiselect menu for removing selected tabs from a tab group. -->
+    <string name="tab_manager_multiselect_menu_item_remove_from_tab_group">Remove from group</string>
     <!-- Content description for tabs tray multiselect menu -->
     <string name="tab_tray_multiselect_menu_content_description">Selected tabs menu</string>
     <!-- Title text displayed for a homepage tab in the tabs tray. -->
@@ -4213,6 +4217,10 @@
     <string name="content_description_take_photo">Take photo and send to Google Lens</string>`
     <!-- Image context menu entry that sends the long-pressed image to Google Lens -->
     <string name="context_menu_open_image_with_google_lens">Search with Google Lens</string>
+    <!-- Link context menu entry that opens the link in the current tab group -->
+    <string name="context_menu_open_link_in_tab_group">Open link in tab group</string>
+    <!-- Link context menu entry that creates a tab group and opens the link in it -->
+    <string name="context_menu_open_link_in_new_tab_group">Open link in new tab group</string>
     <!-- Toast shown when the user denies the camera permission requested by the Lens camera screen -->
     <string name="lens_camera_permission_denied">Permission denied</string>
     <!-- Title shown at the top of the camera screen, next to the close button, telling the

@@ -1335,6 +1335,8 @@
   <string name="library_downloads">下载</string>
   <!-- Option in library to open Bookmarks page -->
   <string name="library_bookmarks">书签</string>
+  <!-- Localized title for the mobile bookmarks root folder. -->
+  <string name="library_mobile_bookmarks">移动书签</string>
   <!-- Option in library to open Desktop Bookmarks root page -->
   <string name="library_desktop_bookmarks_root">桌面设备上的书签</string>
   <!-- Option in library to open Desktop Bookmarks "menu" page -->
@@ -1543,6 +1545,8 @@
   <string name="tab_manager_multiselect_menu_item_add_to_collection">添加到收藏集</string>
   <!-- Text shown in the multiselect menu for adding selected tabs to a tab group. -->
   <string name="tab_manager_multiselect_menu_item_add_to_tab_group">添加到群组</string>
+  <!-- Text shown in the multiselect menu for removing selected tabs from a tab group. -->
+  <string name="tab_manager_multiselect_menu_item_remove_from_tab_group">移出群组</string>
   <!-- Content description for tabs tray multiselect menu -->
   <string name="tab_tray_multiselect_menu_content_description">选择标签页菜单</string>
   <!-- Title text displayed for a homepage tab in the tabs tray. -->
@@ -4595,6 +4599,8 @@
   <string name="content_description_take_photo">拍照并发送到 Google 智能镜头</string>
   <!-- Image context menu entry that sends the long-pressed image to Google Lens -->
   <string name="context_menu_open_image_with_google_lens">使用 Google 智能镜头搜索</string>
+  <string name="context_menu_open_link_in_tab_group">标签页群组内打开链接</string>
+  <string name="context_menu_open_link_in_new_tab_group">新建标签页群组打开链接</string>
   <!-- Toast shown when the user denies the camera permission requested by the Lens camera screen -->
   <string name="lens_camera_permission_denied">拒绝访问</string>
   <!--
@@ -4669,4 +4675,179 @@
   <string name="firefox_labs_no_labs_available_description">暂无可试用的实验性功能</string>
   <!-- Title of the Firefox Labs Sandboxing experiment. -->
   <string name="firefox_labs_website_isolation_title" tools:ignore="UnusedResources">网站隔离</string>
+  <string-array name="cookies_options_entries">
+    <item>@string/preference_enhanced_tracking_protection_custom_cookies_5</item>
+    <item>@string/preference_enhanced_tracking_protection_custom_cookies_1</item>
+    <item>@string/preference_enhanced_tracking_protection_custom_cookies_2</item>
+    <item>@string/preference_enhanced_tracking_protection_custom_cookies_3</item>
+    <item>@string/preference_enhanced_tracking_protection_custom_cookies_4</item>
+  </string-array>
+  <string-array name="cookies_options_entry_values">
+    <item>@string/total_protection</item>
+    <item>@string/social</item>
+    <item>@string/unvisited</item>
+    <item>@string/third_party</item>
+    <item>@string/all</item>
+  </string-array>
+  <string-array name="suspected_fingerprinters_entry_values">
+    <item>@string/all</item>
+    <item>@string/private_string</item>
+  </string-array>
+  <string-array name="tracking_content_options_entries">
+    <item>@string/preference_enhanced_tracking_protection_custom_tracking_content_1</item>
+    <item>@string/preference_enhanced_tracking_protection_custom_tracking_content_2</item>
+  </string-array>
+  <string-array name="tracking_content_options_entry_values">
+    <item>@string/all</item>
+    <item>@string/private_string</item>
+  </string-array>
+  <string name="all">all</string>
+  <string name="app_name_firefox">Firefox</string>
+  <string name="autofill_debug_enable_screen_capture">允许在安全界面上截屏</string>
+  <string name="bookmark_no_search_results_additional_text">请尝试其他搜索词！</string>
+  <string name="crash_debug_crash_app_warning">这会使应用崩溃并启动崩溃报告流程。如果希望弹出对话框，还请确保数据收集设置中的崩溃报告选项设为“发送前询问”。</string>
+  <string name="crash_debug_deferral_button">重置推迟设置</string>
+  <string name="crash_debug_deferral_timer">当前推迟时长：%s</string>
+  <string name="crash_debug_generic_crash_trigger">触发崩溃报告</string>
+  <string name="crash_debug_show_startup_crash_screen">显示启动崩溃界面</string>
+  <string name="crash_debug_startup_crash_warning">这会在新进程中启动崩溃界面并终止当前进程。</string>
+  <string name="crash_debug_tools_title">崩溃调试工具</string>
+  <string name="debug_drawer_cfr_tools_inactive_tabs_description">用户首次出现不活跃标签页，且至少 3 天未显示 CFR 时显示。</string>
+  <string name="debug_drawer_cfr_tools_inactive_tabs_title">不活跃标签页</string>
+  <string name="debug_drawer_cfr_tools_open_in_app_description">当用户将“在应用中打开链接”设为“从不”，且首次访问可由已安装原生应用打开的网站时显示。</string>
+  <string name="debug_drawer_cfr_tools_open_in_app_title">在应用中打开</string>
+  <string name="debug_drawer_cfr_tools_other_cfr_title">其他 CFR</string>
+  <string name="debug_drawer_cfr_tools_reset_cfr_description">关闭 CFR 可重置状态；开启 CFR 可将其标记为已显示。</string>
+  <string name="debug_drawer_cfr_tools_reset_cfr_timestamp">重置上次显示 CFR 的时间戳</string>
+  <string name="debug_drawer_cfr_tools_tab_auto_close_description">用户首次同时打开至少 6 个普通标签页或 6 个隐私标签页，且至少 3 天未显示 CFR 时显示。</string>
+  <string name="debug_drawer_cfr_tools_tab_auto_close_title">自动关闭标签页</string>
+  <string name="debug_drawer_cfr_tools_tabs_tray_cfr_title">标签页托盘 CFR</string>
+  <string name="debug_drawer_cfr_tools_toolbar_cfr_title">工具栏 CFR</string>
+  <string name="debug_drawer_distribution_tools_title">分发工具</string>
+  <string name="debug_drawer_sports_widget_tool_apply_session">应用</string>
+  <string name="debug_drawer_sports_widget_tool_mock_server_session">模拟服务器会话</string>
+  <string name="debug_drawer_sports_widget_tool_one_week_to_world_cup">距世界杯一周</string>
+  <string name="debug_drawer_sports_widget_tool_skipped_follow_team">跳过关注球队</string>
+  <string name="debug_drawer_sports_widget_tool_title">主页体育组件工具</string>
+  <string name="debug_drawer_sports_widget_tool_use_mock_server">使用模拟世界杯服务器</string>
+  <string name="debug_drawer_sports_widget_tool_world_cup_started">世界杯已开始</string>
+  <string name="debug_drawer_tab_group_tools_count_closed">已关闭的群组</string>
+  <string name="debug_drawer_tab_group_tools_count_open">打开的群组</string>
+  <string name="debug_drawer_tab_group_tools_count_title">标签页群组数量</string>
+  <string name="debug_drawer_tab_group_tools_count_total">群组总数</string>
+  <string name="debug_drawer_tab_group_tools_creation_button_auto_populate">自动填充标签页群组</string>
+  <string name="debug_drawer_tab_group_tools_creation_button_closed">添加已关闭群组</string>
+  <string name="debug_drawer_tab_group_tools_creation_button_open">添加打开的群组</string>
+  <string name="debug_drawer_tab_group_tools_creation_button_remove_all">移除所有标签页群组</string>
+  <string name="debug_drawer_tab_group_tools_creation_button_reset_onboarding">重置标签页群组入门引导</string>
+  <string name="debug_drawer_tab_group_tools_creation_quantity_label">要添加的群组数量</string>
+  <string name="debug_drawer_tab_group_tools_creation_tabs_label">每组标签页数</string>
+  <string name="debug_drawer_tab_group_tools_creation_tool_title">添加标签页群组</string>
+  <string name="debug_drawer_tab_group_tools_quantity_empty_error">文本字段为空</string>
+  <string name="debug_drawer_tab_group_tools_quantity_exceed_max_error">超出单次操作可生成的标签页群组数量上限（%1$s）</string>
+  <string name="debug_drawer_tab_group_tools_quantity_non_digits_error">请仅输入正数</string>
+  <string name="debug_drawer_tab_group_tools_quantity_non_zero_error">请输入大于零的数字</string>
+  <string name="debug_drawer_tab_group_tools_title">标签页群组工具</string>
+  <string name="debug_drawer_tab_process_tools_empty">未记录进程退出。</string>
+  <string name="debug_drawer_tab_process_tools_title">标签页进程退出</string>
+  <string name="debug_drawer_tab_process_tools_unsupported">进程退出信息需要 Android 11 或更高版本。</string>
+  <string name="debug_info_json_title">JSON 调试信息</string>
+  <string name="debug_info_title">调试信息</string>
+  <string name="firefox_labs_test_lab_description">在设置工具栏标题后附加星号。（此实验仅供测试。）</string>
+  <string name="firefox_labs_test_lab_title">在设置标题中添加星号</string>
+  <string name="glean_debug_tools_copy_debug_view_link">复制调试视图链接</string>
+  <string name="glean_debug_tools_copy_debug_view_link_debug_view_tag">复制“%1$s”近期 ping 的调试视图链接</string>
+  <string name="glean_debug_tools_debug_view_tag_error">超出字符数上限（%1$s）</string>
+  <string name="glean_debug_tools_debug_view_tag_placeholder">在此输入调试视图标签</string>
+  <string name="glean_debug_tools_debug_view_title">调试视图</string>
+  <string name="glean_debug_tools_log_pings_to_console">将 ping 记录到控制台</string>
+  <string name="glean_debug_tools_logging_title">日志记录</string>
+  <string name="glean_debug_tools_open_debug_view">打开调试视图（使用默认浏览器）</string>
+  <string name="glean_debug_tools_open_debug_view_debug_view_tag">在调试视图中打开“%1$s”的近期 ping（使用默认浏览器）</string>
+  <string name="glean_debug_tools_send_ping_button_text">发送 Ping</string>
+  <string name="glean_debug_tools_send_ping_toast_message">已发送 %1$s ping</string>
+  <string name="inactive_tabs_menu_item_2">将标签页设为不活跃</string>
+  <string name="integrity_debug_tools_title">Play Integrity 工具</string>
+  <string name="ip_protection_location_fastest_description">Firefox 会查找速度最快的位置</string>
+  <string name="ip_protection_location_unavailable">位置不可用，请选择其他位置。</string>
+  <string name="ip_protection_location_unavailable_recommended_description">已连接到推荐位置。</string>
+  <string name="ip_protection_location_unavailable_recommended_snackbar">所选 VPN 位置不可用，已连接到推荐位置。</string>
+  <string name="ip_protection_location_unavailable_title">先前的位置不可用</string>
+  <string name="ip_protection_mozilla_vpn_upsell_body">可从 300 多个位置中选择，并在最多 5 台设备上保护所有应用。</string>
+  <string name="lens_opt_out_description">选择图片或使用相机，通过 Google Lens 获取结果。</string>
+  <string name="pref_key_app_icon">pref_key_app_icon</string>
+  <string name="pref_key_home_blocklist">pref_key_home_blocklist</string>
+  <string name="pref_key_toolbar_has_shown_tab_swipe_cfr">pref_key_has_shown_tab_swipe_cfr</string>
+  <string name="pref_key_toolbar_tab_swipe_cfr">pref_key_should_show_tab_swipe_cfr</string>
+  <string name="preferences_debug_settings">秘密设置</string>
+  <string name="preferences_debug_settings_allow_third_party_root_certs">使用第三方 CA 证书</string>
+  <string name="preferences_debug_settings_allow_third_party_root_certs_summary">允许使用 Android CA 存储中的第三方证书</string>
+  <string name="preferences_debug_settings_import_bookmarks">启用书签导入</string>
+  <string name="preferences_debug_settings_import_passwords">启用密码导入</string>
+  <string name="preferences_debug_settings_uninstall_survey">启用卸载调查</string>
+  <string name="preferences_import_bookmarks">导入书签</string>
+  <string name="preferences_nimbus_experiments">Nimbus 实验</string>
+  <string name="preferences_nimbus_experiments_active">进行中的实验</string>
+  <string name="preferences_nimbus_experiments_inactive">未进行的实验</string>
+  <string name="preferences_nimbus_experiments_no_items">无</string>
+  <string name="preferences_nimbus_use_preview_collection">使用 Nimbus 预览集合（需要重启）</string>
+  <string name="preferences_override_push_server">自定义推送服务器</string>
+  <string name="preferences_start_profiler">启动性能分析器</string>
+  <string name="preferences_sync_debug">同步调试</string>
+  <string name="preferences_sync_debug_network_error_button_title">模拟账户网络错误</string>
+  <string name="preferences_sync_debug_oauth_token_category">获取 OAuth 访问令牌</string>
+  <string name="preferences_sync_debug_oauth_token_fetch_title">获取令牌</string>
+  <string name="preferences_sync_debug_oauth_token_result_title">结果</string>
+  <string name="preferences_sync_debug_oauth_token_scopes_title">作用域（以空格分隔）</string>
+  <string name="preferences_sync_debug_pairing_category">配对（调试）</string>
+  <string name="preferences_sync_debug_pairing_start_title">开始配对</string>
+  <string name="preferences_sync_debug_pairing_url_title">配对网址（来自二维码）</string>
+  <string name="preferences_sync_debug_permanent_auth_error_button_title">模拟永久账户认证错误</string>
+  <string name="preferences_sync_debug_quit_button_summary">自定义服务器更改将在下次运行 Firefox 时生效。</string>
+  <string name="preferences_sync_debug_quit_button_title">停止 Firefox</string>
+  <string name="preferences_sync_debug_scope_authorization_category">OAuth 作用域授权</string>
+  <string name="preferences_sync_debug_scope_authorization_entrypoint_title">入口点</string>
+  <string name="preferences_sync_debug_scope_authorization_scopes_title">作用域（以空格分隔）</string>
+  <string name="preferences_sync_debug_scope_authorization_start_title">启动 OAuth 流程</string>
+  <string name="preferences_sync_debug_temporary_auth_error_button_title">模拟临时账户认证错误</string>
+  <string name="preferences_use_react_fxa">使用新版 React Mozilla 账户页面</string>
+  <string name="private_string">private</string>
+  <string name="profiler_as_url">上传性能分析数据</string>
+  <string name="profiler_error">性能分析器出错</string>
+  <string name="profiler_filter_debug">调试</string>
+  <string name="profiler_filter_debug_explain">用于调试的预设。开销较高，不应当用于性能分析，而应当用于了解浏览器行为。</string>
+  <string name="profiler_filter_firefox">Firefox</string>
+  <string name="profiler_filter_firefox_explain">推荐用于分析 Firefox 性能的预设</string>
+  <string name="profiler_filter_graphics">图形</string>
+  <string name="profiler_filter_graphics_explain">用于调查 Firefox 图形问题的预设</string>
+  <string name="profiler_filter_media">媒体</string>
+  <string name="profiler_filter_media_explain">用于调查 Firefox 音频和视频问题的预设</string>
+  <string name="profiler_filter_networking">网络</string>
+  <string name="profiler_filter_networking_explain">用于调查 Firefox 网络问题的预设</string>
+  <string name="profiler_filter_web_compat">网站兼容性</string>
+  <string name="profiler_filter_web_compat_explain">推荐用于调试网站兼容性问题，而非跟踪性能的预设。</string>
+  <string name="profiler_gathering">正在收集性能分析数据</string>
+  <string name="profiler_io_error">连接性能分析器服务器时出错。</string>
+  <string name="profiler_no_info">未收集到任何信息</string>
+  <string name="profiler_running">性能分析器正在运行</string>
+  <string name="profiler_settings_title">性能分析器设置</string>
+  <string name="profiler_start_cancel">取消</string>
+  <string name="profiler_start_dialog_started">性能分析器已启动</string>
+  <string name="profiler_stop">停止性能分析器</string>
+  <string name="profiler_stopping">正在停止性能分析器</string>
+  <string name="profiler_uploaded_url_to_clipboard">网址已复制到剪贴板</string>
+  <string name="profiler_url_warning">警告：上传性能分析数据</string>
+  <string name="profiler_url_warning_explained">性能分析数据可能包含访问过的网站及其截图等敏感信息。继续操作后，数据将被上传，任何拥有链接的人均可访问。是否继续？</string>
+  <string name="profiler_waiting_start">正在等待性能分析器启动</string>
+  <string name="remote_settings_server_dev">development</string>
+  <string name="remote_settings_server_dev_v2">development v2</string>
+  <string name="remote_settings_server_prod">production</string>
+  <string name="remote_settings_server_prod_v2">production v2</string>
+  <string name="remote_settings_server_stage">staging</string>
+  <string name="remote_settings_server_stage_v2">staging v2</string>
+  <string name="social">social</string>
+  <string name="third_party">third-party</string>
+  <string name="total_protection">total-protection</string>
+  <string name="unvisited">unvisited</string>
+  <string name="webcompat_reporter_label_optional_description">请详细描述问题，以帮助我们进行调查（可选）</string>
 </resources>

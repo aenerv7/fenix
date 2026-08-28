@@ -35,7 +35,10 @@ import kotlin.random.Random
 data class GameState(
     val size: Size = Size(0f, 0f),
     val fox: List<GridPoint> = listOf(
-        GridPoint(5, 5), GridPoint(5, 4), GridPoint(5, 3), GridPoint(5, 2)
+        GridPoint(5, 5),
+        GridPoint(5, 4),
+        GridPoint(5, 3),
+        GridPoint(5, 2),
     ),
     val food: GridPoint? = GridPoint(8, 8),
     val direction: Direction = DOWN,
@@ -190,5 +193,4 @@ data class GameState(
 
     private fun withinBounds(point: GridPoint): Boolean =
         point.x in 0 until numCells && point.y in 0 until numCells
-
 }

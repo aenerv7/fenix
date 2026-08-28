@@ -24,4 +24,10 @@
     -->
     <item quantity="other">自%2$s以来，已拦截%1$d个跟踪器</item>
   </plurals>
+  <plurals name="mozac_protections_dashboard_across_sites">
+    <item quantity="other">遍布 %1$d 个网站</item>
+  </plurals>
+  <plurals name="mozac_protections_dashboard_data_saved">
+    <item quantity="other">已节省 %1$d MB</item>
+  </plurals>
 </resources>

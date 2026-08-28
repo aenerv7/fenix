@@ -23,7 +23,6 @@ import mozilla.components.feature.addons.AddonManager
 import mozilla.components.feature.addons.amo.AMOAddonsProvider
 import mozilla.components.feature.addons.migration.DefaultSupportedAddonsChecker
 import mozilla.components.feature.addons.update.DefaultAddonUpdater
-import mozilla.components.feature.autofill.AutofillConfiguration
 import mozilla.components.feature.summarize.PageSummaryFeature
 import mozilla.components.feature.summarize.settings.SummarizationSettings
 import mozilla.components.lib.ai.controls.AIFeatureBlockStorage
@@ -50,9 +49,6 @@ import org.mozilla.fenix.BuildConfig
 import org.mozilla.fenix.Config
 import org.mozilla.fenix.FeatureFlags
 import org.mozilla.fenix.R
-import org.mozilla.fenix.autofill.AutofillConfirmActivity
-import org.mozilla.fenix.autofill.AutofillSearchActivity
-import org.mozilla.fenix.autofill.AutofillUnlockActivity
 import org.mozilla.fenix.browser.relay.ErrorMessages
 import org.mozilla.fenix.browser.relay.RelayFeatureIntegration
 import org.mozilla.fenix.components.appstate.AppAction
@@ -134,9 +130,7 @@ class Components(private val context: Context) {
             analytics.crashReporter,
             core.lazyHistoryStorage,
             core.lazyBookmarksStorage,
-            core.lazyPasswordsStorage,
             core.lazyRemoteTabsStorage,
-            core.lazyAutofillStorage,
             strictMode,
         )
     }
@@ -283,18 +277,6 @@ class Components(private val context: Context) {
         PlayStoreReviewPromptController(
             manager = ReviewManagerFactory.create(context),
             numberOfAppLaunches = { settings.numberOfAppLaunches },
-        )
-    }
-
-    val autofillConfiguration by lazyMonitored {
-        AutofillConfiguration(
-            storage = core.passwordsStorage,
-            publicSuffixList = publicSuffixList,
-            unlockActivity = AutofillUnlockActivity::class.java,
-            confirmActivity = AutofillConfirmActivity::class.java,
-            searchActivity = AutofillSearchActivity::class.java,
-            applicationName = context.getString(R.string.app_name),
-            httpClient = core.client,
         )
     }
 

@@ -36,10 +36,14 @@ fun GameBackground(
 ) {
     val celebrationProgress = animateFloatAsState(
         targetValue = if (shouldCelebrate) 1f else 0f,
-        animationSpec = if (shouldCelebrate) tween(
+        animationSpec = if (shouldCelebrate) {
+            tween(
             durationMillis = 1000,
-            easing = EaseOutCirc
-        ) else snap(),
+            easing = EaseOutCirc,
+        )
+        } else {
+            snap()
+        },
         label = "celebration",
     )
     val celebrationAngles = remember(celebrationSeed) {

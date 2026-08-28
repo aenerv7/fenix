@@ -203,4 +203,12 @@ sealed interface TabsTrayAction : Action {
      * Long pressed a [TabsTrayItem] in the TabsTray.
      */
     data class TabItemLongClicked(val item: TabsTrayItem) : TabsTrayAction
+
+    /**
+     * Long pressed a tab inside an expanded tab group.
+     */
+    data class TabGroupTabLongClicked(
+        val tab: TabsTrayItem.Tab,
+        val groupId: String,
+    ) : TabsTrayAction
 }

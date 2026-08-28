@@ -99,6 +99,7 @@ data class TabsTrayState(
         data class Select(
             override val selectedTabs: Set<TabsTrayItem.Tab> = emptySet(),
             override val selectedTabGroups: Set<TabsTrayItem.TabGroup> = emptySet(),
+            val tabGroupId: String? = null,
         ) : Mode
 
         /**

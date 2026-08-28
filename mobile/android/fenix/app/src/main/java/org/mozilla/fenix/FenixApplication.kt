@@ -37,7 +37,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import mozilla.appservices.autofill.AutofillApiException
 import mozilla.components.ExperimentalAndroidComponentsApi
 import mozilla.components.browser.state.action.SearchAction.SearchConfigurationAvailabilityChanged
 import mozilla.components.browser.state.action.SystemAction
@@ -53,7 +52,6 @@ import mozilla.components.concept.push.PushProcessor
 import mozilla.components.concept.storage.FrecencyThresholdOption
 import mozilla.components.feature.addons.migration.DefaultSupportedAddonsChecker
 import mozilla.components.feature.addons.update.GlobalAddonDependencyProvider
-import mozilla.components.feature.autofill.AutofillUseCases
 import mozilla.components.feature.fxsuggest.GlobalFxSuggestDependencyProvider
 import mozilla.components.feature.search.ext.buildSearchUrl
 import mozilla.components.feature.search.ext.waitForSelectedOrDefaultSearchEngine
@@ -63,9 +61,6 @@ import mozilla.components.feature.top.sites.TopSitesFrecencyConfig
 import mozilla.components.feature.top.sites.TopSitesProviderConfig
 import mozilla.components.lib.crash.CrashReporter
 import mozilla.components.service.fxa.manager.SyncEnginesStorage
-import mozilla.components.service.sync.autofill.GlobalAutofillDependencyProvider
-import mozilla.components.service.sync.logins.GlobalLoginsDependencyProvider
-import mozilla.components.service.sync.logins.LoginsApiException
 import mozilla.components.support.AppServicesInitializer
 import mozilla.components.support.base.ext.areNotificationsEnabledSafe
 import mozilla.components.support.base.ext.isNotificationChannelEnabled
@@ -85,14 +80,11 @@ import mozilla.components.support.utils.logElapsedTime
 import mozilla.components.support.webextensions.WebExtensionSupport
 import mozilla.telemetry.glean.Glean
 import org.mozilla.fenix.GleanMetrics.Addons
-import org.mozilla.fenix.GleanMetrics.Addresses
 import org.mozilla.fenix.GleanMetrics.AndroidAutofill
 import org.mozilla.fenix.GleanMetrics.Browser
-import org.mozilla.fenix.GleanMetrics.CreditCards
 import org.mozilla.fenix.GleanMetrics.CustomizeHome
 import org.mozilla.fenix.GleanMetrics.Events.marketingNotificationAllowed
 import org.mozilla.fenix.GleanMetrics.GenaiAiControls
-import org.mozilla.fenix.GleanMetrics.Logins
 import org.mozilla.fenix.GleanMetrics.Metrics
 import org.mozilla.fenix.GleanMetrics.PerfStartup
 import org.mozilla.fenix.GleanMetrics.Preferences
@@ -337,8 +329,6 @@ open class FenixApplication : Application(), Provider, ThemeProvider {
         // it is needed while the app is not running and WorkManager wakes up the app
         // for the periodic task.
         GlobalPlacesDependencyProvider.initialize(components.core.historyStorage)
-        GlobalLoginsDependencyProvider.initialize(lazy { components.core.passwordsStorage })
-        GlobalAutofillDependencyProvider.initialize(lazy { components.core.autofillStorage })
 
         GlobalSyncedTabsCommandsProvider.initialize(lazy { components.backgroundServices.syncedTabsCommands })
 
@@ -464,8 +454,6 @@ open class FenixApplication : Application(), Provider, ThemeProvider {
                 logElapsedTime(logger, "Storage initialization") {
                     components.core.historyStorage.warmUp()
                     components.core.bookmarksStorage.warmUp()
-                    components.core.passwordsStorage.warmUp()
-                    components.core.autofillStorage.warmUp()
 
                     // Populate the top site cache to improve initial load experience
                     // of the home fragment when the app is launched to a tab. The actual
@@ -565,8 +553,6 @@ open class FenixApplication : Application(), Provider, ThemeProvider {
         // the app for the periodic task, it will require a globally provided places storage
         // to run the maintenance on.
         components.core.historyStorage.registerStorageMaintenanceWorker()
-        components.core.passwordsStorage.registerStorageMaintenanceWorker()
-        components.core.autofillStorage.registerStorageMaintenanceWorker()
     }
 
     @OptIn(DelicateCoroutinesApi::class) // GlobalScope usage
@@ -980,9 +966,8 @@ open class FenixApplication : Application(), Provider, ThemeProvider {
         }
 
         with(AndroidAutofill) {
-            val autofillUseCases = AutofillUseCases()
-            supported.set(autofillUseCases.isSupported(applicationContext))
-            enabled.set(autofillUseCases.isEnabled(applicationContext))
+            supported.set(false)
+            enabled.set(false)
         }
 
         val summarizeSettings = SummarizationSettings.dataStore(applicationContext)
@@ -1045,8 +1030,6 @@ open class FenixApplication : Application(), Provider, ThemeProvider {
                 }
             }
         }
-
-        setAutofillMetrics()
     }
 
     private fun setTermsOfUseStartUpMetrics(settings: Settings) {
@@ -1158,26 +1141,6 @@ open class FenixApplication : Application(), Provider, ThemeProvider {
             globalPrivacyControlEnabled.set(settings.shouldEnableGlobalPrivacyControl)
         }
         reportHomeScreenMetrics(settings)
-    }
-
-    private fun setAutofillMetrics() {
-        @OptIn(DelicateCoroutinesApi::class)
-        GlobalScope.launch(IO) {
-            try {
-                val autoFillStorage = applicationContext.components.core.autofillStorage
-                Addresses.savedAll.set(autoFillStorage.countAllAddresses())
-                CreditCards.savedAll.set(autoFillStorage.countAllCreditCards())
-            } catch (e: AutofillApiException) {
-                logger.error("Failed to fetch autofill data", e)
-            }
-
-            try {
-                val passwordsStorage = applicationContext.components.core.passwordsStorage
-                Logins.savedAll.set(passwordsStorage.count())
-            } catch (e: LoginsApiException) {
-                logger.error("Failed to fetch list of logins", e)
-            }
-        }
     }
 
     @VisibleForTesting

@@ -37,7 +37,7 @@ internal fun DrawScope.brickPattern() {
             drawRect(
                 color = LongFoxColors.brickColor,
                 topLeft = Offset(x, y),
-                size = Size(brickWidth, brickHeight)
+                size = Size(brickWidth, brickHeight),
             )
             x += brickWidth + mortarWidth
         }

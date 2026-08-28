@@ -84,7 +84,6 @@ class MainMenuTest {
                     onBookmarksMenuClick = {},
                     onHistoryMenuClick = {},
                     onDownloadsMenuClick = {},
-                    onPasswordsMenuClick = {},
                     onQuitMenuClick = {},
                     onBackButtonClick = {},
                     onForwardButtonClick = {},

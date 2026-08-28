@@ -149,16 +149,6 @@ class MenuTelemetryMiddlewareTest {
     }
 
     @Test
-    fun `WHEN navigating to passwords THEN record the passwords browser menu telemetry`() {
-        val store = createStore()
-        assertNull(Events.browserMenuAction.testGetValue())
-
-        store.dispatch(MenuAction.Navigate.Passwords)
-
-        assertTelemetryRecorded(Events.browserMenuAction, item = "passwords")
-    }
-
-    @Test
     fun `WHEN navigating to the save to collection sheet THEN record the share browser menu telemetry`() {
         val store = createStore()
         assertNull(Events.browserMenuAction.testGetValue())

@@ -5,11 +5,13 @@
 package org.mozilla.fenix.tabstray.ui
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import androidx.activity.compose.BackHandler
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.UiThread
@@ -20,19 +22,25 @@ import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
@@ -51,16 +59,21 @@ import mozilla.components.browser.state.selector.privateTabs
 import mozilla.components.compose.base.modifier.thenConditional
 import mozilla.components.compose.base.snackbar.displaySnackbar
 import mozilla.components.concept.base.crash.Breadcrumb
+import mozilla.components.concept.storage.BookmarkNode
 import mozilla.components.feature.accounts.push.CloseTabsUseCases
 import mozilla.components.feature.downloads.ui.DownloadCancelDialogFragment
 import mozilla.components.lib.state.helpers.StoreProvider.Companion.storeProvider
 import mozilla.components.support.base.feature.ViewBoundFeatureWrapper
+import mozilla.components.support.ktx.android.content.isEdgeToEdgeDisabled
+import mozilla.components.support.ktx.android.view.createWindowInsetsController
+import mozilla.components.support.ktx.android.view.setSystemBarsBackground
 import mozilla.telemetry.glean.private.NoExtras
 import org.mozilla.fenix.Config
 import org.mozilla.fenix.GleanMetrics.PrivateBrowsingLocked
 import org.mozilla.fenix.GleanMetrics.TabsTray
 import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.R
+import org.mozilla.fenix.bookmarks.friendlyRootTitle
 import org.mozilla.fenix.compose.navigation.BottomSheetSceneStrategy
 import org.mozilla.fenix.ext.actualInactiveTabs
 import org.mozilla.fenix.ext.components
@@ -110,6 +123,10 @@ import org.mozilla.fenix.tabstray.syncedtabs.SyncedTabsIntegration
 import org.mozilla.fenix.tabstray.ui.animation.defaultPredictivePopTransitionSpec
 import org.mozilla.fenix.tabstray.ui.animation.defaultTransitionSpec
 import org.mozilla.fenix.tabstray.ui.animation.popTransitionSpec
+import org.mozilla.fenix.tabstray.ui.banner.MultiSelectMenuPlacement
+import org.mozilla.fenix.tabstray.ui.banner.MultiSelectTabsTrayBanner
+import org.mozilla.fenix.tabstray.ui.banner.MultiSelectTabsTrayMenu
+import org.mozilla.fenix.tabstray.ui.banner.generateMultiSelectBannerMenuItems
 import org.mozilla.fenix.tabstray.ui.tabsearch.TabSearchScreen
 import org.mozilla.fenix.tabstray.ui.tabstray.TabsTray
 import org.mozilla.fenix.tabstray.ui.theme.TabManagerThemeProvider
@@ -230,6 +247,7 @@ class TabManagementFragment : Fragment() {
             addBookmarkUseCase = requireComponents.useCases.bookmarksUseCases.addBookmark,
             collectionStorage = requireComponents.core.tabCollectionStorage,
             showUndoSnackbarForTab = ::showUndoSnackbarForTab,
+            showUndoSnackbarForTabGroup = ::showUndoSnackbarForTabGroup,
             showUndoSnackbarForInactiveTab = ::showUndoSnackbarForInactiveTab,
             showUndoSnackbarForSyncedTab = ::showUndoSnackbarForSyncedTab,
             showCancelledDownloadWarning = ::showCancelledDownloadWarning,
@@ -297,6 +315,11 @@ class TabManagementFragment : Fragment() {
                 }
                 val windowSize = FirefoxTheme.windowSize
                 val resources = LocalResources.current
+                val rootState = if ((state.mode as? TabsTrayState.Mode.Select)?.tabGroupId != null) {
+                    state.copy(mode = TabsTrayState.Mode.Normal)
+                } else {
+                    state
+                }
 
                 // When the TabTray is hidden by an action, if a new tab is being selected, navigate to it.
                 LaunchedEffect(tabTrayVisibilityState.currentState) {
@@ -326,7 +349,7 @@ class TabManagementFragment : Fragment() {
                         entryProvider = entryProvider {
                             entry<TabManagerNavDestination.Root> {
                                 TabsTray(
-                                    state = state,
+                                    state = rootState,
                                     snackbarHostState = snackbarHostState,
                                     onAction = tabsTrayStore::dispatch,
                                     onTabPageClick = { page ->
@@ -456,6 +479,28 @@ class TabManagementFragment : Fragment() {
                             ) { args ->
                                 val expandedGroup by tabsTrayStore.observeTabGroup(tabGroup = args.group)
                                     .collectAsState(initial = args.group)
+                                val expandedGroupSelectionMode =
+                                    (state.mode as? TabsTrayState.Mode.Select)
+                                        ?.takeIf { it.tabGroupId == expandedGroup.id }
+                                        ?: TabsTrayState.Mode.Normal
+                                val groupSelectionMenuItems = generateMultiSelectBannerMenuItems(
+                                    shouldShowInactiveButton = state.config.isInDebugMode,
+                                    shouldShowAddToTabGroupButton = state.config.tabGroupsEnabled,
+                                    shouldShowRemoveFromTabGroupButton = true,
+                                    onShareSelectedTabs = tabManagerInteractor::onShareSelectedTabs,
+                                    onSaveToCollectionsClick =
+                                        tabManagerInteractor::onAddSelectedTabsToCollectionClicked,
+                                    onMakeSelectedTabsInactive =
+                                        tabManagerInteractor::onForceSelectedTabsAsInactiveClicked,
+                                    onAddToTabGroup = {
+                                        tabsTrayStore.dispatch(TabGroupAction.AddToTabGroup)
+                                    },
+                                    onRemoveFromTabGroup = {
+                                        tabsTrayStore.dispatch(
+                                            TabGroupAction.SelectedTabsRemovedFromGroup(expandedGroup.id),
+                                        )
+                                    },
+                                )
 
                                 ExpandedTabGroup(
                                     group = expandedGroup,
@@ -485,6 +530,58 @@ class TabManagementFragment : Fragment() {
                                         )
                                     },
                                     tabInteractionHandler = tabInteractionHandler,
+                                    selectionMode = expandedGroupSelectionMode,
+                                    onItemLongClick = { item ->
+                                        if (item is TabsTrayItem.Tab) {
+                                            tabsTrayStore.dispatch(
+                                                TabsTrayAction.TabGroupTabLongClicked(
+                                                    tab = item,
+                                                    groupId = expandedGroup.id,
+                                                ),
+                                            )
+                                        }
+                                    },
+                                    selectionBanner = { menuExpanded, onMenuExpandedChange ->
+                                        MultiSelectTabsTrayBanner(
+                                            selectedTabCount = expandedGroupSelectionMode.selectedTabs.size,
+                                            shouldShowInactiveButton = state.config.isInDebugMode,
+                                            shouldShowAddToTabGroupButton = state.config.tabGroupsEnabled,
+                                            shouldShowRemoveFromTabGroupButton = true,
+                                            windowInsets = WindowInsets(0),
+                                            menuPlacement = MultiSelectMenuPlacement.AboveToolbar,
+                                            menuItems = groupSelectionMenuItems,
+                                            menuExpanded = menuExpanded,
+                                            onMenuExpandedChange = onMenuExpandedChange,
+                                            onExitSelectModeClick = {
+                                                tabsTrayStore.dispatch(TabsTrayAction.ExitSelectMode)
+                                            },
+                                            onSaveToCollectionsClick =
+                                                tabManagerInteractor::onAddSelectedTabsToCollectionClicked,
+                                            onShareSelectedTabs = tabManagerInteractor::onShareSelectedTabs,
+                                            onBookmarkSelectedTabsClick =
+                                                tabManagerInteractor::onBookmarkSelectedTabsClicked,
+                                            onCloseSelectedTabsClick =
+                                                tabManagerInteractor::onDeleteSelectedTabsClicked,
+                                            onMakeSelectedTabsInactive =
+                                                tabManagerInteractor::onForceSelectedTabsAsInactiveClicked,
+                                            onAddToTabGroup = {
+                                                tabsTrayStore.dispatch(TabGroupAction.AddToTabGroup)
+                                            },
+                                            onRemoveFromTabGroup = {
+                                                tabsTrayStore.dispatch(
+                                                    TabGroupAction.SelectedTabsRemovedFromGroup(expandedGroup.id),
+                                                )
+                                            },
+                                        )
+                                    },
+                                    selectionMenu = { menuExpanded, onMenuExpandedChange ->
+                                        MultiSelectTabsTrayMenu(
+                                            visible = menuExpanded,
+                                            menuItems = groupSelectionMenuItems,
+                                            onDismissRequest = { onMenuExpandedChange(false) },
+                                        )
+                                    },
+                                    snackbarHostState = snackbarHostState,
                                 )
                             }
 
@@ -567,6 +664,12 @@ class TabManagementFragment : Fragment() {
                         },
                     )
                 }
+
+                TabGroupSelectionNavigationBarEffect(
+                    enabled = state.mode is TabsTrayState.Mode.Select &&
+                        state.backStack.lastOrNull() is TabManagerNavDestination.ExpandedTabGroup,
+                    window = activity?.window,
+                )
             }
         }
     }
@@ -829,6 +932,40 @@ class TabManagementFragment : Fragment() {
         }
     }
 
+    private fun showUndoSnackbarForTabGroup(
+        isPrivate: Boolean,
+        group: TabsTrayItem.TabGroup,
+        tabIds: List<String>,
+    ) {
+        val snackbarMessage = if (isPrivate) {
+            getString(R.string.snackbar_private_tab_closed)
+        } else {
+            getString(R.string.snackbar_tab_closed)
+        }
+        val page = if (isPrivate) Page.PrivateTabs else Page.NormalTabs
+        val undoUseCases = requireComponents.useCases.tabsUseCases.undo
+
+        lifecycleScope.launch {
+            snackbarHostState.displaySnackbar(
+                message = snackbarMessage,
+                actionLabel = getString(R.string.snackbar_deleted_undo),
+                timeout = requireComponents.settings.getSnackbarTimeout(hasAction = true),
+                onActionPerformed = {
+                    undoUseCases.invoke()
+                    runIfFragmentIsAttached {
+                        tabsTrayStore.dispatch(
+                            TabGroupAction.RestoreTabsToGroup(
+                                group = group,
+                                tabIds = tabIds,
+                            ),
+                        )
+                        tabsTrayStore.dispatch(TabsTrayAction.PageSelected(page))
+                    }
+                },
+            )
+        }
+    }
+
     private fun showUndoSnackbarForInactiveTab(numClosed: Int) {
         val snackbarMessage =
             when (numClosed == 1) {
@@ -908,9 +1045,11 @@ class TabManagementFragment : Fragment() {
 
     private fun showBookmarkSnackbar(
         tabSize: Int,
-        parentFolderTitle: String?,
+        parentFolder: BookmarkNode?,
     ) {
-        val displayFolderTitle = parentFolderTitle ?: getString(R.string.library_bookmarks)
+        val displayFolderTitle = parentFolder?.let {
+            friendlyRootTitle(requireContext(), it)
+        } ?: getString(R.string.library_bookmarks)
         val displayResId = when {
             tabSize > 1 -> {
                 R.string.snackbar_message_bookmarks_saved_in_2
@@ -1053,5 +1192,49 @@ class TabManagementFragment : Fragment() {
     private companion object {
         private const val DOWNLOAD_CANCEL_DIALOG_FRAGMENT_TAG = "DOWNLOAD_CANCEL_DIALOG_FRAGMENT_TAG"
         private const val TAB_MANAGER_FEATURE_NAME = "Tab Manager"
+    }
+}
+
+@Suppress("DEPRECATION")
+@Composable
+internal fun TabGroupSelectionNavigationBarEffect(
+    enabled: Boolean,
+    window: Window?,
+) {
+    if (!enabled || window == null) return
+
+    val navigationBarColor = MaterialTheme.colorScheme.surface.toArgb()
+
+    DisposableEffect(window, navigationBarColor) {
+        val decorView = window.decorView
+        val previousBackground = decorView.background
+        val previousNavigationBarColor = window.navigationBarColor
+        val previousNavigationBarDividerColor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            window.navigationBarDividerColor
+        } else {
+            null
+        }
+        val insetsController = window.createWindowInsetsController()
+        val previousLightNavigationBars = insetsController.isAppearanceLightNavigationBars
+        val edgeToEdgeDisabled = window.context.isEdgeToEdgeDisabled()
+
+        window.setSystemBarsBackground(
+            navigationBarColor = navigationBarColor,
+            horizontalInsetsColor = null,
+        )
+
+        onDispose {
+            if (edgeToEdgeDisabled) {
+                window.navigationBarColor = previousNavigationBarColor
+                previousNavigationBarDividerColor?.let {
+                    window.navigationBarDividerColor = it
+                }
+            } else {
+                ViewCompat.setOnApplyWindowInsetsListener(decorView, null)
+                decorView.background = previousBackground
+                ViewCompat.requestApplyInsets(decorView)
+            }
+            insetsController.isAppearanceLightNavigationBars = previousLightNavigationBars
+        }
     }
 }

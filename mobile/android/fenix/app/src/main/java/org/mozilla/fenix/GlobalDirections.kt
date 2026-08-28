@@ -53,10 +53,6 @@ enum class GlobalDirections(val navDirections: NavDirections, val destinationId:
         NavGraphDirections.actionGlobalAiControlsFragment(),
         R.id.aiControlsFragment,
     ),
-    SettingsLogins(
-        NavGraphDirections.actionGlobalSavedLoginsAuthFragment(),
-        R.id.saveLoginSettingFragment,
-    ),
     SettingsTrackingProtection(
         NavGraphDirections.actionGlobalTrackingProtectionFragment(),
         R.id.trackingProtectionFragment,

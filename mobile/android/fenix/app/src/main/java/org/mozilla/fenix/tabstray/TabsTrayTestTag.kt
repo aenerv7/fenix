@@ -29,6 +29,7 @@ internal object TabsTrayTestTag {
     const val SELECT_ALL_TABS = "$THREE_DOT_BUTTON.selectAllTabs"
     const val SHARE_ALL_TABS = "$THREE_DOT_BUTTON.shareAllTabs"
     const val TAB_SETTINGS = "$THREE_DOT_BUTTON.tabSettings"
+    const val REMOVE_FROM_TAB_GROUP = "$THREE_DOT_BUTTON.removeFromTabGroup"
 
     // FAB
     const val FAB = "$TABS_TRAY.fab"
@@ -66,6 +67,7 @@ internal object TabsTrayTestTag {
 
     // Bottom sheet group items
     const val TAB_GROUP_BOTTOM_SHEET_ROOT = "$TAB_GROUP_ROOT.bottomSheet"
+    const val TAB_GROUP_FIXED_OVERLAY = "$TAB_GROUP_BOTTOM_SHEET_ROOT.fixedOverlay"
     const val BOTTOM_SHEET_SHARE_BUTTON = "$TAB_GROUP_BOTTOM_SHEET_ROOT.share"
     const val BOTTOM_SHEET_CIRCLE = "$TAB_GROUP_BOTTOM_SHEET_ROOT.circle"
     const val BOTTOM_SHEET_COLOR_LIST = "$TAB_GROUP_BOTTOM_SHEET_ROOT.colors"

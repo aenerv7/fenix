@@ -38,13 +38,18 @@ import kotlin.String
  * @property showFor If this lambda returns true for a given [SessionState] and [HitResult] then it
  * will be displayed in the context menu.
  * @property action The action to be invoked once the user selects this item.
+ * @property labelProvider Optional callback for resolving the label when the context menu is shown.
  */
 data class ContextMenuCandidate(
     val id: String,
     val label: String,
     val showFor: (SessionState, HitResult) -> Boolean,
     val action: (SessionState, HitResult) -> Unit,
+    val labelProvider: (suspend (SessionState, HitResult) -> String)? = null,
 ) {
+    internal suspend fun resolveLabel(tab: SessionState, hitResult: HitResult): String =
+        labelProvider?.invoke(tab, hitResult) ?: label
+
     companion object {
         // This is used for limiting image title, in order to prevent crashes caused by base64 encoded image
         // https://github.com/mozilla-mobile/android-components/issues/8298
@@ -107,6 +112,8 @@ data class ContextMenuCandidate(
          * @param snackbarDelegate [SnackbarDelegate] used to actually show a `Snackbar`.
          * @param additionalValidation Callback for the final validation in deciding whether this menu option
          * will be shown. Will only be called if all the intrinsic validations passed.
+         * @param parentId Returns the ID to use as the new tab's parent.
+         * @param onTabCreated Invoked after the new tab has been created.
          */
         fun createOpenInNewTabCandidate(
             context: Context,
@@ -114,6 +121,8 @@ data class ContextMenuCandidate(
             snackBarParentView: View,
             snackbarDelegate: SnackbarDelegate = DefaultSnackbarDelegate(),
             additionalValidation: (SessionState, HitResult) -> Boolean = { _, _ -> true },
+            parentId: (SessionState) -> String? = { it.id },
+            onTabCreated: (SessionState, String) -> Unit = { _, _ -> },
         ) = ContextMenuCandidate(
             id = "mozac.feature.contextmenu.open_in_new_tab",
             label = context.getString(R.string.mozac_feature_contextmenu_open_link_in_new_tab),
@@ -129,9 +138,11 @@ data class ContextMenuCandidate(
                     selectTab = false,
                     startLoading = true,
                     textDirectiveUserActivation = true,
-                    parentId = parent.id,
+                    parentId = parentId(parent),
                     contextId = parent.contextId,
                 )
+
+                onTabCreated(parent, tab)
 
                 snackbarDelegate.show(
                     snackBarParentView = snackBarParentView,

@@ -190,6 +190,45 @@ class TabStorageMiddleware(
                 }
             }
 
+            is TabGroupAction.SelectedTabsRemovedFromGroup -> {
+                val selectedTabIds = store.state.mode.selectedTabs.map { it.id }
+                val selectedTabIdSet = selectedTabIds.toSet()
+                val groupWillBeEmpty = store.state.tabGroupState.groups
+                    .find { it.id == action.groupId }
+                    ?.tabs
+                    ?.all { it.id in selectedTabIdSet } == true
+                scope.launch {
+                    tabGroupRepository.deleteTabGroupAssignmentsById(tabIds = selectedTabIds)
+                    if (groupWillBeEmpty) {
+                        tabGroupRepository.deleteTabGroupById(tabGroupId = action.groupId)
+                    }
+                }
+            }
+
+            is TabGroupAction.SelectedTabsClosedFromGroup -> {
+                scope.launch {
+                    tabGroupRepository.deleteTabGroupById(tabGroupId = action.groupId)
+                }
+            }
+
+            is TabGroupAction.RestoreTabsToGroup -> {
+                scope.launch {
+                    tabGroupRepository.addNewTabGroup(
+                        TabGroup(
+                            id = action.group.id,
+                            title = action.group.title,
+                            theme = action.group.theme.toStorageValue(),
+                            closed = action.group.closed,
+                            lastModified = action.group.lastModified,
+                        ),
+                    )
+                    tabGroupRepository.addTabsToTabGroup(
+                        tabGroupId = action.group.id,
+                        tabIds = action.tabIds,
+                    )
+                }
+            }
+
             is TabGroupAction.TabAddedToGroup -> {
                 scope.launch {
                     handleTabAddedToGroup(groupId = action.groupId, tabId = action.tabId, store = store)

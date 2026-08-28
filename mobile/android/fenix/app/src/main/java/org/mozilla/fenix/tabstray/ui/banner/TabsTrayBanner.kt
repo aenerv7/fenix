@@ -6,18 +6,33 @@
 
 package org.mozilla.fenix.tabstray.ui.banner
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
@@ -32,8 +47,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
@@ -43,18 +61,27 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntRect
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupPositionProvider
+import androidx.compose.ui.window.PopupProperties
 import mozilla.components.compose.base.badge.BadgedIcon
 import mozilla.components.compose.base.button.IconButton
 import mozilla.components.compose.base.menu.DropdownMenu
 import mozilla.components.compose.base.menu.MenuItem
 import mozilla.components.compose.base.text.Text
+import mozilla.components.compose.base.text.value
 import mozilla.components.ui.tabcounter.TabCounter
 import org.mozilla.fenix.R
 import org.mozilla.fenix.compose.Banner
 import org.mozilla.fenix.tabstray.TabsTrayTestTag
 import org.mozilla.fenix.tabstray.data.createTab
 import org.mozilla.fenix.tabstray.data.createTabGroup
+import org.mozilla.fenix.tabstray.navigation.TabManagerNavDestination.ExpandedTabGroup
 import org.mozilla.fenix.tabstray.redux.action.TabGroupAction
 import org.mozilla.fenix.tabstray.redux.action.TabsTrayAction
 import org.mozilla.fenix.tabstray.redux.state.Page
@@ -70,7 +97,20 @@ import kotlin.math.max
 import mozilla.components.ui.icons.R as iconsR
 
 private const val TAB_COUNT_SHOW_CFR = 6
+private const val MENU_ENTER_DURATION_MILLIS = 120
+private const val MENU_ENTER_FADE_DURATION_MILLIS = 30
+private const val MENU_EXIT_DURATION_MILLIS = 75
 private val RowHeight = 48.dp
+private val MultiSelectMenuMinWidth = 112.dp
+private val MultiSelectMenuMaxWidth = 280.dp
+
+internal enum class MultiSelectMenuPlacement {
+    Dropdown,
+    AboveToolbar,
+}
+
+internal fun TabsTrayState.shouldShowMultiSelectBanner(): Boolean =
+    mode is Mode.Select && backStack.lastOrNull() !is ExpandedTabGroup
 
 /**
  * Top-level UI for displaying the banner in [TabsTray].
@@ -107,9 +147,9 @@ fun TabsTrayBanner(
     onTabAutoCloseBannerDismiss: () -> Unit,
     onTabAutoCloseBannerShown: () -> Unit,
 ) {
-    val isInMultiSelectMode by remember(state.mode) {
+    val isInMultiSelectMode by remember(state.mode, state.backStack) {
         derivedStateOf {
-            state.mode is Mode.Select
+            state.shouldShowMultiSelectBanner()
         }
     }
     val showTabAutoCloseBanner by remember(
@@ -137,7 +177,7 @@ fun TabsTrayBanner(
         modifier = Modifier.testTag(tag = TabsTrayTestTag.BANNER_ROOT),
     ) {
         if (isInMultiSelectMode) {
-            MultiSelectBanner(
+            MultiSelectTabsTrayBanner(
                 selectedTabCount = state.mode.selectedTabs.size,
                 shouldShowInactiveButton = state.config.isInDebugMode,
                 shouldShowAddToTabGroupButton = state.config.tabGroupsEnabled,
@@ -390,13 +430,20 @@ private fun BannerTab(
  * @param onMakeSelectedTabsInactive Invoked when the user clicks the menu item to set the
  * selected tabs as inactive.
  * @param onAddToTabGroup Invoked when the user adds to a tab group.
+ * @param onRemoveFromTabGroup Invoked when the user removes the selected tabs from their group.
  */
 @Suppress("LongMethod", "LongParameterList")
 @Composable
-private fun MultiSelectBanner(
+internal fun MultiSelectTabsTrayBanner(
     selectedTabCount: Int,
     shouldShowInactiveButton: Boolean,
     shouldShowAddToTabGroupButton: Boolean,
+    shouldShowRemoveFromTabGroupButton: Boolean = false,
+    windowInsets: WindowInsets = TopAppBarDefaults.windowInsets,
+    menuPlacement: MultiSelectMenuPlacement = MultiSelectMenuPlacement.Dropdown,
+    menuItems: List<MenuItem>? = null,
+    menuExpanded: Boolean? = null,
+    onMenuExpandedChange: (Boolean) -> Unit = {},
     onExitSelectModeClick: () -> Unit,
     onSaveToCollectionsClick: () -> Unit,
     onShareSelectedTabs: () -> Unit,
@@ -404,6 +451,7 @@ private fun MultiSelectBanner(
     onCloseSelectedTabsClick: () -> Unit,
     onMakeSelectedTabsInactive: () -> Unit,
     onAddToTabGroup: () -> Unit,
+    onRemoveFromTabGroup: () -> Unit = {},
 ) {
     val buttonsEnabled by remember(selectedTabCount) {
         derivedStateOf {
@@ -415,17 +463,27 @@ private fun MultiSelectBanner(
     } else {
         MaterialTheme.colorScheme.secondary
     }
-    var showMenu by remember { mutableStateOf(false) }
-    val menuItems = generateMultiSelectBannerMenuItems(
+    var internalMenuExpanded by remember { mutableStateOf(false) }
+    val showMenu = menuExpanded ?: internalMenuExpanded
+    val setMenuExpanded: (Boolean) -> Unit = { expanded ->
+        if (menuExpanded == null) {
+            internalMenuExpanded = expanded
+        }
+        onMenuExpandedChange(expanded)
+    }
+    val resolvedMenuItems = menuItems ?: generateMultiSelectBannerMenuItems(
         shouldShowInactiveButton = shouldShowInactiveButton,
         shouldShowAddToTabGroupButton = shouldShowAddToTabGroupButton,
+        shouldShowRemoveFromTabGroupButton = shouldShowRemoveFromTabGroupButton,
         onShareSelectedTabs = onShareSelectedTabs,
         onSaveToCollectionsClick = onSaveToCollectionsClick,
         onMakeSelectedTabsInactive = onMakeSelectedTabsInactive,
         onAddToTabGroup = onAddToTabGroup,
+        onRemoveFromTabGroup = onRemoveFromTabGroup,
     )
 
-    TopAppBar(
+    Box {
+        TopAppBar(
         title = {
             Text(
                 text = if (selectedTabCount == 0) {
@@ -476,38 +534,194 @@ private fun MultiSelectBanner(
             }
 
             IconButton(
-                onClick = { showMenu = true },
+                onClick = { setMenuExpanded(true) },
                 contentDescription = stringResource(id = R.string.tab_tray_multiselect_menu_content_description),
                 modifier = Modifier.testTag(TabsTrayTestTag.THREE_DOT_BUTTON),
                 enabled = buttonsEnabled,
             ) {
-                DropdownMenu(
-                    menuItems = menuItems,
-                    expanded = showMenu,
-                    onDismissRequest = { showMenu = false },
-                )
+                if (menuPlacement == MultiSelectMenuPlacement.Dropdown) {
+                    DropdownMenu(
+                        menuItems = resolvedMenuItems,
+                        expanded = showMenu,
+                        onDismissRequest = { setMenuExpanded(false) },
+                    )
+                }
 
                 Icon(
                     painter = painterResource(iconsR.drawable.mozac_ic_ellipsis_vertical_24),
                     contentDescription = null,
                 )
             }
-        },
-        expandedHeight = RowHeight,
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-            actionIconContentColor = buttonTint,
-        ),
+            },
+            expandedHeight = RowHeight,
+            windowInsets = windowInsets,
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                actionIconContentColor = buttonTint,
+            ),
+        )
+    }
+}
+
+@Composable
+internal fun MultiSelectTabsTrayMenu(
+    visible: Boolean,
+    menuItems: List<MenuItem>,
+    onDismissRequest: () -> Unit,
+) {
+    val visibilityState = remember { MutableTransitionState(false) }
+    visibilityState.targetState = visible
+
+    if (visibilityState.currentState || visibilityState.targetState) {
+        val density = LocalDensity.current
+        val endPadding = FirefoxTheme.layout.space.static100
+        val bottomPadding = FirefoxTheme.layout.space.static50
+        val navigationBarBottomInset = WindowInsets.navigationBars.getBottom(density)
+        val positionProvider = remember(density, endPadding, bottomPadding, navigationBarBottomInset) {
+            AboveToolbarMenuPositionProvider(
+                endPaddingPx = with(density) { endPadding.roundToPx() },
+                bottomPaddingPx = with(density) { bottomPadding.roundToPx() },
+                toolbarHeightPx = with(density) { RowHeight.roundToPx() },
+                navigationBarBottomInsetPx = navigationBarBottomInset,
+            )
+        }
+
+        Popup(
+            popupPositionProvider = positionProvider,
+            onDismissRequest = onDismissRequest,
+            properties = PopupProperties(
+                focusable = true,
+                dismissOnBackPress = true,
+                dismissOnClickOutside = true,
+                clippingEnabled = false,
+            ),
+        ) {
+            AnimatedVisibility(
+                visibleState = visibilityState,
+                enter = scaleIn(
+                    animationSpec = tween(
+                        durationMillis = MENU_ENTER_DURATION_MILLIS,
+                        easing = LinearOutSlowInEasing,
+                    ),
+                    transformOrigin = TransformOrigin(pivotFractionX = 1f, pivotFractionY = 1f),
+                    initialScale = 0.8f,
+                ) + fadeIn(
+                    animationSpec = tween(durationMillis = MENU_ENTER_FADE_DURATION_MILLIS),
+                ),
+                exit = scaleOut(
+                    animationSpec = tween(
+                        durationMillis = 1,
+                        delayMillis = MENU_EXIT_DURATION_MILLIS - 1,
+                    ),
+                    transformOrigin = TransformOrigin(pivotFractionX = 1f, pivotFractionY = 1f),
+                    targetScale = 0.8f,
+                ) + fadeOut(
+                    animationSpec = tween(durationMillis = MENU_EXIT_DURATION_MILLIS),
+                ),
+            ) {
+                BottomToolbarMenu(
+                    menuItems = menuItems,
+                    onDismissRequest = onDismissRequest,
+                )
+            }
+        }
+    }
+}
+
+internal data class AboveToolbarMenuPositionProvider(
+    val endPaddingPx: Int,
+    val bottomPaddingPx: Int,
+    val toolbarHeightPx: Int,
+    val navigationBarBottomInsetPx: Int,
+) : PopupPositionProvider {
+    override fun calculatePosition(
+        anchorBounds: IntRect,
+        windowSize: IntSize,
+        layoutDirection: LayoutDirection,
+        popupContentSize: IntSize,
+    ): IntOffset = IntOffset(
+        x = if (layoutDirection == LayoutDirection.Ltr) {
+            windowSize.width - popupContentSize.width - endPaddingPx
+        } else {
+            endPaddingPx
+        }.coerceIn(0, (windowSize.width - popupContentSize.width).coerceAtLeast(0)),
+        y = (
+            windowSize.height -
+                navigationBarBottomInsetPx -
+                toolbarHeightPx -
+                bottomPaddingPx -
+                popupContentSize.height
+            ).coerceAtLeast(0),
     )
 }
 
-private fun generateMultiSelectBannerMenuItems(
+@Composable
+private fun BottomToolbarMenu(
+    menuItems: List<MenuItem>,
+    onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier.widthIn(MultiSelectMenuMinWidth, MultiSelectMenuMaxWidth),
+        color = MaterialTheme.colorScheme.surfaceBright,
+        shape = MaterialTheme.shapes.large,
+        shadowElevation = FirefoxTheme.layout.space.static100,
+    ) {
+        Column(modifier = Modifier.padding(vertical = FirefoxTheme.layout.space.static100)) {
+            menuItems.forEach { item ->
+                when (item) {
+                    is MenuItem.IconItem -> {
+                        val itemColor = if (item.level == MenuItem.FixedItem.Level.Critical) {
+                            MaterialTheme.colorScheme.error
+                        } else {
+                            MaterialTheme.colorScheme.onSurface
+                        }
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    text = item.text.value,
+                                    style = FirefoxTheme.typography.body1,
+                                )
+                            },
+                            onClick = {
+                                onDismissRequest()
+                                item.onClick()
+                            },
+                            modifier = Modifier
+                                .height(RowHeight)
+                                .testTag(item.testTag),
+                            leadingIcon = {
+                                Icon(
+                                    painter = painterResource(item.drawableRes),
+                                    contentDescription = null,
+                                )
+                            },
+                            enabled = item.enabled,
+                            colors = MenuDefaults.itemColors(
+                                textColor = itemColor,
+                                leadingIconColor = itemColor,
+                            ),
+                            contentPadding = PaddingValues(horizontal = FirefoxTheme.layout.space.static150),
+                        )
+                    }
+
+                    is MenuItem.Divider -> HorizontalDivider()
+                    else -> Unit
+                }
+            }
+        }
+    }
+}
+
+internal fun generateMultiSelectBannerMenuItems(
     shouldShowInactiveButton: Boolean,
     shouldShowAddToTabGroupButton: Boolean,
+    shouldShowRemoveFromTabGroupButton: Boolean,
     onShareSelectedTabs: () -> Unit,
     onSaveToCollectionsClick: () -> Unit,
     onMakeSelectedTabsInactive: () -> Unit,
     onAddToTabGroup: () -> Unit,
+    onRemoveFromTabGroup: () -> Unit,
 ): List<MenuItem> {
     val menuItems = mutableListOf(
         MenuItem.IconItem(
@@ -538,6 +752,16 @@ private fun generateMultiSelectBannerMenuItems(
                 text = Text.Resource(R.string.tab_manager_multiselect_menu_item_add_to_tab_group),
                 drawableRes = iconsR.drawable.mozac_ic_tab_group_24,
                 onClick = onAddToTabGroup,
+            ),
+        )
+    }
+    if (shouldShowRemoveFromTabGroupButton) {
+        menuItems.add(
+            MenuItem.IconItem(
+                text = Text.Resource(R.string.tab_manager_multiselect_menu_item_remove_from_tab_group),
+                drawableRes = iconsR.drawable.mozac_ic_tab_ungroup_24,
+                testTag = TabsTrayTestTag.REMOVE_FROM_TAB_GROUP,
+                onClick = onRemoveFromTabGroup,
             ),
         )
     }

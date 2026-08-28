@@ -614,9 +614,6 @@ class MenuDialogFragment : BottomSheetDialogFragment() {
                                     onDownloadsMenuClick = {
                                         menuStore.dispatch(MenuAction.Navigate.Downloads)
                                     },
-                                    onPasswordsMenuClick = {
-                                        menuStore.dispatch(MenuAction.Navigate.Passwords)
-                                    },
                                     onCustomizeReaderViewMenuClick = {
                                         menuStore.dispatch(MenuAction.CustomizeReaderView)
                                     },

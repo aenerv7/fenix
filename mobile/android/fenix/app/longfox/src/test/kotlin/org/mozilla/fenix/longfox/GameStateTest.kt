@@ -156,25 +156,25 @@ class GameStateTest {
 
     @Test
     fun `game not over when fox head moves into space where tail used to be`() {
-        //before move (<- direction = left)
+        // before move (<- direction = left)
         //
-        //⬛️1️⃣2️⃣3️⃣4️⃣5️⃣
-        //1️⃣⬛️⬛️⬛️⬛️⬛️
-        //2️⃣⬛️⬛️⬛️⬛️⬛️
-        //3️⃣⬛️⬛️⬛️⬛️⬛️
-        //4️⃣⬛️⬛️🟧🦊🟧
-        //5️⃣⬛️⬛️🟧⬛️🟧
-        //6️⃣⬛️⬛️🟧🟧🟧
+        // ⬛️1️⃣2️⃣3️⃣4️⃣5️⃣
+        // 1️⃣⬛️⬛️⬛️⬛️⬛️
+        // 2️⃣⬛️⬛️⬛️⬛️⬛️
+        // 3️⃣⬛️⬛️⬛️⬛️⬛️
+        // 4️⃣⬛️⬛️🟧🦊🟧
+        // 5️⃣⬛️⬛️🟧⬛️🟧
+        // 6️⃣⬛️⬛️🟧🟧🟧
 
-        //after move
+        // after move
         //
-        //⬛️1️⃣2️⃣3️⃣4️⃣5️⃣
-        //1️⃣⬛️⬛️⬛️⬛️⬛️
-        //2️⃣⬛️⬛️⬛️⬛️⬛️
-        //3️⃣⬛️⬛️⬛️⬛️⬛️
-        //4️⃣⬛️⬛️🦊🟧🟧
-        //5️⃣⬛️⬛️🟧⬛️🟧
-        //6️⃣⬛️⬛️🟧🟧🟧
+        // ⬛️1️⃣2️⃣3️⃣4️⃣5️⃣
+        // 1️⃣⬛️⬛️⬛️⬛️⬛️
+        // 2️⃣⬛️⬛️⬛️⬛️⬛️
+        // 3️⃣⬛️⬛️⬛️⬛️⬛️
+        // 4️⃣⬛️⬛️🦊🟧🟧
+        // 5️⃣⬛️⬛️🟧⬛️🟧
+        // 6️⃣⬛️⬛️🟧🟧🟧
 
        val initialState = state(
             direction = Direction.LEFT,
@@ -211,34 +211,34 @@ class GameStateTest {
     fun `if you eat food then immediately crash into yourself you die`() {
         // frame 1 (<- direction = left)
         //
-        //⬛️1️⃣2️⃣3️⃣4️⃣5️⃣
-        //1️⃣⬛️⬛️⬛️⬛️⬛️
-        //2️⃣⬛️⬛️⬛️⬛️⬛️
-        //3️⃣⬛️⬛️🟧⬛️⬛️
-        //4️⃣⬛️⬛️🟧🍎🦊
-        //5️⃣⬛️⬛️🟧⬛️🟧
-        //6️⃣⬛️⬛️🟧🟧🟧
+        // ⬛️1️⃣2️⃣3️⃣4️⃣5️⃣
+        // 1️⃣⬛️⬛️⬛️⬛️⬛️
+        // 2️⃣⬛️⬛️⬛️⬛️⬛️
+        // 3️⃣⬛️⬛️🟧⬛️⬛️
+        // 4️⃣⬛️⬛️🟧🍎🦊
+        // 5️⃣⬛️⬛️🟧⬛️🟧
+        // 6️⃣⬛️⬛️🟧🟧🟧
         //
         // frame 2 (<- direction = left)
         // NB tail stays where it was
         //
-        //⬛️1️⃣2️⃣3️⃣4️⃣5️⃣
-        //1️⃣⬛️⬛️⬛️⬛️⬛️
-        //2️⃣⬛️⬛️⬛️⬛️⬛️
-        //3️⃣⬛️⬛️🟧⬛️⬛️
-        //4️⃣⬛️⬛️🟧🦊🟧
-        //5️⃣⬛️⬛️🟧⬛️🟧
-        //6️⃣⬛️⬛️🟧🟧🟧
+        // ⬛️1️⃣2️⃣3️⃣4️⃣5️⃣
+        // 1️⃣⬛️⬛️⬛️⬛️⬛️
+        // 2️⃣⬛️⬛️⬛️⬛️⬛️
+        // 3️⃣⬛️⬛️🟧⬛️⬛️
+        // 4️⃣⬛️⬛️🟧🦊🟧
+        // 5️⃣⬛️⬛️🟧⬛️🟧
+        // 6️⃣⬛️⬛️🟧🟧🟧
         //
         // frame 3: tail moves but head moves into tail. game over :(
         //
-        //⬛️1️⃣2️⃣3️⃣4️⃣5️⃣
-        //1️⃣⬛️⬛️⬛️⬛️⬛️
-        //2️⃣⬛️⬛️⬛️⬛️⬛️
-        //3️⃣⬛️⬛️⬛️⬛️⬛️
-        //4️⃣⬛️⬛️💥🟧🟧
-        //5️⃣⬛️⬛️🟧⬛️🟧
-        //6️⃣⬛️⬛️🟧🟧🟧
+        // ⬛️1️⃣2️⃣3️⃣4️⃣5️⃣
+        // 1️⃣⬛️⬛️⬛️⬛️⬛️
+        // 2️⃣⬛️⬛️⬛️⬛️⬛️
+        // 3️⃣⬛️⬛️⬛️⬛️⬛️
+        // 4️⃣⬛️⬛️💥🟧🟧
+        // 5️⃣⬛️⬛️🟧⬛️🟧
+        // 6️⃣⬛️⬛️🟧🟧🟧
 
         val frame1state = state(
             direction = Direction.LEFT,
@@ -257,7 +257,7 @@ class GameStateTest {
         val expectedFrame2State = state(
             direction = Direction.LEFT,
             fox = listOf(
-                GridPoint(4, 4),    // 🦊 new head added one cell left
+                GridPoint(4, 4), // 🦊 new head added one cell left
                 GridPoint(5, 4),
                 GridPoint(5, 5),
                 GridPoint(5, 6),
@@ -265,7 +265,7 @@ class GameStateTest {
                 GridPoint(3, 6),
                 GridPoint(3, 5),
                 GridPoint(3, 4),
-                GridPoint(3, 3),    // tail remains in the same position
+                GridPoint(3, 3), // tail remains in the same position
             ),
         )
         // move the fox to eat the food. this is fine
@@ -276,7 +276,7 @@ class GameStateTest {
         val expectedFrame3State = state(
             direction = Direction.LEFT,
             fox = listOf(
-                GridPoint(3, 4),    // 🦊 = 💥
+                GridPoint(3, 4), // 🦊 = 💥
                 GridPoint(4, 4),
                 GridPoint(5, 4),
                 GridPoint(5, 5),
@@ -284,7 +284,7 @@ class GameStateTest {
                 GridPoint(4, 6),
                 GridPoint(3, 6),
                 GridPoint(3, 5),
-                GridPoint(3, 4),    // 💥
+                GridPoint(3, 4), // 💥
             ),
         )
         // move the fox again into itself. this is game over
@@ -390,9 +390,9 @@ class GameStateTest {
         val state =
             state(
                 direction = Direction.RIGHT,
-                fox = listOf(GridPoint(5, 5), GridPoint(4, 5))
+                fox = listOf(GridPoint(5, 5), GridPoint(4, 5)),
             ).onTap(
-                Offset(x = 75f, y = 25f)
+                Offset(x = 75f, y = 25f),
             )
         assertEquals(Direction.UP, state.direction)
     }
@@ -402,9 +402,9 @@ class GameStateTest {
         val state =
             state(
                 direction = Direction.RIGHT,
-                fox = listOf(GridPoint(5, 5), GridPoint(4, 5))
+                fox = listOf(GridPoint(5, 5), GridPoint(4, 5)),
             ).onTap(
-                Offset(x = 75f, y = 75f)
+                Offset(x = 75f, y = 75f),
             )
         assertEquals(Direction.DOWN, state.direction)
     }

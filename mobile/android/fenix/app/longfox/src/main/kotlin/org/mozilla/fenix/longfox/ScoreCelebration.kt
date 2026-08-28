@@ -109,8 +109,8 @@ fun ScoreCelebrationPreview() {
                     progress = progress,
                     angles = angles,
                 )
-            }
+            },
     ) {
-        Slider(value = progress, onValueChange = { progress = it})
+        Slider(value = progress, onValueChange = { progress = it })
     }
 }

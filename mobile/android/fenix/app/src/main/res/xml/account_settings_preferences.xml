@@ -36,21 +36,9 @@
 
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="@string/pref_key_sync_credit_cards"
-            android:layout="@layout/checkbox_left_preference"
-            android:title="@string/preferences_sync_credit_cards_2" />
-
-        <CheckBoxPreference
-            android:defaultValue="true"
             android:key="@string/pref_key_sync_history"
             android:layout="@layout/checkbox_left_preference"
             android:title="@string/preferences_sync_history" />
-
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="@string/pref_key_sync_logins"
-            android:layout="@layout/checkbox_left_preference"
-            android:title="@string/preferences_sync_logins_2" />
 
         <CheckBoxPreference
             android:defaultValue="true"
@@ -58,12 +46,5 @@
             android:layout="@layout/checkbox_left_preference"
             android:title="@string/preferences_sync_tabs_2"/>
 
-        <!-- The default visibility is 'false' because we don't display this on most channels. -->
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:visible="false"
-            android:key="@string/pref_key_sync_address"
-            android:layout="@layout/checkbox_left_preference"
-            android:title="@string/preferences_sync_address" />
     </PreferenceCategory>
 </PreferenceScreen>

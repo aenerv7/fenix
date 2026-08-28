@@ -12,16 +12,21 @@ import mozilla.components.browser.state.action.TabListAction
 import mozilla.components.browser.state.state.BrowserState
 import mozilla.components.lib.state.Middleware
 import mozilla.components.lib.state.Store
+import org.mozilla.fenix.tabgroups.TabGroupLinkUseCases
 import org.mozilla.fenix.tabgroups.storage.repository.TabGroupRepository
 
 /**
  * Processes [TabListAction]s to keep [TabGroupRepository] synced with [BrowserState].
  *
  * @param tabGroupRepository [TabGroupRepository] used to invoke tab group storage side effects.
+ * @param tabGroupLinkUseCases [TabGroupLinkUseCases] used to inherit tab group assignments.
+ * @param isTabGroupingEnabled Whether new tabs should inherit tab group assignments.
  * @param scope [CoroutineScope] used to execute tab group storage side effects.
  */
 class TabGroupMiddleware(
     private val tabGroupRepository: TabGroupRepository,
+    private val tabGroupLinkUseCases: TabGroupLinkUseCases = TabGroupLinkUseCases(tabGroupRepository),
+    private val isTabGroupingEnabled: () -> Boolean = { true },
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
 ) : Middleware<BrowserState, BrowserAction> {
 
@@ -61,8 +66,18 @@ class TabGroupMiddleware(
                 }
             }
 
+            is TabListAction.AddTabAction -> {
+                val parentId = action.tab.parentId
+                if (isTabGroupingEnabled() && !action.tab.content.private && parentId != null) {
+                    scope.launch {
+                        tabGroupLinkUseCases.addTabToParentGroup(
+                            parentTabId = parentId,
+                            tabId = action.tab.id,
+                        )
+                    }
+                }
+            }
             is TabListAction.AddMultipleTabsAction,
-            is TabListAction.AddTabAction,
             is TabListAction.MoveTabsAction,
             is TabListAction.RestoreAction,
             is TabListAction.SelectTabAction,

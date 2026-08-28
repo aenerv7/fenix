@@ -2954,6 +2954,150 @@ class TabStorageMiddlewareTest {
         assertEquals(expected = TabsTrayState.DragProcessingState.COMPLETED, store.state.tabGroupState.dragProcessingState)
     }
 
+    @Test
+    fun `WHEN selected tabs are removed from a group THEN their group assignments are deleted`() = runTest {
+        val selectedTabs = List(size = 3) { index ->
+            TabsTrayItem.Tab(tab = createTab(id = "tab-$index", url = ""))
+        }
+        var deletedTabIds = emptyList<String>()
+        val tabGroupRepository = FakeTabGroupRepository(
+            deleteTabGroupAssignmentsById = { deletedTabIds = it },
+        )
+        val store = createStore(
+            initialState = TabsTrayState(
+                mode = Mode.Select(selectedTabs = selectedTabs.toSet()),
+            ),
+            tabGroupsEnabled = true,
+            tabGroupRepository = tabGroupRepository,
+        )
+
+        store.dispatch(TabGroupAction.SelectedTabsRemovedFromGroup(groupId = "group-id"))
+        runCurrent()
+        advanceUntilIdle()
+
+        assertEquals(selectedTabs.map { it.id }.toSet(), deletedTabIds.toSet())
+    }
+
+    @Test
+    fun `WHEN all tabs are removed from a group THEN the empty group is deleted`() = runTest {
+        val selectedTabs = List(size = 3) { index ->
+            TabsTrayItem.Tab(tab = createTab(id = "tab-$index", url = ""))
+        }
+        val storedGroup = fakeGroup()
+        val displayGroup = createTabGroup(
+            id = storedGroup.id,
+            tabs = selectedTabs.toMutableList(),
+        )
+        val tabGroupRepository = createRepository(
+            initialTabGroups = listOf(storedGroup),
+            initialTabGroupAssignments = selectedTabs.map { it.id to storedGroup.id },
+        )
+        val store = createStore(
+            initialState = TabsTrayState(
+                mode = Mode.Select(selectedTabs = selectedTabs.toSet()),
+                tabGroupState = TabsTrayState.TabGroupState(groups = listOf(displayGroup)),
+            ),
+            tabGroupsEnabled = true,
+            tabGroupRepository = tabGroupRepository,
+        )
+
+        store.dispatch(TabGroupAction.SelectedTabsRemovedFromGroup(groupId = storedGroup.id))
+        runCurrent()
+        advanceUntilIdle()
+
+        assertTrue(tabGroupRepository.tabGroupDataFlow.first().tabGroups.isEmpty())
+    }
+
+    @Test
+    fun `WHEN selected tabs close an entire group THEN the empty group is deleted`() = runTest {
+        val storedGroup = fakeGroup()
+        val tabGroupRepository = createRepository(initialTabGroups = listOf(storedGroup))
+        val store = createStore(
+            tabGroupsEnabled = true,
+            tabGroupRepository = tabGroupRepository,
+        )
+
+        store.dispatch(TabGroupAction.SelectedTabsClosedFromGroup(groupId = storedGroup.id))
+        runCurrent()
+        advanceUntilIdle()
+
+        assertTrue(tabGroupRepository.tabGroupDataFlow.first().tabGroups.isEmpty())
+    }
+
+    @Test
+    fun `WHEN closed group tabs are restored THEN the group and assignments are restored`() = runTest {
+        val tabs = List(size = 3) { index ->
+            TabsTrayItem.Tab(tab = createTab(id = "tab-$index", url = ""))
+        }
+        val displayGroup = createTabGroup(
+            id = "group-id",
+            title = "Restored group",
+            theme = TabGroupTheme.Blue,
+            tabs = tabs.toMutableList(),
+            closed = false,
+            lastModified = 42L,
+        )
+        val tabGroupRepository = createRepository()
+        val store = createStore(
+            tabGroupsEnabled = true,
+            tabGroupRepository = tabGroupRepository,
+        )
+
+        store.dispatch(
+            TabGroupAction.RestoreTabsToGroup(
+                group = displayGroup,
+                tabIds = tabs.map { it.id },
+            ),
+        )
+        runCurrent()
+        advanceUntilIdle()
+
+        val restoredData = tabGroupRepository.tabGroupDataFlow.first()
+        assertEquals(
+            listOf(
+                TabGroup(
+                    id = displayGroup.id,
+                    title = displayGroup.title,
+                    theme = displayGroup.theme.name,
+                    closed = false,
+                    lastModified = displayGroup.lastModified,
+                ),
+            ),
+            restoredData.tabGroups,
+        )
+        assertEquals(
+            tabs.associate { it.id to displayGroup.id },
+            restoredData.tabGroupAssignments,
+        )
+    }
+
+    @Test
+    fun `WHEN some tabs are removed from a group THEN the group is retained`() = runTest {
+        val groupTabs = List(size = 3) { index ->
+            TabsTrayItem.Tab(tab = createTab(id = "tab-$index", url = ""))
+        }
+        val storedGroup = fakeGroup()
+        val displayGroup = createTabGroup(
+            id = storedGroup.id,
+            tabs = groupTabs.toMutableList(),
+        )
+        val tabGroupRepository = createRepository(initialTabGroups = listOf(storedGroup))
+        val store = createStore(
+            initialState = TabsTrayState(
+                mode = Mode.Select(selectedTabs = setOf(groupTabs.first())),
+                tabGroupState = TabsTrayState.TabGroupState(groups = listOf(displayGroup)),
+            ),
+            tabGroupsEnabled = true,
+            tabGroupRepository = tabGroupRepository,
+        )
+
+        store.dispatch(TabGroupAction.SelectedTabsRemovedFromGroup(groupId = storedGroup.id))
+        runCurrent()
+        advanceUntilIdle()
+
+        assertEquals(listOf(storedGroup), tabGroupRepository.tabGroupDataFlow.first().tabGroups)
+    }
+
     private fun TestScope.createStore(
         initialState: TabsTrayState = TabsTrayState(),
         inactiveTabsEnabled: Boolean = false,

@@ -66,11 +66,11 @@ fun NewGameScreen(
                     GridPoint(1, 5),
                     GridPoint(1, 4),
                     GridPoint(1, 3),
-                    GridPoint(1, 2)
+                    GridPoint(1, 2),
                 ),
                 direction = Direction.DOWN,
                 food = null,
-            )
+            ),
         )
     }
 
@@ -93,21 +93,21 @@ fun NewGameScreen(
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
                 fontSize = 30.sp,
                 fontFamily = LongFoxText.zx,
                 letterSpacing = 4.sp,
                 color = Color(0xffff5500),
-                text = stringResource(R.string.longfox)
+                text = stringResource(R.string.longfox),
             )
             Text(
                 modifier = Modifier.padding(top = 8.dp),
                 fontSize = 12.sp,
                 fontFamily = LongFoxText.zx,
                 color = Color.Yellow,
-                text = stringResource(R.string.likes_cookies)
+                text = stringResource(R.string.likes_cookies),
             )
             Text(
                 modifier = Modifier.padding(top = 10.dp),
@@ -115,7 +115,7 @@ fun NewGameScreen(
                 fontFamily = LongFoxText.zx,
                 fontStyle = FontStyle.Italic,
                 color = Color.Green,
-                text = stringResource(R.string.tap_to_play)
+                text = stringResource(R.string.tap_to_play),
             )
             TextButton(
                 modifier = Modifier
@@ -129,13 +129,13 @@ fun NewGameScreen(
                     fontSize = 18.sp,
                     fontFamily = LongFoxText.zx,
                     color = Color.Cyan,
-                    text = stringResource(R.string.hiscore, hiscore ?: 0)
+                    text = stringResource(R.string.hiscore, hiscore ?: 0),
                 )
                 Spacer(Modifier.width(12.dp))
                 Icon(
                     painter = painterResource(R.drawable.share_24),
                     tint = Color.Cyan,
-                    contentDescription = stringResource(R.string.share_hiscore)
+                    contentDescription = stringResource(R.string.share_hiscore),
                 )
             }
             Text(
@@ -147,7 +147,7 @@ fun NewGameScreen(
                 fontFamily = LongFoxText.zx,
                 fontSize = 16.sp,
                 color = if (soundOn == true) Color.White else Color.Gray,
-                text = if (soundOn == true) stringResource(R.string.sound_on) else stringResource(R.string.sound_off)
+                text = if (soundOn == true) stringResource(R.string.sound_on) else stringResource(R.string.sound_off),
             )
         }
     }
@@ -162,7 +162,7 @@ fun NewGameScreenPreview() {
         initialGameState = GameState(
             numCells = numCells,
             size = Size(canvasSizePx, canvasSizePx),
-            isGameOver = true
+            isGameOver = true,
         ),
         hiscore = 0,
         soundOn = false,

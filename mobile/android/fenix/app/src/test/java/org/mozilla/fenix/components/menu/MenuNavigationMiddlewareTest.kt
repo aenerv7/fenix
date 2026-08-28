@@ -256,21 +256,6 @@ class MenuNavigationMiddlewareTest {
     }
 
     @Test
-    fun `WHEN navigate to passwords action is dispatched THEN navigate to passwords`() = runTest {
-        val store = createStore(this)
-
-        store.dispatch(MenuAction.Navigate.Passwords)
-        testScheduler.advanceUntilIdle()
-
-        verify {
-            navController.navigate(
-                MenuDialogFragmentDirections.actionMenuDialogFragmentToLoginsListFragment(),
-                null,
-            )
-        }
-    }
-
-    @Test
     fun `GIVEN current site is installable WHEN navigate to add to home screen is dispatched THEN invoke add to home screen use case`() = runTest {
         val tab = createTab(url = "https://www.mozilla.org")
         var dismissWasCalled = false

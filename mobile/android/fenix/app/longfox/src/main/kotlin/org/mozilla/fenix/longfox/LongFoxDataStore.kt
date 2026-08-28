@@ -42,10 +42,12 @@ class LongFoxDataStore(
      */
     suspend fun saveIfHiscore(newScore: Int) {
         context.dataStore.updateData { preferences ->
-            if (newScore <= (preferences[hiscoreKey] ?: 0))
+            if (newScore <= (preferences[hiscoreKey] ?: 0)) {
                 preferences
-            else preferences.toMutablePreferences().also { preferences ->
+            } else {
+                preferences.toMutablePreferences().also { preferences ->
                 preferences[hiscoreKey] = newScore
+            }
             }
         }
     }

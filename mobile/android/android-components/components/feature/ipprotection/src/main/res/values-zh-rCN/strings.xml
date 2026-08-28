@@ -15,4 +15,20 @@
   <string name="mozac_feature_ipprotection_unavaliable_dialog_confirm_button">管理标签页</string>
   <!-- Title for a button on the alert shown when VPN errors. The button disabled the VPN, and allows the user to continue using the browser without the extra safety feature. -->
   <string name="mozac_feature_ipprotection_unavaliable_dialog_dismiss_button">继续</string>
+  <string name="mozac_feature_ipprotection_account">账户</string>
+  <string name="mozac_feature_ipprotection_account_status">状态</string>
+  <string name="mozac_feature_ipprotection_activate">已启用</string>
+  <string name="mozac_feature_ipprotection_data_usage">数据用量</string>
+  <string name="mozac_feature_ipprotection_eligibility">资格</string>
+  <string name="mozac_feature_ipprotection_eligibilitystatus">资格状态</string>
+  <string name="mozac_feature_ipprotection_lasterror">最近错误</string>
+  <string name="mozac_feature_ipprotection_maxdatabytes">最大数据量（字节）</string>
+  <string name="mozac_feature_ipprotection_name">IP 保护</string>
+  <string name="mozac_feature_ipprotection_proxystatus">代理状态</string>
+  <string name="mozac_feature_ipprotection_remainingdatabytes">剩余数据量（字节）</string>
+  <string name="mozac_feature_ipprotection_resetdate">重置日期</string>
+  <string name="mozac_feature_ipprotection_servicestatus">服务状态</string>
+  <string name="mozac_feature_ipprotection_title">IP 保护调试界面</string>
+  <string name="mozac_feature_ipprotection_useddatagb">已用数据量（GB）</string>
+  <string name="mozac_feature_ipprotection_vpn_ui">VPN 界面</string>
 </resources>

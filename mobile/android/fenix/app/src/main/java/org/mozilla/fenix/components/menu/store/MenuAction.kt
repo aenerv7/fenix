@@ -242,11 +242,6 @@ sealed class MenuAction : Action {
         data object Downloads : Navigate()
 
         /**
-         * [Navigate] action dispatched when navigating to passwords.
-         */
-        data object Passwords : Navigate()
-
-        /**
          * [Navigate] action dispatched when navigating to edit the existing bookmark.
          */
         data object EditBookmark : Navigate()

@@ -597,6 +597,52 @@ class TabGroupReducerTest {
     }
 
     @Test
+    fun `WHEN selected tabs are removed from a group THEN exit selection and navigate to the root`() {
+        val tab = createTab(url = "")
+        val tabGroup = createTabGroup(tabs = mutableListOf(tab))
+        val initialState = TabsTrayState(
+            mode = Mode.Select(selectedTabs = setOf(tab)),
+            backStack = listOf(TabManagerNavDestination.Root, ExpandedTabGroup(group = tabGroup)),
+        )
+
+        val resultState = TabsTrayReducer.reduce(
+            state = initialState,
+            action = TabGroupAction.SelectedTabsRemovedFromGroup(groupId = tabGroup.id),
+        )
+
+        assertEquals(
+            initialState.copy(
+                mode = Mode.Normal,
+                backStack = listOf(TabManagerNavDestination.Root),
+            ),
+            resultState,
+        )
+    }
+
+    @Test
+    fun `WHEN selected tabs close an entire group THEN exit selection and navigate to the root`() {
+        val tab = createTab(url = "")
+        val tabGroup = createTabGroup(tabs = mutableListOf(tab))
+        val initialState = TabsTrayState(
+            mode = Mode.Select(selectedTabs = setOf(tab)),
+            backStack = listOf(TabManagerNavDestination.Root, ExpandedTabGroup(group = tabGroup)),
+        )
+
+        val resultState = TabsTrayReducer.reduce(
+            state = initialState,
+            action = TabGroupAction.SelectedTabsClosedFromGroup(groupId = tabGroup.id),
+        )
+
+        assertEquals(
+            initialState.copy(
+                mode = Mode.Normal,
+                backStack = listOf(TabManagerNavDestination.Root),
+            ),
+            resultState,
+        )
+    }
+
+    @Test
     fun `WHEN TabClosed is dispatched AND group has 1 tab THEN navigate to the confirmation dialog`() {
         val tab = createTab(url = "")
         val group = createTabGroup(tabs = mutableListOf(tab))

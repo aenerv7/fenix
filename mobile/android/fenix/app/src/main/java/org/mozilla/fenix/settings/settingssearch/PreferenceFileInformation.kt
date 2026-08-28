@@ -44,16 +44,6 @@ sealed class PreferenceFileInformation(
     )
 
     /**
-     * Represents the "Autofill" settings screen.
-     */
-    object AutofillPreferences : PreferenceFileInformation(
-        xmlResourceId = R.xml.autofill_preferences,
-        topBreadcrumbResourceId = R.string.preferences_autofill,
-        categoryHeaderResourceId = R.string.preferences_category_general,
-        fragmentId = R.id.autofill_graph,
-    )
-
-    /**
      * Represents the "Customization" settings screen.
      */
     object CustomizationPreferences : PreferenceFileInformation(
@@ -111,16 +101,6 @@ sealed class PreferenceFileInformation(
         topBreadcrumbResourceId = R.string.preferences_private_browsing_options,
         categoryHeaderResourceId = R.string.preferences_category_privacy_security,
         fragmentId = R.id.privateBrowsingFragment,
-    )
-
-    /**
-     * Represents the "Save Logins" settings screen.
-     */
-    object SaveLoginsPreferences : PreferenceFileInformation(
-        xmlResourceId = R.xml.save_logins_preferences,
-        topBreadcrumbResourceId = R.string.preferences_passwords_save_logins_2,
-        categoryHeaderResourceId = R.string.preferences_category_general,
-        fragmentId = R.id.savedLogins,
     )
 
     /**

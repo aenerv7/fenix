@@ -151,11 +151,6 @@ class MenuNavigationMiddleware(
                     MenuDialogFragmentDirections.actionGlobalDownloadsFragment(),
                 )
 
-                is MenuAction.Navigate.Passwords -> navController.nav(
-                    R.id.menuDialogFragment,
-                    MenuDialogFragmentDirections.actionMenuDialogFragmentToLoginsListFragment(),
-                )
-
                 is MenuAction.Navigate.EditBookmark -> {
                     currentState.browserMenuState?.bookmarkState?.guid?.let { guidToEdit ->
                         navController.nav(

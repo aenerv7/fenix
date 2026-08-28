@@ -30,7 +30,7 @@ class UtilsKtTest {
         )
 
         val mobileRoot = folder.copy(guid = "mobile______", title = "mobile")
-        assertEquals("Bookmarks", friendlyRootTitle(testContext, mobileRoot, withMobileRoot = true))
+        assertEquals("Mobile Bookmarks", friendlyRootTitle(testContext, mobileRoot, withMobileRoot = true))
         assertEquals("mobile", friendlyRootTitle(testContext, mobileRoot, withMobileRoot = false))
 
         val menuRoot = folder.copy(guid = "menu________", title = "menu")

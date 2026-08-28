@@ -45,7 +45,7 @@ android {
             arg("room.schemaLocation", "$projectDir/schemas".toString())
         }
 
-        applicationId "org.mozilla"
+        applicationId "github.aenerv7.fenix"
         minSdk config.minSdkVersion
         targetSdk config.targetSdkVersion
         versionCode 1
@@ -106,12 +106,10 @@ android {
         debug {
             shrinkResources = false
             minifyEnabled = false
-            applicationIdSuffix ".fenix.debug"
             resValue "bool", "IS_DEBUG", "true"
             pseudoLocalesEnabled = true
         }
         nightly releaseTemplate >> {
-            applicationIdSuffix ".fenix"
             buildConfigField "boolean", "USE_RELEASE_VERSIONING", "true"
             def deepLinkSchemeValue = "fenix-nightly"
             buildConfigField "String", "DEEP_LINK_SCHEME", "\"$deepLinkSchemeValue\""
@@ -121,35 +119,17 @@ android {
         }
         beta releaseTemplate >> {
             buildConfigField "boolean", "USE_RELEASE_VERSIONING", "true"
-            applicationIdSuffix ".firefox_beta"
             def deepLinkSchemeValue = "fenix-beta"
             buildConfigField "String", "DEEP_LINK_SCHEME", "\"$deepLinkSchemeValue\""
             manifestPlaceholders.putAll([
-                    // This release type is meant to replace Firefox (Beta channel) and therefore needs to inherit
-                    // its sharedUserId for all eternity. See:
-                    // https://searchfox.org/mozilla-esr68/search?q=moz_android_shared_id&case=false&regexp=false&path=
-                    // Shipping an app update without sharedUserId can have
-                    // fatal consequences. For example see:
-                    //  - https://issuetracker.google.com/issues/36924841
-                    //  - https://issuetracker.google.com/issues/36905922
-                    "sharedUserId": "org.mozilla.firefox.sharedID",
                     "deepLinkScheme": deepLinkSchemeValue,
             ])
         }
         release releaseTemplate >> {
             buildConfigField "boolean", "USE_RELEASE_VERSIONING", "true"
-            applicationIdSuffix ".firefox"
             def deepLinkSchemeValue = "fenix"
             buildConfigField "String", "DEEP_LINK_SCHEME", "\"$deepLinkSchemeValue\""
             manifestPlaceholders.putAll([
-                    // This release type is meant to replace Firefox (Release channel) and therefore needs to inherit
-                    // its sharedUserId for all eternity. See:
-                    // https://searchfox.org/mozilla-esr68/search?q=moz_android_shared_id&case=false&regexp=false&path=
-                    // Shipping an app update without sharedUserId can have
-                    // fatal consequences. For example see:
-                    //  - https://issuetracker.google.com/issues/36924841
-                    //  - https://issuetracker.google.com/issues/36905922
-                    "sharedUserId": "org.mozilla.firefox.sharedID",
                     "deepLinkScheme": deepLinkSchemeValue,
             ])
         }
@@ -157,7 +137,6 @@ android {
             initWith buildTypes.nightly
             shrinkResources = false
             minifyEnabled = false
-            applicationIdSuffix ".fenix"
             signingConfig = signingConfigs.debug
             debuggable false
             buildConfigField "boolean", "IS_BENCHMARK_BUILD", "true"
@@ -286,9 +265,11 @@ androidComponents {
             // The Google Play Store does not allow multiple APKs for the same app that all have the
             // same version code. Therefore we need to have different version codes for our ARM and x86
             // builds.
-            def versionName = buildType == 'nightly' ?
-                    "${Config.nightlyVersionName(project)}" :
-                    "${Config.releaseVersionName(project)}"
+            def versionName = buildType == 'release' ?
+                    "${Config.readVersionFromFile(project)}" :
+                    buildType == 'nightly' ?
+                            "${Config.nightlyVersionName(project)}" :
+                            "${Config.releaseVersionName(project)}"
             project.logger.debug("versionName override: $versionName")
 
             variant.outputs.each { output ->

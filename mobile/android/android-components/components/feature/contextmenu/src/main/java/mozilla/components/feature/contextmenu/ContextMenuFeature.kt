@@ -91,7 +91,7 @@ class ContextMenuFeature(
     }
 
     @VisibleForTesting(otherwise = PRIVATE)
-    internal fun showContextMenu(tab: SessionState, hitResult: HitResult) {
+    internal suspend fun showContextMenu(tab: SessionState, hitResult: HitResult) {
         fragmentManager.findFragmentByTag(FRAGMENT_TAG)?.let { fragment ->
             // There's already a ContextMenuFragment being displayed. Let's only make sure it has
             // a reference to this feature instance.
@@ -99,13 +99,9 @@ class ContextMenuFeature(
             return
         }
 
-        val (ids, labels) = candidates
-            .filter { candidate -> candidate.showFor(tab, hitResult) }
-            .fold(Pair(mutableListOf<String>(), mutableListOf<String>())) { items, candidate ->
-                items.first.add(candidate.id)
-                items.second.add(candidate.label)
-                items
-            }
+        val visibleCandidates = candidates.filter { candidate -> candidate.showFor(tab, hitResult) }
+        val ids = visibleCandidates.map { candidate -> candidate.id }
+        val labels = visibleCandidates.map { candidate -> candidate.resolveLabel(tab, hitResult) }
 
         // We have no context menu items to show for this HitResult. Let's consume it to remove it from the Session.
         if (ids.isEmpty()) {
