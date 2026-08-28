@@ -50,6 +50,7 @@ import mozilla.components.compose.browser.toolbar.store.BrowserToolbarMenuItem.B
 import mozilla.components.compose.browser.toolbar.store.BrowserToolbarState
 import mozilla.components.compose.browser.toolbar.store.Mode
 import mozilla.components.compose.browser.toolbar.ui.BrowserToolbarQuery
+import mozilla.components.concept.engine.utils.ABOUT_HOME_URL
 import mozilla.components.lib.state.Middleware
 import mozilla.components.lib.state.State
 import mozilla.components.lib.state.Store
@@ -235,13 +236,13 @@ class BrowserToolbarMiddleware(
 
             is OriginClicked -> {
                 Events.searchBarTapped.record(Events.SearchBarTappedExtra("HOME"))
-                appStore.dispatch(SearchStarted())
+                appStore.dispatch(SearchStarted(selectedHomepageTabId()))
             }
             is VoiceSearchClicked -> {
                 scope.launch {
                     appStore.dispatch(VoiceInputRequested)
                     delay(DISPLAY_TOOLBAR_DELAY_AFTER_VOICE_REQUEST)
-                    appStore.dispatch(SearchStarted())
+                    appStore.dispatch(SearchStarted(selectedHomepageTabId()))
                 }
                 next(action)
             }
@@ -275,6 +276,10 @@ class BrowserToolbarMiddleware(
         store.dispatch(SearchQueryUpdated(BrowserToolbarQuery(searchTerms ?: ""), true))
         appStore.dispatch(SearchStarted())
     }
+
+    private fun selectedHomepageTabId(): String? = browserStore.state.selectedTab
+        ?.takeIf { it.content.url == ABOUT_HOME_URL }
+        ?.id
 
     private suspend fun openNewTabFromToolbarShortcut(
         store: Store<BrowserToolbarState, BrowserToolbarAction>,

@@ -49,6 +49,7 @@ import mozilla.components.compose.browser.toolbar.store.BrowserToolbarMenuItem.B
 import mozilla.components.compose.browser.toolbar.store.BrowserToolbarMenuItem.BrowserToolbarMenuButton.Icon.DrawableResIcon
 import mozilla.components.compose.browser.toolbar.store.BrowserToolbarMenuItem.BrowserToolbarMenuButton.Text.StringResText
 import mozilla.components.compose.browser.toolbar.store.BrowserToolbarStore
+import mozilla.components.concept.engine.utils.ABOUT_HOME_URL
 import mozilla.components.support.test.robolectric.testContext
 import mozilla.components.support.utils.ClipboardHandler
 import org.junit.Assert.assertEquals
@@ -610,6 +611,38 @@ class BrowserToolbarMiddlewareTest {
             navController = navController,
             browsingModeManager = browsingModeManager,
         )
+
+        toolbarStore.dispatch(toolbarStore.state.displayState.pageOrigin.onClick as BrowserToolbarAction)
+
+        verify { appStore.dispatch(SearchStarted()) }
+    }
+
+    @Test
+    fun `GIVEN a selected homepage tab WHEN the page origin is clicked THEN search in that tab`() {
+        val homepageTab = createTab(ABOUT_HOME_URL)
+        val browserStore = BrowserStore(
+            BrowserState(
+                tabs = listOf(homepageTab),
+                selectedTabId = homepageTab.id,
+            ),
+        )
+        val (_, toolbarStore) = buildMiddlewareAndAddToStore(browserStore = browserStore)
+
+        toolbarStore.dispatch(toolbarStore.state.displayState.pageOrigin.onClick as BrowserToolbarAction)
+
+        verify { appStore.dispatch(SearchStarted(homepageTab.id)) }
+    }
+
+    @Test
+    fun `GIVEN a selected web page WHEN the page origin is clicked THEN do not reuse that tab`() {
+        val webTab = createTab("https://example.com")
+        val browserStore = BrowserStore(
+            BrowserState(
+                tabs = listOf(webTab),
+                selectedTabId = webTab.id,
+            ),
+        )
+        val (_, toolbarStore) = buildMiddlewareAndAddToStore(browserStore = browserStore)
 
         toolbarStore.dispatch(toolbarStore.state.displayState.pageOrigin.onClick as BrowserToolbarAction)
 
