@@ -1,6 +1,7 @@
 # Fenix 补充隐私声明与权利说明
 
 Firefox 原始隐私声明：https://www.mozilla.org/privacy/firefox/
+
 Firefox 原始“了解您的权利”：https://support.mozilla.org/kb/your-rights
 
 本文件是 Fenix 项目的补充说明，不能替代上方列出的 Firefox 原始隐私声明和“了解您的权利”页面。若本文件与原始页面存在差异，涉及 Firefox、Mozilla 服务和 GeckoView 的数据处理规则以上游页面为准。
