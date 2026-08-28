@@ -1,5 +1,29 @@
 # Fenix changes
 
+## 154.0.1-r2
+
+Upstream baseline: `FIREFOX-ANDROID_154_0_1_RELEASE`
+
+### Branding and packaging
+
+- Replaced the release launcher icon with the centered white Dwarf Hotot rabbit branding.
+- Restored the new-tab homepage and About page wordmarks with the rabbit logo and `Fenix` name.
+- Replaced the About page's Firefox attribution with localized fork attribution.
+
+### App-store integration
+
+- Removed the settings entry for rating the app on Google Play.
+- Removed automatic review prompts, Play Review SDK integration, store fallbacks, and rating
+  telemetry.
+
+### Tab groups
+
+- Kept tabs opened with the configurable toolbar shortcut in the current group, while leaving other
+  new-tab buttons ungrouped.
+- Kept URL and search submissions in tabs created by the grouped new-tab shortcut.
+- Kept homepage URL and search submissions in the current tab so grouped shortcuts retain their
+  parent tab.
+
 ## 154.0.1-r1
 
 Upstream baseline: `FIREFOX-ANDROID_154_0_1_RELEASE`
@@ -8,9 +32,6 @@ Upstream baseline: `FIREFOX-ANDROID_154_0_1_RELEASE`
 
 - Changed the Android application ID to `github.aenerv7.fenix`.
 - Changed the user-facing application name to `Fenix`.
-- Replaced the release launcher icon with the centered white Dwarf Hotot rabbit branding.
-- Restored the new-tab homepage and About page wordmarks with the rabbit logo and `Fenix` name.
-- Replaced the About page's Firefox attribution with localized fork attribution.
 - Removed the upstream `-default` suffix from the displayed version.
 - Kept Focus outside the supported build and release scope.
 
@@ -29,16 +50,9 @@ Upstream baseline: `FIREFOX-ANDROID_154_0_1_RELEASE`
 - Removed password, address, and credit-card data from the default sync scope.
 - Removed related shortcuts, intents, background initialization, and settings indexing.
 
-### App-store integration
-
-- Removed the settings entry for rating the app on Google Play.
-- Removed automatic review prompts, Play Review SDK integration, store fallbacks, and rating telemetry.
-
 ### Tab groups
 
 - Kept links opened by a grouped tab in that tab group by default.
-- Kept tabs opened with the configurable toolbar shortcut in the current group, while leaving other new-tab buttons ungrouped.
-- Kept URL and search submissions in tabs created by the grouped new-tab shortcut.
 - Added context-menu actions for opening a link in the current group or creating a new group.
 - Scoped group selection mode to tabs in the expanded group.
 - Added group multi-select actions, including “Remove from group”.
