@@ -24,7 +24,9 @@ object SupportUtils {
     const val GOOGLE_URL = "https://www.google.com/"
     const val GOOGLE_US_URL = "https://www.google.com/webhp?client=firefox-b-1-m&channel=ts"
     const val GOOGLE_XX_URL = "https://www.google.com/webhp?client=firefox-b-m&channel=ts"
-    const val WHATS_NEW_URL = "https://www.mozilla.org/firefox/android/notes"
+    const val PROJECT_GITHUB_URL = "https://github.com/aenerv7/fenix"
+    const val WHATS_NEW_URL = PROJECT_GITHUB_URL
+    const val PRIVACY_AND_RIGHTS_URL = "$PROJECT_GITHUB_URL/blob/fenix/FENIX_PRIVACY_AND_RIGHTS.md"
     const val FXACCOUNT_SUMO_URL = "https://support.mozilla.org/kb/access-mozilla-services-firefox-account"
     const val ANDROID_SUPPORT_SUMO_URL = "mzl.la/AndroidSupport"
     const val RELAY_MANAGE_URL = "https://relay.firefox.com"

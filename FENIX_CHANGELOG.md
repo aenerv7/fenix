@@ -1,5 +1,31 @@
 # Fenix changes
 
+## 154.0.1-r3
+
+Upstream baseline: `FIREFOX-ANDROID_154_0_1_RELEASE`
+
+### Crash fix
+
+- Fixed the dark-theme startup crash caused by passing an Android inset drawable to Compose's
+  `painterResource` API for the homepage wordmark.
+- Kept the same white-rabbit `Fenix` wordmark in light, dark, normal, and private contexts through a
+  drawable resource alias that Compose supports.
+
+### Branding
+
+- Added a dedicated Gecko `Fenix` brand package with rabbit About artwork and favicons.
+- Replaced remaining user-facing `Firefox` product-name text with `Fenix` across all packaged Android
+  locales while preserving upstream-source, licensing, and compatibility references.
+- Preserved the localized About attribution that credits aenerv7@GitHub, Mozilla, and the upstream
+  Firefox source while using `Fenix` for the app itself.
+
+### Release packaging
+
+- Built arm64-v8a, armeabi-v7a, and x86_64 releases from separate Gecko target object directories.
+- Added release checks that require the full Gecko locale set plus matching `libmozglue.so` and
+  `libxul.so` native libraries in every ABI APK before signing.
+- Added post-signature verification and separated unsigned and signed release artifacts.
+
 ## 154.0.1-r2
 
 Upstream baseline: `FIREFOX-ANDROID_154_0_1_RELEASE`

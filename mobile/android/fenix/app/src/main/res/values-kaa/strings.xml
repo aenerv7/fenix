@@ -422,7 +422,7 @@
   -->
   <string name="fxa_received_tab_channel_name">Qabıllanǵan betler</string>
   <!-- Description of the "receive tabs" notification channel. Displayed in the "App notifications" system settings for the app -->
-  <string name="fxa_received_tab_channel_description" tools:ignore="BrandUsage">Firefoxtıń basqa qurılmalarınan alınǵan betler haqqındaǵı xabarlamaları.</string>
+  <string name="fxa_received_tab_channel_description" tools:ignore="BrandUsage">Fenixtıń basqa qurılmalarınan alınǵan betler haqqındaǵı xabarlamaları.</string>
   <!-- The body for these is the URL of the tab received -->
   <string name="fxa_tab_received_notification_name">Bet qabıllandı</string>
   <!-- %s is the device name -->
@@ -897,7 +897,7 @@
   <!-- An option to connect additional devices -->
   <string name="sync_connect_device">Basqa qurılmaǵa jalǵaw</string>
   <!-- The dialog text shown when additional devices are not available -->
-  <string name="sync_connect_device_dialog" tools:ignore="BrandUsage">Betti jiberiw ushın keminde jáne bir qurılmadan Firefoxqa kiriń.</string>
+  <string name="sync_connect_device_dialog" tools:ignore="BrandUsage">Betti jiberiw ushın keminde jáne bir qurılmadan Fenixqa kiriń.</string>
   <!-- Confirmation dialog button -->
   <string name="sync_confirmation_button">Túsindim</string>
   <!-- Share error message -->
@@ -922,7 +922,7 @@
     Title shown in the notification that pops up to remind the user to set fenix as default browser.
     The app name is in the text, due to limitations with localizing Nimbus experiments
   -->
-  <string name="nimbus_notification_default_browser_title" tools:ignore="BrandUsage,UnusedResources">Firefox — tez hám jeke</string>
+  <string name="nimbus_notification_default_browser_title" tools:ignore="BrandUsage,UnusedResources">Fenix — tez hám jeke</string>
   <!-- Preference for not taking the short survey. -->
   <string name="preferences_not_take_survey">Yaq, raxmet</string>
   <!--
@@ -1028,7 +1028,7 @@
   <!-- Title of QR Pairing Fragment -->
   <string name="sync_scan_code">QR kodtı oqıw</string>
   <!-- Instructions on how to access pairing -->
-  <string name="sign_in_instructions" tools:ignore="BrandUsage"><![CDATA[Kompyuterińizde Firefoxtı ashıń hám <b>https://firefox.com/pair</b> ǵa kiriń]]></string>
+  <string name="sign_in_instructions" tools:ignore="BrandUsage"><![CDATA[Kompyuterińizde Fenixtı ashıń hám <b>https://firefox.com/pair</b> ǵa kiriń]]></string>
   <!-- Text shown for sign in pairing when ready -->
   <string name="sign_in_ready_for_scan">Kodtı oqıw</string>
   <!-- Text shown for settings option for sign with pairing -->
@@ -1036,7 +1036,7 @@
   <!-- Text shown for settings option for sign with email -->
   <string name="sign_in_with_email">Ornına elektron pochtadan paydalanıw</string>
   <!-- Text shown for settings option for create new account text.'Firefox' intentionally hardcoded here. -->
-  <string name="sign_in_create_account_text" tools:ignore="BrandUsage"><![CDATA[Akkauntıńız joq pa? <u>onda jańasın jaratıń</u> Firefoxtı qurılmalar arasında sáykeslestiriń.]]></string>
+  <string name="sign_in_create_account_text" tools:ignore="BrandUsage"><![CDATA[Akkauntıńız joq pa? <u>onda jańasın jaratıń</u> Fenixtı qurılmalar arasında sáykeslestiriń.]]></string>
   <!-- Text shown in confirmation dialog to sign out of account. %s is the name of the app (for example "Firefox"). -->
   <string name="sign_out_confirmation_message_2">%s akkountıńız benen sáykeslestiriwdi toqtatadı, biraq siziń qurılmańızdaǵı birde-bir brauzer maǵlıwmatın óshirmeydi.</string>
   <!-- Option to continue signing out of account shown in confirmation dialog to sign out of account -->
@@ -1390,7 +1390,7 @@
   <!-- Text displayed when user has disabled tab syncing in Firefox Sync Account -->
   <string name="synced_tabs_enable_tab_syncing">Ótinish, bet sáykeslestiriwin qosıń.</string>
   <!-- Text displayed when user has no tabs that have been synced -->
-  <string name="synced_tabs_no_tabs" tools:ignore="BrandUsage">Basqa qurılmalarıńızdaǵı Firefoxta birde-bir bet ashıq emes.</string>
+  <string name="synced_tabs_no_tabs" tools:ignore="BrandUsage">Basqa qurılmalarıńızdaǵı Fenixta birde-bir bet ashıq emes.</string>
   <!-- Text displayed in the synced tabs screen when a user is not signed in to Firefox Sync describing Synced Tabs -->
   <string name="synced_tabs_sign_in_message">Basqa qurılmalarıńızdaǵı betler dizimin kóriń.</string>
   <!-- Text displayed on a button in the synced tabs screen to link users to sign in when a user is not signed in to Firefox Sync -->
@@ -1440,7 +1440,7 @@
   -->
   <string name="inactive_tabs_auto_close_message_header" tools:ignore="UnusedResources">Bir aydan soń avtomat tárizde jabılsın ba?</string>
   <!-- A description below the header to notify the user what the inactive tabs auto-close feature is. -->
-  <string name="inactive_tabs_auto_close_message_description" tools:ignore="BrandUsage,UnusedResources">Firefox ótken ayda kórilmegen betlerdi jabıwı múmkin.</string>
+  <string name="inactive_tabs_auto_close_message_description" tools:ignore="BrandUsage,UnusedResources">Fenix ótken ayda kórilmegen betlerdi jabıwı múmkin.</string>
   <!-- A call to action below the description to allow the user to turn on the auto closing of inactive tabs. -->
   <string name="inactive_tabs_auto_close_message_action" tools:ignore="UnusedResources">AVTOMAT TÁRIZDE JABÍWDÍ QOSÍW</string>
   <!-- Text for the snackbar to confirm auto-close is enabled for inactive tabs -->
@@ -1450,13 +1450,13 @@
 
     Search suggestions title for Firefox Suggest.
   -->
-  <string name="firefox_suggest_header" tools:ignore="BrandUsage">Firefox usınıs etedi</string>
+  <string name="firefox_suggest_header" tools:ignore="BrandUsage">Fenix usınıs etedi</string>
   <!-- Title for search suggestions when Google is the default search suggestion engine. -->
   <string name="google_search_engine_suggestion_header">Googlede izlew</string>
   <!-- Title for search suggestions when the default search suggestion engine is anything other than Google. %s is default search engine name. -->
   <string name="other_default_search_engine_suggestion_header">%s da izlew</string>
   <!-- Default browser card text -->
-  <string name="default_browser_experiment_card_text" tools:ignore="BrandUsage">Saytlardaǵı, elektron xatlardaǵı hám xabarlardaǵı siltemelerdi Firefoxda avtomat tárizde ashılatuǵın etip sazlań.</string>
+  <string name="default_browser_experiment_card_text" tools:ignore="BrandUsage">Saytlardaǵı, elektron xatlardaǵı hám xabarlardaǵı siltemelerdi Fenixda avtomat tárizde ashılatuǵın etip sazlań.</string>
   <!-- Content description radio buttons with a link to more information -->
   <string name="radio_preference_info_content_description">Kóbirek biliw ushın basıń</string>
   <!-- Content description for the action bar "up" button -->

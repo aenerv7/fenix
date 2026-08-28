@@ -11,6 +11,8 @@ param(
 
 $ErrorActionPreference = "Stop"
 $root = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
+$unsignedDirectory = Join-Path $root "artifacts\fenix-release\unsigned"
+$signedDirectory = Join-Path $root "artifacts\fenix-release\signed"
 
 if (-not $VersionName) {
     $VersionName = (Get-Content (Join-Path $root "FENIX_UPSTREAM_RELEASE") -Raw).Trim()
@@ -41,8 +43,6 @@ if (-not $buildTools) {
     throw "No Android build-tools installation found under $buildToolsRoot"
 }
 
-$releaseDirectory = Join-Path $root `
-    "obj-firefox-android-aarch64\gradle\build\mobile\android\fenix\app\outputs\apk\release"
 $signer = Join-Path $buildTools.FullName "apksigner.bat"
 $variants = [ordered] @{
     "arm64-v8a" = "fenix-arm64-v8a-release.apk"
@@ -53,14 +53,32 @@ $variants = [ordered] @{
 $env:FENIX_STORE_PASSWORD = $properties.storePassword
 $env:FENIX_KEY_PASSWORD = $properties.keyPassword
 
+Add-Type -AssemblyName System.IO.Compression
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+New-Item -ItemType Directory -Force -Path $signedDirectory | Out-Null
+
 try {
     foreach ($variant in $variants.GetEnumerator()) {
-        $source = Join-Path $releaseDirectory $variant.Value
-        $target = Join-Path $releaseDirectory "Fenix-$VersionName-$($variant.Key)-release.apk"
+        $source = Join-Path $unsignedDirectory $variant.Value
+        $target = Join-Path $signedDirectory "Fenix-$VersionName-$($variant.Key)-release.apk"
 
         if (-not (Test-Path -LiteralPath $source)) {
             throw "Missing unsigned APK: $source"
         }
+
+        $apk = [IO.Compression.ZipFile]::OpenRead($source)
+        try {
+            foreach ($library in @("libmozglue.so", "libxul.so")) {
+                $entry = "lib/$($variant.Key)/$library"
+                if (-not $apk.GetEntry($entry)) {
+                    throw "$source is missing $entry"
+                }
+            }
+        }
+        finally {
+            $apk.Dispose()
+        }
+
         if (Test-Path -LiteralPath $target) {
             Remove-Item -LiteralPath $target -Force
         }
@@ -75,6 +93,11 @@ try {
 
         if ($LASTEXITCODE -ne 0) {
             throw "Signing failed for $($variant.Key)"
+        }
+
+        & $signer verify --verbose $target
+        if ($LASTEXITCODE -ne 0) {
+            throw "Signature verification failed for $($variant.Key)"
         }
 
         Write-Output "Signed $([IO.Path]::GetFileName($target))"

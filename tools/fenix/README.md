@@ -43,8 +43,12 @@ files, and build output into ignored repository paths:
 .\tools\fenix\build-release-local.ps1
 ```
 
-Use `build-release-local.ps1` for release APKs. It follows Gecko's multi-locale packaging flow and
-verifies that the official Android Gecko locales are present in every output APK.
+Use `build-release-local.ps1` for release APKs. It builds Gecko separately for arm64-v8a,
+armeabi-v7a, and x86_64, follows Gecko's multi-locale packaging flow, and verifies that the official
+Android Gecko locales plus the matching native Gecko libraries are present in every output APK.
+Use `sign-release-local.ps1` to sign and verify those artifacts.
+Pass `-Abi x86_64` (or another ABI) to resume a single failed architecture without rebuilding the
+completed APKs.
 
 See [FENIX_DEVELOPMENT.md](../../FENIX_DEVELOPMENT.md) for setup, testing, emulator, and local signing
 instructions, including the Firefox Android 154.0.1 Windows/JNA unit-test limitation. Do not treat

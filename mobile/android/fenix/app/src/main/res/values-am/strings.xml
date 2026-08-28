@@ -326,7 +326,7 @@
   -->
   <string name="onboarding_home_content_description_close_button">ዝጋ</string>
   <!-- Title for the privacy preferences dialog shown during onboarding. Note: The word "Firefox" should NOT be translated. -->
-  <string name="onboarding_preferences_dialog_title" tools:ignore="BrandUsage">Firefoxን የተሻለ እንድናደርግ ያግዙን</string>
+  <string name="onboarding_preferences_dialog_title" tools:ignore="BrandUsage">Fenixን የተሻለ እንድናደርግ ያግዙን</string>
   <!-- Title for the crash reporting option in the privacy preferences dialog shown during onboarding. -->
   <string name="onboarding_preferences_dialog_crash_reporting_title">የብልሽት ሪፖርቶችን በራስ-ሰር ይላኩ</string>
   <!-- Description for the crash reporting option in the privacy preferences dialog shown during onboarding. -->
@@ -340,7 +340,7 @@
   <!-- Positive button label for the privacy preferences dialog shown during onboarding. -->
   <string name="onboarding_preferences_dialog_positive_button">ተከናውኗል</string>
   <!-- Terms of service onboarding title card label. 'Firefox' intentionally hardcoded here -->
-  <string name="onboarding_welcome_to_firefox" tools:ignore="BrandUsage">ወደ Firefox እንኳን በደህና መጡ</string>
+  <string name="onboarding_welcome_to_firefox" tools:ignore="BrandUsage">ወደ Fenix እንኳን በደህና መጡ</string>
   <!-- Line one of the terms of service onboarding page. %1$s is replaced by an active link, using onboarding_term_of_service_line_one_link_text_2 as text (“Firefox Terms of Use”). -->
   <string name="onboarding_term_of_service_line_one_2">በመቀጠል፣ በ%1$s ተስማምተዋል።</string>
   <!-- Used as text for the link in onboarding_term_of_service_line_one_2. -->
@@ -350,7 +350,7 @@
   <!-- Used as text for the link in onboarding_term_of_service_line_two. -->
   <string name="onboarding_term_of_service_line_two_link_text">የግላዊነት ማስታወቂያ</string>
   <!-- Line three of the terms of service onboarding page. 'Firefox' and 'Mozilla' are intentionally hardcoded. %1$s is replaced by an active link using onboarding_term_of_service_line_three_link_text as text (“Manage”). -->
-  <string name="onboarding_term_of_service_line_three" tools:ignore="BrandUsage">አሳሹን ለማሻሻል እንዲረዳ Firefox የምርመራ እና የመስተጋብር ውሂብ ወደ ሞዚላ ይልካል። %1$s</string>
+  <string name="onboarding_term_of_service_line_three" tools:ignore="BrandUsage">አሳሹን ለማሻሻል እንዲረዳ Fenix የምርመራ እና የመስተጋብር ውሂብ ወደ ሞዚላ ይልካል። %1$s</string>
   <!-- Used as text for the link in onboarding_term_of_service_line_three. -->
   <string name="onboarding_term_of_service_line_three_link_text">አስተዳድር</string>
   <!-- Marketing onboarding page title variant. “One last thing” refers to the final step or action in the onboarding process that we’re asking users to take before they can start using the browser. -->
@@ -408,9 +408,9 @@
   <!-- Preference Category for settings related to Search address bar -->
   <string name="preferences_settings_address_bar">የአድራሻ አሞሌ ምርጫዎች</string>
   <!-- Preference Category for settings to Firefox Suggest -->
-  <string name="preference_search_address_bar_fx_suggest" tools:ignore="BrandUsage">የአድራሻ አሞሌ - Firefox Suggest</string>
+  <string name="preference_search_address_bar_fx_suggest" tools:ignore="BrandUsage">የአድራሻ አሞሌ - Fenix Suggest</string>
   <!-- Preference link to Learn more about Firefox Suggest -->
-  <string name="preference_search_learn_about_fx_suggest" tools:ignore="BrandUsage">ስለFirefox Suggest የበለጠ ይወቁ</string>
+  <string name="preference_search_learn_about_fx_suggest" tools:ignore="BrandUsage">ስለFenix Suggest የበለጠ ይወቁ</string>
   <!-- Preference link to rating Fenix on the Play Store -->
   <string name="preferences_rate">Google Play ላይ ደረጃ ይስጡ</string>
   <!--
@@ -704,7 +704,7 @@
   -->
   <string name="addon_ga_message_title_2" tools:ignore="UnusedResources">አዲስ ቅጥያዎች አሁን ይገኛሉ</string>
   <!-- Body of the Nimbus message for add-ons general availability. 'Firefox' intentionally hardcoded here -->
-  <string name="addon_ga_message_body" tools:ignore="BrandUsage,UnusedResources">Firefoxን የራስዎ ለማድረግ የሚያስችሉዎትን 100+ አዲስ ቅጥያዎችን ይመልከቱ።</string>
+  <string name="addon_ga_message_body" tools:ignore="BrandUsage,UnusedResources">Fenixን የራስዎ ለማድረግ የሚያስችሉዎትን 100+ አዲስ ቅጥያዎችን ይመልከቱ።</string>
   <!-- Button text of the Nimbus message for extensions general availability. -->
   <string name="addon_ga_message_button_2" tools:ignore="UnusedResources">ቅጥያዎችን ያስሱ</string>
   <!--
@@ -1560,7 +1560,7 @@
   <!-- An option to connect additional devices -->
   <string name="sync_connect_device">ሌላ መሳሪያ ያገናኙ</string>
   <!-- The dialog text shown when additional devices are not available -->
-  <string name="sync_connect_device_dialog" tools:ignore="BrandUsage">ትር ለመላክ ቢያንስ በአንድ ሌላ መሳሪያ ወደ Firefox ይግቡ።</string>
+  <string name="sync_connect_device_dialog" tools:ignore="BrandUsage">ትር ለመላክ ቢያንስ በአንድ ሌላ መሳሪያ ወደ Fenix ይግቡ።</string>
   <!-- Confirmation dialog button -->
   <string name="sync_confirmation_button">ገባኝ</string>
   <!-- Share error message -->
@@ -1592,12 +1592,12 @@
     Title shown in the notification that pops up to remind the user to set fenix as default browser.
     The app name is in the text, due to limitations with localizing Nimbus experiments
   -->
-  <string name="nimbus_notification_default_browser_title" tools:ignore="BrandUsage,UnusedResources">Firefox ፈጣን እና ግላዊ ነው</string>
+  <string name="nimbus_notification_default_browser_title" tools:ignore="BrandUsage,UnusedResources">Fenix ፈጣን እና ግላዊ ነው</string>
   <!--
     Text shown in the notification that pops up to remind the user to set fenix as default browser.
     The app name is in the text, due to limitations with localizing Nimbus experiments
   -->
-  <string name="nimbus_notification_default_browser_text" tools:ignore="BrandUsage,UnusedResources">Firefoxን ነባሪ አሳሽዎ ያድርጉ</string>
+  <string name="nimbus_notification_default_browser_text" tools:ignore="BrandUsage,UnusedResources">Fenixን ነባሪ አሳሽዎ ያድርጉ</string>
   <!--
     Survey
 
@@ -1724,7 +1724,7 @@
   <!-- Title of QR Pairing Fragment -->
   <string name="sync_scan_code">ኮዱን ይቃኙ</string>
   <!-- Instructions on how to access pairing -->
-  <string name="sign_in_instructions" tools:ignore="BrandUsage"><![CDATA[በኮምፒተርዎ ላይ Firefox ን ይክፈቱ እና ወደ <b>https://firefox.com/pair</b> ይሂዱ]]></string>
+  <string name="sign_in_instructions" tools:ignore="BrandUsage"><![CDATA[በኮምፒተርዎ ላይ Fenix ን ይክፈቱ እና ወደ <b>https://firefox.com/pair</b> ይሂዱ]]></string>
   <!-- Text shown for sign in pairing when ready -->
   <string name="sign_in_ready_for_scan">ለመቃኘት ዝግጁ</string>
   <!-- Text shown for settings option for sign with pairing -->
@@ -2351,7 +2351,7 @@
   -->
   <string name="inactive_tabs_auto_close_message_header" tools:ignore="UnusedResources">ከአንድ ወር በኋላ በራስ-ሰር ይዘጋ?</string>
   <!-- A description below the header to notify the user what the inactive tabs auto-close feature is. -->
-  <string name="inactive_tabs_auto_close_message_description" tools:ignore="BrandUsage,UnusedResources">Firefox ባለፈው ወር ውስጥ ያላዩዋቸውን ትሮች ሊዘጋ ይችላል።</string>
+  <string name="inactive_tabs_auto_close_message_description" tools:ignore="BrandUsage,UnusedResources">Fenix ባለፈው ወር ውስጥ ያላዩዋቸውን ትሮች ሊዘጋ ይችላል።</string>
   <!-- A call to action below the description to allow the user to turn on the auto closing of inactive tabs. -->
   <string name="inactive_tabs_auto_close_message_action" tools:ignore="UnusedResources">ራስ-ሰር ዝጋን ያብሩ</string>
   <!-- Text for the snackbar to confirm auto-close is enabled for inactive tabs -->
@@ -2749,7 +2749,7 @@
 
     The microsurvey prompt title. Note: The word "Firefox" should NOT be translated
   -->
-  <string name="micro_survey_prompt_title" tools:ignore="BrandUsage,UnusedResources">Firefoxን የተሻለ እንድናደርግ ይርዱን። አንድ ደቂቃ ብቻ ነው የሚወስደው።</string>
+  <string name="micro_survey_prompt_title" tools:ignore="BrandUsage,UnusedResources">Fenixን የተሻለ እንድናደርግ ይርዱን። አንድ ደቂቃ ብቻ ነው የሚወስደው።</string>
   <!-- The continue button label -->
   <string name="micro_survey_continue_button_label" tools:ignore="UnusedResources">ቀጥል</string>
   <!--
@@ -2779,29 +2779,29 @@
   <!-- Option for likert scale -->
   <string name="likert_scale_option_6" tools:ignore="UnusedResources">እኔ አልጠቀምበትም</string>
   <!-- Option for likert scale. Note: The word "Firefox" should NOT be translated. -->
-  <string name="likert_scale_option_7" tools:ignore="BrandUsage,UnusedResources">ፍለጋን በFirefox አልጠቀምም</string>
+  <string name="likert_scale_option_7" tools:ignore="BrandUsage,UnusedResources">ፍለጋን በFenix አልጠቀምም</string>
   <!-- Option for likert scale -->
   <string name="likert_scale_option_8" tools:ignore="UnusedResources">ማመሳሰልን አልጠቀምም</string>
   <!-- Text shown in prompt for printing microsurvey. "sec" It's an abbreviation for "second". Note: The word "Firefox" should NOT be translated. -->
-  <string name="microsurvey_prompt_printing_title" tools:ignore="BrandUsage,UnusedResources">በFirefox ማተምን የተሻለ ለማድረግ ያግዙ። አንድ ሰከንድ ብቻ ነው የሚወስደው</string>
+  <string name="microsurvey_prompt_printing_title" tools:ignore="BrandUsage,UnusedResources">በFenix ማተምን የተሻለ ለማድረግ ያግዙ። አንድ ሰከንድ ብቻ ነው የሚወስደው</string>
   <!-- Text shown in prompt for search microsurvey. Note: The word "Firefox" should NOT be translated. -->
-  <string name="microsurvey_prompt_search_title" tools:ignore="BrandUsage,UnusedResources">በFirefox ውስጥ ፍለጋን የተሻለ ለማድረግ ያግዙ። አንድ ደቂቃ ብቻ ነው የሚወስደው</string>
+  <string name="microsurvey_prompt_search_title" tools:ignore="BrandUsage,UnusedResources">በFenix ውስጥ ፍለጋን የተሻለ ለማድረግ ያግዙ። አንድ ደቂቃ ብቻ ነው የሚወስደው</string>
   <!-- Text shown in prompt for sync microsurvey. Note: The word "Firefox" should NOT be translated. -->
-  <string name="microsurvey_prompt_sync_title" tools:ignore="BrandUsage,UnusedResources">በFirefox ውስጥ ማመሳሰልን የተሻለ ለማድረግ ያግዙ። አንድ ደቂቃ ብቻ ነው የሚወስደው</string>
+  <string name="microsurvey_prompt_sync_title" tools:ignore="BrandUsage,UnusedResources">በFenix ውስጥ ማመሳሰልን የተሻለ ለማድረግ ያግዙ። አንድ ደቂቃ ብቻ ነው የሚወስደው</string>
   <!-- Text shown in the survey title for printing microsurvey. Note: The word "Firefox" should NOT be translated. -->
-  <string name="microsurvey_survey_printing_title" tools:ignore="BrandUsage,UnusedResources">በFirefox ውስጥ በማተም ምን ያህል ረክተዋል?</string>
+  <string name="microsurvey_survey_printing_title" tools:ignore="BrandUsage,UnusedResources">በFenix ውስጥ በማተም ምን ያህል ረክተዋል?</string>
   <!-- Text shown in the survey title for homepage microsurvey. Note: The word "Firefox" should NOT be translated. -->
-  <string name="microsurvey_homepage_title" tools:ignore="BrandUsage,UnusedResources">በFirefox መነሻ ገጽዎ ምን ያህል ረክተዋል?</string>
+  <string name="microsurvey_homepage_title" tools:ignore="BrandUsage,UnusedResources">በFenix መነሻ ገጽዎ ምን ያህል ረክተዋል?</string>
   <!-- Text shown in the survey title for search experience microsurvey. Note: The word "Firefox" should NOT be translated. -->
-  <string name="microsurvey_search_title" tools:ignore="BrandUsage,UnusedResources">በFirefox ውስጥ ባለው የፍለጋ ልምድ ምን ያህል ረክተዋል?</string>
+  <string name="microsurvey_search_title" tools:ignore="BrandUsage,UnusedResources">በFenix ውስጥ ባለው የፍለጋ ልምድ ምን ያህል ረክተዋል?</string>
   <!-- Text shown in the survey title for sync experience microsurvey. Note: The word "Firefox" should NOT be translated. -->
-  <string name="microsurvey_sync_title" tools:ignore="BrandUsage,UnusedResources">በFirefox ውስጥ ባለው የማመሳሰል ልምድ ምን ያህል ረክተዋል?</string>
+  <string name="microsurvey_sync_title" tools:ignore="BrandUsage,UnusedResources">በFenix ውስጥ ባለው የማመሳሰል ልምድ ምን ያህል ረክተዋል?</string>
   <!--
     Accessibility
 
     Content description for the survey application icon. Note: The word "Firefox" should NOT be translated.
   -->
-  <string name="microsurvey_app_icon_content_description" tools:ignore="BrandUsage">የFirefox አርማ</string>
+  <string name="microsurvey_app_icon_content_description" tools:ignore="BrandUsage">የFenix አርማ</string>
   <!-- Content description for the survey feature icon. -->
   <string name="microsurvey_feature_icon_content_description">የዳሰሳ ባህሪ አዶ</string>
   <!-- Content description (not visible, for screen readers etc.) for closing microsurvey bottom sheet. -->
@@ -2893,11 +2893,11 @@
   <!-- Homepage card title about old Firefox version. "Update" is a verb. -->
   <string name="certificate_warning_homepage_card_hcr1_title" tools:ignore="UnusedResources">ከማርች 14 በፊት ያዘምኑ</string>
   <!-- Homepage card title about old Firefox version. Note: The word "Firefox" should NOT be translated. -->
-  <string name="certificate_warning_homepage_card_hcw3_title" tools:ignore="BrandUsage,UnusedResources">የእርስዎን Firefox ለማቆየት የመጨረሻው ዕድል</string>
+  <string name="certificate_warning_homepage_card_hcw3_title" tools:ignore="BrandUsage,UnusedResources">የእርስዎን Fenix ለማቆየት የመጨረሻው ዕድል</string>
   <!-- Push notification title about old Firefox version. "Update" is a noun. -->
   <string name="certificate_warning_push_notification_update_recommended_title" tools:ignore="UnusedResources">ማዘመን ይመከራል</string>
   <!-- Push notification title about old Firefox version. Note: The word "Firefox" should NOT be translated. -->
-  <string name="certificate_warning_push_notification_pnw2_title" tools:ignore="BrandUsage,UnusedResources">የቆየ የFirefox ስሪት ላይ ነዎት</string>
+  <string name="certificate_warning_push_notification_pnw2_title" tools:ignore="BrandUsage,UnusedResources">የቆየ የFenix ስሪት ላይ ነዎት</string>
   <!-- TextField Design System Component -->
 
   <!--

@@ -10,6 +10,7 @@ import android.os.Build
 import android.util.Log
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.core.content.pm.PackageInfoCompat
+import androidx.core.net.toUri
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -165,7 +166,8 @@ class SettingsSubMenuAboutRobot {
         Log.i(TAG, "verifyPrivacyNoticeLink: Clicked the \"Privacy notice\" link")
 
         browserScreen(composeTestRule) {
-            verifyUrl("/privacy/firefox")
+            val projectURL = SupportUtils.PRIVACY_AND_RIGHTS_URL.toUri()
+            verifyUrl(projectURL.authority + projectURL.encodedPath)
         }
     }
 
@@ -181,7 +183,8 @@ class SettingsSubMenuAboutRobot {
         Log.i(TAG, "verifyKnowYourRightsLink: Clicked the \"Know your rights\" link")
 
         browserScreen(composeTestRule) {
-            verifyUrl(SupportUtils.SumoTopic.YOUR_RIGHTS.topicStr)
+            val projectURL = SupportUtils.PRIVACY_AND_RIGHTS_URL.toUri()
+            verifyUrl(projectURL.authority + projectURL.encodedPath)
         }
     }
 

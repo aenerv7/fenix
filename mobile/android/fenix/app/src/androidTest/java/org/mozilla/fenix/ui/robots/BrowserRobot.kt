@@ -155,27 +155,13 @@ class BrowserRobot(private val composeTestRule: ComposeTestRule) {
     }
 
     fun verifyHelpUrl() {
-        try {
-            verifyUrl("support.mozilla.org/en-US/products/mobile")
-        } catch (e: AssertionError) {
-            Log.i(TAG, "verifyHelpUrl: AssertionError caught, checking redirect URL")
-            verifyUrl(
-                SupportUtils.getSumoURLForTopic(
-                    appContext,
-                    SupportUtils.SumoTopic.HELP,
-                ).replace("https://", ""),
-            )
-        }
+        val projectURL = SupportUtils.PROJECT_GITHUB_URL.toUri()
+        verifyUrl(projectURL.authority + projectURL.encodedPath)
     }
 
     fun verifyWhatsNewURL() {
-        try {
-            verifyUrl("firefox.com/en-US/firefox/android/")
-        } catch (e: AssertionError) {
-            Log.i(TAG, "verifyWhatsNewURL: AssertionError caught, checking redirect URL")
-            val redirectURL = SupportUtils.WHATS_NEW_URL.toUri()
-            verifyUrl(redirectURL.authority?.removePrefix("www.") + redirectURL.encodedPath)
-        }
+        val projectURL = SupportUtils.WHATS_NEW_URL.toUri()
+        verifyUrl(projectURL.authority + projectURL.encodedPath)
     }
 
     fun verifyCustomSearchEngineLearnMoreURL() {

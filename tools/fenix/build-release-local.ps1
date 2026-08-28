@@ -3,6 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 param(
+    [ValidateSet("arm64-v8a", "armeabi-v7a", "x86_64")]
+    [string[]] $Abi = @("arm64-v8a", "armeabi-v7a", "x86_64"),
     [switch] $SkipBuild
 )
 
@@ -12,6 +14,25 @@ $mach = Join-Path $PSScriptRoot "mach-local.ps1"
 $powershell = Join-Path $PSHOME "pwsh.exe"
 $localeFile = Join-Path $root "mobile\android\locales\all-locales"
 $locales = @(Get-Content -LiteralPath $localeFile | ForEach-Object { $_.Trim() } | Where-Object { $_ })
+$configurations = @(
+    [pscustomobject] @{
+        Abi = "arm64-v8a"
+        Target = "aarch64-linux-android"
+        ObjDir = "obj-firefox-android-aarch64"
+    }
+    [pscustomobject] @{
+        Abi = "armeabi-v7a"
+        Target = "arm-linux-androideabi"
+        ObjDir = "obj-firefox-android-arm"
+    }
+    [pscustomobject] @{
+        Abi = "x86_64"
+        Target = "x86_64-linux-android"
+        ObjDir = "obj-firefox-android-x86_64"
+    }
+)
+$selectedConfigurations = @($configurations | Where-Object { $_.Abi -in $Abi })
+$unsignedDirectory = Join-Path $root "artifacts\fenix-release\unsigned"
 
 if (-not $locales -or -not $locales.Contains("zh-CN")) {
     throw "The official Android locale list is empty or does not contain zh-CN: $localeFile"
@@ -89,49 +110,113 @@ function Get-ApkLocales {
     }
 }
 
-Add-Type -AssemblyName System.IO.Compression
+function Assert-ApkGeckoLibraries {
+    param(
+        [Parameter(Mandatory)][string] $ApkPath,
+        [Parameter(Mandatory)][string] $Abi
+    )
 
-if (-not $SkipBuild) {
-    Invoke-LocalMach -Arguments @("build")
-    Invoke-LocalMach -Arguments @("package")
+    $apkStream = [IO.File]::OpenRead($ApkPath)
+    try {
+        $apk = [IO.Compression.ZipArchive]::new(
+            $apkStream,
+            [IO.Compression.ZipArchiveMode]::Read,
+            $false
+        )
+        try {
+            foreach ($library in @("libmozglue.so", "libxul.so")) {
+                $entry = "lib/$Abi/$library"
+                if (-not $apk.GetEntry($entry)) {
+                    throw "$ApkPath is missing $entry"
+                }
+            }
+        }
+        finally {
+            $apk.Dispose()
+        }
+    }
+    finally {
+        $apkStream.Dispose()
+    }
 }
 
-Invoke-LocalMach -Arguments (@("package-multi-locale", "--locales") + $locales)
-
+Add-Type -AssemblyName System.IO.Compression
+$expectedLocales = @("en-US") + $locales
+$previousTarget = $env:FENIX_ANDROID_TARGET
+$previousObjDir = $env:FENIX_ANDROID_OBJDIR
+$previousMozObjDir = $env:MOZ_OBJDIR
 $previousMultilocale = $env:MOZ_CHROME_MULTILOCALE
+
+New-Item -ItemType Directory -Force -Path $unsignedDirectory | Out-Null
+foreach ($configuration in $selectedConfigurations) {
+    Remove-Item -LiteralPath (
+        Join-Path $unsignedDirectory "fenix-$($configuration.Abi)-release.apk"
+    ) -Force -ErrorAction SilentlyContinue
+}
+
 try {
-    $env:MOZ_CHROME_MULTILOCALE = $locales -join " "
-    Invoke-LocalMach -Arguments @("gradle", "fenix:assembleRelease")
+    foreach ($configuration in $selectedConfigurations) {
+        $env:FENIX_ANDROID_TARGET = $configuration.Target
+        $env:FENIX_ANDROID_OBJDIR = $configuration.ObjDir
+        $env:MOZ_OBJDIR = Join-Path $root $configuration.ObjDir
+        Remove-Item Env:MOZ_CHROME_MULTILOCALE -ErrorAction SilentlyContinue
+
+        if (-not $SkipBuild) {
+            Invoke-LocalMach -Arguments @("build")
+            Invoke-LocalMach -Arguments @("package")
+        }
+
+        Invoke-LocalMach -Arguments (@("package-multi-locale", "--locales") + $locales)
+
+        $env:MOZ_CHROME_MULTILOCALE = $locales -join " "
+        Invoke-LocalMach -Arguments @("gradle", "fenix:assembleRelease")
+
+        $releaseDirectory = Join-Path $root `
+            "$($configuration.ObjDir)\gradle\build\mobile\android\fenix\app\outputs\apk\release"
+        $source = Join-Path $releaseDirectory "fenix-$($configuration.Abi)-release.apk"
+        if (-not (Test-Path -LiteralPath $source)) {
+            throw "Missing $($configuration.Abi) APK: $source"
+        }
+
+        $actualLocales = @(Get-ApkLocales -ApkPath $source)
+        $missingLocales = @($expectedLocales | Where-Object { $_ -notin $actualLocales })
+        $unexpectedLocales = @($actualLocales | Where-Object { $_ -notin $expectedLocales })
+        if ($missingLocales -or $unexpectedLocales) {
+            throw "$source has an invalid Gecko locale set. " +
+                "Missing: $($missingLocales -join ', '); unexpected: $($unexpectedLocales -join ', ')"
+        }
+
+        Assert-ApkGeckoLibraries -ApkPath $source -Abi $configuration.Abi
+        Copy-Item -LiteralPath $source -Destination $unsignedDirectory -Force
+        Write-Output (
+            "Verified $($actualLocales.Count) Gecko locales and native libraries in " +
+            $([IO.Path]::GetFileName($source))
+        )
+    }
 }
 finally {
+    if ($null -eq $previousTarget) {
+        Remove-Item Env:FENIX_ANDROID_TARGET -ErrorAction SilentlyContinue
+    }
+    else {
+        $env:FENIX_ANDROID_TARGET = $previousTarget
+    }
+    if ($null -eq $previousObjDir) {
+        Remove-Item Env:FENIX_ANDROID_OBJDIR -ErrorAction SilentlyContinue
+    }
+    else {
+        $env:FENIX_ANDROID_OBJDIR = $previousObjDir
+    }
+    if ($null -eq $previousMozObjDir) {
+        Remove-Item Env:MOZ_OBJDIR -ErrorAction SilentlyContinue
+    }
+    else {
+        $env:MOZ_OBJDIR = $previousMozObjDir
+    }
     if ($null -eq $previousMultilocale) {
         Remove-Item Env:MOZ_CHROME_MULTILOCALE -ErrorAction SilentlyContinue
     }
     else {
         $env:MOZ_CHROME_MULTILOCALE = $previousMultilocale
     }
-}
-
-$expectedLocales = @("en-US") + $locales
-$releaseDirectory = Join-Path $root `
-    "obj-firefox-android-aarch64\gradle\build\mobile\android\fenix\app\outputs\apk\release"
-$apks = @(Get-ChildItem -LiteralPath $releaseDirectory -File | Where-Object {
-    $_.Name -cmatch "^fenix-(arm64-v8a|armeabi-v7a|x86_64)-release\.apk$"
-})
-
-if ($apks.Count -eq 0) {
-    throw "No release APKs found under $releaseDirectory"
-}
-
-foreach ($apk in $apks) {
-    $actualLocales = @(Get-ApkLocales -ApkPath $apk.FullName)
-    $missingLocales = @($expectedLocales | Where-Object { $_ -notin $actualLocales })
-    $unexpectedLocales = @($actualLocales | Where-Object { $_ -notin $expectedLocales })
-
-    if ($missingLocales -or $unexpectedLocales) {
-        throw "$($apk.Name) has an invalid Gecko locale set. " +
-            "Missing: $($missingLocales -join ', '); unexpected: $($unexpectedLocales -join ', ')"
-    }
-
-    Write-Output "Verified $($actualLocales.Count) Gecko locales in $($apk.Name)"
 }

@@ -10,7 +10,7 @@ Firefox Android 正式版标签为不可变基线，在每个正式版之上维�
 可迁移的补丁。
 
 - 当前上游基线：`FIREFOX-ANDROID_154_0_1_RELEASE`
-- 当前 Fenix 版本：`154.0.1-r2`
+- 当前 Fenix 版本：`154.0.1-r3`
 - 应用名称：`Fenix`
 - Android application ID：`github.aenerv7.fenix`
 - 正式版品牌：白色凤眼海棠侏儒兔图标与 `Fenix` wordmark
@@ -23,6 +23,8 @@ Firefox Android 正式版标签为不可变基线，在每个正式版之上维�
 
 - 使用独立兔子品牌替换正式版 launcher、圆形图标、adaptive icon 和主题图标，并在
   新标签页左上角及关于页恢复“兔子 + Fenix”wordmark。
+- 将应用界面和 Gecko 内置品牌资源中的产品名统一为 `Fenix`，同时保留上游来源与许可
+  说明中必要的 Firefox、Mozilla 和 GeckoView 名称。
 - 补全本版本缺失的简体中文本地化，包括标签页群组和移动收藏夹相关界面。
 - 从应用 UI、Android 自动填充服务和默认同步数据范围中移除密码、地址、信用卡及个人
   信息管理功能；系统自动填充提供方列表中不再提供 Fenix。

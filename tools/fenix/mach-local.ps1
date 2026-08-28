@@ -42,6 +42,7 @@ $env:TEMP = Join-Path $root ".tmp"
 $env:TMP = $env:TEMP
 $env:PATH = (@(
     (Join-Path $root ".cargo\bin"),
+    (Join-Path $state "nasm"),
     (Join-Path $sdk "platform-tools"),
     (Join-Path $sdk "cmdline-tools\21.0\bin"),
     (Join-Path $jdk "bin"),

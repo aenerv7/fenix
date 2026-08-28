@@ -43,8 +43,16 @@ class SupportUtilsTest {
             ),
         )
         assertEquals(
-            "https://www.mozilla.org/firefox/android/notes",
+            "https://github.com/aenerv7/fenix",
             SupportUtils.WHATS_NEW_URL,
+        )
+        assertEquals(
+            "https://github.com/aenerv7/fenix",
+            SupportUtils.PROJECT_GITHUB_URL,
+        )
+        assertEquals(
+            "https://github.com/aenerv7/fenix/blob/fenix/FENIX_PRIVACY_AND_RIGHTS.md",
+            SupportUtils.PRIVACY_AND_RIGHTS_URL,
         )
     }
 

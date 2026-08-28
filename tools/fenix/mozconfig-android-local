@@ -2,6 +2,10 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
+fenix_android_target=${FENIX_ANDROID_TARGET:-aarch64-linux-android}
+fenix_android_objdir=${FENIX_ANDROID_OBJDIR:-obj-firefox-android-aarch64}
+
 ac_add_options --enable-project=mobile/android
-ac_add_options --target=aarch64
-mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/obj-firefox-android-aarch64
+ac_add_options --target=$fenix_android_target
+ac_add_options --with-branding=mobile/android/branding/fenix
+mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/$fenix_android_objdir

@@ -16,7 +16,7 @@ The wrapper at `tools/fenix/mach-local.ps1` redirects developer state into the c
 | Cargo and Rustup | `.cargo/`, `.rustup/` |
 | Android user data and AVDs | `.android/`, `.mozbuild/android-device/` |
 | Temporary files | `.tmp/` |
-| Build output | `obj-firefox-android-aarch64/` |
+| Build output | `obj-firefox-android-aarch64/`, `obj-firefox-android-arm/`, `obj-firefox-android-x86_64/` |
 | Logs, screenshots, and recordings | `artifacts/` |
 
 These paths are ignored by Git.
@@ -69,10 +69,19 @@ same wrapper.
 .\tools\fenix\build-release-local.ps1
 ```
 
-Release builds must use `build-release-local.ps1`. It reads the upstream Android locale list,
-packages the matching Gecko locales into GeckoView, assembles Fenix without regenerating the
-multi-locale omnijar, and verifies every ABI APK. Running `fenix:assembleRelease` directly produces
-an `en-US`-only GeckoView even though the Android UI resources remain multilingual.
+Release builds must use `build-release-local.ps1`. It creates separate Gecko builds for arm64-v8a,
+armeabi-v7a, and x86_64, reads the upstream Android locale list, packages the matching Gecko locales
+into GeckoView, and assembles Fenix without regenerating the multi-locale omnijar. It then verifies
+the complete locale set and matching Gecko native libraries in every ABI APK. Running
+`fenix:assembleRelease` directly produces an `en-US`-only GeckoView even though the Android UI
+resources remain multilingual, and a single Gecko target cannot supply valid native libraries for
+the other ABI APKs.
+
+To retry one architecture while preserving completed APKs, pass its ABI to the release script:
+
+```powershell
+.\tools\fenix\build-release-local.ps1 -Abi x86_64
+```
 
 For a narrow test class, append Gradle's test selector:
 
@@ -121,7 +130,9 @@ After `build-release-local.ps1`, sign all supported ABI APKs with:
 ```
 
 The script reads passwords from the ignored properties file and passes them to `apksigner` through
-process environment variables. It does not print passwords.
+process environment variables. It does not print passwords. Unsigned APKs are written under
+`artifacts/fenix-release/unsigned/`; verified signed APKs are written under
+`artifacts/fenix-release/signed/`.
 
 ## Before committing
 

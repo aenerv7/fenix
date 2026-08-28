@@ -11,9 +11,9 @@ import android.content.IntentFilter
 import android.speech.RecognizerIntent
 import androidx.navigation.NavController
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import io.mockk.every
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
