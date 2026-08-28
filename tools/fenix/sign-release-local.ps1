@@ -1,0 +1,86 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+param(
+    [string] $VersionName,
+    [string] $KeyStorePath,
+    [string] $KeyAlias = "magi-opensource",
+    [string] $PropertiesPath
+)
+
+$ErrorActionPreference = "Stop"
+$root = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
+
+if (-not $VersionName) {
+    $VersionName = (Get-Content (Join-Path $root "FENIX_UPSTREAM_RELEASE") -Raw).Trim()
+}
+if (-not $KeyStorePath) {
+    $KeyStorePath = Join-Path $root "MAGI-OpenSource.jks"
+}
+if (-not $PropertiesPath) {
+    $PropertiesPath = Join-Path $root "signing-local.properties"
+}
+
+$properties = @{}
+Get-Content $PropertiesPath | ForEach-Object {
+    if ($_ -match "^([^#=]+)=(.*)$") {
+        $properties[$matches[1].Trim()] = $matches[2].Trim()
+    }
+}
+
+if (-not $properties.storePassword -or -not $properties.keyPassword) {
+    throw "$PropertiesPath must define storePassword and keyPassword"
+}
+
+$buildToolsRoot = Join-Path $root ".mozbuild\android-sdk-windows\build-tools"
+$buildTools = Get-ChildItem $buildToolsRoot -Directory |
+    Sort-Object { [version] $_.Name } -Descending |
+    Select-Object -First 1
+if (-not $buildTools) {
+    throw "No Android build-tools installation found under $buildToolsRoot"
+}
+
+$releaseDirectory = Join-Path $root `
+    "obj-firefox-android-aarch64\gradle\build\mobile\android\fenix\app\outputs\apk\release"
+$signer = Join-Path $buildTools.FullName "apksigner.bat"
+$variants = [ordered] @{
+    "arm64-v8a" = "fenix-arm64-v8a-release.apk"
+    "armeabi-v7a" = "fenix-armeabi-v7a-release.apk"
+    "x86_64" = "fenix-x86_64-release.apk"
+}
+
+$env:FENIX_STORE_PASSWORD = $properties.storePassword
+$env:FENIX_KEY_PASSWORD = $properties.keyPassword
+
+try {
+    foreach ($variant in $variants.GetEnumerator()) {
+        $source = Join-Path $releaseDirectory $variant.Value
+        $target = Join-Path $releaseDirectory "Fenix-$VersionName-$($variant.Key)-release.apk"
+
+        if (-not (Test-Path -LiteralPath $source)) {
+            throw "Missing unsigned APK: $source"
+        }
+        if (Test-Path -LiteralPath $target) {
+            Remove-Item -LiteralPath $target -Force
+        }
+
+        & $signer sign `
+            --ks $KeyStorePath `
+            --ks-key-alias $KeyAlias `
+            --ks-pass env:FENIX_STORE_PASSWORD `
+            --key-pass env:FENIX_KEY_PASSWORD `
+            --out $target `
+            $source
+
+        if ($LASTEXITCODE -ne 0) {
+            throw "Signing failed for $($variant.Key)"
+        }
+
+        Write-Output "Signed $([IO.Path]::GetFileName($target))"
+    }
+}
+finally {
+    Remove-Item Env:FENIX_STORE_PASSWORD -ErrorAction SilentlyContinue
+    Remove-Item Env:FENIX_KEY_PASSWORD -ErrorAction SilentlyContinue
+}

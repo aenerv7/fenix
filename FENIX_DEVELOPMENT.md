@@ -1,0 +1,134 @@
+# Fenix development
+
+## Scope
+
+Fenix is maintained as a focused Android fork. Use `fenix:*` Gradle tasks and do not build Focus.
+Mozilla's general Firefox source documentation remains authoritative for the rest of the tree.
+
+## Repository-local state
+
+The wrapper at `tools/fenix/mach-local.ps1` redirects developer state into the checkout:
+
+| State | Repository path |
+| --- | --- |
+| Mozilla toolchains and Android SDK/NDK | `.mozbuild/` |
+| Gradle cache | `.gradle/` |
+| Cargo and Rustup | `.cargo/`, `.rustup/` |
+| Android user data and AVDs | `.android/`, `.mozbuild/android-device/` |
+| Temporary files | `.tmp/` |
+| Build output | `obj-firefox-android-aarch64/` |
+| Logs, screenshots, and recordings | `artifacts/` |
+
+These paths are ignored by Git.
+
+## Bootstrap
+
+On Windows, download MozillaBuild from Mozilla's official distribution and extract it to
+`.toolchain/mozilla-build/`. This location is ignored by Git and is the only host-level prerequisite
+used by the wrapper.
+
+From PowerShell at the repository root:
+
+```powershell
+.\tools\fenix\mach-local.ps1 bootstrap
+```
+
+The wrapper then directs bootstrap downloads into `.mozbuild/`. The checked-in mozconfig selects
+`mobile/android`, targets `aarch64`, and writes the object directory inside the checkout.
+
+## Searchfox CLI
+
+Searchfox CLI is repository-local and must be invoked through
+`tools/fenix/searchfox-local.ps1`. Do not rely on a global executable or add it to `PATH`.
+
+Install it once from the repository root:
+
+```powershell
+cargo install --root .\searchfox-cli searchfox-cli
+.\tools\fenix\searchfox-local.ps1 --help
+```
+
+The ignored installation lives under `searchfox-cli/`, and the wrapper stores cache data under
+`.mozbuild/searchfox-cache`. See [tools/fenix/README.md](tools/fenix/README.md) for the canonical
+command reference and examples. Root-level `AGENTS.md` directs future development sessions to the
+same wrapper.
+
+## Build and test
+
+```powershell
+# Debug APKs
+.\tools\fenix\mach-local.ps1 gradle fenix:assembleDebug
+
+# Fenix unit tests
+.\tools\fenix\mach-local.ps1 gradle fenix:testDebugUnitTest
+
+# Kotlin formatting and lint
+.\tools\fenix\mach-local.ps1 gradle fenix:ktlintFormat fenix:ktlint
+
+# Multi-locale release APKs, without Focus
+.\tools\fenix\build-release-local.ps1
+```
+
+Release builds must use `build-release-local.ps1`. It reads the upstream Android locale list,
+packages the matching Gecko locales into GeckoView, assembles Fenix without regenerating the
+multi-locale omnijar, and verifies every ABI APK. Running `fenix:assembleRelease` directly produces
+an `en-US`-only GeckoView even though the Android UI resources remain multilingual.
+
+For a narrow test class, append Gradle's test selector:
+
+```powershell
+.\tools\fenix\mach-local.ps1 gradle fenix:testDebugUnitTest `
+    --tests org.mozilla.fenix.tabgroups.ExpandedTabGroupTest
+```
+
+Slow command output should be redirected to `artifacts/` and inspected there instead of piping the
+live process through output filters.
+
+### Windows native-test limitation in the 154.0.1 baseline
+
+Some Fenix JVM test classes use `FenixGleanTestRule`, which loads Application Services through JNA.
+The upstream `full-megazord-libsForTests-154.0.1.jar` contains Linux and macOS megazord libraries but
+does not contain the required Windows native libraries. On native Windows, these classes fail during
+test-rule initialization with `UnsatisfiedLinkError` for `jnidispatch.dll`; their test bodies have not
+started at that point.
+
+Do not repeatedly clear Gradle caches or download only `jnidispatch.dll`: JNA is merely the first
+missing layer, and the Windows megazord is absent as well. Run affected Glean-backed unit tests in a
+Linux environment or CI. Unaffected unit tests, lint, APK builds, emulator tests, and visual checks
+continue to run on Windows. Recheck this limitation after changing `FENIX_UPSTREAM_RELEASE`, because a
+newer official baseline may provide complete host-native test artifacts.
+
+## Local signing
+
+Signing files are local-only and must never be committed:
+
+- `MAGI-OpenSource.jks`
+- `signing-local.properties`
+
+The properties file has this shape:
+
+```properties
+storePassword=replace-with-local-value
+keyPassword=replace-with-local-value
+```
+
+After `build-release-local.ps1`, sign all supported ABI APKs with:
+
+```powershell
+.\tools\fenix\sign-release-local.ps1 `
+    -KeyStorePath .\MAGI-OpenSource.jks `
+    -KeyAlias magi-opensource
+```
+
+The script reads passwords from the ignored properties file and passes them to `apksigner` through
+process environment variables. It does not print passwords.
+
+## Before committing
+
+```powershell
+git diff --check
+git status --short --untracked-files=all
+```
+
+Confirm that no key stores, password files, APKs, SDKs, AVDs, logs, or generated object directories
+appear in the staged changes.

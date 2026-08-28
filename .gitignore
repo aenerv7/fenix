@@ -415,6 +415,17 @@ toolkit/crashreporter/minidump-analyzer/target/
 CLAUDE.local.md
 **/.claude/settings.local.json
 
+# Fenix repository-local toolchains, state, and signing material.
+/.toolchain/
+/.mozbuild/
+/.cargo/
+/.rustup/
+/.android/
+/.tmp/
+/searchfox-cli/
+/*.jks
+/signing-local.properties
+
 # Ignore claude scheduled task lock file
 **/.claude/scheduled_tasks.lock
 

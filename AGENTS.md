@@ -9,12 +9,12 @@ The Firefox repository is very big and so it isn't advised to blindly run rg or 
 
 ## Tooling for Firefox work
 - Some tools useful for Firefox work are available in the `moz` MCP server
-- Firefox is a very large repository, and it isn't efficient to search with usual tooling. When working on Firefox, you MUST use the `searchfox-cli` tool if you want to know about something. Its `--help` flag will show the options, but you probably want:
+- Firefox is a very large repository, and it isn't efficient to search with usual tooling. When working on Firefox, you MUST use the `searchfox-cli` tool if you want to know about something. In this fork, always invoke the repository-local installation through `\.\tools\fenix\searchfox-local.ps1`; do not assume that `searchfox-cli` is available on `PATH`. Installation, cache paths, and more examples are documented in `tools/fenix/README.md`. Its `--help` flag will show the options, but you probably want:
 ```
-searchfox-cli --define 'AudioContext::AudioContext' # get function impl
-searchfox-cli --define 'AudioSink' # get class definition
-searchfox-cli --path ipdl -q 'MySearchTerm' # search for a text string, restrict on path
-searchfox-cli --id AudioSink -l 150 --cpp # search for identifier audio sink in C++ code, 150 results max
+.\tools\fenix\searchfox-local.ps1 --define 'AudioContext::AudioContext' # get function impl
+.\tools\fenix\searchfox-local.ps1 --define 'AudioSink' # get class definition
+.\tools\fenix\searchfox-local.ps1 --path ipdl -q 'MySearchTerm' # search for a text string, restrict on path
+.\tools\fenix\searchfox-local.ps1 --id AudioSink -l 150 --cpp # search for identifier audio sink in C++ code, 150 results max
 ```
 - For C++, Rust and Java code, prefer searching for identifiers with `searchfox-cli`. Use text search restricted by path otherwise.
 - Do not try to use identifier search for front-end identifiers like JS object or function names, CSS classes or HTML custom element names.
