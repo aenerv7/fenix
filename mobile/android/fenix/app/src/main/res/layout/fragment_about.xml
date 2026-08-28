@@ -17,6 +17,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <ImageView
+            android:id="@+id/wordmark"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/about_header_fenix_logo_height"
+            android:layout_marginStart="@dimen/about_header_icon_margin_start_end"
+            android:layout_marginTop="@dimen/about_header_icon_margin_top"
+            android:layout_marginEnd="@dimen/about_header_icon_margin_start_end"
+            android:contentDescription="@string/app_name"
+            android:importantForAccessibility="no"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.75"
+            app:srcCompat="?fenixLogo" />
+
         <TextView
             android:id="@+id/about_content"
             style="@style/Header16TextStyle"
@@ -28,7 +43,7 @@
             android:textAlignment="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/wordmark"
             app:layout_constraintWidth_percent="0.8"
             tools:text="@string/about_content" />
 

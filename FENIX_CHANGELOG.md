@@ -8,8 +8,9 @@ Upstream baseline: `FIREFOX-ANDROID_154_0_1_RELEASE`
 
 - Changed the Android application ID to `github.aenerv7.fenix`.
 - Changed the user-facing application name to `Fenix`.
-- Removed the Firefox logo and wordmark from the new-tab homepage.
-- Replaced the About page's Firefox wordmark with localized fork attribution.
+- Replaced the release launcher icon with the centered white Dwarf Hotot rabbit branding.
+- Restored the new-tab homepage and About page wordmarks with the rabbit logo and `Fenix` name.
+- Replaced the About page's Firefox attribution with localized fork attribution.
 - Removed the upstream `-default` suffix from the displayed version.
 - Kept Focus outside the supported build and release scope.
 

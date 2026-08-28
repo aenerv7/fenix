@@ -1,5 +1,10 @@
 # Fenix
 
+<p align="center">
+  <img src="mobile/android/fenix/app/src/release/res/mipmap-xxxhdpi/ic_launcher.webp"
+       alt="Fenix 白色凤眼海棠侏儒兔图标" width="128">
+</p>
+
 Fenix 是一个面向个人使用的 Android 浏览器 QoL 优化 fork。项目以 Mozilla 发布的
 Firefox Android 正式版标签为不可变基线，在每个正式版之上维护一组范围明确、可审查、
 可迁移的补丁。
@@ -7,6 +12,7 @@ Firefox Android 正式版标签为不可变基线，在每个正式版之上维�
 - 当前上游基线：`FIREFOX-ANDROID_154_0_1_RELEASE`
 - 应用名称：`Fenix`
 - Android application ID：`github.aenerv7.fenix`
+- 正式版品牌：白色凤眼海棠侏儒兔图标与 `Fenix` wordmark
 
 > Fenix 是独立维护的非官方项目，未获得 Mozilla Foundation 或其关联方的赞助、认可或
 > 背书。本仓库中对 Firefox、Mozilla 和 GeckoView 的文字引用仅用于如实说明上游来源和
@@ -14,6 +20,8 @@ Firefox Android 正式版标签为不可变基线，在每个正式版之上维�
 
 ## QoL 改动
 
+- 使用独立兔子品牌替换正式版 launcher、圆形图标、adaptive icon 和主题图标，并在
+  新标签页左上角及关于页恢复“兔子 + Fenix”wordmark。
 - 补全本版本缺失的简体中文本地化，包括标签页群组和移动收藏夹相关界面。
 - 从应用 UI、Android 自动填充服务和默认同步数据范围中移除密码、地址、信用卡及个人
   信息管理功能；系统自动填充提供方列表中不再提供 Fenix。

@@ -6,6 +6,7 @@ package org.mozilla.fenix.home.ui
 
 internal object HomepageTestTag {
     const val HOMEPAGE = "homepage.view"
+    const val HOMEPAGE_WORDMARK = "homepage.wordmark"
     const val PRIVATE_BROWSING_HOMEPAGE_BUTTON = "private.browsing.homepage.button"
     const val POCKET_STORIES = "pocket.stories"
     const val HOMEPAGE_STORY = "homepage.story"

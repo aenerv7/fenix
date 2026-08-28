@@ -4,10 +4,12 @@
 
 package org.mozilla.fenix.home.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -33,6 +35,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import org.mozilla.fenix.R
 import org.mozilla.fenix.browser.browsingmode.BrowsingMode
+import org.mozilla.fenix.home.ui.HomepageTestTag.HOMEPAGE_WORDMARK
 import org.mozilla.fenix.home.ui.HomepageTestTag.PRIVATE_BROWSING_HOMEPAGE_BUTTON
 import org.mozilla.fenix.theme.FirefoxTheme
 import org.mozilla.fenix.theme.PreviewThemeProvider
@@ -61,6 +64,17 @@ fun HomepageHeader(
             .padding(start = 16.dp, end = 16.dp, top = 18.dp, bottom = 32.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        Image(
+            modifier = Modifier
+                .height(40.dp)
+                .semantics {
+                    testTagsAsResourceId = true
+                    testTag = HOMEPAGE_WORDMARK
+                },
+            painter = painterResource(getAttr(R.attr.fenixLogo)),
+            contentDescription = stringResource(R.string.app_name),
+        )
+
         Spacer(modifier = Modifier.weight(1f))
 
         PrivateBrowsingButton(
