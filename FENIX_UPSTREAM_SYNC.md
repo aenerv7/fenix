@@ -6,7 +6,7 @@ Fenix uses official Firefox Android release tags as immutable baselines:
 
 ```text
 FIREFOX-ANDROID_154_0_1_RELEASE  + Fenix QoL commits = fenix-154.0.1-r1
-FIREFOX-ANDROID_155_0_RELEASE    + replayed commits  = fenix-155.0-r1
+FIREFOX-ANDROID_155_0_RELEASE    + upstream delta + Fenix changes = fenix-155.0-r1
 ```
 
 Daily development branches and prerelease build tags are not used as stable baselines. The canonical
