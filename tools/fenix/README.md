@@ -44,9 +44,10 @@ files, and build output into ignored repository paths:
 ```
 
 Use `build-release-local.ps1` for release APKs. It builds Gecko separately for arm64-v8a,
-armeabi-v7a, and x86_64, follows Gecko's multi-locale packaging flow, and verifies that the official
-Android Gecko locales plus the matching native Gecko libraries are present in every output APK.
-Use `sign-release-local.ps1` to sign and verify those artifacts.
+armeabi-v7a, and x86_64, follows Gecko's multi-locale packaging flow, verifies that the official
+Android Gecko locales plus the matching native Gecko libraries are present, and signs the selected
+artifacts. The signed filename uses the current baseline and release revision, such as
+`Fenix-154.0.1-r5-arm64-v8a-release.apk`.
 Pass `-Abi x86_64` (or another ABI) to resume a single failed architecture without rebuilding the
 completed APKs.
 
@@ -59,6 +60,11 @@ avoid rebuilding Gecko and repackaging all locales:
 
 Omit `-Abi` to produce all supported APKs. Do not use `-ReuseGecko` after changing Gecko, C++, Rust,
 or Gecko locale sources; run the default full build instead.
+
+When the current commit already has a matching `fenix-<version>-rN` tag, the build reuses that
+revision. Otherwise it selects the next revision after the highest matching local or `origin` tag.
+Pass `-VersionName <version>-rN` to rebuild a specific release. Use `sign-release-local.ps1 -Abi`
+only when re-signing an existing unsigned APK without rebuilding it.
 
 See [FENIX_DEVELOPMENT.md](../../FENIX_DEVELOPMENT.md) for setup, testing, emulator, and local signing
 instructions, including the Firefox Android 154.0.1 Windows/JNA unit-test limitation. Do not treat

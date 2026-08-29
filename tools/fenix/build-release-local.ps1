@@ -5,6 +5,10 @@
 param(
     [ValidateSet("arm64-v8a", "armeabi-v7a", "x86_64")]
     [string[]] $Abi = @("arm64-v8a", "armeabi-v7a", "x86_64"),
+    [string] $VersionName,
+    [string] $KeyStorePath,
+    [string] $KeyAlias = "magi-opensource",
+    [string] $PropertiesPath,
     [switch] $SkipBuild,
     [switch] $ReuseGecko
 )
@@ -12,6 +16,7 @@ param(
 $ErrorActionPreference = "Stop"
 $root = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
 $mach = Join-Path $PSScriptRoot "mach-local.ps1"
+$sign = Join-Path $PSScriptRoot "sign-release-local.ps1"
 $powershell = Join-Path $PSHOME "pwsh.exe"
 $localeFile = Join-Path $root "mobile\android\locales\all-locales"
 $locales = @(Get-Content -LiteralPath $localeFile | ForEach-Object { $_.Trim() } | Where-Object { $_ })
@@ -34,6 +39,69 @@ $configurations = @(
 )
 $selectedConfigurations = @($configurations | Where-Object { $_.Abi -in $Abi })
 $unsignedDirectory = Join-Path $root "artifacts\fenix-release\unsigned"
+
+function Get-ReleaseVersionName {
+    param([Parameter(Mandatory)][string] $Baseline)
+
+    if ($Baseline -notmatch "^\d+\.\d+(\.\d+)?$") {
+        throw "Invalid Fenix baseline version: $Baseline"
+    }
+
+    $escapedBaseline = [regex]::Escape($Baseline)
+    $tagGlob = "fenix-$Baseline-r*"
+    $tagPattern = "^fenix-$escapedBaseline-r([1-9]\d*)$"
+    $headTags = @(& git -C $root tag --points-at HEAD --list $tagGlob)
+    if ($LASTEXITCODE -ne 0) {
+        throw "Unable to inspect release tags on the current commit"
+    }
+
+    $headRevisions = @($headTags | ForEach-Object {
+        if ($_ -match $tagPattern) {
+            [int] $matches[1]
+        }
+    })
+    if ($headRevisions) {
+        $revision = ($headRevisions | Measure-Object -Maximum).Maximum
+        return "$Baseline-r$revision"
+    }
+
+    $allTags = @(& git -C $root tag --list $tagGlob)
+    if ($LASTEXITCODE -ne 0) {
+        throw "Unable to inspect local release tags"
+    }
+    $remoteTags = @(& git -C $root ls-remote --tags origin "refs/tags/$tagGlob")
+    if ($LASTEXITCODE -ne 0) {
+        throw "Unable to inspect origin release tags"
+    }
+
+    $revisions = @($allTags | ForEach-Object {
+        if ($_ -match $tagPattern) {
+            [int] $matches[1]
+        }
+    })
+    $revisions += @($remoteTags | ForEach-Object {
+        $tag = ($_ -split "`t", 2)[-1] -replace "^refs/tags/", "" -replace "\^\{\}$", ""
+        if ($tag -match $tagPattern) {
+            [int] $matches[1]
+        }
+    })
+    $revision = if ($revisions) {
+        [int] (($revisions | Measure-Object -Maximum).Maximum) + 1
+    }
+    else {
+        1
+    }
+    return "$Baseline-r$revision"
+}
+
+$baseline = (Get-Content (Join-Path $root "FENIX_UPSTREAM_RELEASE") -Raw).Trim()
+if (-not $VersionName) {
+    $VersionName = Get-ReleaseVersionName -Baseline $baseline
+}
+elseif ($VersionName -notmatch "^$([regex]::Escape($baseline))-r[1-9]\d*$") {
+    throw "VersionName must match the current baseline: $baseline-rN"
+}
+Write-Output "Release version: $VersionName"
 
 if (-not $locales -or -not $locales.Contains("zh-CN")) {
     throw "The official Android locale list is empty or does not contain zh-CN: $localeFile"
@@ -245,3 +313,16 @@ finally {
         $env:MOZ_CHROME_MULTILOCALE = $previousMultilocale
     }
 }
+
+$signParameters = @{
+    Abi = @($selectedConfigurations.Abi)
+    VersionName = $VersionName
+    KeyAlias = $KeyAlias
+}
+if ($KeyStorePath) {
+    $signParameters.KeyStorePath = $KeyStorePath
+}
+if ($PropertiesPath) {
+    $signParameters.PropertiesPath = $PropertiesPath
+}
+& $sign @signParameters

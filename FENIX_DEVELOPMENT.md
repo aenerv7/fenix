@@ -72,7 +72,7 @@ same wrapper.
 Release builds must use `build-release-local.ps1`. It creates separate Gecko builds for arm64-v8a,
 armeabi-v7a, and x86_64, reads the upstream Android locale list, packages the matching Gecko locales
 into GeckoView, and assembles Fenix without regenerating the multi-locale omnijar. It then verifies
-the complete locale set and matching Gecko native libraries in every ABI APK. Running
+the complete locale set and matching Gecko native libraries and signs every selected ABI APK. Running
 `fenix:assembleRelease` directly produces an `en-US`-only GeckoView even though the Android UI
 resources remain multilingual, and a single Gecko target cannot supply valid native libraries for
 the other ABI APKs.
@@ -93,6 +93,12 @@ the cached Gecko packages:
 Omit `-Abi` to rebuild all supported APKs. This path verifies the cached Gecko libraries and
 multi-locale package, then rebuilds only the Android application. Do not use it after changing
 Gecko, C++, Rust, or Gecko locale sources; use the default full build in that case.
+
+Signed filenames use the baseline from `FENIX_UPSTREAM_RELEASE`. When the current commit already has
+a matching `fenix-<version>-rN` tag, that revision is reused. Otherwise the script selects the next
+revision after the highest matching local or `origin` tag. For example, a new untagged commit after
+`fenix-154.0.1-r4` produces `Fenix-154.0.1-r5-arm64-v8a-release.apk`. Use `-VersionName` to rebuild a
+specific release revision.
 
 For a narrow test class, append Gradle's test selector:
 
@@ -132,10 +138,12 @@ storePassword=replace-with-local-value
 keyPassword=replace-with-local-value
 ```
 
-After `build-release-local.ps1`, sign all supported ABI APKs with:
+`build-release-local.ps1` signs selected APKs automatically. To re-sign an existing unsigned APK
+without rebuilding it, run:
 
 ```powershell
-.\tools\fenix\sign-release-local.ps1 `
+.\tools\fenix\sign-release-local.ps1 -Abi arm64-v8a `
+    -VersionName 154.0.1-r5 `
     -KeyStorePath .\MAGI-OpenSource.jks `
     -KeyAlias magi-opensource
 ```

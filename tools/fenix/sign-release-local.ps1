@@ -3,6 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 param(
+    [ValidateSet("arm64-v8a", "armeabi-v7a", "x86_64")]
+    [string[]] $Abi = @("arm64-v8a", "armeabi-v7a", "x86_64"),
     [string] $VersionName,
     [string] $KeyStorePath,
     [string] $KeyAlias = "magi-opensource",
@@ -14,8 +16,9 @@ $root = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
 $unsignedDirectory = Join-Path $root "artifacts\fenix-release\unsigned"
 $signedDirectory = Join-Path $root "artifacts\fenix-release\signed"
 
-if (-not $VersionName) {
-    $VersionName = (Get-Content (Join-Path $root "FENIX_UPSTREAM_RELEASE") -Raw).Trim()
+$baseline = (Get-Content (Join-Path $root "FENIX_UPSTREAM_RELEASE") -Raw).Trim()
+if (-not $VersionName -or $VersionName -notmatch "^$([regex]::Escape($baseline))-r[1-9]\d*$") {
+    throw "VersionName must match the current baseline: $baseline-rN"
 }
 if (-not $KeyStorePath) {
     $KeyStorePath = Join-Path $root "MAGI-OpenSource.jks"
@@ -49,6 +52,7 @@ $variants = [ordered] @{
     "armeabi-v7a" = "fenix-armeabi-v7a-release.apk"
     "x86_64" = "fenix-x86_64-release.apk"
 }
+$selectedVariants = @($variants.GetEnumerator() | Where-Object { $_.Key -in $Abi })
 
 $env:FENIX_STORE_PASSWORD = $properties.storePassword
 $env:FENIX_KEY_PASSWORD = $properties.keyPassword
@@ -58,7 +62,7 @@ Add-Type -AssemblyName System.IO.Compression.FileSystem
 New-Item -ItemType Directory -Force -Path $signedDirectory | Out-Null
 
 try {
-    foreach ($variant in $variants.GetEnumerator()) {
+    foreach ($variant in $selectedVariants) {
         $source = Join-Path $unsignedDirectory $variant.Value
         $target = Join-Path $signedDirectory "Fenix-$VersionName-$($variant.Key)-release.apk"
 
