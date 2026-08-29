@@ -52,10 +52,6 @@ try {
     $targetTag = "FIREFOX-ANDROID_$($Version.Replace('.', '_'))_RELEASE"
     $candidateBranch = "sync/firefox-android-$Version"
 
-    & git show-ref --verify --quiet "refs/tags/$currentTag"
-    if ($LASTEXITCODE -ne 0) {
-        throw "Current baseline tag is missing locally: $currentTag"
-    }
     & git show-ref --verify --quiet "refs/heads/$SourceBranch"
     if ($LASTEXITCODE -ne 0) {
         throw "Source branch does not exist: $SourceBranch"
@@ -66,18 +62,35 @@ try {
     }
 
     Invoke-Git fetch --no-tags $UpstreamRemote `
+        "+refs/tags/$currentTag`:refs/tags/$currentTag" `
         "+refs/tags/$targetTag`:refs/tags/$targetTag" `
         --depth=1
     Invoke-Git switch --create $candidateBranch $SourceBranch
 
-    & git rebase --onto $targetTag $currentTag
+    & git merge --no-ff --no-commit --strategy=ours --allow-unrelated-histories $targetTag
     if ($LASTEXITCODE -ne 0) {
-        throw @"
-Rebase stopped for conflict resolution. Resolve each conflict, run:
-  git add <resolved-files>
-  git rebase --continue
-After the rebase succeeds, write '$Version' to FENIX_UPSTREAM_RELEASE and run the validation checklist.
+        throw "Unable to prepare the merge with $targetTag"
+    }
+
+    $patchFile = Join-Path (Join-Path $root ".tmp") "fenix-upstream-sync.patch"
+    New-Item -ItemType Directory -Force -Path (Split-Path $patchFile) | Out-Null
+    try {
+        & git diff --binary --full-index --no-ext-diff `
+            $currentTag $targetTag --output="$patchFile"
+        if ($LASTEXITCODE -ne 0) {
+            throw "Unable to create the Firefox patch from $currentTag to $targetTag"
+        }
+
+        & git apply --3way --index $patchFile
+        if ($LASTEXITCODE -ne 0) {
+            throw @"
+Firefox Android $Version conflicts with Fenix changes. Resolve the affected files on
+'$candidateBranch', stage them, and commit the prepared merge manually.
 "@
+        }
+    }
+    finally {
+        Remove-Item -LiteralPath $patchFile -Force -ErrorAction SilentlyContinue
     }
 
     Set-Content -LiteralPath $baselineFile -Value $Version -Encoding utf8NoBOM

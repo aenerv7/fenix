@@ -12,9 +12,9 @@ FIREFOX-ANDROID_155_0_RELEASE    + replayed commits  = fenix-155.0-r1
 Daily development branches and prerelease build tags are not used as stable baselines. The canonical
 current baseline is stored in `FENIX_UPSTREAM_RELEASE`.
 
-The repository is intentionally usable as a shallow clone. Updating therefore fetches the exact new
-release tag and replays the fork commits with `git rebase --onto`; it does not require downloading the
-complete Firefox history.
+The repository is intentionally usable as a shallow clone. Updating therefore fetches the exact old
+and new release tags, applies the upstream tree delta to Fenix, and records a merge commit; it does
+not require downloading the complete Firefox history.
 
 ## One-time remote layout
 
@@ -46,30 +46,32 @@ The script performs these operations:
 1. Validates the version and clean worktree.
 2. Resolves `FIREFOX-ANDROID_155_0_RELEASE` from the official repository.
 3. Creates `sync/firefox-android-155.0` from `fenix`.
-4. Replays the Fenix commits from the previous official baseline onto the new official tag.
-5. Updates `FENIX_UPSTREAM_RELEASE` after a successful rebase.
+4. Starts a merge with the new official tag and applies the upstream tree delta to Fenix.
+5. Updates `FENIX_UPSTREAM_RELEASE` after the patch applies successfully.
 
 It does not merge into `fenix`, create a release tag, push, or publish binaries.
 
 ## Resolve conflicts
 
-For each conflict:
+If the Fenix patch cannot be applied cleanly, the merge remains open on the candidate branch. Resolve
+each affected file, stage it, update the baseline marker, and commit the prepared merge:
 
 ```powershell
 git status
 git add <resolved-files>
-git rebase --continue
+git add FENIX_UPSTREAM_RELEASE
+git commit -m "Update Fenix baseline to Firefox Android 155.0"
 ```
 
 To abandon the candidate safely:
 
 ```powershell
-git rebase --abort
+git merge --abort
 git switch fenix
 git branch -D sync/firefox-android-155.0
 ```
 
-After manually completing a conflicted rebase, update `FENIX_UPSTREAM_RELEASE` to the new version.
+After manually completing a conflicted sync, update `FENIX_UPSTREAM_RELEASE` to the new version.
 
 ## Validate the candidate
 
@@ -94,7 +96,8 @@ Also install the debug APK and manually verify:
 
 ## Promote the candidate
 
-Commit the updated baseline marker and any conflict resolutions, then fast-forward `fenix`:
+Commit the updated baseline marker and any conflict resolutions, then merge the candidate into
+`fenix`:
 
 ```powershell
 git add FENIX_UPSTREAM_RELEASE
@@ -104,6 +107,14 @@ git merge --ff-only sync/firefox-android-155.0
 git tag -a fenix-155.0-r1 -m "Fenix 155.0-r1"
 git push origin fenix fenix-155.0-r1
 ```
+
+## Automated check and merge
+
+The `Sync Firefox Android release` GitHub Actions workflow checks official release tags every day
+and can also be started manually. When a newer `FIREFOX-ANDROID_<VERSION>_RELEASE` tag exists, it
+prepares an `automation/firefox-android-<VERSION>` branch, runs Fenix invariant checks, opens a pull
+request, and merges it into `fenix`. A patch conflict or failed invariant check leaves `fenix`
+unchanged and fails the workflow for manual review. The workflow does not build or publish APKs.
 
 Keep the upstream release tag unchanged. Fenix tags identify the fork revision and must never be used
 to impersonate an official Mozilla release.
