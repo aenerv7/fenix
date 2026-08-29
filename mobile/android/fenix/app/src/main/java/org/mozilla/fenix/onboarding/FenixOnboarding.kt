@@ -24,7 +24,10 @@ class FenixOnboarding(context: Context) : PreferencesHolder {
         )
     }
 
-    private var onboardedVersion by intPreference(LAST_VERSION_ONBOARDING_KEY, default = 0)
+    private var onboardedVersion by intPreference(
+        LAST_VERSION_ONBOARDING_KEY,
+        default = CURRENT_ONBOARDING_VERSION,
+    )
 
     // The onboarding configuration is retrieved lazily because:
     // - We do not want to record exposure if a user is not encountering onboarding

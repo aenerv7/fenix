@@ -1,5 +1,16 @@
 # Fenix changes
 
+## 154.0.1-r4
+
+Upstream baseline: `FIREFOX-ANDROID_154_0_1_RELEASE`
+
+### First-run experience
+
+- Skipped the initial onboarding flow for new installations so Fenix starts with the default
+  configuration.
+- Replaced the Firefox splash-screen artwork with the Fenix rabbit launcher artwork.
+- Added unit coverage for the default completed onboarding state.
+
 ## 154.0.1-r3
 
 Upstream baseline: `FIREFOX-ANDROID_154_0_1_RELEASE`

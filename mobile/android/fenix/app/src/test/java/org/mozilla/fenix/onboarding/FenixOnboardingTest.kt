@@ -55,6 +55,15 @@ class FenixOnboardingTest {
     }
 
     @Test
+    fun testNewInstallIsConsideredOnboarded() {
+        every {
+            preferences.getInt(LAST_VERSION_ONBOARDING_KEY, CURRENT_ONBOARDING_VERSION)
+        } returns CURRENT_ONBOARDING_VERSION
+
+        assertTrue(onboarding.userHasBeenOnboarded())
+    }
+
+    @Test
     fun testFinish() {
         onboarding.finish()
 
