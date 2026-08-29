@@ -5,7 +5,8 @@
 param(
     [ValidateSet("arm64-v8a", "armeabi-v7a", "x86_64")]
     [string[]] $Abi = @("arm64-v8a", "armeabi-v7a", "x86_64"),
-    [switch] $SkipBuild
+    [switch] $SkipBuild,
+    [switch] $ReuseGecko
 )
 
 $ErrorActionPreference = "Stop"
@@ -140,6 +141,24 @@ function Assert-ApkGeckoLibraries {
     }
 }
 
+function Assert-CachedGeckoPackage {
+    param(
+        [Parameter(Mandatory)][string] $ObjDir,
+        [Parameter(Mandatory)][string] $Abi
+    )
+
+    $geckoviewDirectory = Join-Path $root "$ObjDir\dist\geckoview"
+    $requiredFiles = @(
+        (Join-Path $geckoviewDirectory "assets\omni.ja"),
+        (Join-Path $geckoviewDirectory "lib\$Abi\libmozglue.so"),
+        (Join-Path $geckoviewDirectory "lib\$Abi\libxul.so")
+    )
+    $missingFiles = @($requiredFiles | Where-Object { -not (Test-Path -LiteralPath $_) })
+    if ($missingFiles) {
+        throw "Cached Gecko package is incomplete for $Abi. Missing: $($missingFiles -join ', ')"
+    }
+}
+
 Add-Type -AssemblyName System.IO.Compression
 $expectedLocales = @("en-US") + $locales
 $previousTarget = $env:FENIX_ANDROID_TARGET
@@ -161,12 +180,18 @@ try {
         $env:MOZ_OBJDIR = Join-Path $root $configuration.ObjDir
         Remove-Item Env:MOZ_CHROME_MULTILOCALE -ErrorAction SilentlyContinue
 
-        if (-not $SkipBuild) {
-            Invoke-LocalMach -Arguments @("build")
-            Invoke-LocalMach -Arguments @("package")
+        if ($ReuseGecko) {
+            Assert-CachedGeckoPackage -ObjDir $configuration.ObjDir -Abi $configuration.Abi
+            Write-Output "Reusing cached Gecko package for $($configuration.Abi)"
         }
+        else {
+            if (-not $SkipBuild) {
+                Invoke-LocalMach -Arguments @("build")
+                Invoke-LocalMach -Arguments @("package")
+            }
 
-        Invoke-LocalMach -Arguments (@("package-multi-locale", "--locales") + $locales)
+            Invoke-LocalMach -Arguments (@("package-multi-locale", "--locales") + $locales)
+        }
 
         $env:MOZ_CHROME_MULTILOCALE = $locales -join " "
         Invoke-LocalMach -Arguments @("gradle", "fenix:assembleRelease")

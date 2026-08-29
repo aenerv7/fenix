@@ -83,6 +83,17 @@ To retry one architecture while preserving completed APKs, pass its ABI to the r
 .\tools\fenix\build-release-local.ps1 -Abi x86_64
 ```
 
+For Fenix-only Kotlin, resource, or manifest changes after a successful full release build, reuse
+the cached Gecko packages:
+
+```powershell
+.\tools\fenix\build-release-local.ps1 -ReuseGecko -Abi arm64-v8a
+```
+
+Omit `-Abi` to rebuild all supported APKs. This path verifies the cached Gecko libraries and
+multi-locale package, then rebuilds only the Android application. Do not use it after changing
+Gecko, C++, Rust, or Gecko locale sources; use the default full build in that case.
+
 For a narrow test class, append Gradle's test selector:
 
 ```powershell

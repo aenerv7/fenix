@@ -50,6 +50,16 @@ Use `sign-release-local.ps1` to sign and verify those artifacts.
 Pass `-Abi x86_64` (or another ABI) to resume a single failed architecture without rebuilding the
 completed APKs.
 
+For Fenix Kotlin, resource, or manifest-only changes, reuse the already verified Gecko packages to
+avoid rebuilding Gecko and repackaging all locales:
+
+```powershell
+.\tools\fenix\build-release-local.ps1 -ReuseGecko -Abi arm64-v8a
+```
+
+Omit `-Abi` to produce all supported APKs. Do not use `-ReuseGecko` after changing Gecko, C++, Rust,
+or Gecko locale sources; run the default full build instead.
+
 See [FENIX_DEVELOPMENT.md](../../FENIX_DEVELOPMENT.md) for setup, testing, emulator, and local signing
 instructions, including the Firefox Android 154.0.1 Windows/JNA unit-test limitation. Do not treat
 that native artifact failure as a reason to clear the repository-local Gradle cache repeatedly.
