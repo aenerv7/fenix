@@ -110,11 +110,13 @@ git push origin fenix fenix-155.0-r1
 
 ## Automated check and merge
 
-The `Sync Firefox Android release` GitHub Actions workflow checks official release tags every day
-and can also be started manually. When a newer `FIREFOX-ANDROID_<VERSION>_RELEASE` tag exists, it
-prepares an `automation/firefox-android-<VERSION>` branch, runs Fenix invariant checks, opens a pull
-request, and merges it into `fenix`. A patch conflict or failed invariant check leaves `fenix`
-unchanged and fails the workflow for manual review. The workflow does not build or publish APKs.
+The `Sync Firefox Android release` GitHub Actions workflow checks official release tags every day at
+05:00 Beijing time and can also be started manually. When a newer
+`FIREFOX-ANDROID_<VERSION>_RELEASE` tag exists, it prepares an
+`automation/firefox-android-<VERSION>` branch, runs Fenix invariant checks, opens a pull request,
+and merges it into `fenix`. A patch conflict or failed invariant check leaves `fenix` unchanged and
+fails the workflow for manual review. The workflow does not build APKs or publish releases; those
+remain part of the repository-local manual release process.
 
 Keep the upstream release tag unchanged. Fenix tags identify the fork revision and must never be used
 to impersonate an official Mozilla release.
