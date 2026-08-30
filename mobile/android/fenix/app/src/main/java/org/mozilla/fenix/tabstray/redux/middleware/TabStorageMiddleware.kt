@@ -579,7 +579,6 @@ class TabStorageMiddleware(
         val transformedTabGroups = constructTabGroupMaps(tabGroups = tabGroups)
         val groupsIncludedInNormalTabs = hashSetOf<TabItemId>()
         var normalTabCount = 0
-        var selectedNormalTabIndex = 0
         var selectedPrivateTabIndex = 0
 
         tabs.forEach { tab ->
@@ -600,7 +599,6 @@ class TabStorageMiddleware(
                         assignedGroup = assignedGroup,
                         groupsIncludedInNormalTabs = groupsIncludedInNormalTabs,
                         normalTabs = normalItems,
-                        updateSelectedTabIndex = { selectedNormalTabIndex = it },
                     )
                 }
 
@@ -617,9 +615,6 @@ class TabStorageMiddleware(
                 else -> {
                     normalTabCount++
                     normalItems.add(displayTab)
-                    if (displayTab.isFocused) {
-                        selectedNormalTabIndex = normalItems.lastIndex
-                    }
                 }
             }
         }
@@ -633,7 +628,7 @@ class TabStorageMiddleware(
             selectedTabId = selectedTabId,
             normalItems = displayNormalItems,
             normalTabCount = normalTabCount,
-            selectedNormalItemIndex = selectedNormalTabIndex,
+            selectedNormalItemIndex = displayNormalItems.indexOfFirst { it.isFocused }.coerceAtLeast(0),
             inactiveTabs = inactiveTabs,
             privateTabs = privateTabs,
             selectedPrivateItemIndex = selectedPrivateTabIndex,
@@ -676,7 +671,6 @@ class TabStorageMiddleware(
         assignedGroup: MutableTabGroup,
         groupsIncludedInNormalTabs: HashSet<TabItemId>,
         normalTabs: MutableList<Any>,
-        updateSelectedTabIndex: (Int) -> Unit,
     ) {
         assignedGroup.tabs.add(tab)
 
@@ -689,7 +683,6 @@ class TabStorageMiddleware(
         }
 
         if (tab.isFocused) {
-            updateSelectedTabIndex(normalTabs.size - 1)
             assignedGroup.isFocused = true
             assignedGroup.initialScrollIndex = assignedGroup.tabs.lastIndex
         }

@@ -1,5 +1,16 @@
 # Fenix changes
 
+## 154.0.1-r6
+
+Upstream baseline: `FIREFOX-ANDROID_154_0_1_RELEASE`
+
+### Tab groups
+
+- Corrected the selected All Tabs item index to point to the containing group card instead of the
+  tab's former standalone position when grouped tabs are not contiguous in storage order.
+- Strengthened data transformation and Compose regression coverage for moving a selected tab from
+  the end of the list into an earlier group.
+
 ## 154.0.1-r5
 
 Upstream baseline: `FIREFOX-ANDROID_154_0_1_RELEASE`

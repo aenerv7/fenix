@@ -213,21 +213,26 @@ class TabLayoutTest {
 
     @Test
     fun `WHEN the selected tab becomes a tab group THEN the group is scrolled into view`() {
-        var selectedItemIndex by mutableStateOf(0)
-        var tabs by mutableStateOf<List<TabsTrayItem>>(
-            List(12) { index ->
-                createTab(
-                    id = "tab-$index",
-                    title = "Tab $index",
-                    url = "https://www.mozilla.org/$index",
-                )
-            },
+        val selectedTab = createTab(
+            id = "selected-tab",
+            title = "Selected tab",
+            url = "https://www.mozilla.org/selected",
         )
+        val groupTab = createTab(id = "group-tab", url = "https://www.mozilla.org/group")
         val group = createTabGroup(
             id = "target-group",
             title = "Target group",
-            tabs = listOf(createTab(id = "group-tab", url = "https://www.mozilla.org/group")),
+            tabs = listOf(groupTab),
         )
+        val standaloneTabs = List(12) { index ->
+            createTab(
+                id = "tab-$index",
+                title = "Tab $index",
+                url = "https://www.mozilla.org/$index",
+            )
+        }
+        var tabs by mutableStateOf<List<TabsTrayItem>>(listOf(group) + standaloneTabs + selectedTab)
+        var selectedItemIndex by mutableStateOf(tabs.lastIndex)
 
         composeTestRule.setContent {
             CompositionLocalProvider(LocalUnderTest provides true) {
@@ -257,8 +262,8 @@ class TabLayoutTest {
         }
 
         composeTestRule.waitForIdle()
-        selectedItemIndex = tabs.lastIndex
-        tabs = tabs.dropLast(1) + group
+        tabs = listOf(group.copy(tabs = group.tabs + selectedTab)) + standaloneTabs
+        selectedItemIndex = 0
         composeTestRule.waitForIdle()
 
         composeTestRule.onNodeWithTag("${TabsTrayTestTag.TAB_GROUP_ROOT}.${group.id}")

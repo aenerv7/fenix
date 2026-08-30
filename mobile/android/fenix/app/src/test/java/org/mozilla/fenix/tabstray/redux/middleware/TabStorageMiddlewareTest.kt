@@ -225,6 +225,53 @@ class TabStorageMiddlewareTest {
         }
 
     @Test
+    fun `GIVEN noncontiguous group tabs WHEN a grouped tab is selected THEN select the group item index`() = runTest {
+        val groupedTab = createTab(id = "grouped", url = "")
+        val selectedGroupedTab = createTab(id = "selected-grouped", url = "")
+        val standaloneTabs = List(size = 10) { index -> createTab(id = "standalone-$index", url = "") }
+        val tabs = listOf(groupedTab) + standaloneTabs + selectedGroupedTab
+        val storedGroup = TabGroup(
+            title = "test group",
+            theme = "Red",
+            lastModified = 0L,
+        )
+        val expectedGroupTabs = listOf(
+            TabsTrayItem.Tab(tab = groupedTab),
+            TabsTrayItem.Tab(tab = selectedGroupedTab, isFocused = true),
+        )
+        val expectedGroup = createTabGroup(
+            id = storedGroup.id,
+            title = storedGroup.title,
+            theme = TabGroupTheme.valueOf(storedGroup.theme),
+            tabs = expectedGroupTabs,
+            isFocused = true,
+            initialScrollIndex = expectedGroupTabs.lastIndex,
+        )
+        val store = createStore(
+            tabDataFlow = MutableStateFlow(
+                TabData(
+                    selectedTabId = selectedGroupedTab.id,
+                    tabs = tabs,
+                ),
+            ),
+            tabGroupsEnabled = true,
+            tabGroupRepository = createRepository(
+                initialTabGroups = listOf(storedGroup),
+                initialTabGroupAssignments = listOf(
+                    groupedTab.id to storedGroup.id,
+                    selectedGroupedTab.id to storedGroup.id,
+                ),
+            ),
+        )
+
+        runCurrent()
+        advanceUntilIdle()
+
+        assertEquals(0, store.state.normalTabsState.selectedItemIndex)
+        assertEquals(expectedGroup, store.state.normalTabsState.items.first())
+    }
+
+    @Test
     fun `GIVEN the tab group feature is disabled WHEN the selected tab ID is updated to a normal tab within a tab group THEN update the selected normal tab index and the group's focus state`() =
         runTest {
             val initialTabId = "1"
