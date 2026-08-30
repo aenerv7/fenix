@@ -446,15 +446,18 @@ private fun TabGrid(
 private fun TabLayoutScrollHelper(
     state: ScrollableState,
     selectedTabIndex: Int,
+    selectedTabGroupId: String?,
     bottomPadding: Dp,
     isHeaderPresent: Boolean,
     showOnboarding: Boolean = false,
 ) {
     val density = LocalDensity.current
     val bottomPaddingPx = with(density) { bottomPadding.roundToPx() }
+    var hasScrolledToInitialPosition by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(selectedTabGroupId) {
         if (selectedTabIndex < 0) return@LaunchedEffect
+        if (hasScrolledToInitialPosition && selectedTabGroupId == null) return@LaunchedEffect
 
         val headerOffset = if (isHeaderPresent) 1 else 0
         val onboardingOffset = if (showOnboarding) 1 else 0
@@ -475,6 +478,7 @@ private fun TabLayoutScrollHelper(
                 val offset = -(viewportHeight - itemHeight - bottomPaddingPx)
                 withFrameNanos { }
                 scrollToItem(targetIndex, offset)
+                hasScrolledToInitialPosition = true
             }
     }
 }
@@ -531,6 +535,7 @@ private fun ReorderableTabGrid(
     TabLayoutScrollHelper(
         state = gridState,
         selectedTabIndex = selectedItemIndex,
+        selectedTabGroupId = (tabs.getOrNull(selectedItemIndex) as? TabsTrayItem.TabGroup)?.id,
         showOnboarding = displayTabGroupOnboarding,
         bottomPadding = contentPadding.calculateBottomPadding() + spacing + tabGridBottomPadding + navigationBarPadding,
         isHeaderPresent = header != null,
@@ -657,6 +662,7 @@ private fun InteractableTabGrid(
     TabLayoutScrollHelper(
         state = gridState,
         selectedTabIndex = selectedItemIndex,
+        selectedTabGroupId = (tabs.getOrNull(selectedItemIndex) as? TabsTrayItem.TabGroup)?.id,
         showOnboarding = displayTabGroupOnboarding,
         bottomPadding = contentPadding.calculateBottomPadding() + tabGridBottomPadding + spacing + navigationBarPadding,
         isHeaderPresent = header != null,
@@ -1128,6 +1134,7 @@ private fun InteractableTabList(
     TabLayoutScrollHelper(
         state = state,
         selectedTabIndex = selectedItemIndex,
+        selectedTabGroupId = (tabs.getOrNull(selectedItemIndex) as? TabsTrayItem.TabGroup)?.id,
         showOnboarding = displayTabGroupOnboarding,
         bottomPadding = tabListBottomPadding,
         isHeaderPresent = header != null,
@@ -1414,6 +1421,7 @@ private fun ReorderableTabList(
     TabLayoutScrollHelper(
         state = state,
         selectedTabIndex = selectedItemIndex,
+        selectedTabGroupId = (tabs.getOrNull(selectedItemIndex) as? TabsTrayItem.TabGroup)?.id,
         showOnboarding = displayTabGroupOnboarding,
         bottomPadding = tabListBottomPadding,
         isHeaderPresent = header != null,

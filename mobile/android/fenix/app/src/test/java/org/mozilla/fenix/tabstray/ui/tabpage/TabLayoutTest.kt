@@ -11,6 +11,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.DeviceConfigurationOverride
 import androidx.compose.ui.test.WindowSize
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.unit.Dp
@@ -24,7 +25,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mozilla.fenix.tabstray.TabsTrayTestTag
 import org.mozilla.fenix.tabstray.controller.TabInteractionHandler
+import org.mozilla.fenix.tabstray.data.TabsTrayItem
 import org.mozilla.fenix.tabstray.data.createTab
+import org.mozilla.fenix.tabstray.data.createTabGroup
 import org.mozilla.fenix.tabstray.redux.state.TabsTrayState
 import org.mozilla.fenix.tabstray.ui.tabitems.TabGridColumnCountKey
 import org.mozilla.fenix.theme.FirefoxTheme
@@ -206,6 +209,60 @@ class TabLayoutTest {
         displayTabGroupOnboarding = false
 
         composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_GROUP_ONBOARDING_LIST_ITEM).assertDoesNotExist()
+    }
+
+    @Test
+    fun `WHEN the selected tab becomes a tab group THEN the group is scrolled into view`() {
+        var selectedItemIndex by mutableStateOf(0)
+        var tabs by mutableStateOf<List<TabsTrayItem>>(
+            List(12) { index ->
+                createTab(
+                    id = "tab-$index",
+                    title = "Tab $index",
+                    url = "https://www.mozilla.org/$index",
+                )
+            },
+        )
+        val group = createTabGroup(
+            id = "target-group",
+            title = "Target group",
+            tabs = listOf(createTab(id = "group-tab", url = "https://www.mozilla.org/group")),
+        )
+
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalUnderTest provides true) {
+                FirefoxTheme(theme = Theme.Light) {
+                    Surface {
+                        TabLayout(
+                            tabs = tabs,
+                            displayTabsInGrid = false,
+                            dragAndDropEnabled = true,
+                            displayTabGroupOnboarding = false,
+                            selectedItemIndex = selectedItemIndex,
+                            selectionMode = TabsTrayState.Mode.Normal,
+                            focusEnabled = true,
+                            tabInteractionHandler = fakeTabInteractionHandler(),
+                            onTabClose = { },
+                            onItemClick = { },
+                            onItemLongClick = { },
+                            onDeleteTabGroupClick = { },
+                            onEditTabGroupClick = { },
+                            onCloseTabGroupClick = { },
+                            onTabGroupOnboardingDismiss = { },
+                            liveReorderEnabled = false,
+                        )
+                    }
+                }
+            }
+        }
+
+        composeTestRule.waitForIdle()
+        selectedItemIndex = tabs.lastIndex
+        tabs = tabs.dropLast(1) + group
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithTag("${TabsTrayTestTag.TAB_GROUP_ROOT}.${group.id}")
+            .assertIsDisplayed()
     }
 
     private val gridColumnCount: Int

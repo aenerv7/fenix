@@ -1,5 +1,15 @@
 # Fenix changes
 
+## 154.0.1-r5
+
+Upstream baseline: `FIREFOX-ANDROID_154_0_1_RELEASE`
+
+### Tab groups
+
+- Kept the selected tab group visible in All Tabs after moving a selected standalone tab into that
+  group instead of retaining the tab's previous standalone scroll position.
+- Added Compose regression coverage for scrolling the newly selected group into view.
+
 ## 154.0.1-r4
 
 Upstream baseline: `FIREFOX-ANDROID_154_0_1_RELEASE`
