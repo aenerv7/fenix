@@ -77,6 +77,37 @@ the complete locale set and matching Gecko native libraries and signs every sele
 resources remain multilingual, and a single Gecko target cannot supply valid native libraries for
 the other ABI APKs.
 
+### Reuse-first release policy
+
+A full multi-ABI Gecko and Fenix release is expensive. Reuse existing validated output by default,
+and use the least expensive operation that can produce a correct release. Apply this order:
+
+1. Reuse existing signed APKs when they were built from the intended source changes and already pass
+   version, application ID, ABI, locale, signature, and checksum validation.
+2. Re-sign an existing validated unsigned APK when only the signing output needs to change.
+3. For Fenix-only Kotlin, resource, or manifest changes, rebuild the application with `-ReuseGecko`
+   and keep the verified multi-locale Gecko packages.
+4. Retry only the failed or invalid ABI with `-Abi`; preserve completed ABI artifacts.
+5. Run the default full build only when a broader option above cannot produce a valid artifact.
+
+Creating a commit or annotated release tag after a successful build does not by itself invalidate
+the APKs, provided the exact intended source changes were present during the build. Do not rebuild
+solely to align commit or tag metadata unless a release contract explicitly requires that metadata
+inside the binaries. Before starting a full build while reusable artifacts exist, identify the input
+that makes reuse unsafe. If no such input exists, reuse the artifacts or ask for explicit approval to
+rebuild.
+
+A full build is required after changes to Gecko, C++, Rust, Gecko locale sources, the upstream
+baseline, or another build input that affects the native or multi-locale package. It is also required
+when the relevant cache or artifacts are missing, fail validation, or have uncertain provenance.
+Validation failure is a reason to rebuild only the affected layer or ABI, not automatically every
+artifact.
+
+Debug and test Gradle tasks can replace an object directory's staged GeckoView package with an
+`en-US`-only package. This does not invalidate previously verified signed APKs. Validate cached Gecko
+packages before using `-ReuseGecko`, and do not discard valid signed artifacts merely because a later
+test changed intermediate build state.
+
 To retry one architecture while preserving completed APKs, pass its ABI to the release script:
 
 ```powershell

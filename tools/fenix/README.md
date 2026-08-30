@@ -51,6 +51,14 @@ artifacts. The signed filename uses the current baseline and release revision, s
 Pass `-Abi x86_64` (or another ABI) to resume a single failed architecture without rebuilding the
 completed APKs.
 
+Release work is reuse-first. Prefer, in order: already validated signed APKs, re-signing validated
+unsigned APKs, rebuilding only Fenix with `-ReuseGecko`, retrying one affected ABI, and finally a full
+multi-ABI build. A commit or annotated tag created after a successful build is not by itself a reason
+to rebuild when the intended source changes were already present. Do not start a broader build while
+a narrower reusable result is valid unless the user explicitly requests it or a changed build input
+makes reuse unsafe. See the reuse-first release policy in
+[FENIX_DEVELOPMENT.md](../../FENIX_DEVELOPMENT.md) for validation and cache-provenance requirements.
+
 For Fenix Kotlin, resource, or manifest-only changes, reuse the already verified Gecko packages to
 avoid rebuilding Gecko and repackaging all locales:
 
