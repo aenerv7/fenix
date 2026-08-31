@@ -74,6 +74,14 @@ revision. Otherwise it selects the next revision after the highest matching loca
 Pass `-VersionName <version>-rN` to rebuild a specific release. Use `sign-release-local.ps1 -Abi`
 only when re-signing an existing unsigned APK without rebuilding it.
 
+After publishing, verify the GitHub Release and its remote asset sizes and SHA-256 digests before
+removing anything. Local versioned release artifacts use one-version retention: keep only the latest
+revision's signed APKs, `.idsig` files, release notes, and release logs, plus the current unsigned
+APKs. Remove those files for older revisions. Keep `.gradle/`, `.mozbuild/`, the Android object
+directories, staged Gecko packages, and toolchains because they are cross-release build caches, not
+historical release artifacts. The full sequencing and validation rules are documented in
+[FENIX_DEVELOPMENT.md](../../FENIX_DEVELOPMENT.md).
+
 See [FENIX_DEVELOPMENT.md](../../FENIX_DEVELOPMENT.md) for setup, testing, emulator, and local signing
 instructions, including the Firefox Android 154.0.1 Windows/JNA unit-test limitation. Do not treat
 that native artifact failure as a reason to clear the repository-local Gradle cache repeatedly.

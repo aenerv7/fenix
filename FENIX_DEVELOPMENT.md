@@ -106,7 +106,11 @@ artifact.
 Debug and test Gradle tasks can replace an object directory's staged GeckoView package with an
 `en-US`-only package. This does not invalidate previously verified signed APKs. Validate cached Gecko
 packages before using `-ReuseGecko`, and do not discard valid signed artifacts merely because a later
-test changed intermediate build state.
+test changed intermediate build state. Validation must inspect `res/multilocale.txt` inside the
+staged `omni.ja`, not only check that the file exists. If the staged package was replaced but the
+Gecko source, baseline, and ABI are unchanged, restore it from the latest validated APK for that ABI
+or rebuild only that Gecko package. Verify the complete locale set and native libraries again before
+assembling Fenix.
 
 To retry one architecture while preserving completed APKs, pass its ABI to the release script:
 
@@ -130,6 +134,31 @@ a matching `fenix-<version>-rN` tag, that revision is reused. Otherwise the scri
 revision after the highest matching local or `origin` tag. For example, a new untagged commit after
 `fenix-154.0.1-r4` produces `Fenix-154.0.1-r5-arm64-v8a-release.apk`. Use `-VersionName` to rebuild a
 specific release revision.
+
+### Release completion and cache retention
+
+Publish a release only after the source commit and annotated tag are ready and every selected ABI
+has passed application ID, version, ABI, locale, native-library, signature, and checksum validation.
+After upload, read the GitHub Release back and confirm that it is not a draft, is marked as the latest
+release, and that every remote asset name, size, and SHA-256 digest matches the local file. Only then
+may a superseded release or its local artifacts be removed.
+
+Local versioned release artifacts have a one-version retention policy. Once the latest GitHub Release
+passes remote verification, keep only:
+
+- the latest revision's signed APKs and `.idsig` files;
+- the current unsigned APKs used for re-signing;
+- release notes and release-build logs for the latest revision.
+
+Delete signed APKs, `.idsig` files, release notes, and release-build logs for every older `rN`
+revision. Use explicit paths and prefer recoverable deletion; never broadly delete `artifacts/`.
+Do not apply this one-version policy to cross-release build caches such as `.gradle/`, `.mozbuild/`,
+the three Android object directories, staged multi-locale Gecko packages, or toolchains. Those remain
+eligible for reuse after their provenance, locale set, and native libraries are validated.
+
+If an ABI fails, retry only that ABI and retain already completed current-revision APKs. A transient
+Android Lint internal failure is not a reason to rebuild Gecko or other ABIs; rerun the affected ABI
+first and require the normal lint, packaging, and signature checks to pass on the successful attempt.
 
 For a narrow test class, append Gradle's test selector:
 
