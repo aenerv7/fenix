@@ -40,8 +40,12 @@ sealed interface TabManagerNavDestination {
      * [TabManagerNavDestination] representing the [ExpandedTabGroupScreen].
      *
      * @property group The displayed [TabsTrayItem.TabGroup].
+     * @property skipOpeningAnimation Whether to skip the bottom sheet's opening animation.
      */
-    data class ExpandedTabGroup(val group: TabsTrayItem.TabGroup) : TabManagerNavDestination
+    data class ExpandedTabGroup(
+        val group: TabsTrayItem.TabGroup,
+        val skipOpeningAnimation: Boolean = false,
+    ) : TabManagerNavDestination
 
     /**
      * [TabManagerNavDestination] representing the [DeleteTabGroupConfirmationDialog].

@@ -590,7 +590,10 @@ class TabsTrayStoreReducerTest {
         assertEquals(
             listOf(
                 TabManagerNavDestination.Root,
-                TabManagerNavDestination.ExpandedTabGroup(group),
+                TabManagerNavDestination.ExpandedTabGroup(
+                    group = group,
+                    skipOpeningAnimation = true,
+                ),
             ),
             resultState.backStack,
         )

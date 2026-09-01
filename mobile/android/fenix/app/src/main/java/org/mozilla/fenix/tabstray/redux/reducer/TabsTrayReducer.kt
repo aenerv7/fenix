@@ -295,7 +295,10 @@ internal object TabsTrayReducer {
                         groups = action.tabStorageUpdate.tabGroups,
                     ),
                     backStack = if (selectedGroupToOpen != null) {
-                        state.backStack + TabManagerNavDestination.ExpandedTabGroup(selectedGroupToOpen)
+                        state.backStack + TabManagerNavDestination.ExpandedTabGroup(
+                            group = selectedGroupToOpen,
+                            skipOpeningAnimation = true,
+                        )
                     } else {
                         state.backStack
                     },

@@ -206,7 +206,10 @@ class TabStorageMiddlewareTest {
                 ),
                 backStack = listOf(
                     TabManagerNavDestination.Root,
-                    ExpandedTabGroup(expectedGroup),
+                    ExpandedTabGroup(
+                        group = expectedGroup,
+                        skipOpeningAnimation = true,
+                    ),
                 ),
                 hasTabDataLoaded = true,
             )

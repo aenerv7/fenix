@@ -1,5 +1,14 @@
 # Fenix changes
 
+## 154.0.1-r8
+
+Upstream baseline: `FIREFOX-ANDROID_154_0_1_RELEASE`
+
+### Tab groups
+
+- Removed the opening animation when the selected tab's group is opened automatically from All Tabs.
+- Preserved the opening animation when a user opens a tab group directly.
+
 ## 154.0.1-r7
 
 Upstream baseline: `FIREFOX-ANDROID_154_0_1_RELEASE`

@@ -474,6 +474,7 @@ class TabManagementFragment : Fragment() {
                                         fullyExpandOnFirstOpen = destination.group.shouldFullyExpandOnFirstOpen(
                                             windowSize = windowSize,
                                         ),
+                                        skipOpeningAnimation = destination.skipOpeningAnimation,
                                     )
                                 },
                             ) { args ->
