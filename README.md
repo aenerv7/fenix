@@ -9,8 +9,8 @@ Fenix 是一个面向个人使用的 Android 浏览器 QoL 优化 fork。项目�
 Firefox Android 正式版标签为不可变基线，在每个正式版之上维护一组范围明确、可审查、
 可迁移的补丁。
 
-- 当前上游基线：`FIREFOX-ANDROID_154_0_1_RELEASE`
-- 当前 Fenix 版本：`154.0.1-r8`
+- 当前上游基线：`FIREFOX-ANDROID_155_0_RELEASE`
+- 当前 Fenix 版本：`155.0-r1`
 - 应用名称：`Fenix`
 - Android application ID：`github.aenerv7.fenix`
 - 正式版品牌：白色凤眼海棠侏儒兔图标与 `Fenix` wordmark
