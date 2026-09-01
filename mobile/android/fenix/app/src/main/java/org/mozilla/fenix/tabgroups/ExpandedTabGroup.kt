@@ -37,6 +37,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
@@ -56,7 +57,6 @@ import mozilla.components.compose.base.annotation.FlexibleWindowLightDarkPreview
 import mozilla.components.compose.base.button.IconButton
 import mozilla.components.compose.base.snackbar.Snackbar
 import org.mozilla.fenix.R
-import org.mozilla.fenix.tabstray.LocalTabManagementFeatureHelper
 import org.mozilla.fenix.tabstray.TabsTrayTestTag
 import org.mozilla.fenix.tabstray.controller.NoOpTabInteractionHandler
 import org.mozilla.fenix.tabstray.controller.TabInteractionHandler
@@ -90,11 +90,8 @@ import mozilla.components.ui.icons.R as iconsR
 @Composable
 fun ExpandedTabGroup(
     group: TabsTrayItem.TabGroup,
-    onItemClick: (TabsTrayItem) -> Unit,
-    onTabClose: (TabsTrayItem.Tab) -> Unit,
-    onDeleteTabGroupClick: () -> Unit,
-    onEditTabGroupClick: () -> Unit,
-    onCloseTabGroupClick: () -> Unit,
+    actions: ExpandedTabGroupActions,
+    displayTabsInGrid: Boolean,
     tabInteractionHandler: TabInteractionHandler,
     selectionMode: TabsTrayState.Mode = TabsTrayState.Mode.Normal,
     onItemLongClick: (TabsTrayItem) -> Unit = {},
@@ -115,9 +112,7 @@ fun ExpandedTabGroup(
             title = group.title,
             groupTheme = group.theme,
             groupTabsSize = group.tabs.size,
-            onDeleteTabGroupClick = onDeleteTabGroupClick,
-            onEditTabGroupClick = onEditTabGroupClick,
-            onCloseTabGroupClick = onCloseTabGroupClick,
+            actions = actions,
             modifier = Modifier.padding(
                 start = FirefoxTheme.layout.space.dynamic200,
                 end = FirefoxTheme.layout.space.dynamic200,
@@ -126,7 +121,7 @@ fun ExpandedTabGroup(
 
         TabLayout(
             tabs = group.tabs,
-            displayTabsInGrid = true,
+            displayTabsInGrid = displayTabsInGrid,
             dragAndDropEnabled = false,
             reorderingEnabled = true,
             displayTabGroupOnboarding = false,
@@ -138,14 +133,16 @@ fun ExpandedTabGroup(
                 start = FirefoxTheme.layout.space.dynamic200,
                 end = FirefoxTheme.layout.space.dynamic200,
             ),
-            onTabClose = onTabClose,
-            onItemClick = onItemClick,
+            onTabClose = actions.onTabClose,
+            onItemClick = actions.onItemClick,
             onItemLongClick = onItemLongClick,
             onDeleteTabGroupClick = { }, // Ignore tab group deletes
             onEditTabGroupClick = { }, // Ignore tab group edits
             onCloseTabGroupClick = { }, // Ignore tab group closes
+            onShareTabGroupClick = { }, // Ignore tab group shares
             onTabGroupOnboardingDismiss = { }, // Ignore onboarding dismissals - onboarding is not shown in this layout
             contentPadding = PaddingValues(0.dp), // TabLayout should not have its own content padding inside this view
+            listHorizontalPadding = 0.dp, // The list layout should not add its own horizontal padding inside this view
             focusEnabled = true, // Drag and drop is not possible in this view, so focus should never be suppressed
         )
     }
@@ -201,6 +198,43 @@ fun ExpandedTabGroup(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ExpandedTabGroup(
+    group: TabsTrayItem.TabGroup,
+    onItemClick: (TabsTrayItem) -> Unit,
+    onTabClose: (TabsTrayItem.Tab) -> Unit,
+    onDeleteTabGroupClick: () -> Unit,
+    onEditTabGroupClick: () -> Unit,
+    onCloseTabGroupClick: () -> Unit,
+    tabInteractionHandler: TabInteractionHandler,
+    selectionMode: TabsTrayState.Mode = TabsTrayState.Mode.Normal,
+    onItemLongClick: (TabsTrayItem) -> Unit = {},
+    selectionBanner: @Composable (Boolean, (Boolean) -> Unit) -> Unit = { _, _ -> },
+    selectionMenu: @Composable (Boolean, (Boolean) -> Unit) -> Unit = { _, _ -> },
+    snackbarHostState: SnackbarHostState? = null,
+) {
+    ExpandedTabGroup(
+        group = group,
+        actions = ExpandedTabGroupActions(
+            onItemClick = onItemClick,
+            onTabClose = onTabClose,
+            onDeleteTabGroupClick = onDeleteTabGroupClick,
+            onEditTabGroupClick = onEditTabGroupClick,
+            onCloseTabGroupClick = onCloseTabGroupClick,
+            onAddNewTabClick = null,
+            onShareTabGroupClick = {},
+        ),
+        displayTabsInGrid = true,
+        tabInteractionHandler = tabInteractionHandler,
+        selectionMode = selectionMode,
+        onItemLongClick = onItemLongClick,
+        selectionBanner = selectionBanner,
+        selectionMenu = selectionMenu,
+        snackbarHostState = snackbarHostState,
+    )
+}
+
 internal class FixedBottomPopupPositionProvider : PopupPositionProvider {
     override fun calculatePosition(
         anchorBounds: IntRect,
@@ -218,9 +252,7 @@ private fun ViewTabGroupHeader(
     title: String,
     groupTabsSize: Int,
     groupTheme: TabGroupTheme,
-    onDeleteTabGroupClick: () -> Unit,
-    onEditTabGroupClick: () -> Unit,
-    onCloseTabGroupClick: () -> Unit,
+    actions: ExpandedTabGroupActions,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -273,81 +305,67 @@ private fun ViewTabGroupHeader(
             ),
         )
 
-        if (LocalTabManagementFeatureHelper.current.shareTabGroupEnabled) {
-            ShareTabGroupButton(
-                title = title,
-                groupTabsSize = groupTabsSize,
-                onClick = {},
+        val onAddNewTabClick = actions.onAddNewTabClick
+        if (onAddNewTabClick != null) {
+            AddTabToGroupButton(
+                onClick = onAddNewTabClick,
             )
-        }
 
-        Spacer(modifier = Modifier.width(FirefoxTheme.layout.space.static100))
+            Spacer(modifier = Modifier.width(FirefoxTheme.layout.space.static100))
+        }
 
         TabGroupMenuButton(
             includeCloseOption = true,
-            onDeleteTabGroupClick = onDeleteTabGroupClick,
-            onEditTabGroupClick = onEditTabGroupClick,
-            onCloseTabGroupClick = onCloseTabGroupClick,
+            includeUngroupOption = true,
+            onDeleteTabGroupClick = actions.onDeleteTabGroupClick,
+            onEditTabGroupClick = actions.onEditTabGroupClick,
+            onCloseTabGroupClick = actions.onCloseTabGroupClick,
+            onShareTabGroupClick = actions.onShareTabGroupClick,
+            onUngroupTabGroupClick = {},
         )
     }
 }
 
 @Composable
-private fun ShareTabGroupButton(
-    title: String,
-    groupTabsSize: Int,
+private fun AddTabToGroupButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     IconButton(
         onClick = onClick,
-        contentDescription = pluralStringResource(
-            id = R.plurals.share_tab_group_button_content_description,
-            count = groupTabsSize,
-            title,
-            groupTabsSize,
-        ),
-        modifier = modifier.testTag(TabsTrayTestTag.BOTTOM_SHEET_SHARE_BUTTON),
+        contentDescription = stringResource(id = R.string.add_tab),
+        modifier = modifier.testTag(TabsTrayTestTag.BOTTOM_SHEET_ADD_TAB_BUTTON),
     ) {
         Icon(
-            painter = painterResource(id = iconsR.drawable.mozac_ic_share_android_24),
+            painter = painterResource(id = iconsR.drawable.mozac_ic_plus_24),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurface,
         )
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @FlexibleWindowLightDarkPreview
 @Composable
 private fun ExpandedTabGroupPreview(
     @PreviewParameter(ExpandedTabGroupPreviewProvider::class)
     previewState: ExpandedTabGroupPreviewState,
 ) {
-    val sheetState = rememberModalBottomSheetState()
-    LaunchedEffect(Unit) {
-        if (!sheetState.isVisible) {
-            sheetState.show()
-        }
-    }
-
     FirefoxTheme {
         Surface {
-            ModalBottomSheet(
-                modifier = Modifier.testTag(TabsTrayTestTag.TAB_GROUP_BOTTOM_SHEET_ROOT),
-                sheetState = sheetState,
-                onDismissRequest = {},
-            ) {
-                ExpandedTabGroup(
-                    group = previewState.group,
-                    onTabClose = {},
+            ExpandedTabGroup(
+                group = previewState.group,
+                actions = ExpandedTabGroupActions(
                     onItemClick = {},
+                    onTabClose = {},
                     onDeleteTabGroupClick = {},
                     onEditTabGroupClick = {},
                     onCloseTabGroupClick = {},
-                    tabInteractionHandler = NoOpTabInteractionHandler,
-                )
-            }
+                    onAddNewTabClick = {},
+                    onShareTabGroupClick = {},
+                ),
+                displayTabsInGrid = previewState.displayTabsInGrid,
+                tabInteractionHandler = NoOpTabInteractionHandler,
+            )
         }
     }
 }
@@ -366,6 +384,7 @@ private fun generateFakeTabsList(
 private data class ExpandedTabGroupPreviewState(
     val group: TabsTrayItem.TabGroup,
     val selectedTabId: String? = null,
+    val displayTabsInGrid: Boolean = true,
 )
 
 private class ExpandedTabGroupPreviewProvider :
@@ -427,6 +446,16 @@ private class ExpandedTabGroupPreviewProvider :
                 selectedTabId = "tabid0",
             ),
         ),
+        Pair(
+            "List view",
+            ExpandedTabGroupPreviewState(
+                group = createTabGroup(
+                    title = "Tab Group",
+                    tabs = generateFakeTabsList(),
+                ),
+                displayTabsInGrid = false,
+            ),
+        ),
     )
     override val values: Sequence<ExpandedTabGroupPreviewState>
         get() = data.map { it.second }.asSequence()
@@ -435,3 +464,25 @@ private class ExpandedTabGroupPreviewProvider :
         return data[index].first
     }
 }
+
+/**
+ * User interactions handled by the [ExpandedTabGroup] view.
+ *
+ * @property onItemClick Invoked when the user clicks on a [TabsTrayItem] in the group.
+ * @property onTabClose Invoked when the user clicks to close a [TabsTrayItem.Tab] in the group.
+ * @property onDeleteTabGroupClick Invoked when the user clicks on delete tab group.
+ * @property onEditTabGroupClick Invoked when the user clicks to edit the group.
+ * @property onCloseTabGroupClick Invoked when the user clicks to close a tab group.
+ * @property onAddNewTabClick Invoked when the user clicks to add a new tab to the group. When null,
+ * the add-tab button is hidden.
+ * @property onShareTabGroupClick Invoked when the user clicks to share the group.
+ */
+data class ExpandedTabGroupActions(
+    val onItemClick: (TabsTrayItem) -> Unit,
+    val onTabClose: (TabsTrayItem.Tab) -> Unit,
+    val onDeleteTabGroupClick: () -> Unit,
+    val onEditTabGroupClick: () -> Unit,
+    val onCloseTabGroupClick: () -> Unit,
+    val onAddNewTabClick: (() -> Unit)?,
+    val onShareTabGroupClick: () -> Unit,
+)

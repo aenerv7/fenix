@@ -724,6 +724,7 @@ class TabStorageMiddleware(
         val newTabId = fenixBrowserUseCases.addNewHomepageTab(
             private = false,
             startLoading = false,
+            selectTab = false,
         )
         val tabGroup = TabGroup(
             title = name,

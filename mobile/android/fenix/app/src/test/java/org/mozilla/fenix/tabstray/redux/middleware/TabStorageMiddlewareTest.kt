@@ -714,15 +714,11 @@ class TabStorageMiddlewareTest {
         }
 
     @Test
-    fun `WHEN save is clicked in normal mode for a new group THEN create the group with a new tab`() = runTest {
+    fun `WHEN save is clicked for a non-starter new group with no selected tabs THEN an empty group is created without a homepage tab`() = runTest {
         val repository = createRepository()
-        val newTabId = "new-tab-id"
         val expectedTitle = "Group 1"
         val expectedTheme = TabGroupTheme.Red
         val fenixBrowserUseCases = mockk<FenixBrowserUseCases>(relaxed = true)
-        every {
-            fenixBrowserUseCases.addNewHomepageTab(private = false, startLoading = false)
-        } returns newTabId
         val store = createStore(
             initialState = TabsTrayState(
                 tabGroupState = TabsTrayState.TabGroupState(
@@ -730,7 +726,7 @@ class TabStorageMiddlewareTest {
                         name = expectedTitle,
                         tabGroupId = null,
                         theme = expectedTheme,
-                        isStarterTabGroup = true,
+                        isStarterTabGroup = false,
                     ),
                 ),
             ),
@@ -744,8 +740,7 @@ class TabStorageMiddlewareTest {
         runCurrent()
         advanceUntilIdle()
 
-        assertEquals(1, repository.tabGroupDataFlow.first().tabGroups.size)
-        val storedGroup = repository.tabGroupDataFlow.first().tabGroups.first()
+        val storedGroup = repository.tabGroupDataFlow.first().tabGroups.single()
         assertEquals(
             TabGroup(
                 id = storedGroup.id,
@@ -755,10 +750,8 @@ class TabStorageMiddlewareTest {
             ),
             storedGroup,
         )
-        assertEquals(
-            mapOf(newTabId to storedGroup.id),
-            repository.tabGroupDataFlow.first().tabGroupAssignments,
-        )
+        assertTrue(repository.tabGroupDataFlow.first().tabGroupAssignments.isEmpty())
+        verify(exactly = 0) { fenixBrowserUseCases.addNewHomepageTab(any(), any(), any()) }
     }
 
     @Test
@@ -770,7 +763,7 @@ class TabStorageMiddlewareTest {
             val expectedTheme = TabGroupTheme.Red
             val fenixBrowserUseCases = mockk<FenixBrowserUseCases>(relaxed = true)
             every {
-                fenixBrowserUseCases.addNewHomepageTab(private = false, startLoading = false)
+                fenixBrowserUseCases.addNewHomepageTab(private = false, startLoading = false, selectTab = false)
             } returns newTabId
             val store = createStore(
                 initialState = TabsTrayState(
@@ -793,7 +786,7 @@ class TabStorageMiddlewareTest {
             advanceUntilIdle()
 
             verify {
-                fenixBrowserUseCases.addNewHomepageTab(private = false, startLoading = false)
+                fenixBrowserUseCases.addNewHomepageTab(private = false, startLoading = false, selectTab = false)
             }
 
             val storedGroup = repository.tabGroupDataFlow.first().tabGroups.first()

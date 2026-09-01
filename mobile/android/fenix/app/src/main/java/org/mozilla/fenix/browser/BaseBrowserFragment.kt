@@ -22,6 +22,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.viewinterop.AndroidView
@@ -105,6 +106,7 @@ import mozilla.components.feature.webauthn.WebAuthnFeature
 import mozilla.components.lib.state.ext.consumeFlow
 import mozilla.components.lib.state.ext.consumeFrom
 import mozilla.components.lib.state.ext.flowScoped
+import mozilla.components.lib.state.ext.observeAsComposableState
 import mozilla.components.lib.state.helpers.StoreProvider.Companion.fragmentStore
 import mozilla.components.support.base.feature.ActivityResultHandler
 import mozilla.components.support.base.feature.PermissionsFeature
@@ -118,6 +120,7 @@ import mozilla.components.support.ktx.android.view.hideKeyboard
 import mozilla.components.support.ktx.kotlinx.coroutines.flow.ifAnyChanged
 import mozilla.components.support.locale.ActivityContextWrapper
 import mozilla.components.support.utils.DefaultDownloadFileUtils
+import mozilla.components.support.utils.ext.pixelSizeFor
 import mozilla.components.ui.widgets.behavior.EngineViewClippingBehavior
 import mozilla.telemetry.glean.private.NoExtras
 import org.mozilla.fenix.BuildConfig
@@ -175,7 +178,6 @@ import org.mozilla.fenix.ext.getTopToolbarHeight
 import org.mozilla.fenix.ext.hideToolbar
 import org.mozilla.fenix.ext.isToolbarAtBottom
 import org.mozilla.fenix.ext.nav
-import org.mozilla.fenix.ext.pixelSizeFor
 import org.mozilla.fenix.ext.requireComponents
 import org.mozilla.fenix.ext.runIfFragmentIsAttached
 import org.mozilla.fenix.ext.tabClosedUndoMessage
@@ -183,8 +185,6 @@ import org.mozilla.fenix.ext.updateMicrosurveyPromptForConfigurationChange
 import org.mozilla.fenix.messaging.FenixMessageSurfaceId
 import org.mozilla.fenix.messaging.MessagingFeature
 import org.mozilla.fenix.microsurvey.ui.MicrosurveyRequestPrompt
-import org.mozilla.fenix.microsurvey.ui.ext.MicrosurveyUIData
-import org.mozilla.fenix.microsurvey.ui.ext.toMicrosurveyUIData
 import org.mozilla.fenix.nimbus.FxNimbus
 import org.mozilla.fenix.pbmlock.BlackScreenOverlay
 import org.mozilla.fenix.pbmlock.NavigationOrigin
@@ -224,7 +224,6 @@ abstract class BaseBrowserFragment :
     internal val binding get() = _binding!!
 
     private var emailMaskBar: EmailMaskPromptView? = null
-    private var currentMicrosurvey: MicrosurveyUIData? = null
     internal var blackScreenOverlay: ComposeView? = null
 
     @VisibleForTesting
@@ -1514,35 +1513,32 @@ abstract class BaseBrowserFragment :
             content = {
                 FirefoxTheme {
                     Column {
-                        val activity = requireActivity() as HomeActivity
+                        val microsurveyState by context.components.appStore.observeAsComposableState {
+                            it.microsurvey
+                        }
 
-                        if (!activity.isMicrosurveyPromptDismissed.value) {
-                            currentMicrosurvey?.let {
-                                if (isToolbarAtBottom) {
-                                    removeBottomToolbarDivider()
-                                }
-
-                                HorizontalDivider()
-
-                                MicrosurveyRequestPrompt(
-                                    microsurvey = it,
-                                    onStartSurveyClicked = {
-                                        context.components.appStore.dispatch(MicrosurveyAction.Started(it.id))
-                                        findNavController().nav(
-                                            R.id.browserFragment,
-                                            BrowserFragmentDirections.actionGlobalMicrosurveyDialog(it.id),
-                                        )
-                                    },
-                                    onCloseButtonClicked = {
-                                        context.components.appStore.dispatch(
-                                            MicrosurveyAction.Dismissed(it.id),
-                                        )
-
-                                        context.components.settings.shouldShowMicrosurveyPrompt = false
-                                        activity.isMicrosurveyPromptDismissed.value = true
-                                    },
-                                )
+                        microsurveyState.current?.let {
+                            if (isToolbarAtBottom) {
+                                removeBottomToolbarDivider()
                             }
+
+                            HorizontalDivider()
+
+                            MicrosurveyRequestPrompt(
+                                microsurvey = it,
+                                onStartSurveyClicked = {
+                                    context.components.appStore.dispatch(MicrosurveyAction.Started(it.id))
+                                    findNavController().nav(
+                                        R.id.browserFragment,
+                                        BrowserFragmentDirections.actionGlobalMicrosurveyDialog(it.id),
+                                    )
+                                },
+                                onCloseButtonClicked = {
+                                    context.components.appStore.dispatch(
+                                        MicrosurveyAction.Dismissed(it.id),
+                                    )
+                                },
+                            )
                         }
 
                         if (isToolbarAtBottom) {
@@ -1584,19 +1580,12 @@ abstract class BaseBrowserFragment :
      */
     private fun listenForMicrosurveyMessage(context: Context) {
         binding.root.consumeFrom(context.components.appStore, viewLifecycleOwner) { state ->
-            state.messaging.messageToShow[FenixMessageSurfaceId.MICROSURVEY]?.let { message ->
-                if (message.id != currentMicrosurvey?.id) {
-                    message.toMicrosurveyUIData()?.let { microsurvey ->
-                        context.components.settings.shouldShowMicrosurveyPrompt = true
-                        currentMicrosurvey = microsurvey
-
-                        _bottomToolbarContainerView?.toolbarContainerView.let {
-                            binding.browserLayout.removeView(it)
-                        }
-
-                        initializeMicrosurveyPrompt()
-                    }
-                }
+            val isMicrosurveyVisible = state.microsurvey.current != null
+            if (isMicrosurveyVisible != context.components.settings.shouldShowMicrosurveyPrompt) {
+                context.components.settings.shouldShowMicrosurveyPrompt = isMicrosurveyVisible
+            }
+            if (isMicrosurveyVisible && _bottomToolbarContainerView == null) {
+                initializeMicrosurveyPrompt()
             }
         }
     }
@@ -1929,7 +1918,7 @@ abstract class BaseBrowserFragment :
         return context?.components?.core?.store?.state?.findCustomTabOrSelectedTab(customTabSessionId)
     }
 
-    @VisibleForTesting
+    @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     internal fun getCurrentTab(): SessionState? {
         return requireComponents.core.store.state.findCustomTabOrSelectedTab(customTabSessionId)
     }
@@ -2099,7 +2088,6 @@ abstract class BaseBrowserFragment :
         awesomeBarComposable = null
         browserNavigationBar = null
         blackScreenOverlay = null
-        currentMicrosurvey = null
         _binding = null
     }
 
@@ -2186,7 +2174,7 @@ abstract class BaseBrowserFragment :
                     sessionId = customTabSessionId,
                     view = findInPageBar,
                     engineView = binding.engineView,
-                    findInPageHeight = requireComponents.settings.browserToolbarHeight,
+                    findInPageHeight = requireComponents.settings.getBrowserToolbarHeight(requireContext()),
                     toolbarsHideCallback = {
                         expandBrowserView()
                     },

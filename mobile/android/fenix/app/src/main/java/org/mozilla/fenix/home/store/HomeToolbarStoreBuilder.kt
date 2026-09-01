@@ -61,7 +61,7 @@ object HomeToolbarStoreBuilder {
                     appStore = appStore,
                     browserStore = browserStore,
                     clipboard = context.components.clipboardHandler,
-                    useCases = context.components.useCases,
+                    fenixBrowserUseCases = context.components.useCases.fenixBrowserUseCases,
                     tabGroupLinkUseCases = context.components.core.tabGroupLinkUseCases,
                     navController = navController,
                     browsingModeManager = browsingModeManager,

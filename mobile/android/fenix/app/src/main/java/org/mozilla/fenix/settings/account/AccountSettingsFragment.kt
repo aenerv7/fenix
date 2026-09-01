@@ -34,6 +34,7 @@ import mozilla.components.service.fxa.sync.SyncStatusObserver
 import mozilla.components.service.fxa.sync.getLastSynced
 import mozilla.components.service.fxa.sync.setLastSynced
 import mozilla.components.support.ktx.android.content.getColorFromAttr
+import mozilla.components.support.utils.ext.pixelSizeFor
 import mozilla.telemetry.glean.private.NoExtras
 import org.mozilla.fenix.GleanMetrics.SyncAccount
 import org.mozilla.fenix.R
@@ -43,7 +44,6 @@ import org.mozilla.fenix.compose.snackbar.SnackbarState
 import org.mozilla.fenix.e2e.SystemInsetsPaddedFragment
 import org.mozilla.fenix.ext.components
 import org.mozilla.fenix.ext.getPreferenceKey
-import org.mozilla.fenix.ext.pixelSizeFor
 import org.mozilla.fenix.ext.requireComponents
 import org.mozilla.fenix.ext.showToolbar
 import org.mozilla.fenix.settings.SupportUtils
@@ -436,9 +436,7 @@ class AccountSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFr
             return if (lastSyncedTime != 0L) {
                 lastSyncedTime
             } else {
-                val current = System.currentTimeMillis()
-                setLastSynced(requireContext(), current)
-                current
+                setLastSynced(requireContext())
             }
         }
     }
