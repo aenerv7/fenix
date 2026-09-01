@@ -4,22 +4,14 @@
 
 package org.mozilla.fenix.onboarding
 
-import android.content.SharedPreferences
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.buffer
-import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import mozilla.components.support.base.feature.LifecycleAwareFeature
 import org.mozilla.fenix.onboarding.view.OnboardingPageUiData
-import org.mozilla.fenix.perf.runBlockingIncrement
-import org.mozilla.fenix.settings.OnSharedPreferenceChangeListener
 import org.mozilla.fenix.utils.Settings
 import kotlin.coroutines.CoroutineContext
 
@@ -75,34 +67,3 @@ internal fun MutableList<OnboardingPageUiData>.removeIfPageNotReached(index: Int
         removeAt(marketingIndex)
     }
 }
-
-internal fun SharedPreferences.flowScopedBooleanPreference(
-    owner: LifecycleOwner,
-    mainContext: CoroutineContext,
-    key: String,
-    defValue: Boolean,
-) = channelFlow {
-    val listener = OnSharedPreferenceChangeListener(
-        this@flowScopedBooleanPreference,
-    ) { pref, updatedKey ->
-        if (key == updatedKey) {
-            val result = pref.getBoolean(key, defValue)
-            runBlockingIncrement {
-                send(result)
-            }
-            this@channelFlow.close()
-        }
-    }
-
-    withContext(mainContext) {
-        owner.lifecycle.addObserver(listener)
-    }
-
-    val initValue = getBoolean(key, defValue)
-    send(initValue)
-
-    awaitClose {
-        // On the off-chance that we close unexpectedly, let's clean up.
-        unregisterOnSharedPreferenceChangeListener(listener)
-    }
-}.buffer(Channel.CONFLATED)

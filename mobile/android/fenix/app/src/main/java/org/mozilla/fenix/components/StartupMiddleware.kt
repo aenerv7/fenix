@@ -11,7 +11,6 @@ import mozilla.components.browser.state.state.BrowserState
 import mozilla.components.lib.state.Middleware
 import mozilla.components.lib.state.Store
 import org.mozilla.fenix.ext.components
-import org.mozilla.fenix.utils.Settings
 
 /**
  * [Middleware] implementation for adding a homepage tab during application startup to ensure that
@@ -42,27 +41,4 @@ class StartupMiddleware(
 
         next(action)
     }
-}
-
-/**
- * The repository for managing the homepage as a new tab preference.
- */
-interface HomepageAsANewTabPreferencesRepository {
-
-    /**
-     * Ret the state of a specific preference.
-     */
-    fun getHomepageAsANewTabEnabled(): Boolean
-}
-
-/**
- * The default implementation of [HomepageAsANewTabPreferencesRepository].
- *
- * @param settings [Settings] used to check the application shared preferences.
- */
-class DefaultHomepageAsANewTabPreferenceRepository(
-    private val settings: Settings,
-) : HomepageAsANewTabPreferencesRepository {
-
-    override fun getHomepageAsANewTabEnabled(): Boolean = settings.enableHomepageAsNewTab
 }
