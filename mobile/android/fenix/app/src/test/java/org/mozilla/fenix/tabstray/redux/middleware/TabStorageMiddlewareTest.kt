@@ -204,6 +204,10 @@ class TabStorageMiddlewareTest {
                 tabGroupState = TabsTrayState.TabGroupState(
                     groups = listOf(expectedGroup),
                 ),
+                backStack = listOf(
+                    TabManagerNavDestination.Root,
+                    ExpandedTabGroup(expectedGroup),
+                ),
                 hasTabDataLoaded = true,
             )
             val tabFlow = MutableStateFlow(initialState)

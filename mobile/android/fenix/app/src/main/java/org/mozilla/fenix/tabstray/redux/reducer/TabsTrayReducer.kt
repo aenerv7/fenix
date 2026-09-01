@@ -9,6 +9,7 @@ import org.mozilla.fenix.tabstray.navigation.TabManagerNavDestination
 import org.mozilla.fenix.tabstray.redux.action.TabGroupAction
 import org.mozilla.fenix.tabstray.redux.action.TabSearchAction
 import org.mozilla.fenix.tabstray.redux.action.TabsTrayAction
+import org.mozilla.fenix.tabstray.redux.state.Page
 import org.mozilla.fenix.tabstray.redux.state.TabSearchState
 import org.mozilla.fenix.tabstray.redux.state.TabsTrayState
 import org.mozilla.fenix.tabstray.redux.state.TabsTrayState.DragProcessingState
@@ -267,23 +268,40 @@ internal object TabsTrayReducer {
     private fun handleTabUpdates(state: TabsTrayState, action: TabsTrayAction): TabsTrayState {
         return when (action) {
             is TabsTrayAction.UpdateSelectedTabId -> state.copy(selectedTabId = action.tabId)
-            is TabsTrayAction.TabDataUpdateReceived -> state.copy(
-                selectedTabId = action.tabStorageUpdate.selectedTabId,
-                normalTabsState = state.normalTabsState.copy(
-                    items = action.tabStorageUpdate.normalItems,
-                    selectedItemIndex = action.tabStorageUpdate.selectedNormalItemIndex,
-                    tabCount = action.tabStorageUpdate.normalTabCount,
-                ),
-                inactiveTabs = state.inactiveTabs.copy(tabs = action.tabStorageUpdate.inactiveTabs),
-                privateBrowsing = state.privateBrowsing.copy(
-                    tabs = action.tabStorageUpdate.privateTabs,
-                    selectedItemIndex = action.tabStorageUpdate.selectedPrivateItemIndex,
-                ),
-                tabGroupState = state.tabGroupState.copy(
-                    groups = action.tabStorageUpdate.tabGroups,
-                ),
-                hasTabDataLoaded = true,
-            )
+            is TabsTrayAction.TabDataUpdateReceived -> {
+                val selectedGroupToOpen = action.tabStorageUpdate.normalItems
+                    .filterIsInstance<TabsTrayItem.TabGroup>()
+                    .firstOrNull { it.isFocused }
+                    ?.takeIf {
+                        !state.hasTabDataLoaded &&
+                            state.selectedPage == Page.NormalTabs &&
+                            state.mode is TabsTrayState.Mode.Normal &&
+                            state.backStack.lastOrNull() == TabManagerNavDestination.Root
+                    }
+
+                state.copy(
+                    selectedTabId = action.tabStorageUpdate.selectedTabId,
+                    normalTabsState = state.normalTabsState.copy(
+                        items = action.tabStorageUpdate.normalItems,
+                        selectedItemIndex = action.tabStorageUpdate.selectedNormalItemIndex,
+                        tabCount = action.tabStorageUpdate.normalTabCount,
+                    ),
+                    inactiveTabs = state.inactiveTabs.copy(tabs = action.tabStorageUpdate.inactiveTabs),
+                    privateBrowsing = state.privateBrowsing.copy(
+                        tabs = action.tabStorageUpdate.privateTabs,
+                        selectedItemIndex = action.tabStorageUpdate.selectedPrivateItemIndex,
+                    ),
+                    tabGroupState = state.tabGroupState.copy(
+                        groups = action.tabStorageUpdate.tabGroups,
+                    ),
+                    backStack = if (selectedGroupToOpen != null) {
+                        state.backStack + TabManagerNavDestination.ExpandedTabGroup(selectedGroupToOpen)
+                    } else {
+                        state.backStack
+                    },
+                    hasTabDataLoaded = true,
+                )
+            }
             is TabsTrayAction.PersistedUiStateUpdateReceived ->
                 state.copy(
                     tabGroupState = state.tabGroupState.copy(

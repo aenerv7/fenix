@@ -96,6 +96,51 @@ class ExpandedTabGroupTest {
     }
 
     @Test
+    fun `GIVEN selected tab is outside the initial viewport WHEN group opens THEN selected tab is displayed`() {
+        val tabs = List(20) { index ->
+            createTab(
+                id = "tab-$index",
+                title = "Tab $index",
+                url = "https://www.mozilla.org/$index",
+            )
+        }
+        val selectedTab = createTab(
+            id = "selected-tab",
+            title = "Selected tab",
+            url = "https://www.mozilla.org/selected",
+            isFocused = true,
+        )
+        val group = createTabGroup(
+            title = testGroupTitle,
+            tabs = tabs + selectedTab,
+            isFocused = true,
+            initialScrollIndex = tabs.size,
+        )
+
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalUnderTest provides true) {
+                FirefoxTheme(theme = Theme.Light) {
+                    Surface {
+                        ExpandedTabGroup(
+                            group = group,
+                            onItemClick = {},
+                            onTabClose = {},
+                            onDeleteTabGroupClick = {},
+                            onEditTabGroupClick = {},
+                            onCloseTabGroupClick = {},
+                            tabInteractionHandler = NoOpTabInteractionHandler,
+                        )
+                    }
+                }
+            }
+        }
+
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText(selectedTab.title).assertIsDisplayed()
+    }
+
+    @Test
     fun verifyMenuItems() {
         composeTestRule.setContent {
             FirefoxTheme(theme = Theme.Light) {

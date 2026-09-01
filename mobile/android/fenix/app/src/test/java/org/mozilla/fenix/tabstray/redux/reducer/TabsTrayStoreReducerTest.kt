@@ -560,6 +560,74 @@ class TabsTrayStoreReducerTest {
     }
 
     @Test
+    fun `GIVEN selected tab belongs to a group WHEN initial tab data loads THEN the selected group is opened`() {
+        val selectedTab = createTab(
+            id = "selected-tab",
+            url = "https://www.mozilla.org/selected",
+            isFocused = true,
+        )
+        val group = createTabGroup(
+            id = "selected-group",
+            tabs = listOf(createTab(url = "https://www.mozilla.org/group"), selectedTab),
+            isFocused = true,
+            initialScrollIndex = 1,
+        )
+        val action = TabsTrayAction.TabDataUpdateReceived(
+            tabStorageUpdate = TabStorageUpdate(
+                selectedTabId = selectedTab.id,
+                normalItems = listOf(group),
+                normalTabCount = group.tabs.size,
+                selectedNormalItemIndex = 0,
+                inactiveTabs = emptyList(),
+                privateTabs = emptyList(),
+                selectedPrivateItemIndex = 0,
+                tabGroups = listOf(group),
+            ),
+        )
+
+        val resultState = TabsTrayReducer.reduce(state = TabsTrayState(), action = action)
+
+        assertEquals(
+            listOf(
+                TabManagerNavDestination.Root,
+                TabManagerNavDestination.ExpandedTabGroup(group),
+            ),
+            resultState.backStack,
+        )
+    }
+
+    @Test
+    fun `GIVEN tab data has loaded WHEN selected group data updates THEN the group is not reopened`() {
+        val selectedTab = createTab(
+            id = "selected-tab",
+            url = "https://www.mozilla.org/selected",
+            isFocused = true,
+        )
+        val group = createTabGroup(
+            id = "selected-group",
+            tabs = listOf(selectedTab),
+            isFocused = true,
+        )
+        val initialState = TabsTrayState(hasTabDataLoaded = true)
+        val action = TabsTrayAction.TabDataUpdateReceived(
+            tabStorageUpdate = TabStorageUpdate(
+                selectedTabId = selectedTab.id,
+                normalItems = listOf(group),
+                normalTabCount = group.tabs.size,
+                selectedNormalItemIndex = 0,
+                inactiveTabs = emptyList(),
+                privateTabs = emptyList(),
+                selectedPrivateItemIndex = 0,
+                tabGroups = listOf(group),
+            ),
+        )
+
+        val resultState = TabsTrayReducer.reduce(state = initialState, action = action)
+
+        assertEquals(initialState.backStack, resultState.backStack)
+    }
+
+    @Test
     fun `WHEN selecting a tab for multiselection THEN the selected tab groups are preserved`() {
         val selectedTab = createTab(url = "")
         val initialState = TabsTrayState(

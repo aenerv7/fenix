@@ -1,5 +1,16 @@
 # Fenix changes
 
+## 154.0.1-r7
+
+Upstream baseline: `FIREFOX-ANDROID_154_0_1_RELEASE`
+
+### Tab groups
+
+- Opened the selected tab's group automatically when entering All Tabs and scrolled the expanded
+  group to the selected tab.
+- Added reducer and Compose regression coverage for the automatic navigation and nested scroll
+  position.
+
 ## 154.0.1-r6
 
 Upstream baseline: `FIREFOX-ANDROID_154_0_1_RELEASE`
