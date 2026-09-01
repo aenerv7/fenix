@@ -255,6 +255,7 @@ class TabLayoutTest {
                             onDeleteTabGroupClick = { },
                             onEditTabGroupClick = { },
                             onCloseTabGroupClick = { },
+                            onShareTabGroupClick = { },
                             onTabGroupOnboardingDismiss = { },
                             liveReorderEnabled = false,
                         )

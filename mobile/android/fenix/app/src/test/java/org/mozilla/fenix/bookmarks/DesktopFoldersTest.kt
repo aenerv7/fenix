@@ -52,7 +52,7 @@ class DesktopFoldersTest {
             friendlyRootTitle(context, mockNodeWithTitle("root")),
         )
         assertEquals(
-            testContext.getString(R.string.library_mobile_bookmarks),
+            testContext.getString(R.string.library_bookmarks),
             friendlyRootTitle(context, mockNodeWithTitle("mobile")),
         )
         assertEquals(
