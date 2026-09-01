@@ -451,5 +451,4 @@ class SessionControlInteractor(
     override fun onLongfoxEntryPointShown() {
         logoController.handleLongfoxEntryPointShown()
     }
-
 }

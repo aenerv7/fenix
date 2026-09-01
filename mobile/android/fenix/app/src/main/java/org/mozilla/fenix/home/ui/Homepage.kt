@@ -370,7 +370,6 @@ internal fun Homepage(
 
                                 DialogState.Closed -> Unit
                             }
-
                         }
                     }
                 }
