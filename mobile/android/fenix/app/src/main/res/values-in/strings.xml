@@ -980,8 +980,6 @@
   <string name="browser_menu_change_wallpaper">Ubah gambar latar</string>
   <!-- Title for the customize home screen section with sponsored shortcuts. -->
   <string name="customize_toggle_contile">Pintasan bersponsor</string>
-  <!-- Title for the customize home screen section that toggles the Homepage sports widget. -->
-  <string name="customize_toggle_world_cup">Piala Dunia</string>
   <!--
     Wallpapers
 

@@ -237,8 +237,6 @@
 
   <!-- ==== Experiment strings. ==== -->
 
-  <!-- Sports widget error card description shown when the user is offline. -->
-  <string name="sports_widget_error_connection_offline_description">Jāpārbauda savienojums ar internetu un jāmēģina vēlreiz.</string>
   <!-- ==== End of Terms of use popup prompt. ==== -->
 
   <!--
