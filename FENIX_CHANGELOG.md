@@ -1,5 +1,45 @@
 # Fenix changes
 
+## 155.0-r3
+
+### 中文
+
+上游基线：`FIREFOX-ANDROID_155_RELEASE`
+
+#### 实验室徽标
+
+- 使用独立的透明背景兔子资源，并按横幅原有尺寸显示，避免回退到 Firefox 徽标或被布局裁切。
+
+#### 标签页群组
+
+- 展开群组中的新建标签页按钮不再依赖“主页作为新标签页”实验开关。
+- 保持与“全部标签页”一致的浮动按钮样式、选择模式隐藏逻辑和底部滚动空间。
+
+#### 验证
+
+- `ExpandedTabGroupTest` 定向测试通过。
+- APK 使用已验证的多语言 GeckoView 构建，并完成 arm64-v8a、签名和资源校验。
+- 使用高于上一修订版本的 Android versionCode，确保 r3 可以直接覆盖升级 r2。
+
+### English
+
+Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
+
+#### Labs badge
+
+- Uses a dedicated transparent-background rabbit resource at the original banner dimensions, preventing fallback to the Firefox badge or layout clipping.
+
+#### Tab groups
+
+- The expanded group new-tab action no longer depends on the “homepage as new tab” experiment switch.
+- Preserved the All Tabs floating-button style, selection-mode visibility logic, and bottom scroll space.
+
+#### Validation
+
+- The focused `ExpandedTabGroupTest` suite passed.
+- The APK reuses the validated multi-locale GeckoView build and passed arm64-v8a, signature, and resource checks.
+- Uses an Android versionCode higher than the previous revision so r3 can upgrade r2 directly.
+
 ## 155.0-r2
 
 ### 中文

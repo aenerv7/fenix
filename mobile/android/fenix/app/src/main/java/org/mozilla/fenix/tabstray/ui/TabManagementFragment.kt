@@ -74,8 +74,8 @@ import mozilla.components.support.base.feature.ViewBoundFeatureWrapper
 import mozilla.components.support.ktx.android.content.isEdgeToEdgeDisabled
 import mozilla.components.support.ktx.android.view.createWindowInsetsController
 import mozilla.components.support.ktx.android.view.setNavigationBarTheme
-import mozilla.components.support.ktx.android.view.setSystemBarsBackground
 import mozilla.components.support.ktx.android.view.setStatusBarTheme
+import mozilla.components.support.ktx.android.view.setSystemBarsBackground
 import mozilla.components.support.utils.ext.pixelSizeFor
 import mozilla.telemetry.glean.private.NoExtras
 import org.mozilla.fenix.Config
@@ -84,12 +84,12 @@ import org.mozilla.fenix.GleanMetrics.TabsTray
 import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.R
 import org.mozilla.fenix.bookmarks.friendlyRootTitle
+import org.mozilla.fenix.components.appstate.AppAction
+import org.mozilla.fenix.components.share.CacheHelper
 import org.mozilla.fenix.compose.navigation.BottomSheetSceneStrategy
 import org.mozilla.fenix.ext.actualInactiveTabs
 import org.mozilla.fenix.ext.components
 import org.mozilla.fenix.ext.hideToolbar
-import org.mozilla.fenix.components.appstate.AppAction
-import org.mozilla.fenix.components.share.CacheHelper
 import org.mozilla.fenix.ext.registerForActivityResult
 import org.mozilla.fenix.ext.requireComponents
 import org.mozilla.fenix.ext.runIfFragmentIsAttached
@@ -566,20 +566,16 @@ class TabManagementFragment : Fragment() {
                                             action = TabGroupAction.CloseTabGroupClicked(group = expandedGroup),
                                         )
                                         },
-                                        onAddNewTabClick = if (state.config.homepageAsNewTabEnabled) {
-                                            {
-                                                val newTabId = requireComponents.useCases.fenixBrowserUseCases
-                                                    .addNewHomepageTab(private = false)
-                                                tabsTrayStore.dispatch(
-                                                    TabGroupAction.TabAddedToGroup(
-                                                        tabId = newTabId,
-                                                        groupId = expandedGroup.id,
-                                                    ),
-                                                )
-                                                tabManagerController.handleNavigateToHome()
-                                            }
-                                        } else {
-                                            null
+                                        onAddNewTabClick = {
+                                            val newTabId = requireComponents.useCases.fenixBrowserUseCases
+                                                .addNewHomepageTab(private = false)
+                                            tabsTrayStore.dispatch(
+                                                TabGroupAction.TabAddedToGroup(
+                                                    tabId = newTabId,
+                                                    groupId = expandedGroup.id,
+                                                ),
+                                            )
+                                            tabManagerController.handleNavigateToHome()
                                         },
                                         onShareTabGroupClick = {
                                             shareTabGroup(expandedGroup, expandedGroupDotColor)

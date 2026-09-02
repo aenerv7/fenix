@@ -135,6 +135,9 @@ revision after the highest matching local or `origin` tag. For example, a new un
 `fenix-154.0.1-r4` produces `Fenix-154.0.1-r5-arm64-v8a-release.apk`. Use `-VersionName` to rebuild a
 specific release revision.
 
+Release revisions add an ABI-preserving version-code offset so Android accepts an rN build as an
+upgrade over the previous revision even when multiple revisions are built within the same hour.
+
 ### Release completion and cache retention
 
 Publish a release only after the source commit and annotated tag are ready and every selected ABI

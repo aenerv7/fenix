@@ -102,6 +102,7 @@ elseif ($VersionName -notmatch "^$([regex]::Escape($baseline))-r[1-9]\d*$") {
     throw "VersionName must match the current baseline: $baseline-rN"
 }
 Write-Output "Release version: $VersionName"
+$versionRevision = [int]($VersionName -replace ".*-r", "")
 
 if (-not $locales -or -not $locales.Contains("zh-CN")) {
     throw "The official Android locale list is empty or does not contain zh-CN: $localeFile"
@@ -262,7 +263,11 @@ try {
         }
 
         $env:MOZ_CHROME_MULTILOCALE = $locales -join " "
-        Invoke-LocalMach -Arguments @("gradle", "fenix:assembleRelease")
+        Invoke-LocalMach -Arguments @(
+            "gradle",
+            "-Pfenix.versionCodeRevision=$versionRevision",
+            "fenix:assembleRelease"
+        )
 
         $releaseDirectory = Join-Path $root `
             "$($configuration.ObjDir)\gradle\build\mobile\android\fenix\app\outputs\apk\release"
