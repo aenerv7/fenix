@@ -77,11 +77,13 @@ Pass `-VersionName <version>-rN` to rebuild a specific release. Use `sign-releas
 only when re-signing an existing unsigned APK without rebuilding it.
 
 After publishing, verify the GitHub Release and its remote asset sizes and SHA-256 digests before
-removing anything. Local versioned release artifacts use one-version retention: keep only the latest
-revision's signed APKs, `.idsig` files, release notes, and release logs, plus the current unsigned
-APKs. Remove those files for older revisions. Keep `.gradle/`, `.mozbuild/`, the Android object
-directories, staged Gecko packages, and toolchains because they are cross-release build caches, not
-historical release artifacts. The full sequencing and validation rules are documented in
+removing anything. Release history and local versioned artifacts use per-baseline latest-revision
+retention: keep only the highest successfully published revision and matching tag for each upstream
+baseline. Remove older releases and tags only for the baseline just verified. Locally, keep the
+retained revision's signed APKs, `.idsig` files, release notes, and release logs, plus the current
+unsigned APKs. Keep `.gradle/`, `.mozbuild/`, the Android object directories, staged Gecko packages,
+and toolchains because they are cross-release build caches, not historical release artifacts. The
+full sequencing and validation rules are documented in
 [FENIX_DEVELOPMENT.md](../../FENIX_DEVELOPMENT.md).
 
 See [FENIX_DEVELOPMENT.md](../../FENIX_DEVELOPMENT.md) for setup, testing, emulator, and local signing

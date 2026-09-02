@@ -162,16 +162,21 @@ English section second. Use the headings `## 中文` and `## English`, and keep 
 change summary, validation results, supported ABI, and `.idsig` publication policy equivalent in
 both sections. Do not publish release notes that contain only one language.
 
-Local versioned release artifacts have a one-version retention policy. Once the latest GitHub Release
-passes remote verification, keep only:
+Release history and local versioned artifacts use a per-baseline latest-revision retention policy.
+For each upstream baseline, keep only the highest successfully published `fenix-<baseline>-rN`
+GitHub Release and its matching tag. When publishing a new revision for one baseline, verify the new
+release first, then remove older releases and tags for that same baseline; never remove the retained
+latest release of another baseline.
+
+After remote verification, keep locally for every retained baseline:
 
 - the latest revision's signed APKs and `.idsig` files;
 - the current unsigned APKs used for re-signing;
 - release notes and release-build logs for the latest revision.
 
-Delete signed APKs, `.idsig` files, release notes, and release-build logs for every older `rN`
-revision. Use explicit paths and prefer recoverable deletion; never broadly delete `artifacts/`.
-Do not apply this one-version policy to cross-release build caches such as `.gradle/`, `.mozbuild/`,
+Delete signed APKs, `.idsig` files, release notes, and release-build logs for older `rN` revisions
+of the same baseline. Use explicit paths and prefer recoverable deletion; never broadly delete
+`artifacts/`. Do not apply this policy to cross-release build caches such as `.gradle/`, `.mozbuild/`,
 the three Android object directories, staged multi-locale Gecko packages, or toolchains. Those remain
 eligible for reuse after their provenance, locale set, and native libraries are validated.
 
