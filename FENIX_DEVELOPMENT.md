@@ -104,13 +104,12 @@ Validation failure is a reason to rebuild only the affected layer or ABI, not au
 artifact.
 
 Debug and test Gradle tasks can replace an object directory's staged GeckoView package with an
-`en-US`-only package. This does not invalidate previously verified signed APKs. Validate cached Gecko
-packages before using `-ReuseGecko`, and do not discard valid signed artifacts merely because a later
-test changed intermediate build state. Validation must inspect `res/multilocale.txt` inside the
-staged `omni.ja`, not only check that the file exists. If the staged package was replaced but the
-Gecko source, baseline, and ABI are unchanged, restore it from the latest validated APK for that ABI
-or rebuild only that Gecko package. Verify the complete locale set and native libraries again before
-assembling Fenix.
+`en-US`-only package. This does not invalidate previously verified signed APKs. The release script's
+`-ReuseGecko` validation inspects `res/multilocale.txt` inside the staged `omni.ja`, not only whether
+the file exists. If the cached package is incomplete, the script automatically rebuilds the Gecko
+package and its complete locale set before assembling Fenix; with `-SkipBuild`, it fails explicitly
+instead of producing a single-language APK. Do not discard valid signed artifacts merely because a
+later test changed intermediate build state.
 
 To retry one architecture while preserving completed APKs, pass its ABI to the release script:
 
@@ -125,9 +124,10 @@ the cached Gecko packages:
 .\tools\fenix\build-release-local.ps1 -ReuseGecko -Abi arm64-v8a
 ```
 
-Omit `-Abi` to rebuild all supported APKs. This path verifies the cached Gecko libraries and
-multi-locale package, then rebuilds only the Android application. Do not use it after changing
-Gecko, C++, Rust, or Gecko locale sources; use the default full build in that case.
+Omit `-Abi` to rebuild all supported APKs. This path verifies the cached Gecko libraries and exact
+multi-locale package, repairs an invalid cached package automatically, and then rebuilds the Android
+application. Do not use it after changing Gecko, C++, Rust, or Gecko locale sources; use the default
+full build in that case.
 
 Signed filenames use the baseline from `FENIX_UPSTREAM_RELEASE`. When the current commit already has
 a matching `fenix-<version>-rN` tag, that revision is reused. Otherwise the script selects the next

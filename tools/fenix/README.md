@@ -62,14 +62,16 @@ makes reuse unsafe. See the reuse-first release policy in
 [FENIX_DEVELOPMENT.md](../../FENIX_DEVELOPMENT.md) for validation and cache-provenance requirements.
 
 For Fenix Kotlin, resource, or manifest-only changes, reuse the already verified Gecko packages to
-avoid rebuilding Gecko and repackaging all locales:
+avoid rebuilding Gecko. The script validates the exact locale set in `res/multilocale.txt` and repairs
+an invalid staged package automatically before assembling the application:
 
 ```powershell
 .\tools\fenix\build-release-local.ps1 -ReuseGecko -Abi arm64-v8a
 ```
 
 Omit `-Abi` to produce all supported APKs. Do not use `-ReuseGecko` after changing Gecko, C++, Rust,
-or Gecko locale sources; run the default full build instead.
+or Gecko locale sources; run the default full build instead. With `-SkipBuild`, an invalid cached
+package fails explicitly instead of producing a single-language APK.
 
 When the current commit already has a matching `fenix-<version>-rN` tag, the build reuses that
 revision. Otherwise it selects the next revision after the highest matching local or `origin` tag.

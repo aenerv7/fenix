@@ -219,7 +219,8 @@ function Assert-ApkGeckoLibraries {
 function Assert-CachedGeckoPackage {
     param(
         [Parameter(Mandatory)][string] $ObjDir,
-        [Parameter(Mandatory)][string] $Abi
+        [Parameter(Mandatory)][string] $Abi,
+        [Parameter(Mandatory)][string[]] $ExpectedLocales
     )
 
     $geckoviewDirectory = Join-Path $root "$ObjDir\dist\geckoview"
@@ -231,6 +232,48 @@ function Assert-CachedGeckoPackage {
     $missingFiles = @($requiredFiles | Where-Object { -not (Test-Path -LiteralPath $_) })
     if ($missingFiles) {
         throw "Cached Gecko package is incomplete for $Abi. Missing: $($missingFiles -join ', ')"
+    }
+
+    $actualLocales = @(Get-GeckoPackageLocales -GeckoViewDirectory $geckoviewDirectory)
+    $missingLocales = @($ExpectedLocales | Where-Object { $_ -notin $actualLocales })
+    $unexpectedLocales = @($actualLocales | Where-Object { $_ -notin $ExpectedLocales })
+    if ($missingLocales -or $unexpectedLocales) {
+        throw "Cached Gecko package has an invalid locale set for $Abi. " +
+            "Missing: $($missingLocales -join ', '); unexpected: $($unexpectedLocales -join ', ')"
+    }
+}
+
+function Get-GeckoPackageLocales {
+    param([Parameter(Mandatory)][string] $GeckoViewDirectory)
+
+    $omniPath = Join-Path $GeckoViewDirectory "assets\omni.ja"
+    $omniStream = [IO.File]::OpenRead($omniPath)
+    try {
+        $omni = [IO.Compression.ZipArchive]::new(
+            $omniStream,
+            [IO.Compression.ZipArchiveMode]::Read,
+            $false
+        )
+        try {
+            $multilocaleEntry = $omni.GetEntry("res/multilocale.txt")
+            if (-not $multilocaleEntry) {
+                throw "Missing res/multilocale.txt in $omniPath"
+            }
+
+            $reader = [IO.StreamReader]::new($multilocaleEntry.Open())
+            try {
+                return @($reader.ReadToEnd() -split "[,\r\n]+" | Where-Object { $_ })
+            }
+            finally {
+                $reader.Dispose()
+            }
+        }
+        finally {
+            $omni.Dispose()
+        }
+    }
+    finally {
+        $omniStream.Dispose()
     }
 }
 
@@ -289,8 +332,27 @@ try {
         Remove-Item Env:MOZ_CHROME_MULTILOCALE -ErrorAction SilentlyContinue
 
         if ($ReuseGecko) {
-            Assert-CachedGeckoPackage -ObjDir $configuration.ObjDir -Abi $configuration.Abi
-            Write-Output "Reusing cached Gecko package for $($configuration.Abi)"
+            try {
+                Assert-CachedGeckoPackage `
+                    -ObjDir $configuration.ObjDir `
+                    -Abi $configuration.Abi `
+                    -ExpectedLocales $expectedLocales
+                Write-Output "Reusing cached Gecko package for $($configuration.Abi)"
+            }
+            catch {
+                if ($SkipBuild) {
+                    throw "Cached Gecko package for $($configuration.Abi) is invalid and -SkipBuild prevents repair: $($_.Exception.Message)"
+                }
+
+                Write-Output "Cached Gecko package for $($configuration.Abi) is invalid; rebuilding its multi-locale package"
+                Invoke-LocalMach -Arguments @("build")
+                Invoke-LocalMach -Arguments @("package")
+                Invoke-LocalMach -Arguments (@("package-multi-locale", "--locales") + $locales)
+                Assert-CachedGeckoPackage `
+                    -ObjDir $configuration.ObjDir `
+                    -Abi $configuration.Abi `
+                    -ExpectedLocales $expectedLocales
+            }
         }
         else {
             if (-not $SkipBuild) {
