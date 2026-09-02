@@ -4,24 +4,26 @@
 
 package org.mozilla.fenix.tabgroups
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntRect
@@ -274,26 +276,31 @@ class ExpandedTabGroupTest {
         composeTestRule.setContent {
             CompositionLocalProvider(LocalUnderTest provides true) {
                 FirefoxTheme(theme = Theme.Light) {
-                    Surface {
-                        ExpandedTabGroup(
-                            group = fakeTabGroup(tabs = mutableListOf(tab)),
-                            onItemClick = {},
-                            onTabClose = {},
-                            onDeleteTabGroupClick = {},
-                            onEditTabGroupClick = {},
-                            onCloseTabGroupClick = {},
-                            tabInteractionHandler = NoOpTabInteractionHandler,
-                            selectionMode = TabsTrayState.Mode.Select(selectedTabs = setOf(tab)),
-                            selectionBanner = { _, _ ->
-                                Surface(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(48.dp)
-                                        .testTag(selectionBannerTag),
-                                ) {}
-                            },
-                            snackbarHostState = snackbarHostState,
-                        )
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.TopCenter,
+                    ) {
+                        Surface(modifier = Modifier.width(280.dp)) {
+                            ExpandedTabGroup(
+                                group = fakeTabGroup(tabs = mutableListOf(tab)),
+                                onItemClick = {},
+                                onTabClose = {},
+                                onDeleteTabGroupClick = {},
+                                onEditTabGroupClick = {},
+                                onCloseTabGroupClick = {},
+                                tabInteractionHandler = NoOpTabInteractionHandler,
+                                selectionMode = TabsTrayState.Mode.Select(selectedTabs = setOf(tab)),
+                                selectionBanner = { _, _ ->
+                                    Surface(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(48.dp)
+                                            .testTag(selectionBannerTag),
+                                    ) {}
+                                },
+                                snackbarHostState = snackbarHostState,
+                            )
+                        }
                     }
                 }
             }
@@ -303,11 +310,15 @@ class ExpandedTabGroupTest {
         composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_GROUP_THREE_DOT_BUTTON).assertIsDisplayed()
         val tabGridBounds = composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_GRID)
             .fetchSemanticsNode().boundsInWindow
+        val groupBounds = composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_GROUP_BOTTOM_SHEET_ROOT)
+            .fetchSemanticsNode().boundsInWindow
         val selectionBannerBounds = composeTestRule.onNodeWithTag(selectionBannerTag)
             .fetchSemanticsNode().boundsInWindow
         val overlayBounds = composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_GROUP_FIXED_OVERLAY)
             .fetchSemanticsNode().boundsInWindow
         assertTrue(selectionBannerBounds.top < tabGridBounds.bottom)
+        assertEquals(groupBounds.width, selectionBannerBounds.width)
+        assertEquals(groupBounds.width, overlayBounds.width)
         assertEquals(overlayBounds.top, selectionBannerBounds.top)
         assertEquals(selectionBannerBounds.bottom, overlayBounds.bottom)
     }
@@ -669,94 +680,6 @@ class ExpandedTabGroupTest {
             .performClick()
 
         assertTrue(addNewTabClicked)
-    }
-
-    @Test
-    fun verifyFloatingAddNewTabClick() {
-        var addNewTabClicked = false
-
-        composeTestRule.setContent {
-            CompositionLocalProvider(LocalUnderTest provides true) {
-                FirefoxTheme(theme = Theme.Light) {
-                    Surface {
-                        ExpandedTabGroup(
-                            group = fakeTabGroup(),
-                            actions = expandedTabGroupActions(
-                                onAddNewTabClick = { addNewTabClicked = true },
-                            ),
-                            displayTabsInGrid = true,
-                            tabInteractionHandler = NoOpTabInteractionHandler,
-                        )
-                    }
-                }
-            }
-        }
-
-        composeTestRule.onNodeWithTag(TabsTrayTestTag.BOTTOM_SHEET_FAB)
-            .performClick()
-
-        assertTrue(addNewTabClicked)
-    }
-
-    @Test
-    fun `GIVEN selection mode WHEN group is displayed THEN new tab button is hidden`() {
-        val tab = createTab(id = "tab", title = "Tab", url = "https://example.com")
-
-        composeTestRule.setContent {
-            CompositionLocalProvider(LocalUnderTest provides true) {
-                FirefoxTheme(theme = Theme.Light) {
-                    Surface {
-                        ExpandedTabGroup(
-                            group = fakeTabGroup(tabs = mutableListOf(tab)),
-                            actions = expandedTabGroupActions(),
-                            displayTabsInGrid = true,
-                            tabInteractionHandler = NoOpTabInteractionHandler,
-                            selectionMode = TabsTrayState.Mode.Select(selectedTabs = setOf(tab)),
-                        )
-                    }
-                }
-            }
-        }
-
-        composeTestRule.onNodeWithTag(TabsTrayTestTag.BOTTOM_SHEET_FAB)
-            .assertDoesNotExist()
-    }
-
-    @Test
-    fun `WHEN group grid is scrolled to the end THEN new tab button does not cover the last tab`() {
-        val tabs = MutableList(20) { index ->
-            createTab(
-                id = "tab-$index",
-                title = "Tab $index",
-                url = "https://example.com/$index",
-            )
-        }
-
-        composeTestRule.setContent {
-            CompositionLocalProvider(LocalUnderTest provides true) {
-                FirefoxTheme(theme = Theme.Light) {
-                    Surface(modifier = Modifier.height(640.dp)) {
-                        ExpandedTabGroup(
-                            group = fakeTabGroup(tabs = tabs),
-                            actions = expandedTabGroupActions(),
-                            displayTabsInGrid = true,
-                            tabInteractionHandler = NoOpTabInteractionHandler,
-                        )
-                    }
-                }
-            }
-        }
-
-        composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_GRID)
-            .performScrollToNode(hasText("Tab 19"))
-
-        val lastTabBounds = composeTestRule.onNodeWithText("Tab 19")
-            .fetchSemanticsNode().boundsInRoot
-        val newTabButtonBounds = composeTestRule
-            .onNodeWithTag(TabsTrayTestTag.BOTTOM_SHEET_FAB)
-            .fetchSemanticsNode().boundsInRoot
-
-        assertTrue(lastTabBounds.bottom <= newTabButtonBounds.top)
     }
 
     private fun fakeTabGroup(

@@ -1,5 +1,37 @@
 # Fenix changes
 
+## 155.0-r4
+
+### 中文
+
+上游基线：`FIREFOX-ANDROID_155_RELEASE`
+
+#### 标签页群组
+
+- 移除我们后来添加的、与上游功能重复的群组内浮动新建标签页按钮，保留顶部工具栏中上游提供的新建标签页按钮。
+- 将群组内标签页长按后的选择工具栏宽度与群组视图内容对齐，避免工具栏铺满整个窗口。
+
+#### 发布与验证
+
+- 仅发布 `arm64-v8a` 架构 APK。
+- 严格沿用上游 arm64-v8a 基线 `versionCode 2016180970`，不因 r4 修订改变。
+- `.idsig` 仅保留本地用于校验，不作为 GitHub Release 资产发布。
+
+### English
+
+Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
+
+#### Tab groups
+
+- Removed the fork-added floating new-tab button from the expanded group because it duplicated the upstream action; the upstream new-tab button in the top toolbar remains available.
+- Matched the long-press selection toolbar width to the expanded group's content width instead of the full window.
+
+#### Release and validation
+
+- Published the `arm64-v8a` APK only.
+- Keeps the upstream arm64-v8a baseline `versionCode 2016180970`; the r4 revision never changes it.
+- `.idsig` is retained locally for verification and is not published as a GitHub Release asset.
+
 ## 155.0-r3
 
 ### 中文
