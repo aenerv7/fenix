@@ -61,10 +61,14 @@ internal class BottomSheetScene<T : Any>(
         val sheetState = if (skipOpeningAnimation) {
             remember(density) {
                 SheetState(
-                    skipPartiallyExpanded = true,
+                    skipPartiallyExpanded = false,
                     positionalThreshold = { with(density) { 56.dp.toPx() } },
                     velocityThreshold = { with(density) { 125.dp.toPx() } },
-                    initialValue = SheetValue.Expanded,
+                    initialValue = if (fullyExpandOnFirstOpen) {
+                        SheetValue.Expanded
+                    } else {
+                        SheetValue.PartiallyExpanded
+                    },
                     confirmValueChange = { true },
                     skipHiddenState = false,
                 )
