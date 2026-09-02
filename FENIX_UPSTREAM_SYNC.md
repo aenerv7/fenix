@@ -121,6 +121,63 @@ remain part of the repository-local manual release process.
 Keep the upstream release tag unchanged. Fenix tags identify the fork revision and must never be used
 to impersonate an official Mozilla release.
 
+## First upstream merge: Firefox Android 155.0
+
+The Firefox Android 155.0 update was the first upstream synchronization performed after this fork's
+initial Fenix baseline. The starting point was `fenix-154.0.1-r8`, with
+`FIREFOX-ANDROID_154_0_1_RELEASE` recorded in `FENIX_UPSTREAM_RELEASE`.
+
+The manually dispatched workflow run [33509955749](https://github.com/aenerv7/fenix/actions/runs/33509955749)
+successfully found `FIREFOX-ANDROID_155_0_RELEASE`, but its synchronization job stopped on 27 merge
+conflicts. The failed workflow left `fenix` unchanged, so the update was completed in a separate
+candidate worktree on `sync/firefox-android-155.0`.
+
+The manual procedure was:
+
+1. Fetch the exact official 154.0.1 and 155.0 release tags and run
+   `tools/fenix/sync-official-release.ps1 -Version 155.0`.
+2. Apply the official tree delta to the candidate and resolve conflicts file by file. Existing Fenix
+   behavior and local-only files were preserved when they did not conflict with the 155.0 APIs.
+3. Reconnect local tab-group routing, scoped multi-select, Fenix branding, missing Simplified Chinese
+   strings, IP protection entry points, and other documented QoL changes where the upstream layout
+   had moved them.
+4. Remove only obsolete code that had no production references after the API update, and update the
+   affected tests and resource keys. Do not restore a local feature only because it existed in the
+   previous baseline.
+5. Apply the limited-time activity policy before preserving upstream-only additions. An activity
+   tied to a finished event, campaign, tournament, experiment, or other fixed end date is removed at
+   the product level unless it has been explicitly adopted as a permanent Fenix feature. Remove its
+   state, actions, reducers, entry points, controller/interactor code, tests, localized strings, and
+   dedicated artwork or other resources. Keep shared infrastructure and unrelated settings whose
+   names merely overlap with the activity. In this merge, that policy removed the retired Sports/World
+   Cup activity and its flags and artwork, while the unrelated search-optimization settings containing
+   the word `sports` were retained.
+6. Promote the tested candidate to `fenix`, create the annotated `fenix-155.0-r1` tag, and publish
+   the arm64-v8a APK. The release follows the existing Fenix convention and publishes the APK only;
+   the local `.idsig` remains available for verification and re-signing but is not a release asset.
+
+The resulting source history is split into focused commits:
+
+- `9c58145ed133`: Firefox Android 155.0 baseline and upstream tree delta;
+- `15b02ce5be2e`: Kotlin formatting fixes;
+- `d68c9c9c32dc`: compatibility conflict resolutions and removal of dead obsolete files;
+- `747944944a84`: test compatibility fixes;
+- `a8e6b79f2160`: retired Sports/World Cup resource removal;
+- `8800eb3358db`: README release metadata update.
+
+Validation for this first merge included `fenix:ktlint`, `fenix:compileDebugKotlin`, a full Gecko
+build, targeted tab-group/browser-use-case unit tests, and the repository release script. The release
+script verified 99 Gecko locales including `zh-CN`, matching arm64-v8a native libraries, the package
+ID `github.aenerv7.fenix`, and APK Signature Scheme v2/v3. The full Windows unit-test task still has
+the documented JNA/native limitation; failures occur while loading `jnidispatch.dll` before affected
+test bodies run, so they are not treated as a 155.0 product regression without a Windows-native test
+artifact.
+
+The published result is [Fenix 155.0-r1](https://github.com/aenerv7/fenix/releases/tag/fenix-155.0-r1).
+Its release notes record the exact source tag and APK SHA-256. Future upstream updates should reuse
+this sequence, review each conflict against the current Fenix behavior, and run the limited-time
+activity policy before assuming that every upstream file from the previous release should be kept.
+
 ## Source-to-binary traceability
 
 If APKs are distributed, record their SHA-256 hashes and the exact Fenix tag in release notes. The
