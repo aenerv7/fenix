@@ -1,0 +1,4 @@
+[DEFAULT]
+subsuite = "moztreedocs"
+
+["test_path_exclusions.py"]

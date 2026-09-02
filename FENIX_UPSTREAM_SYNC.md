@@ -94,6 +94,11 @@ Also install the debug APK and manually verify:
 - simplified Chinese strings;
 - package name, app name, and version display.
 
+Run the full source-documentation gate with a new output directory after each baseline update. The
+command, failure classification, and upstream dependency policy are documented in
+[FENIX_DOCS_TOOLCHAIN.md](FENIX_DOCS_TOOLCHAIN.md). Keep documentation toolchain compatibility fixes
+separate from Android product and release commits.
+
 ## Promote the candidate
 
 Commit the updated baseline marker and any conflict resolutions, then merge the candidate into

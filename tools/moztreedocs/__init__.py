@@ -11,6 +11,7 @@ import sphinx.ext.apidoc
 import yaml
 from mozbuild.base import MozbuildObject
 from mozbuild.frontend.reader import BuildReader
+from mozpack import path as mozpath
 from mozpack.copier import FileCopier
 from mozpack.files import FileFinder
 from mozpack.manifests import InstallManifest
@@ -21,6 +22,18 @@ build = MozbuildObject.from_environment(cwd=here)
 MAIN_DOC_PATH = Path(build.topsrcdir) / "docs"
 
 logger = sphinx.util.logging.getLogger(__name__)
+
+
+def _is_excluded_path(source_path, topsrcdir, exclude_patterns):
+    """Return whether a source path is below one of the configured exclusions."""
+    source_path = mozpath.normpath(
+        mozpath.relpath(os.fspath(source_path), os.fspath(topsrcdir))
+    )
+    for pattern in exclude_patterns:
+        pattern = mozpath.normpath(pattern).rstrip("/")
+        if source_path == pattern or source_path.startswith(f"{pattern}/"):
+            return True
+    return False
 
 
 @functools.cache
@@ -154,7 +167,7 @@ class _SphinxManager:
                     target = os.path.normpath(os.path.join(dest, rel_source))
 
                     # Skip files matching exclude patterns
-                    if any(pattern in source_path for pattern in exclude_patterns):
+                    if _is_excluded_path(source_path, self.topsrcdir, exclude_patterns):
                         continue
 
                     m.add_link(source_path, target)

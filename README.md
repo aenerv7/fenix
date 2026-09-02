@@ -51,6 +51,8 @@ Firefox Android 正式版标签为不可变基线，在每个正式版之上维�
 
 完整的环境、测试、虚拟机和签名说明见
 [FENIX_DEVELOPMENT.md](FENIX_DEVELOPMENT.md)。
+上游文档依赖、完整文档构建及 Windows staging 兼容策略见
+[FENIX_DOCS_TOOLCHAIN.md](FENIX_DOCS_TOOLCHAIN.md)。
 
 ### 代码搜索（重要）
 
