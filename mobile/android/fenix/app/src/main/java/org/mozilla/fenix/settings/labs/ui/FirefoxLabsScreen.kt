@@ -303,8 +303,9 @@ private fun EmptyState(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .width(180.dp)
                 .height(103.dp),
-            painter = painterResource(R.drawable.kit_sleeping_under_laptop),
+            painter = painterResource(R.drawable.fenix_labs_rabbit),
             contentDescription = null,
+            contentScale = ContentScale.Fit,
         )
 
         Spacer(modifier = Modifier.height(20.dp))
