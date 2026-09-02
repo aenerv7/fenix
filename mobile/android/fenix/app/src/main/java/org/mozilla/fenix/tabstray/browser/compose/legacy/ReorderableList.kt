@@ -153,6 +153,14 @@ class ListReorderState internal constructor(
         draggingItemInitialOffset = 0f
     }
 
+    internal fun resetIfItemMissing(itemKeys: Set<Any>) {
+        if (draggingItemKey?.let { it !in itemKeys } == true) {
+            onDragInterrupted()
+        } else if (previousKeyOfDraggedItem?.let { it !in itemKeys } == true) {
+            previousKeyOfDraggedItem = null
+        }
+    }
+
     @Suppress("CognitiveComplexMethod")
     internal fun onDrag(offset: Float) {
         draggingItemCumulatedOffset += offset

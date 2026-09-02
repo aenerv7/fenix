@@ -232,6 +232,38 @@ class TabStorageMiddlewareTest {
         }
 
     @Test
+    fun `WHEN the last ungrouped tab is removed from the browser store THEN the tab tray removes it`() = runTest {
+        val ungroupedTab = createTab(id = "ungrouped", url = "")
+        val groupedTab = createTab(id = "grouped", url = "")
+        val storedGroup = fakeGroup()
+        val browserStore = BrowserStore(
+            initialState = BrowserState(
+                tabs = listOf(ungroupedTab, groupedTab),
+                selectedTabId = ungroupedTab.id,
+            ),
+        )
+        val store = createStore(
+            tabGroupsEnabled = true,
+            tabDataFlow = browserStore.stateFlow.map { TabData(it) },
+            tabGroupRepository = createRepository(
+                initialTabGroups = listOf(storedGroup),
+                initialTabGroupAssignments = listOf(groupedTab.id to storedGroup.id),
+            ),
+        )
+
+        runCurrent()
+        advanceUntilIdle()
+        assertEquals(listOf(ungroupedTab.id, storedGroup.id), store.state.normalTabsState.items.map { it.id })
+
+        browserStore.dispatch(TabListAction.RemoveTabAction(ungroupedTab.id))
+        runCurrent()
+        advanceUntilIdle()
+
+        assertEquals(listOf(storedGroup.id), store.state.normalTabsState.items.map { it.id })
+        assertEquals(groupedTab.id, store.state.selectedTabId)
+    }
+
+    @Test
     fun `GIVEN noncontiguous group tabs WHEN a grouped tab is selected THEN select the group item index`() = runTest {
         val groupedTab = createTab(id = "grouped", url = "")
         val selectedGroupedTab = createTab(id = "selected-grouped", url = "")

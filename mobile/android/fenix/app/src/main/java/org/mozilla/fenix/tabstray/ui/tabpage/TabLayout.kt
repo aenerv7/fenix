@@ -571,6 +571,10 @@ private fun ReorderableTabGrid(
         ignoredItems = ignoredItems.toList(),
         tabInteractionHandler = tabInteractionHandler,
     )
+    val tabKeys = remember(tabs) { tabs.mapTo(hashSetOf()) { it.id } }
+    LaunchedEffect(tabKeys) {
+        reorderState.resetIfItemMissing(itemKeys = tabKeys)
+    }
     // Prevent a race between multi-select and drag by updating the select mode only if the dragging key is null
     LaunchedEffect(selectionMode, reorderState.draggingItemKey) {
         if (reorderState.draggingItemKey == null) {
@@ -691,6 +695,10 @@ private fun InteractableTabGrid(
         liveReorderEnabled = liveReorderEnabled,
         ignoredItems = ignoredItems,
     )
+    val tabKeys = remember(tabs) { tabs.mapTo(hashSetOf()) { it.id } }
+    LaunchedEffect(tabKeys) {
+        gridInteractionState.resetIfItemMissing(itemKeys = tabKeys)
+    }
     // Don't show the onboarding card while a drag is active
     val showOnboardingCardInGrid by remember(displayTabGroupOnboarding) {
         derivedStateOf { displayTabGroupOnboarding && gridInteractionState.draggedItem.key == null }
@@ -1159,6 +1167,10 @@ private fun InteractableTabList(
         dragAndDropEnabled = dragAndDropEnabled,
         liveReorderEnabled = liveReorderEnabled,
     )
+    val tabKeys = remember(tabs) { tabs.mapTo(hashSetOf()) { it.id } }
+    LaunchedEffect(tabKeys) {
+        listInteractionState.resetIfItemMissing(itemKeys = tabKeys)
+    }
     var isInMultiSelectMode by remember {
         mutableStateOf(
             selectionMode is TabsTrayState.Mode.Select,
@@ -1463,6 +1475,10 @@ private fun ReorderableTabList(
             )
         },
     )
+    val tabKeys = remember(tabs) { tabs.mapTo(hashSetOf()) { it.id } }
+    LaunchedEffect(tabKeys) {
+        reorderState.resetIfItemMissing(itemKeys = tabKeys)
+    }
     // Prevent a race between multi-select and drag by updating the select mode only if the dragging key is null
     LaunchedEffect(selectionMode, reorderState.draggingItemKey) {
         if (reorderState.draggingItemKey == null) {

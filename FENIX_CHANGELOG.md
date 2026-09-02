@@ -1,5 +1,39 @@
 # Fenix changes
 
+## 155.0-r8
+
+### 中文
+
+上游基线：`FIREFOX-ANDROID_155_RELEASE`
+
+#### 标签页群组
+
+- 修复关闭最后一个非群组标签页后旧条目仍残留在“全部标签页”界面的显示状态；数据源和列表交互状态都会同步清理。
+- 修复群组内标签页长按工具栏返回时重复触发导航，第一次返回只关闭选择工具栏，不会同时收起群组。
+
+#### 品牌与发布
+
+- 发布图标使用透明画布上缩小至原尺寸 80% 的兔子徽标，修复启动器图标资源缺失问题；应用内不带背景的兔子资源保持不变。
+- 仅发布 `arm64-v8a` 架构 APK，严格沿用上游 `versionCode 2016180970`。
+- `.idsig` 仅保留本地用于校验，不作为 GitHub Release 资产发布。
+- 本次仅改动 Fenix Kotlin、资源和构建校验逻辑，复用已验证的 155.0 多语言 GeckoView；未来复用上游预编译 GeckoView 必须匹配基线、Gecko 修订、ABI、完整语言集和原生库 SHA-256，否则回退编译。
+
+### English
+
+Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
+
+#### Tab groups
+
+- Fixed stale display state after closing the last ungrouped tab while an open group remains; both the data source and list interaction state are now cleared.
+- Fixed duplicate navigation from the expanded-group long-press toolbar: the first Back press closes only the selection toolbar and does not collapse the group.
+
+#### Branding and release
+
+- The launcher now uses a transparent rabbit foreground scaled to 80% of its original size, fixing the missing launcher icon; the background-free in-app rabbit resource is unchanged.
+- Published the `arm64-v8a` APK only and kept the upstream `versionCode 2016180970`.
+- `.idsig` is retained locally for verification and is not published as a GitHub Release asset.
+- This revision changes only Fenix Kotlin, resources, and build validation logic, so it reuses the validated 155.0 multi-locale GeckoView package. Any future upstream prebuilt GeckoView reuse must match the baseline, Gecko revision, ABI, complete locale set, and native-library SHA-256, or fall back to compilation.
+
 ## 155.0-r4
 
 ### 中文

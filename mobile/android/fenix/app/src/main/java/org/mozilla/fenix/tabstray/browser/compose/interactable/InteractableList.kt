@@ -144,6 +144,14 @@ interface ListInteractionState {
      * Called to indicate to the list that the drop handling has been completed and the state can be reset.
      */
     fun reset()
+
+    fun resetIfItemMissing(itemKeys: Set<Any>) {
+        if (draggedItem.key?.let { it !in itemKeys } == true ||
+            previousKeyOfDraggedItem?.let { it !in itemKeys } == true
+        ) {
+            reset()
+        }
+    }
 }
 
 /**
@@ -297,6 +305,9 @@ class ListInteractionStateImpl internal constructor(
                 )
                 previousKeyOfDraggedItem = null
             }
+        }
+        if (draggedItem is InteractionState.List.None) {
+            previousKeyOfDraggedItem = null
         }
         draggedItem = InteractionState.List.None
         hoveredItem = InteractionState.List.None

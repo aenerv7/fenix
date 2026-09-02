@@ -73,6 +73,12 @@ Omit `-Abi` to produce all supported APKs. Do not use `-ReuseGecko` after changi
 or Gecko locale sources; run the default full build instead. With `-SkipBuild`, an invalid cached
 package fails explicitly instead of producing a single-language APK.
 
+`-ReuseGecko` is currently limited to a validated package already present in the repository-local
+object directory. It is not an upstream GeckoView downloader. If upstream precompiled artifacts are
+added later, require exact baseline/Gecko revision, ABI, locale-set, and SHA-256 matching for
+`omni.ja`, `libmozglue.so`, and `libxul.so`; otherwise fall back to compiling Gecko. A Maven AAR
+without the complete multi-locale package is not sufficient.
+
 When the current commit already has a matching `fenix-<version>-rN` tag, the build reuses that
 revision. Otherwise it selects the next revision after the highest matching local or `origin` tag.
 Pass `-VersionName <version>-rN` to rebuild a specific release. Use `sign-release-local.ps1 -Abi`

@@ -166,6 +166,14 @@ interface GridInteractionState {
      * Called to indicate to the grid that the drop handling has been completed and the state can be reset.
      */
     fun reset()
+
+    fun resetIfItemMissing(itemKeys: Set<Any>) {
+        if (draggedItem.key?.let { it !in itemKeys } == true ||
+            previousKeyOfDraggedItem?.let { it !in itemKeys } == true
+        ) {
+            reset()
+        }
+    }
 }
 
 /**
@@ -346,6 +354,9 @@ class GridInteractionStateImpl internal constructor(
 
     private fun resetState() {
         animateItems()
+        if (draggedItem is InteractionState.Grid.None) {
+            previousKeyOfDraggedItem = null
+        }
         draggedItem = InteractionState.Grid.None
         hoveredItem = InteractionState.Grid.None
         highlightedRect = null
