@@ -97,6 +97,30 @@ class ExpandedTabGroupTest {
     }
 
     @Test
+    fun verifyAddNewTabButtonIsAlwaysDisplayed() {
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalUnderTest provides true) {
+                FirefoxTheme(theme = Theme.Light) {
+                    Surface {
+                        ExpandedTabGroup(
+                            group = fakeTabGroup(),
+                            onItemClick = {},
+                            onTabClose = {},
+                            onDeleteTabGroupClick = {},
+                            onEditTabGroupClick = {},
+                            onCloseTabGroupClick = {},
+                            tabInteractionHandler = NoOpTabInteractionHandler,
+                        )
+                    }
+                }
+            }
+        }
+
+        composeTestRule.onNodeWithTag(TabsTrayTestTag.BOTTOM_SHEET_ADD_TAB_BUTTON)
+            .assertIsDisplayed()
+    }
+
+    @Test
     fun `GIVEN selected tab is outside the initial viewport WHEN group opens THEN selected tab is displayed`() {
         val tabs = List(20) { index ->
             createTab(
@@ -697,7 +721,7 @@ class ExpandedTabGroupTest {
         onDeleteTabGroupClick: () -> Unit = {},
         onEditTabGroupClick: () -> Unit = {},
         onCloseTabGroupClick: () -> Unit = {},
-        onAddNewTabClick: (() -> Unit)? = {},
+        onAddNewTabClick: () -> Unit = {},
         onShareTabGroupClick: () -> Unit = {},
     ) = ExpandedTabGroupActions(
         onItemClick = onItemClick,

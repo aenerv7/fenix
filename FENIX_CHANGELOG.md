@@ -8,8 +8,10 @@
 
 #### 标签页群组
 
-- 移除我们后来添加的、与上游功能重复的群组内浮动新建标签页按钮，保留顶部工具栏中上游提供的新建标签页按钮。
+- 移除我们后来添加的、与上游功能重复的群组内浮动新建标签页按钮，保留顶部工具栏中的新建标签页按钮。
+- 顶部工具栏新建标签页按钮在手机、平板及横竖屏布局中始终显示，用于替代已移除的浮动按钮。
 - 将群组内标签页长按后的选择工具栏宽度与群组视图内容对齐，避免工具栏铺满整个窗口。
+- 修复仅剩一个独立标签页且存在标签页群组时关闭该标签页后仍显示并保持选中的问题。
 
 #### 发布与验证
 
@@ -23,8 +25,10 @@ Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
 
 #### Tab groups
 
-- Removed the fork-added floating new-tab button from the expanded group because it duplicated the upstream action; the upstream new-tab button in the top toolbar remains available.
+- Removed the fork-added floating new-tab button from the expanded group because it duplicated the toolbar action; the top-toolbar new-tab button remains available.
+- The top-toolbar new-tab button is always shown across phone, tablet, portrait, and landscape layouts, replacing the removed floating action.
 - Matched the long-press selection toolbar width to the expanded group's content width instead of the full window.
+- Fixed the last ungrouped tab remaining visible and selected after it was closed while an open tab group remained.
 
 #### Release and validation
 

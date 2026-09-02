@@ -247,7 +247,7 @@ fun ExpandedTabGroup(
             onDeleteTabGroupClick = onDeleteTabGroupClick,
             onEditTabGroupClick = onEditTabGroupClick,
             onCloseTabGroupClick = onCloseTabGroupClick,
-            onAddNewTabClick = null,
+            onAddNewTabClick = {},
             onShareTabGroupClick = {},
         ),
         displayTabsInGrid = true,
@@ -341,11 +341,8 @@ private fun ViewTabGroupHeader(
             ),
         )
 
-        val onAddNewTabClick = actions.onAddNewTabClick
-        if (onAddNewTabClick != null) {
-            AddTabToGroupButton(onClick = onAddNewTabClick)
-            Spacer(modifier = Modifier.width(FirefoxTheme.layout.space.static100))
-        }
+        AddTabToGroupButton(onClick = actions.onAddNewTabClick)
+        Spacer(modifier = Modifier.width(FirefoxTheme.layout.space.static100))
 
         TabGroupMenuButton(
             includeCloseOption = true,
@@ -503,8 +500,7 @@ private class ExpandedTabGroupPreviewProvider :
  * @property onDeleteTabGroupClick Invoked when the user clicks on delete tab group.
  * @property onEditTabGroupClick Invoked when the user clicks to edit the group.
  * @property onCloseTabGroupClick Invoked when the user clicks to close a tab group.
- * @property onAddNewTabClick Invoked when the user clicks to add a new tab to the group. When null,
- * the add-tab button is hidden.
+ * @property onAddNewTabClick Invoked when the user clicks to add a new tab to the group.
  * @property onShareTabGroupClick Invoked when the user clicks to share the group.
  */
 data class ExpandedTabGroupActions(
@@ -513,6 +509,6 @@ data class ExpandedTabGroupActions(
     val onDeleteTabGroupClick: () -> Unit,
     val onEditTabGroupClick: () -> Unit,
     val onCloseTabGroupClick: () -> Unit,
-    val onAddNewTabClick: (() -> Unit)?,
+    val onAddNewTabClick: () -> Unit,
     val onShareTabGroupClick: () -> Unit,
 )

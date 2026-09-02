@@ -895,6 +895,37 @@ class DefaultTabManagerControllerTest {
     }
 
     @Test
+    fun `GIVEN one ungrouped tab and an open group WHEN the ungrouped tab is closed THEN the group tab remains selected`() {
+        val ungroupedTab = createTab(id = "ungrouped", url = "https://mozilla.org")
+        val groupedTab = createTab(id = "grouped", url = "https://example.com")
+        val group = createTabGroup(
+            id = "group",
+            tabs = listOf(TabsTrayItem.Tab(groupedTab)),
+        )
+        browserStore = BrowserStore(
+            initialState = BrowserState(
+                tabs = listOf(ungroupedTab, groupedTab),
+                selectedTabId = ungroupedTab.id,
+            ),
+        )
+        tabsUseCases = TabsUseCases(browserStore)
+        trayStore = TabsTrayStore(
+            initialState = TabsTrayState(
+                selectedTabId = ungroupedTab.id,
+                normalTabsState = TabsTrayState.NormalTabsState(
+                    items = listOf(TabsTrayItem.Tab(ungroupedTab), group),
+                ),
+                tabGroupState = TabsTrayState.TabGroupState(groups = listOf(group)),
+            ),
+        )
+
+        createController().handleTabDeletion(TabsTrayItem.Tab(ungroupedTab))
+
+        assertEquals(listOf(groupedTab), browserStore.state.tabs)
+        assertEquals(groupedTab.id, browserStore.state.selectedTabId)
+    }
+
+    @Test
     fun `GIVEN only one normal tab opened WHEN handleTabDeletion is called THEN it navigates to home where the tab will be removed`() {
         val normalTab = createTab(id = "onlyNormalTab", url = "https://mozilla.org", private = false)
 

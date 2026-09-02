@@ -393,7 +393,11 @@ class DefaultTabManagerController(
 
         if (tabsRemaining || !isCurrentTab) {
             // Using isNormal here makes it read beautifully
-            val excludedTabIds = if (isNormal) getExcludedNormalTabIds() else emptySet()
+            val excludedTabIds = if (isNormal) {
+                getExcludedNormalTabIds(closingTabIds = setOf(tab.id))
+            } else {
+                emptySet()
+            }
 
             tabsUseCases.removeTab(excludedTabIds = excludedTabIds, tabId = tab.id)
             showUndoSnackbarForTab(isPrivate)
@@ -414,10 +418,9 @@ class DefaultTabManagerController(
 
     /**
      * Calculates the IDs of normal tabs that should be protected from being selected after other tabs are deleted.
-     * This
-     * includes all inactive tabs and tabs inside open (visible) tab groups.
+     * Inactive tabs are always protected. Open group tabs are protected while an ungrouped tab remains available.
      */
-    private fun getExcludedNormalTabIds(): Set<String> {
+    private fun getExcludedNormalTabIds(closingTabIds: Set<String> = emptySet()): Set<String> {
         val state = tabsTrayStore.state
 
         val inactiveTabIds = state.inactiveTabs.tabs.map { it.id }
@@ -427,7 +430,11 @@ class DefaultTabManagerController(
             .toTabList()
             .map { it.id }
 
-        return (inactiveTabIds + openGroupTabIds).toSet()
+        val hasRemainingUngroupedTab = state.normalTabsState.items
+            .toTabList()
+            .any { it.id !in openGroupTabIds && it.id !in closingTabIds }
+
+        return (inactiveTabIds + if (hasRemainingUngroupedTab) openGroupTabIds else emptyList()).toSet()
     }
 
     /**
@@ -513,7 +520,11 @@ class DefaultTabManagerController(
         val closingTabIds = tabs.map { it.id }.toSet()
 
         if (willTabsRemainAfterDeletion(isPrivate = isPrivate, closingTabIds = closingTabIds)) {
-            val excludedTabIds = if (isNormal) getExcludedNormalTabIds() else emptySet()
+            val excludedTabIds = if (isNormal) {
+                getExcludedNormalTabIds(closingTabIds = closingTabIds)
+            } else {
+                emptySet()
+            }
 
             tabsUseCases.removeTabs(excludedTabIds = excludedTabIds, ids = tabs.map { it.id })
             showUndoSnackbar(isPrivate)
