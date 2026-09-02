@@ -209,7 +209,7 @@ class AboutFragment(
                     SupportUtils.WHATS_NEW_URL,
                 ),
                 // Note: Fenix only has release notes for 'Release' versions, NOT 'Beta' & 'Nightly'.
-                getString(R.string.about_whats_new, getString(R.string.firefox)),
+                getString(R.string.about_whats_new, getString(R.string.fenix)),
             ),
             AboutPageItem(
                 AboutItem.ExternalLink(
