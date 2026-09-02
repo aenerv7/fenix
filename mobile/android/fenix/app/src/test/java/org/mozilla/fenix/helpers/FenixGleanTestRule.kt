@@ -38,7 +38,7 @@ class FenixGleanTestRule(
     val configToUse: Configuration = Configuration(),
 ) : TestWatcher() {
     override fun apply(base: Statement, description: Description): Statement {
-        if (!System.getProperty("os.name").orEmpty().startsWith("Windows")) {
+        if (!System.getProperty("os.name").orEmpty().startsWith("Windows", ignoreCase = true)) {
             return super.apply(base, description)
         }
 
