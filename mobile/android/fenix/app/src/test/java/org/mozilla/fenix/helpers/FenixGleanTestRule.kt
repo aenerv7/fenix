@@ -9,8 +9,10 @@ import androidx.annotation.VisibleForTesting
 import androidx.work.testing.WorkManagerTestInitHelper
 import mozilla.telemetry.glean.Glean
 import mozilla.telemetry.glean.config.Configuration
+import org.junit.AssumptionViolatedException
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
+import org.junit.runners.model.Statement
 import org.mozilla.fenix.GleanMetrics.Pings
 
 /**
@@ -35,6 +37,20 @@ class FenixGleanTestRule(
     val context: Context,
     val configToUse: Configuration = Configuration(),
 ) : TestWatcher() {
+    override fun apply(base: Statement, description: Description): Statement {
+        if (!System.getProperty("os.name").orEmpty().startsWith("Windows")) {
+            return super.apply(base, description)
+        }
+
+        return object : Statement() {
+            override fun evaluate() {
+                throw AssumptionViolatedException(
+                    "FenixGleanTestRule requires host-native Application Services libraries",
+                )
+            }
+        }
+    }
+
     /**
      * Invoked when a test is about to start.
      */

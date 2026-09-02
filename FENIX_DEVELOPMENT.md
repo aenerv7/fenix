@@ -199,9 +199,12 @@ started at that point. The same limitation was observed when validating the 155.
 
 Do not repeatedly clear Gradle caches or download only `jnidispatch.dll`: JNA is merely the first
 missing layer, and the Windows megazord is absent as well. Run affected Glean-backed unit tests in a
-Linux environment or CI. Unaffected unit tests, lint, APK builds, emulator tests, and visual checks
-continue to run on Windows. Recheck this limitation after changing `FENIX_UPSTREAM_RELEASE`, because a
-newer official baseline may provide complete host-native test artifacts.
+Linux environment or CI. On native Windows, `FenixGleanTestRule` marks these tests skipped before
+their test bodies run, so the full Gradle task can complete without turning the missing native
+artifact into a product failure; skipped tests still need Linux/CI coverage. Unaffected unit tests,
+lint, APK builds, emulator tests, and visual checks continue to run on Windows. Recheck this
+limitation after changing `FENIX_UPSTREAM_RELEASE`, because a newer official baseline may provide
+complete host-native test artifacts.
 
 ## Local signing
 
