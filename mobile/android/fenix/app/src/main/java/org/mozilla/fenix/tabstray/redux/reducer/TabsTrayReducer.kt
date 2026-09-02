@@ -349,12 +349,12 @@ internal object TabsTrayReducer {
                 backStack = state.popBackStack(),
             )
 
+            state.mode is TabsTrayState.Mode.Select -> state.copy(mode = TabsTrayState.Mode.Normal)
+
             lastBackStackEntry is TabManagerNavDestination.ExpandedTabGroup -> state.copy(
                 mode = TabsTrayState.Mode.Normal,
                 backStack = state.popBackStack(),
             )
-
-            state.mode is TabsTrayState.Mode.Select -> state.copy(mode = TabsTrayState.Mode.Normal)
 
             lastBackStackEntry == TabManagerNavDestination.TabSearch -> state.copy(
                 tabSearchState = TabSearchState(query = "", searchResults = emptyList()),

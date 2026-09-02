@@ -388,7 +388,7 @@ class TabsTrayStoreReducerTest {
     }
 
     @Test
-    fun `WHEN expanded tab group is dismissed in select mode THEN exit selection and navigate to root`() {
+    fun `WHEN navigating back from expanded tab group in select mode THEN only exit selection`() {
         val tab = createTab("https://mozilla.org")
         val group = createTabGroup(tabs = mutableListOf(tab))
         val initialState = TabsTrayState(
@@ -407,6 +407,34 @@ class TabsTrayStoreReducerTest {
         assertEquals(
             initialState.copy(
                 mode = Mode.Normal,
+            ),
+            resultState,
+        )
+    }
+
+    @Test
+    fun `WHEN navigating back from expanded tab group after exiting select mode THEN group is dismissed`() {
+        val tab = createTab("https://mozilla.org")
+        val group = createTabGroup()
+        val initialState = TabsTrayState(
+            mode = Mode.Select(selectedTabs = setOf(tab)),
+            backStack = listOf(
+                TabManagerNavDestination.Root,
+                TabManagerNavDestination.ExpandedTabGroup(group),
+            ),
+        )
+
+        val selectModeExitedState = TabsTrayReducer.reduce(
+            state = initialState,
+            action = TabsTrayAction.NavigateBackInvoked,
+        )
+        val resultState = TabsTrayReducer.reduce(
+            state = selectModeExitedState,
+            action = TabsTrayAction.NavigateBackInvoked,
+        )
+
+        assertEquals(
+            selectModeExitedState.copy(
                 backStack = listOf(TabManagerNavDestination.Root),
             ),
             resultState,
