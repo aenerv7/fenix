@@ -239,6 +239,25 @@ private fun FloatingToolbarActions(
     }
 }
 
+@Composable
+internal fun NewTabFloatingActionButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    FloatingActionButton(
+        modifier = modifier,
+        icon = {
+            Icon(
+                painter = painterResource(id = iconsR.drawable.mozac_ic_plus_24),
+                contentDescription = stringResource(id = R.string.add_tab),
+            )
+        },
+        colors = FloatingActionButtonDefaults.colorsPrimary(),
+        elevation = M3FloatingActionButtonDefaults.elevation(),
+        onClick = onClick,
+    )
+}
+
 @VisibleForTesting
 @Composable
 internal fun FloatingToolbarFAB(
@@ -263,9 +282,11 @@ internal fun FloatingToolbarFAB(
 
     when (state.selectedPage) {
         Page.NormalTabs -> {
-            icon = iconsR.drawable.mozac_ic_plus_24
-            contentDescription = stringResource(id = R.string.add_tab)
-            onClick = onOpenNewNormalTabClicked
+            NewTabFloatingActionButton(
+                onClick = onOpenNewNormalTabClicked,
+                modifier = Modifier.testTag(TabsTrayTestTag.FAB),
+            )
+            return
         }
 
         Page.PrivateTabs -> {

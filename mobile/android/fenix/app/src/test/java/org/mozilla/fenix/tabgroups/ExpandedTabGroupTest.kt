@@ -15,11 +15,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntRect
@@ -667,6 +669,94 @@ class ExpandedTabGroupTest {
             .performClick()
 
         assertTrue(addNewTabClicked)
+    }
+
+    @Test
+    fun verifyFloatingAddNewTabClick() {
+        var addNewTabClicked = false
+
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalUnderTest provides true) {
+                FirefoxTheme(theme = Theme.Light) {
+                    Surface {
+                        ExpandedTabGroup(
+                            group = fakeTabGroup(),
+                            actions = expandedTabGroupActions(
+                                onAddNewTabClick = { addNewTabClicked = true },
+                            ),
+                            displayTabsInGrid = true,
+                            tabInteractionHandler = NoOpTabInteractionHandler,
+                        )
+                    }
+                }
+            }
+        }
+
+        composeTestRule.onNodeWithTag(TabsTrayTestTag.BOTTOM_SHEET_FAB)
+            .performClick()
+
+        assertTrue(addNewTabClicked)
+    }
+
+    @Test
+    fun `GIVEN selection mode WHEN group is displayed THEN new tab button is hidden`() {
+        val tab = createTab(id = "tab", title = "Tab", url = "https://example.com")
+
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalUnderTest provides true) {
+                FirefoxTheme(theme = Theme.Light) {
+                    Surface {
+                        ExpandedTabGroup(
+                            group = fakeTabGroup(tabs = mutableListOf(tab)),
+                            actions = expandedTabGroupActions(),
+                            displayTabsInGrid = true,
+                            tabInteractionHandler = NoOpTabInteractionHandler,
+                            selectionMode = TabsTrayState.Mode.Select(selectedTabs = setOf(tab)),
+                        )
+                    }
+                }
+            }
+        }
+
+        composeTestRule.onNodeWithTag(TabsTrayTestTag.BOTTOM_SHEET_FAB)
+            .assertDoesNotExist()
+    }
+
+    @Test
+    fun `WHEN group grid is scrolled to the end THEN new tab button does not cover the last tab`() {
+        val tabs = MutableList(20) { index ->
+            createTab(
+                id = "tab-$index",
+                title = "Tab $index",
+                url = "https://example.com/$index",
+            )
+        }
+
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalUnderTest provides true) {
+                FirefoxTheme(theme = Theme.Light) {
+                    Surface(modifier = Modifier.height(640.dp)) {
+                        ExpandedTabGroup(
+                            group = fakeTabGroup(tabs = tabs),
+                            actions = expandedTabGroupActions(),
+                            displayTabsInGrid = true,
+                            tabInteractionHandler = NoOpTabInteractionHandler,
+                        )
+                    }
+                }
+            }
+        }
+
+        composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_GRID)
+            .performScrollToNode(hasText("Tab 19"))
+
+        val lastTabBounds = composeTestRule.onNodeWithText("Tab 19")
+            .fetchSemanticsNode().boundsInRoot
+        val newTabButtonBounds = composeTestRule
+            .onNodeWithTag(TabsTrayTestTag.BOTTOM_SHEET_FAB)
+            .fetchSemanticsNode().boundsInRoot
+
+        assertTrue(lastTabBounds.bottom <= newTabButtonBounds.top)
     }
 
     private fun fakeTabGroup(

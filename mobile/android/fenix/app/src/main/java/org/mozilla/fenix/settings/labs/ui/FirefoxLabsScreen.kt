@@ -250,7 +250,7 @@ private fun FirefoxLabsBanner() {
                 modifier = Modifier
                     .fillMaxHeight()
                     .padding(top = FirefoxTheme.layout.space.static150),
-                painter = painterResource(R.drawable.kit_expressive_full),
+                painter = painterResource(R.drawable.ic_launcher_rabbit_foreground),
                 contentDescription = null,
                 contentScale = ContentScale.FillHeight,
             )

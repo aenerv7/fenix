@@ -4,15 +4,21 @@
 
 package org.mozilla.fenix.tabgroups
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -35,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -65,6 +72,7 @@ import org.mozilla.fenix.tabstray.data.TabsTrayItem
 import org.mozilla.fenix.tabstray.data.createTab
 import org.mozilla.fenix.tabstray.data.createTabGroup
 import org.mozilla.fenix.tabstray.redux.state.TabsTrayState
+import org.mozilla.fenix.tabstray.ui.fab.NewTabFloatingActionButton
 import org.mozilla.fenix.tabstray.ui.tabitems.LOREM_IPSUM
 import org.mozilla.fenix.tabstray.ui.tabitems.TabGroupMenuButton
 import org.mozilla.fenix.tabstray.ui.tabpage.TabLayout
@@ -100,6 +108,13 @@ fun ExpandedTabGroup(
     snackbarHostState: SnackbarHostState? = null,
 ) {
     var selectionMenuExpanded by remember { mutableStateOf(false) }
+    val onAddNewTabClick = actions.onAddNewTabClick
+    val tabGroupGridBottomPadding = if (onAddNewTabClick != null) {
+        dimensionResource(R.dimen.tab_tray_list_bottom_padding) -
+            dimensionResource(R.dimen.tab_tray_grid_bottom_padding)
+    } else {
+        0.dp
+    }
 
     LaunchedEffect(selectionMode) {
         if (selectionMode !is TabsTrayState.Mode.Select) {
@@ -107,44 +122,70 @@ fun ExpandedTabGroup(
         }
     }
 
-    Column(modifier = Modifier.testTag(TabsTrayTestTag.TAB_GROUP_BOTTOM_SHEET_ROOT)) {
-        ViewTabGroupHeader(
-            title = group.title,
-            groupTheme = group.theme,
-            groupTabsSize = group.tabs.size,
-            actions = actions,
-            modifier = Modifier.padding(
-                start = FirefoxTheme.layout.space.dynamic200,
-                end = FirefoxTheme.layout.space.dynamic200,
-            ),
-        )
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .testTag(TabsTrayTestTag.TAB_GROUP_BOTTOM_SHEET_ROOT),
+    ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            ViewTabGroupHeader(
+                title = group.title,
+                groupTheme = group.theme,
+                groupTabsSize = group.tabs.size,
+                actions = actions,
+                modifier = Modifier.padding(
+                    start = FirefoxTheme.layout.space.dynamic200,
+                    end = FirefoxTheme.layout.space.dynamic200,
+                ),
+            )
 
-        TabLayout(
-            tabs = group.tabs,
-            displayTabsInGrid = displayTabsInGrid,
-            dragAndDropEnabled = false,
-            reorderingEnabled = true,
-            displayTabGroupOnboarding = false,
-            liveReorderEnabled = true,
-            selectedItemIndex = group.initialScrollIndex,
-            selectionMode = selectionMode,
-            tabInteractionHandler = tabInteractionHandler,
-            modifier = Modifier.padding(
-                start = FirefoxTheme.layout.space.dynamic200,
-                end = FirefoxTheme.layout.space.dynamic200,
-            ),
-            onTabClose = actions.onTabClose,
-            onItemClick = actions.onItemClick,
-            onItemLongClick = onItemLongClick,
-            onDeleteTabGroupClick = { }, // Ignore tab group deletes
-            onEditTabGroupClick = { }, // Ignore tab group edits
-            onCloseTabGroupClick = { }, // Ignore tab group closes
-            onShareTabGroupClick = { }, // Ignore tab group shares
-            onTabGroupOnboardingDismiss = { }, // Ignore onboarding dismissals - onboarding is not shown in this layout
-            contentPadding = PaddingValues(0.dp), // TabLayout should not have its own content padding inside this view
-            listHorizontalPadding = 0.dp, // The list layout should not add its own horizontal padding inside this view
-            focusEnabled = true, // Drag and drop is not possible in this view, so focus should never be suppressed
-        )
+            TabLayout(
+                tabs = group.tabs,
+                displayTabsInGrid = displayTabsInGrid,
+                dragAndDropEnabled = false,
+                reorderingEnabled = true,
+                displayTabGroupOnboarding = false,
+                liveReorderEnabled = true,
+                selectedItemIndex = group.initialScrollIndex,
+                selectionMode = selectionMode,
+                tabInteractionHandler = tabInteractionHandler,
+                modifier = Modifier.padding(
+                    start = FirefoxTheme.layout.space.dynamic200,
+                    end = FirefoxTheme.layout.space.dynamic200,
+                ),
+                onTabClose = actions.onTabClose,
+                onItemClick = actions.onItemClick,
+                onItemLongClick = onItemLongClick,
+                onDeleteTabGroupClick = { }, // Ignore tab group deletes
+                onEditTabGroupClick = { }, // Ignore tab group edits
+                onCloseTabGroupClick = { }, // Ignore tab group closes
+                onShareTabGroupClick = { }, // Ignore tab group shares
+                onTabGroupOnboardingDismiss = { }, // Ignore onboarding dismissals - onboarding is not shown in this layout
+                contentPadding = PaddingValues(bottom = tabGroupGridBottomPadding),
+                listHorizontalPadding = 0.dp, // The list layout should not add its own horizontal padding inside this view
+                focusEnabled = true, // Drag and drop is not possible in this view, so focus should never be suppressed
+            )
+        }
+
+        if (onAddNewTabClick != null) {
+            AnimatedVisibility(
+                visible = selectionMode is TabsTrayState.Mode.Normal,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .navigationBarsPadding()
+                    .padding(
+                        end = FirefoxTheme.layout.space.dynamic200,
+                        bottom = FirefoxTheme.layout.space.static200,
+                    ),
+                enter = fadeIn(),
+                exit = fadeOut(),
+            ) {
+                NewTabFloatingActionButton(
+                    onClick = onAddNewTabClick,
+                    modifier = Modifier.testTag(TabsTrayTestTag.BOTTOM_SHEET_FAB),
+                )
+            }
+        }
     }
 
     if (selectionMode is TabsTrayState.Mode.Select || snackbarHostState?.currentSnackbarData != null) {
@@ -307,10 +348,7 @@ private fun ViewTabGroupHeader(
 
         val onAddNewTabClick = actions.onAddNewTabClick
         if (onAddNewTabClick != null) {
-            AddTabToGroupButton(
-                onClick = onAddNewTabClick,
-            )
-
+            AddTabToGroupButton(onClick = onAddNewTabClick)
             Spacer(modifier = Modifier.width(FirefoxTheme.layout.space.static100))
         }
 
@@ -327,14 +365,11 @@ private fun ViewTabGroupHeader(
 }
 
 @Composable
-private fun AddTabToGroupButton(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+private fun AddTabToGroupButton(onClick: () -> Unit) {
     IconButton(
         onClick = onClick,
         contentDescription = stringResource(id = R.string.add_tab),
-        modifier = modifier.testTag(TabsTrayTestTag.BOTTOM_SHEET_ADD_TAB_BUTTON),
+        modifier = Modifier.testTag(TabsTrayTestTag.BOTTOM_SHEET_ADD_TAB_BUTTON),
     ) {
         Icon(
             painter = painterResource(id = iconsR.drawable.mozac_ic_plus_24),

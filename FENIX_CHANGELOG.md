@@ -1,5 +1,25 @@
 # Fenix changes
 
+## 155.0-r2
+
+Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
+
+### Branding
+
+- Replaced the Firefox Labs banner badge with the backgroundless Fenix rabbit mark.
+
+### Tab groups
+
+- Added a floating new-tab action to the expanded tab-group view using the same control as All Tabs.
+- Kept the action hidden during tab selection mode and reserved bottom scroll space so the last tab
+  remains fully visible.
+
+### Validation
+
+- The focused `ExpandedTabGroupTest` suite passed, including new-tab activation, selection-mode
+  visibility, and bottom-of-list overlap coverage.
+- Debug unit-test compilation and release Kotlin/Java compilation passed.
+
 ## 154.0.1-r8
 
 Upstream baseline: `FIREFOX-ANDROID_154_0_1_RELEASE`
