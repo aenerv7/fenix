@@ -19,6 +19,7 @@ $mach = Join-Path $PSScriptRoot "mach-local.ps1"
 $sign = Join-Path $PSScriptRoot "sign-release-local.ps1"
 $powershell = Join-Path $PSHOME "pwsh.exe"
 $localeFile = Join-Path $root "mobile\android\locales\all-locales"
+$versionCodeFile = Join-Path $root "FENIX_UPSTREAM_VERSION_CODES.json"
 $locales = @(Get-Content -LiteralPath $localeFile | ForEach-Object { $_.Trim() } | Where-Object { $_ })
 $configurations = @(
     [pscustomobject] @{
@@ -95,6 +96,11 @@ function Get-ReleaseVersionName {
 }
 
 $baseline = (Get-Content (Join-Path $root "FENIX_UPSTREAM_RELEASE") -Raw).Trim()
+$versionCodeManifest = Get-Content -LiteralPath $versionCodeFile -Raw | ConvertFrom-Json
+$baselineVersionCodes = $versionCodeManifest.PSObject.Properties[$baseline]
+if (-not $baselineVersionCodes) {
+    throw "Missing upstream versionCode entries for baseline $baseline in $versionCodeFile"
+}
 if (-not $VersionName) {
     $VersionName = Get-ReleaseVersionName -Baseline $baseline
 }
@@ -228,6 +234,38 @@ function Assert-CachedGeckoPackage {
     }
 }
 
+function Get-UpstreamVersionCode {
+    param([Parameter(Mandatory)][string] $Abi)
+
+    $entry = $baselineVersionCodes.Value.PSObject.Properties[$Abi]
+    if (-not $entry) {
+        throw "Missing upstream versionCode for $baseline/$Abi in $versionCodeFile"
+    }
+    $versionCode = [int]$entry.Value
+    if ($versionCode -le 0) {
+        throw "Invalid upstream versionCode for $baseline/${Abi}: $versionCode"
+    }
+    return $versionCode
+}
+
+function Assert-ApkVersionCode {
+    param(
+        [Parameter(Mandatory)][string] $ApkPath,
+        [Parameter(Mandatory)][int] $ExpectedVersionCode
+    )
+
+    $buildTools = Join-Path $root ".mozbuild\android-sdk-windows\build-tools"
+    $aapt = Get-ChildItem -LiteralPath $buildTools -Recurse -File -Filter "aapt.exe" |
+        Sort-Object FullName -Descending | Select-Object -First 1
+    if (-not $aapt) {
+        throw "Unable to find aapt.exe under $buildTools"
+    }
+    $badging = & $aapt.FullName dump badging $ApkPath
+    if ($LASTEXITCODE -ne 0 -or -not (($badging -join "`n") -match "versionCode='$ExpectedVersionCode'")) {
+        throw "$ApkPath does not contain upstream versionCode $ExpectedVersionCode"
+    }
+}
+
 Add-Type -AssemblyName System.IO.Compression
 $expectedLocales = @("en-US") + $locales
 $previousTarget = $env:FENIX_ANDROID_TARGET
@@ -244,6 +282,7 @@ foreach ($configuration in $selectedConfigurations) {
 
 try {
     foreach ($configuration in $selectedConfigurations) {
+        $upstreamVersionCode = Get-UpstreamVersionCode -Abi $configuration.Abi
         $env:FENIX_ANDROID_TARGET = $configuration.Target
         $env:FENIX_ANDROID_OBJDIR = $configuration.ObjDir
         $env:MOZ_OBJDIR = Join-Path $root $configuration.ObjDir
@@ -266,6 +305,7 @@ try {
         Invoke-LocalMach -Arguments @(
             "gradle",
             "-Pfenix.releaseRevision=$versionRevision",
+            "-Pfenix.upstreamVersionCode=$upstreamVersionCode",
             "fenix:assembleRelease"
         )
 
@@ -285,6 +325,7 @@ try {
         }
 
         Assert-ApkGeckoLibraries -ApkPath $source -Abi $configuration.Abi
+        Assert-ApkVersionCode -ApkPath $source -ExpectedVersionCode $upstreamVersionCode
         Copy-Item -LiteralPath $source -Destination $unsignedDirectory -Force
         Write-Output (
             "Verified $($actualLocales.Count) Gecko locales and native libraries in " +

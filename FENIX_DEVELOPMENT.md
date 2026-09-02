@@ -135,7 +135,13 @@ revision after the highest matching local or `origin` tag. For example, a new un
 `fenix-154.0.1-r4` produces `Fenix-154.0.1-r5-arm64-v8a-release.apk`. Use `-VersionName` to rebuild a
 specific release revision.
 
-Release APKs must keep the versionCode generated for the upstream baseline and ABI exactly as-is.
+Release APKs must use the exact versionCode from the corresponding official upstream APK for the
+same baseline and ABI. The checked-in `FENIX_UPSTREAM_VERSION_CODES.json` records those values;
+update it from the official Mozilla archive when changing `FENIX_UPSTREAM_RELEASE`. The release
+script passes the recorded value to Gradle and verifies the resulting APK manifest, so a build-time
+clock value cannot silently become the release versionCode. For the 155.0 baseline, the official
+values are arm64-v8a `2016180970`, armeabi-v7a `2016180968`, and x86_64 `2016180974`.
+
 Do not add a fork revision offset: a fork build is a modified build of that upstream versionCode,
 and changing it would prevent normal downgrade or replacement workflows.
 

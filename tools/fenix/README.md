@@ -48,6 +48,8 @@ armeabi-v7a, and x86_64, follows Gecko's multi-locale packaging flow, verifies t
 Android Gecko locales plus the matching native Gecko libraries are present, and signs the selected
 artifacts. The signed filename uses the current baseline and release revision, such as
 `Fenix-154.0.1-r5-arm64-v8a-release.apk`.
+The script reads the exact per-ABI upstream versionCode from `FENIX_UPSTREAM_VERSION_CODES.json`
+and validates that value in each generated APK.
 Pass `-Abi x86_64` (or another ABI) to resume a single failed architecture without rebuilding the
 completed APKs.
 

@@ -24,7 +24,7 @@
 
 - `ExpandedTabGroupTest` 定向测试通过。
 - APK 使用已验证的多语言 GeckoView 构建，并完成 arm64-v8a、签名和资源校验。
-- 严格沿用上游基线的 Android versionCode，确保 fork 包仍可按正常方式覆盖或降回对应上游版本。
+- 严格沿用上游基线对应 ABI 的 Android versionCode（arm64-v8a 为 `2016180970`），确保 fork 包仍可按正常方式覆盖或降回对应上游版本。
 
 ### English
 
@@ -48,7 +48,7 @@ Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
 
 - The focused `ExpandedTabGroupTest` suite passed.
 - The APK reuses the validated multi-locale GeckoView build and passed arm64-v8a, signature, and resource checks.
-- Keeps the upstream baseline Android versionCode so the fork remains replaceable and can be normally downgraded to the corresponding upstream build.
+- Keeps the upstream baseline ABI-specific Android versionCode (`2016180970` for arm64-v8a) so the fork remains replaceable and can be normally downgraded to the corresponding upstream build.
 
 ## 155.0-r2
 
