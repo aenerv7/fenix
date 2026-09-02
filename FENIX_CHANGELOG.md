@@ -2,19 +2,39 @@
 
 ## 155.0-r2
 
+### 中文
+
+上游基线：`FIREFOX-ANDROID_155_RELEASE`
+
+#### 品牌
+
+- 将 Fenix 实验室横幅徽标替换为透明背景的 Fenix 兔子徽标。
+
+#### 标签页群组
+
+- 在展开的标签页群组视图中使用与“全部标签页”相同的控件增加新建标签页浮动操作。
+- 保持选择模式下隐藏操作，并预留底部滚动空间，确保最后一个标签页完全可见。
+
+#### 验证
+
+- 定向 `ExpandedTabGroupTest` 测试套件通过，覆盖新建标签页激活、选择模式可见性和列表底部遮挡检查。
+- Debug 单元测试编译以及 Release Kotlin/Java 编译通过。
+
+### English
+
 Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
 
-### Branding
+#### Branding
 
 - Replaced the Firefox Labs banner badge with the backgroundless Fenix rabbit mark.
 
-### Tab groups
+#### Tab groups
 
 - Added a floating new-tab action to the expanded tab-group view using the same control as All Tabs.
 - Kept the action hidden during tab selection mode and reserved bottom scroll space so the last tab
   remains fully visible.
 
-### Validation
+#### Validation
 
 - The focused `ExpandedTabGroupTest` suite passed, including new-tab activation, selection-mode
   visibility, and bottom-of-list overlap coverage.

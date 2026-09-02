@@ -143,6 +143,11 @@ After upload, read the GitHub Release back and confirm that it is not a draft, i
 release, and that every remote asset name, size, and SHA-256 digest matches the local file. Only then
 may a superseded release or its local artifacts be removed.
 
+Every GitHub Release body must be bilingual, with a complete Chinese section first and a complete
+English section second. Use the headings `## 中文` and `## English`, and keep the version metadata,
+change summary, validation results, supported ABI, and `.idsig` publication policy equivalent in
+both sections. Do not publish release notes that contain only one language.
+
 Local versioned release artifacts have a one-version retention policy. Once the latest GitHub Release
 passes remote verification, keep only:
 
