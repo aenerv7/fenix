@@ -145,11 +145,13 @@ interface ListInteractionState {
      */
     fun reset()
 
+    fun resetImmediately()
+
     fun resetIfItemMissing(itemKeys: Set<Any>) {
         if (draggedItem.key?.let { it !in itemKeys } == true ||
             previousKeyOfDraggedItem?.let { it !in itemKeys } == true
         ) {
-            reset()
+            resetImmediately()
         }
     }
 }
@@ -231,6 +233,17 @@ class ListInteractionStateImpl internal constructor(
 
     override fun reset() {
         resetState()
+    }
+
+    override fun resetImmediately() {
+        draggedItem = InteractionState.List.None
+        hoveredItem = InteractionState.List.None
+        highlightedRect = null
+        interactionMode = InteractionMode.List.None
+        previousKeyOfDraggedItem = null
+        moved = false
+        scrollJob?.cancel()
+        scrollJob = null
     }
 
     override fun onDragEnd() {

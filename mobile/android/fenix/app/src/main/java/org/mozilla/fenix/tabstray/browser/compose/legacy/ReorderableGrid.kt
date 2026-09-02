@@ -162,10 +162,18 @@ class GridReorderState internal constructor(
 
     internal fun resetIfItemMissing(itemKeys: Set<Any>) {
         if (draggingItemKey?.let { it !in itemKeys } == true) {
-            onDragInterrupted()
+            resetImmediately()
         } else if (previousKeyOfDraggedItem?.let { it !in itemKeys } == true) {
             previousKeyOfDraggedItem = null
         }
+    }
+
+    internal fun resetImmediately() {
+        draggingItemCumulatedOffset = Offset.Zero
+        draggingItemKey = null
+        draggingItemInitialOffset = Offset.Zero
+        previousKeyOfDraggedItem = null
+        moved = false
     }
 
     internal fun onDrag(offset: Offset, preserveSelectMode: Boolean) {

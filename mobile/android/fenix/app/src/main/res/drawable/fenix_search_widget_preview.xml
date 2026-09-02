@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:top="2dp" android:bottom="2dp">
+        <shape>
+            <corners android:radius="24dp" />
+            <solid android:color="#FFF8F8FA" />
+            <stroke android:width="1dp" android:color="#FFB9BAC0" />
+        </shape>
+    </item>
+    <item
+        android:width="44dp"
+        android:height="44dp"
+        android:gravity="start|center_vertical"
+        android:left="12dp">
+        <bitmap
+            android:src="@drawable/ic_launcher_rabbit_foreground"
+            android:gravity="center" />
+    </item>
+</layer-list>

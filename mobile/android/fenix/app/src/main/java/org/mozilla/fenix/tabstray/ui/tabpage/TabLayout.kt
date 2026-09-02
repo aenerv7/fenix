@@ -571,7 +571,7 @@ private fun ReorderableTabGrid(
         ignoredItems = ignoredItems.toList(),
         tabInteractionHandler = tabInteractionHandler,
     )
-    val tabKeys = remember(tabs) { tabs.mapTo(hashSetOf()) { it.id } }
+    val tabKeys = tabs.mapTo(hashSetOf()) { it.id }
     LaunchedEffect(tabKeys) {
         reorderState.resetIfItemMissing(itemKeys = tabKeys)
     }
@@ -579,6 +579,12 @@ private fun ReorderableTabGrid(
     LaunchedEffect(selectionMode, reorderState.draggingItemKey) {
         if (reorderState.draggingItemKey == null) {
             isInMultiSelectMode = selectionMode is TabsTrayState.Mode.Select
+        }
+    }
+    LaunchedEffect(selectionMode) {
+        if (selectionMode !is TabsTrayState.Mode.Select) {
+            isInMultiSelectMode = false
+            reorderState.resetImmediately()
         }
     }
 
@@ -695,7 +701,7 @@ private fun InteractableTabGrid(
         liveReorderEnabled = liveReorderEnabled,
         ignoredItems = ignoredItems,
     )
-    val tabKeys = remember(tabs) { tabs.mapTo(hashSetOf()) { it.id } }
+    val tabKeys = tabs.mapTo(hashSetOf()) { it.id }
     LaunchedEffect(tabKeys) {
         gridInteractionState.resetIfItemMissing(itemKeys = tabKeys)
     }
@@ -716,6 +722,12 @@ private fun InteractableTabGrid(
     LaunchedEffect(selectionMode, gridInteractionState.draggedItem.key) {
         if (gridInteractionState.draggedItem.key == null) {
             isInMultiSelectMode = selectionMode is TabsTrayState.Mode.Select
+        }
+    }
+    LaunchedEffect(selectionMode) {
+        if (selectionMode !is TabsTrayState.Mode.Select) {
+            isInMultiSelectMode = false
+            gridInteractionState.resetImmediately()
         }
     }
 
@@ -1167,7 +1179,7 @@ private fun InteractableTabList(
         dragAndDropEnabled = dragAndDropEnabled,
         liveReorderEnabled = liveReorderEnabled,
     )
-    val tabKeys = remember(tabs) { tabs.mapTo(hashSetOf()) { it.id } }
+    val tabKeys = tabs.mapTo(hashSetOf()) { it.id }
     LaunchedEffect(tabKeys) {
         listInteractionState.resetIfItemMissing(itemKeys = tabKeys)
     }
@@ -1192,6 +1204,12 @@ private fun InteractableTabList(
     LaunchedEffect(selectionMode, listInteractionState.draggedItem.key) {
         if (listInteractionState.draggedItem.key == null) {
             isInMultiSelectMode = selectionMode is TabsTrayState.Mode.Select
+        }
+    }
+    LaunchedEffect(selectionMode) {
+        if (selectionMode !is TabsTrayState.Mode.Select) {
+            isInMultiSelectMode = false
+            listInteractionState.resetImmediately()
         }
     }
     LaunchedEffect(dragProcessingState) {
@@ -1475,7 +1493,7 @@ private fun ReorderableTabList(
             )
         },
     )
-    val tabKeys = remember(tabs) { tabs.mapTo(hashSetOf()) { it.id } }
+    val tabKeys = tabs.mapTo(hashSetOf()) { it.id }
     LaunchedEffect(tabKeys) {
         reorderState.resetIfItemMissing(itemKeys = tabKeys)
     }
@@ -1483,6 +1501,12 @@ private fun ReorderableTabList(
     LaunchedEffect(selectionMode, reorderState.draggingItemKey) {
         if (reorderState.draggingItemKey == null) {
             isInMultiSelectMode = selectionMode is TabsTrayState.Mode.Select
+        }
+    }
+    LaunchedEffect(selectionMode) {
+        if (selectionMode !is TabsTrayState.Mode.Select) {
+            isInMultiSelectMode = false
+            reorderState.resetImmediately()
         }
     }
 

@@ -588,6 +588,9 @@ class TabManagementFragment : Fragment() {
                                     displayTabsInGrid = state.config.displayTabsInGrid,
                                     tabInteractionHandler = tabInteractionHandler,
                                     selectionMode = expandedGroupSelectionMode,
+                                    onExitSelectMode = {
+                                        tabsTrayStore.dispatch(TabsTrayAction.ExitSelectMode)
+                                    },
                                     onItemLongClick = { item ->
                                         if (item is TabsTrayItem.Tab) {
                                             tabsTrayStore.dispatch(

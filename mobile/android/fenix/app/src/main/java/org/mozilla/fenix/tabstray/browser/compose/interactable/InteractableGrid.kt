@@ -167,11 +167,13 @@ interface GridInteractionState {
      */
     fun reset()
 
+    fun resetImmediately()
+
     fun resetIfItemMissing(itemKeys: Set<Any>) {
         if (draggedItem.key?.let { it !in itemKeys } == true ||
             previousKeyOfDraggedItem?.let { it !in itemKeys } == true
         ) {
-            reset()
+            resetImmediately()
         }
     }
 }
@@ -273,6 +275,17 @@ class GridInteractionStateImpl internal constructor(
 
     override fun reset() {
         resetState()
+    }
+
+    override fun resetImmediately() {
+        draggedItem = InteractionState.Grid.None
+        hoveredItem = InteractionState.Grid.None
+        highlightedRect = null
+        interactionMode = InteractionMode.Grid.None
+        previousKeyOfDraggedItem = null
+        moved = false
+        scrollJob?.cancel()
+        scrollJob = null
     }
 
     private fun doReorder(mode: InteractionMode.Grid.Reordering) {

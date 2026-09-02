@@ -24,8 +24,6 @@ import org.mozilla.fenix.IntentReceiverActivity
 import org.mozilla.fenix.R
 import org.mozilla.fenix.ext.components
 import org.mozilla.fenix.home.intent.StartSearchIntentProcessor
-import org.mozilla.fenix.iconpicker.DefaultAppIconRepository
-import org.mozilla.fenix.iconpicker.DefaultPackageManagerWrapper
 import org.mozilla.fenix.utils.IntentUtils
 import org.mozilla.fenix.utils.Settings
 import org.mozilla.fenix.widget.VoiceSearchActivity
@@ -175,14 +173,9 @@ class SearchWidgetProvider : AppWidgetProvider() {
     }
 
     private fun RemoteViews.setIcon(context: Context) {
-        val repository = DefaultAppIconRepository(
-            packageManager = DefaultPackageManagerWrapper(context.packageManager),
-            packageName = context.packageName,
-        )
-        // gradient color available for android:fillColor only on SDK 24+
         setImageViewResource(
             R.id.button_search_widget_new_tab_icon,
-            repository.selectedAppIcon.iconForegroundId,
+            R.drawable.ic_launcher_rabbit_foreground,
         )
 
         val appName = context.getString(R.string.app_name)

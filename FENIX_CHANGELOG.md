@@ -1,5 +1,45 @@
 # Fenix changes
 
+## 155.0-r9
+
+### 中文
+
+上游基线：`FIREFOX-ANDROID_155_RELEASE`
+
+#### 标签页与群组
+
+- 群组内长按标签页进入选择模式后，返回操作由群组弹层优先处理，并立即清理工具栏、选中状态和本地拖拽状态，不再收起群组或残留选择界面。
+- 关闭最后一个非群组标签页时立即清除 Lazy 列表固定项与拖拽状态，并对浏览器标签页数据建立不可变快照，避免旧条目停留到下一次操作才消失。
+
+#### 品牌资产
+
+- 桌面搜索小组件的运行时图标、布局预览和系统小组件预览统一改用无背景 Fenix 兔子徽标。
+- 移除默认浏览器提示图片后，将关闭按钮调整为右侧垂直居中。
+
+#### 发布
+
+- 仅发布 `arm64-v8a` 架构 APK，严格沿用上游 `versionCode 2016180970`。
+- `.idsig` 仅保留本地用于校验，不作为 GitHub Release 资产发布。
+
+### English
+
+Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
+
+#### Tabs and groups
+
+- Back is now consumed by the expanded-group sheet while tab selection is active, immediately clearing the toolbar, selection, and local drag state without collapsing the group or leaving stale selection UI.
+- Closing the last ungrouped tab now clears pinned Lazy-list and drag state immediately and uses an immutable browser-tab snapshot, preventing the removed row from lingering until another action refreshes the tray.
+
+#### Brand assets
+
+- The home-screen search widget now uses the background-free Fenix rabbit for its runtime icon, layout previews, and system widget preview.
+- After removing the default-browser prompt artwork, its close button is now vertically centered at the right edge.
+
+#### Release
+
+- Publishes only the `arm64-v8a` APK and strictly preserves upstream `versionCode 2016180970`.
+- `.idsig` is retained locally for verification and is not published as a GitHub Release asset.
+
 ## 155.0-r8
 
 ### 中文

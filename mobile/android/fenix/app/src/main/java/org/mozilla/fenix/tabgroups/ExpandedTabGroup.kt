@@ -4,6 +4,7 @@
 
 package org.mozilla.fenix.tabgroups
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -90,6 +91,7 @@ import mozilla.components.ui.icons.R as iconsR
  * @param selectionBanner The multi-select toolbar shown in a fixed overlay above the expanded group.
  * @param selectionMenu The multi-select menu shown in a separate overlay above the toolbar.
  * @param snackbarHostState Snackbar state rendered above the multi-select toolbar.
+ * @param onExitSelectMode Invoked when Back is pressed while tab selection is active.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -103,6 +105,7 @@ fun ExpandedTabGroup(
     selectionBanner: @Composable (Boolean, (Boolean) -> Unit) -> Unit = { _, _ -> },
     selectionMenu: @Composable (Boolean, (Boolean) -> Unit) -> Unit = { _, _ -> },
     snackbarHostState: SnackbarHostState? = null,
+    onExitSelectMode: () -> Unit = {},
 ) {
     var selectionMenuExpanded by remember { mutableStateOf(false) }
     var groupWidth by remember { mutableIntStateOf(0) }
@@ -112,6 +115,11 @@ fun ExpandedTabGroup(
         if (selectionMode !is TabsTrayState.Mode.Select) {
             selectionMenuExpanded = false
         }
+    }
+
+    BackHandler(enabled = selectionMode is TabsTrayState.Mode.Select) {
+        selectionMenuExpanded = false
+        onExitSelectMode()
     }
 
     Box(

@@ -94,7 +94,7 @@ fun MenuBanner(
                 onClick = onDismiss,
                 contentDescription = stringResource(id = R.string.browser_menu_default_banner_dismiss_promotion),
                 modifier = Modifier
-                    .align(Alignment.TopEnd)
+                    .align(Alignment.CenterEnd)
                     .size(48.dp)
                     .semantics(mergeDescendants = true) {},
             ) {
@@ -102,8 +102,7 @@ fun MenuBanner(
                     painter = painterResource(id = iconsR.drawable.mozac_ic_cross_20),
                     contentDescription = null,
                     modifier = Modifier
-                        .padding(top = 8.dp, end = 12.dp)
-                        .align(Alignment.TopEnd),
+                        .padding(end = 12.dp),
                     tint = MaterialTheme.colorScheme.secondary,
                 )
             }

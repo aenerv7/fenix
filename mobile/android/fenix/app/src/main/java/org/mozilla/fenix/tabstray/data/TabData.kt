@@ -19,6 +19,6 @@ data class TabData(
 ) {
     constructor(browserState: BrowserState) : this(
         selectedTabId = browserState.selectedTabId,
-        tabs = browserState.tabs,
+        tabs = browserState.tabs.toList(),
     )
 }

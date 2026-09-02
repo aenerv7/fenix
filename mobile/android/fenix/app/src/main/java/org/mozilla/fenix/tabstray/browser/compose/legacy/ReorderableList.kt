@@ -155,10 +155,18 @@ class ListReorderState internal constructor(
 
     internal fun resetIfItemMissing(itemKeys: Set<Any>) {
         if (draggingItemKey?.let { it !in itemKeys } == true) {
-            onDragInterrupted()
+            resetImmediately()
         } else if (previousKeyOfDraggedItem?.let { it !in itemKeys } == true) {
             previousKeyOfDraggedItem = null
         }
+    }
+
+    internal fun resetImmediately() {
+        draggingItemCumulatedOffset = 0f
+        draggingItemKey = null
+        draggingItemInitialOffset = 0f
+        previousKeyOfDraggedItem = null
+        moved = false
     }
 
     @Suppress("CognitiveComplexMethod")
