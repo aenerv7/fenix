@@ -155,30 +155,20 @@ Publish a release only after the source commit and annotated tag are ready and e
 has passed application ID, version, ABI, locale, native-library, signature, and checksum validation.
 After upload, read the GitHub Release back and confirm that it is not a draft, is marked as the latest
 release, and that every remote asset name, size, and SHA-256 digest matches the local file. Only then
-may a superseded release or its local artifacts be removed.
+may superseded GitHub Releases and tags for the same baseline be removed.
 
 Every GitHub Release body must be bilingual, with a complete Chinese section first and a complete
 English section second. Use the headings `## 中文` and `## English`, and keep the version metadata,
 change summary, validation results, supported ABI, and `.idsig` publication policy equivalent in
 both sections. Do not publish release notes that contain only one language.
 
-Release history and local versioned artifacts use a per-baseline latest-revision retention policy.
-For each upstream baseline, keep only the highest successfully published `fenix-<baseline>-rN`
-GitHub Release and its matching tag. When publishing a new revision for one baseline, verify the new
-release first, then remove older releases and tags for that same baseline; never remove the retained
-latest release of another baseline.
-
-After remote verification, keep locally for every retained baseline:
-
-- the latest revision's signed APKs and `.idsig` files;
-- the current unsigned APKs used for re-signing;
-- release notes and release-build logs for the latest revision.
-
-Delete signed APKs, `.idsig` files, release notes, and release-build logs for older `rN` revisions
-of the same baseline. Use explicit paths and prefer recoverable deletion; never broadly delete
-`artifacts/`. Do not apply this policy to cross-release build caches such as `.gradle/`, `.mozbuild/`,
-the three Android object directories, staged multi-locale Gecko packages, or toolchains. Those remain
-eligible for reuse after their provenance, locale set, and native libraries are validated.
+GitHub Release history uses a per-baseline latest-revision retention policy. For each upstream
+baseline, keep only the highest successfully published `fenix-<baseline>-rN` GitHub Release and its
+matching tag. When publishing a new revision for one baseline, verify the new release first, then
+remove older releases and tags for that same baseline; never remove the retained latest release of
+another baseline. This remote-release policy does not require deleting local APKs, `.idsig` files,
+release notes, logs, or cross-release build caches; retain those locally according to reuse and
+verification needs.
 
 If an ABI fails, retry only that ABI and retain already completed current-revision APKs. A transient
 Android Lint internal failure is not a reason to rebuild Gecko or other ABIs; rerun the affected ABI
