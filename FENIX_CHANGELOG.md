@@ -15,11 +15,16 @@
 - 展开群组中的新建标签页按钮不再依赖“主页作为新标签页”实验开关。
 - 保持与“全部标签页”一致的浮动按钮样式、选择模式隐藏逻辑和底部滚动空间。
 
+#### 版本信息
+
+- 在“关于 Fenix”的上游版本信息后显示“当前版本第 3 次修改”。
+- 修订号使用 Android 本地化资源，不改变上游基线的 versionName 或 versionCode。
+
 #### 验证
 
 - `ExpandedTabGroupTest` 定向测试通过。
 - APK 使用已验证的多语言 GeckoView 构建，并完成 arm64-v8a、签名和资源校验。
-- 使用高于上一修订版本的 Android versionCode，确保 r3 可以直接覆盖升级 r2。
+- 严格沿用上游基线的 Android versionCode，确保 fork 包仍可按正常方式覆盖或降回对应上游版本。
 
 ### English
 
@@ -34,11 +39,16 @@ Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
 - The expanded group new-tab action no longer depends on the “homepage as new tab” experiment switch.
 - Preserved the All Tabs floating-button style, selection-mode visibility logic, and bottom scroll space.
 
+#### Version information
+
+- Shows “Current version modification #3” below the upstream version line on the About Fenix screen.
+- Uses Android localized resources for the revision without changing the upstream baseline versionName or versionCode.
+
 #### Validation
 
 - The focused `ExpandedTabGroupTest` suite passed.
 - The APK reuses the validated multi-locale GeckoView build and passed arm64-v8a, signature, and resource checks.
-- Uses an Android versionCode higher than the previous revision so r3 can upgrade r2 directly.
+- Keeps the upstream baseline Android versionCode so the fork remains replaceable and can be normally downgraded to the corresponding upstream build.
 
 ## 155.0-r2
 

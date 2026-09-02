@@ -135,8 +135,13 @@ revision after the highest matching local or `origin` tag. For example, a new un
 `fenix-154.0.1-r4` produces `Fenix-154.0.1-r5-arm64-v8a-release.apk`. Use `-VersionName` to rebuild a
 specific release revision.
 
-Release revisions add an ABI-preserving version-code offset so Android accepts an rN build as an
-upgrade over the previous revision even when multiple revisions are built within the same hour.
+Release APKs must keep the versionCode generated for the upstream baseline and ABI exactly as-is.
+Do not add a fork revision offset: a fork build is a modified build of that upstream versionCode,
+and changing it would prevent normal downgrade or replacement workflows.
+
+The `rN` suffix is fork release metadata, not an Android package version. The release script passes
+it to `BuildConfig.FENIX_RELEASE_REVISION` only so the About Fenix screen can show the revision. It
+must not affect `versionCode` or the upstream `versionName`.
 
 ### Release completion and cache retention
 

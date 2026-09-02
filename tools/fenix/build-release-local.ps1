@@ -265,7 +265,7 @@ try {
         $env:MOZ_CHROME_MULTILOCALE = $locales -join " "
         Invoke-LocalMach -Arguments @(
             "gradle",
-            "-Pfenix.versionCodeRevision=$versionRevision",
+            "-Pfenix.releaseRevision=$versionRevision",
             "fenix:assembleRelease"
         )
 

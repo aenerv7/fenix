@@ -67,6 +67,8 @@
 
     <!-- About content. %1$s is the name of the app (for example "Firefox"). -->
     <string name="about_content" tools:ignore="BrandUsage">%1$s is produced by Mozilla.</string>
+    <!-- About page line showing the fork revision. %1$d is the revision number. -->
+    <string name="about_fenix_revision">Current version modification #%1$d</string>
 
     <!-- Private Browsing -->
     <string name="private_browsing_common_myths">

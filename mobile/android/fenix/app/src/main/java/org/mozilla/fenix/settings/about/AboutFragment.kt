@@ -170,12 +170,18 @@ class AboutFragment(
             val appServicesVersion = mozilla.components.Build.APPLICATION_SERVICES_VERSION
             val operatingSystemAbbrevation = "OS"
             val operatingSystemVersion = "Android ${Build.VERSION.RELEASE}"
+            val fenixRevision = if (BuildConfig.FENIX_RELEASE_REVISION > 0) {
+                "\n" + getString(R.string.about_fenix_revision, BuildConfig.FENIX_RELEASE_REVISION)
+            } else {
+                ""
+            }
 
             String.format(
-                "%s (Build #%s)%s\n%s: %s\n%s: %s\n%s: %s",
+                "%s (Build #%s)%s%s\n%s: %s\n%s: %s\n%s: %s",
                 packageInfo.versionName,
                 versionCode,
                 maybeFenixVcsHash,
+                fenixRevision,
                 maybeGecko,
                 geckoVersion,
                 appServicesAbbreviation,

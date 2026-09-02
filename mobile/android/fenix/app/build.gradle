@@ -276,8 +276,7 @@ androidComponents {
                 // We use the same version code generator, that we inherited from Fennec, across all channels - even on
                 // channels that never shipped a Fennec build.
                 def abi = output.filters.find { it.filterType == FilterConfiguration.FilterType.ABI }?.identifier ?: "universal"
-                def releaseRevision = project.findProperty("fenix.versionCodeRevision")?.toString()?.toInteger() ?: 0
-                def versionCodeOverride = Config.generateFennecVersionCode(abi) + (releaseRevision * 8)
+                def versionCodeOverride = Config.generateFennecVersionCode(abi)
                 project.logger.debug("versionCode for $abi = $versionCodeOverride")
                 output.versionName.set(versionName)
                 output.versionCode.set(versionCodeOverride)
@@ -315,6 +314,8 @@ android.defaultConfig.with {
     // build, so debug builds (overridden below) use a fixed string instead.
     def buildDate = LocalDateTime.parse(getBuildId(gradle.mozconfig.topobjdir, providers.environmentVariable("MOZ_BUILD_DATE").getOrNull()), DateTimeFormatter.ofPattern("yyyyMMddHHmmss")).toString()
     buildConfigField 'String', 'BUILD_DATE', '"' + buildDate + '"'
+    def releaseRevision = project.findProperty("fenix.releaseRevision")?.toString()?.toInteger() ?: 0
+    buildConfigField 'int', 'FENIX_RELEASE_REVISION', releaseRevision.toString()
 
     try {
         def token = new File("${rootDir}/.adjust_token").text.trim()
