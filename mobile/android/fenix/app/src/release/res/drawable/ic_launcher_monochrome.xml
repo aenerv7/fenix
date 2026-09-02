@@ -4,4 +4,4 @@
    - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
 <bitmap xmlns:android="http://schemas.android.com/apk/res/android"
     android:gravity="fill"
-    android:src="@drawable/ic_launcher_rabbit_foreground" />
+    android:src="@drawable/ic_launcher_rabbit_foreground_scaled" />

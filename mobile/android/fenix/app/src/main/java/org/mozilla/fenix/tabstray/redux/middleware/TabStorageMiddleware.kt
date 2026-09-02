@@ -8,15 +8,18 @@ import androidx.annotation.VisibleForTesting
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted.Companion.Eagerly
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import mozilla.components.browser.state.state.TabSessionState
 import mozilla.components.feature.tabs.TabsUseCases.MoveTabsUseCase
 import mozilla.components.feature.tabs.TabsUseCases.RemoveTabsUseCase
@@ -152,20 +155,17 @@ class TabStorageMiddleware(
                 mainScope.launch {
                     combinedDataFlow
                         .filterNotNull()
-                        .collect { data ->
-                            scope.launch {
-                                val transformedTabData = transformTabData(
+                        .collectLatest { data ->
+                            val transformedTabData = withContext(scope.coroutineContext.minusKey(Job)) {
+                                transformTabData(
                                     tabs = data.tabs,
                                     selectedTabId = data.selectedTabId,
                                     tabGroups = data.tabGroups,
                                     tabGroupAssignments = data.tabGroupAssignments,
                                 )
-
-                                mainScope.launch {
-                                    store.dispatch(TabDataUpdateReceived(tabStorageUpdate = transformedTabData))
-                                }
                             }
-                    }
+                            store.dispatch(TabDataUpdateReceived(tabStorageUpdate = transformedTabData))
+                        }
                 }
             }
 

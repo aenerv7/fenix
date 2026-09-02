@@ -287,7 +287,7 @@ class TabManagementFragment : Fragment() {
                 false -> null
             }
 
-            BackHandler {
+            BackHandler(enabled = state.backStack.lastOrNull() == TabManagerNavDestination.Root) {
                 when {
                     tabsTrayStore.state.mode is TabsTrayState.Mode.Select -> {
                         tabsTrayStore.dispatch(TabsTrayAction.ExitSelectMode)
