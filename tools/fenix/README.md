@@ -73,11 +73,20 @@ Omit `-Abi` to produce all supported APKs. Do not use `-ReuseGecko` after changi
 or Gecko locale sources; run the default full build instead. With `-SkipBuild`, an invalid cached
 package fails explicitly instead of producing a single-language APK.
 
-`-ReuseGecko` is currently limited to a validated package already present in the repository-local
-object directory. It is not an upstream GeckoView downloader. If upstream precompiled artifacts are
-added later, require exact baseline/Gecko revision, ABI, locale-set, and SHA-256 matching for
-`omni.ja`, `libmozglue.so`, and `libxul.so`; otherwise fall back to compiling Gecko. A Maven AAR
-without the complete multi-locale package is not sufficient.
+`-ReuseGecko` reuses a validated package already present in the repository-local object directory.
+For a release that must avoid local Gecko compilation, `-UseUpstreamGecko` downloads the official
+multi-locale Fenix APK for the current baseline, verifies its version, ABI, complete locale set,
+and required native libraries, then replaces only the selected object's Gecko package before the
+Fenix application is assembled:
+
+```powershell
+.\tools\fenix\build-release-local.ps1 -UseUpstreamGecko -Abi arm64-v8a
+```
+
+The downloaded APK is cached under `.tmp\upstream-geckoview\` and is never published. A custom
+source can be supplied with `-UpstreamGeckoApk`; it must pass the same exact checks. A Maven AAR or
+APK without the complete multi-locale package is rejected rather than silently falling back to a
+locally compiled GeckoView.
 
 When the current commit already has a matching `fenix-<version>-rN` tag, the build reuses that
 revision. Otherwise it selects the next revision after the highest matching local or `origin` tag.

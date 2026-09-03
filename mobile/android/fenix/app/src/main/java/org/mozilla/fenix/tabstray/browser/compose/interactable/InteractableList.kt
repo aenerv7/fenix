@@ -770,7 +770,7 @@ fun Modifier.detectListPressAndDrag(
                     Orientation.Vertical -> dragAmount.y
                     Orientation.Horizontal -> dragAmount.x
                 }
-                interactionState.onDrag(dragOffset, false)
+                interactionState.onDrag(dragOffset, true)
             },
             onDragEnd = interactionState::onDragEnd,
             onDragCancel = interactionState::onDragCancelled,

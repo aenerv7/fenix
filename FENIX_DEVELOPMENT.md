@@ -129,13 +129,14 @@ multi-locale package, repairs an invalid cached package automatically, and then 
 application. Do not use it after changing Gecko, C++, Rust, or Gecko locale sources; use the default
 full build in that case.
 
-`-ReuseGecko` currently reuses only a repository-local package that has already been validated for
-the current upstream baseline. It does not download an arbitrary GeckoView AAR. A future upstream
-artifact cache may be added for Fenix-only changes, but it must be keyed by the exact upstream
-baseline and Gecko revision, ABI, locale manifest, and cryptographic digests for `omni.ja`,
-`libmozglue.so`, and `libxul.so`. An API-only or single-locale GeckoView artifact is not a valid
-replacement for the staged multi-locale package. Any missing or ambiguous provenance must fall back
-to the normal Gecko build.
+`-ReuseGecko` reuses only a repository-local package that has already been validated for the current
+upstream baseline. For a release that must avoid local Gecko compilation, use
+`-UseUpstreamGecko -Abi arm64-v8a`. This downloads the official multi-locale Fenix APK for the
+current baseline, verifies the baseline version, ABI, exact locale manifest, versionCode, and
+required Gecko libraries, then replaces the selected object's Gecko package before assembling
+Fenix. The downloaded source is cached under `.tmp\upstream-geckoview\` and is not a release asset.
+A custom source may be passed with `-UpstreamGeckoApk`, but it must pass the same checks; missing or
+ambiguous provenance is a hard failure, not a silent fallback to a self-compiled GeckoView.
 
 Signed filenames use the baseline from `FENIX_UPSTREAM_RELEASE`. When the current commit already has
 a matching `fenix-<version>-rN` tag, that revision is reused. Otherwise the script selects the next

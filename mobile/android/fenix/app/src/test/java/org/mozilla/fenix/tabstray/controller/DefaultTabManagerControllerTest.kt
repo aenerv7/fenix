@@ -904,7 +904,7 @@ class DefaultTabManagerControllerTest {
         )
         browserStore = BrowserStore(
             initialState = BrowserState(
-                tabs = listOf(ungroupedTab, groupedTab),
+                tabs = listOf(groupedTab, ungroupedTab),
                 selectedTabId = ungroupedTab.id,
             ),
         )
@@ -913,7 +913,7 @@ class DefaultTabManagerControllerTest {
             initialState = TabsTrayState(
                 selectedTabId = ungroupedTab.id,
                 normalTabsState = TabsTrayState.NormalTabsState(
-                    items = listOf(TabsTrayItem.Tab(ungroupedTab), group),
+                    items = listOf(group, TabsTrayItem.Tab(ungroupedTab)),
                 ),
                 tabGroupState = TabsTrayState.TabGroupState(groups = listOf(group)),
             ),

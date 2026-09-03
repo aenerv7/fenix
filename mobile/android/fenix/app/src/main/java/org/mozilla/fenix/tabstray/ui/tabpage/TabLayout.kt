@@ -565,6 +565,9 @@ private fun ReorderableTabGrid(
         },
         onLongPress = { itemInfo ->
             tabs.firstOrNull { tabItem -> tabItem.id == itemInfo.key }?.let { tab ->
+                if (tab !is TabsTrayItem.Tab || !tab.private) {
+                    isInMultiSelectMode = true
+                }
                 onItemLongClick(tab)
             }
         },
@@ -582,7 +585,7 @@ private fun ReorderableTabGrid(
         }
     }
     LaunchedEffect(selectionMode) {
-        if (selectionMode !is TabsTrayState.Mode.Select) {
+        if (selectionMode is TabsTrayState.Mode.Normal) {
             isInMultiSelectMode = false
             reorderState.resetImmediately()
         }
@@ -697,7 +700,12 @@ private fun InteractableTabGrid(
     val gridInteractionState = createGridInteractionState(
         gridState = gridState,
         tabInteractionHandler = tabInteractionHandler,
-        onLongPress = rememberReactiveLongPressGrid(tabs = tabs, onItemLongClick = onItemLongClick),
+        onLongPress = rememberReactiveLongPressGrid(tabs = tabs) { item ->
+            if (item !is TabsTrayItem.Tab || !item.private) {
+                isInMultiSelectMode = true
+            }
+            onItemLongClick(item)
+        },
         liveReorderEnabled = liveReorderEnabled,
         ignoredItems = ignoredItems,
     )
@@ -725,7 +733,7 @@ private fun InteractableTabGrid(
         }
     }
     LaunchedEffect(selectionMode) {
-        if (selectionMode !is TabsTrayState.Mode.Select) {
+        if (selectionMode is TabsTrayState.Mode.Normal) {
             isInMultiSelectMode = false
             gridInteractionState.resetImmediately()
         }
@@ -1171,10 +1179,20 @@ private fun InteractableTabList(
         bottomPadding = tabListBottomPadding,
         isHeaderPresent = header != null,
     )
+    var isInMultiSelectMode by remember {
+        mutableStateOf(
+            selectionMode is TabsTrayState.Mode.Select,
+        )
+    }
     val listInteractionState = createListInteractionState(
         listState = state,
         ignoredItems = ignoredItems,
-        onLongPress = rememberReactiveLongPressList(tabs = tabs, onItemLongClick = onItemLongClick),
+        onLongPress = rememberReactiveLongPressList(tabs = tabs) { item ->
+            if (item !is TabsTrayItem.Tab || !item.private) {
+                isInMultiSelectMode = true
+            }
+            onItemLongClick(item)
+        },
         tabInteractionHandler = tabInteractionHandler,
         dragAndDropEnabled = dragAndDropEnabled,
         liveReorderEnabled = liveReorderEnabled,
@@ -1182,11 +1200,6 @@ private fun InteractableTabList(
     val tabKeys = tabs.mapTo(hashSetOf()) { it.id }
     LaunchedEffect(tabKeys) {
         listInteractionState.resetIfItemMissing(itemKeys = tabKeys)
-    }
-    var isInMultiSelectMode by remember {
-        mutableStateOf(
-            selectionMode is TabsTrayState.Mode.Select,
-        )
     }
     // Don't show the onboarding card while a drag is active
     val showOnboardingCardInList by remember(displayTabGroupOnboarding) {
@@ -1207,7 +1220,7 @@ private fun InteractableTabList(
         }
     }
     LaunchedEffect(selectionMode) {
-        if (selectionMode !is TabsTrayState.Mode.Select) {
+        if (selectionMode is TabsTrayState.Mode.Normal) {
             isInMultiSelectMode = false
             listInteractionState.resetImmediately()
         }
@@ -1482,6 +1495,9 @@ private fun ReorderableTabList(
         },
         onLongPress = { itemInfo ->
             tabs.firstOrNull { tabItem -> tabItem.id == itemInfo.key }?.let { tab ->
+                if (tab !is TabsTrayItem.Tab || !tab.private) {
+                    isInMultiSelectMode = true
+                }
                 onItemLongClick(tab)
             }
         },
@@ -1504,7 +1520,7 @@ private fun ReorderableTabList(
         }
     }
     LaunchedEffect(selectionMode) {
-        if (selectionMode !is TabsTrayState.Mode.Select) {
+        if (selectionMode is TabsTrayState.Mode.Normal) {
             isInMultiSelectMode = false
             reorderState.resetImmediately()
         }

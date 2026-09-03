@@ -10,7 +10,9 @@ param(
     [string] $KeyAlias = "magi-opensource",
     [string] $PropertiesPath,
     [switch] $SkipBuild,
-    [switch] $ReuseGecko
+    [switch] $ReuseGecko,
+    [switch] $UseUpstreamGecko,
+    [string] $UpstreamGeckoApk
 )
 
 $ErrorActionPreference = "Stop"
@@ -20,6 +22,7 @@ $sign = Join-Path $PSScriptRoot "sign-release-local.ps1"
 $powershell = Join-Path $PSHOME "pwsh.exe"
 $localeFile = Join-Path $root "mobile\android\locales\all-locales"
 $versionCodeFile = Join-Path $root "FENIX_UPSTREAM_VERSION_CODES.json"
+$upstreamGeckoFile = Join-Path $root "FENIX_UPSTREAM_GECKOVIEW.json"
 $locales = @(Get-Content -LiteralPath $localeFile | ForEach-Object { $_.Trim() } | Where-Object { $_ })
 $configurations = @(
     [pscustomobject] @{
@@ -97,6 +100,7 @@ function Get-ReleaseVersionName {
 
 $baseline = (Get-Content (Join-Path $root "FENIX_UPSTREAM_RELEASE") -Raw).Trim()
 $versionCodeManifest = Get-Content -LiteralPath $versionCodeFile -Raw | ConvertFrom-Json
+$upstreamGeckoManifest = Get-Content -LiteralPath $upstreamGeckoFile -Raw | ConvertFrom-Json
 $baselineVersionCodes = $versionCodeManifest.PSObject.Properties[$baseline]
 if (-not $baselineVersionCodes) {
     throw "Missing upstream versionCode entries for baseline $baseline in $versionCodeFile"
@@ -112,6 +116,13 @@ $versionRevision = [int]($VersionName -replace ".*-r", "")
 
 if (-not $locales -or -not $locales.Contains("zh-CN")) {
     throw "The official Android locale list is empty or does not contain zh-CN: $localeFile"
+}
+
+if ($UseUpstreamGecko -and $ReuseGecko) {
+    throw "-UseUpstreamGecko and -ReuseGecko are mutually exclusive"
+}
+if ($UseUpstreamGecko -and $UpstreamGeckoApk -and $selectedConfigurations.Count -ne 1) {
+    throw "-UpstreamGeckoApk can only be used when exactly one ABI is selected"
 }
 
 function Invoke-LocalMach {
@@ -309,6 +320,190 @@ function Assert-ApkVersionCode {
     }
 }
 
+function Get-ApkVersionName {
+    param([Parameter(Mandatory)][string] $ApkPath)
+
+    $buildTools = Join-Path $root ".mozbuild\android-sdk-windows\build-tools"
+    $aapt = Get-ChildItem -LiteralPath $buildTools -Recurse -File -Filter "aapt.exe" |
+        Sort-Object FullName -Descending | Select-Object -First 1
+    if (-not $aapt) {
+        throw "Unable to find aapt.exe under $buildTools"
+    }
+    $badging = & $aapt.FullName dump badging $ApkPath
+    if ($LASTEXITCODE -ne 0) {
+        throw "Unable to inspect APK metadata: $ApkPath"
+    }
+    $match = [regex]::Match(($badging -join "`n"), "versionName='([^']+)'")
+    if (-not $match.Success) {
+        throw "APK has no versionName metadata: $ApkPath"
+    }
+    return $match.Groups[1].Value
+}
+
+function Get-UpstreamGeckoApk {
+    param(
+        [Parameter(Mandatory)][string] $Baseline,
+        [Parameter(Mandatory)][string] $Abi,
+        [Parameter(Mandatory)][string] $Url,
+        [Parameter(Mandatory)][string] $ExpectedSha256,
+        [string] $ProvidedPath
+    )
+
+    if ($ProvidedPath) {
+        $resolvedPath = (Resolve-Path -LiteralPath $ProvidedPath -ErrorAction Stop).Path
+    }
+    else {
+        $filename = "fenix-$Baseline.multi.android-$Abi.apk"
+        $cacheDirectory = Join-Path $root ".tmp\upstream-geckoview\$Baseline\$Abi"
+        $resolvedPath = Join-Path $cacheDirectory $filename
+        if (-not (Test-Path -LiteralPath $resolvedPath)) {
+            New-Item -ItemType Directory -Force -Path $cacheDirectory | Out-Null
+            Write-Output "Downloading upstream GeckoView source APK: $Url"
+            Invoke-WebRequest -UseBasicParsing -Uri $Url -OutFile $resolvedPath
+        }
+    }
+
+    $actualSha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $resolvedPath).Hash
+    if ($actualSha256 -ne $ExpectedSha256) {
+        throw "Upstream APK SHA-256 $actualSha256 does not match pinned digest $ExpectedSha256"
+    }
+    return (Resolve-Path -LiteralPath $resolvedPath).Path
+}
+
+function Assert-UpstreamApkSignature {
+    param(
+        [Parameter(Mandatory)][string] $ApkPath,
+        [Parameter(Mandatory)][string] $ExpectedCertificateSha256
+    )
+
+    $buildToolsRoot = Join-Path $root ".mozbuild\android-sdk-windows\build-tools"
+    $buildTools = Get-ChildItem -LiteralPath $buildToolsRoot -Directory |
+        Sort-Object { [version] $_.Name } -Descending | Select-Object -First 1
+    if (-not $buildTools) {
+        throw "No Android build-tools installation found under $buildToolsRoot"
+    }
+    $signer = Join-Path $buildTools.FullName "apksigner.bat"
+    $certificateOutput = & $signer verify --print-certs $ApkPath
+    if ($LASTEXITCODE -ne 0) {
+        throw "Upstream APK signature verification failed: $ApkPath"
+    }
+    $normalizedOutput = ($certificateOutput -join "`n").Replace(":", "").ToUpperInvariant()
+    if ($normalizedOutput -notmatch [regex]::Escape($ExpectedCertificateSha256.ToUpperInvariant())) {
+        throw "Upstream APK is not signed by the pinned Mozilla certificate"
+    }
+}
+
+function Get-ZipEntrySha256 {
+    param([Parameter(Mandatory)] $Entry)
+
+    $entryStream = $Entry.Open()
+    try {
+        $sha256 = [Security.Cryptography.SHA256]::Create()
+        try {
+            return ([BitConverter]::ToString($sha256.ComputeHash($entryStream))).Replace("-", "")
+        }
+        finally { $sha256.Dispose() }
+    }
+    finally { $entryStream.Dispose() }
+}
+
+function Import-UpstreamGeckoPackage {
+    param(
+        [Parameter(Mandatory)][string] $ObjDir,
+        [Parameter(Mandatory)][string] $Abi,
+        [Parameter(Mandatory)][string] $ApkPath,
+        [Parameter(Mandatory)][string[]] $ExpectedLocales,
+        [Parameter(Mandatory)][string] $ExpectedBaseline,
+        [Parameter(Mandatory)][int] $ExpectedVersionCode,
+        [Parameter(Mandatory)] $Provenance
+    )
+
+    $actualVersionName = Get-ApkVersionName -ApkPath $ApkPath
+    if ($actualVersionName -ne $ExpectedBaseline) {
+        throw "Upstream APK versionName $actualVersionName does not match baseline $ExpectedBaseline"
+    }
+    Assert-ApkVersionCode -ApkPath $ApkPath -ExpectedVersionCode $ExpectedVersionCode
+    Assert-UpstreamApkSignature `
+        -ApkPath $ApkPath `
+        -ExpectedCertificateSha256 $Provenance.certificateSha256
+    $actualLocales = @(Get-ApkLocales -ApkPath $ApkPath)
+    $missingLocales = @($ExpectedLocales | Where-Object { $_ -notin $actualLocales })
+    $unexpectedLocales = @($actualLocales | Where-Object { $_ -notin $ExpectedLocales })
+    if ($missingLocales -or $unexpectedLocales) {
+        throw "Upstream APK has an invalid Gecko locale set. " +
+            "Missing: $($missingLocales -join ', '); unexpected: $($unexpectedLocales -join ', ')"
+    }
+
+    $geckoLibraries = @(
+        "libclearkey.so", "libcrashhelper.so", "libcrashtools.so", "libfreebl3.so",
+        "libgkcodecs.so", "liblgpllibs.so", "libmozavcodec.so", "libmozavutil.so",
+        "libmozglue.so", "libnss3.so", "libplugin-container.so", "libsoftokn3.so", "libxul.so"
+    )
+    $apkStream = [IO.File]::OpenRead($ApkPath)
+    $geckoviewDirectory = Join-Path $root "$ObjDir\dist\geckoview"
+    $metadataDirectory = Join-Path $root ".tmp\upstream-geckoview\metadata\$Abi"
+    try {
+        $apk = [IO.Compression.ZipArchive]::new($apkStream, [IO.Compression.ZipArchiveMode]::Read, $false)
+        try {
+            $omniEntry = $apk.GetEntry("assets/omni.ja")
+            if (-not $omniEntry) {
+                throw "Upstream APK is missing assets/omni.ja"
+            }
+            foreach ($library in $geckoLibraries) {
+                if (-not $apk.GetEntry("lib/$Abi/$library")) {
+                    throw "Upstream APK is missing lib/$Abi/$library"
+                }
+            }
+            foreach ($expectedEntry in $Provenance.entries.PSObject.Properties) {
+                $entry = $apk.GetEntry($expectedEntry.Name)
+                if (-not $entry) {
+                    throw "Upstream APK is missing pinned entry $($expectedEntry.Name)"
+                }
+                $actualSha256 = Get-ZipEntrySha256 -Entry $entry
+                if ($actualSha256 -ne $expectedEntry.Value) {
+                    throw "Upstream $($expectedEntry.Name) SHA-256 $actualSha256 does not match pinned digest $($expectedEntry.Value)"
+                }
+            }
+
+            New-Item -ItemType Directory -Force -Path $metadataDirectory | Out-Null
+            foreach ($metadata in @("application.ini", "platform.ini", "precomplete", "removed-files")) {
+                $source = Join-Path $geckoviewDirectory $metadata
+                if (Test-Path -LiteralPath $source) {
+                    Copy-Item -LiteralPath $source -Destination $metadataDirectory -Force
+                }
+            }
+            if (Test-Path -LiteralPath $geckoviewDirectory) {
+                Remove-Item -LiteralPath $geckoviewDirectory -Recurse -Force
+            }
+            New-Item -ItemType Directory -Force -Path (Join-Path $geckoviewDirectory "assets") | Out-Null
+            New-Item -ItemType Directory -Force -Path (Join-Path $geckoviewDirectory "lib\$Abi") | Out-Null
+
+            foreach ($entryName in @("assets/omni.ja") + ($geckoLibraries | ForEach-Object { "lib/$Abi/$_" })) {
+                $entry = $apk.GetEntry($entryName)
+                $target = Join-Path $geckoviewDirectory ($entryName -replace '/', '\\')
+                $targetStream = [IO.File]::Create($target)
+                try {
+                    $entryStream = $entry.Open()
+                    try { $entryStream.CopyTo($targetStream) }
+                    finally { $entryStream.Dispose() }
+                }
+                finally { $targetStream.Dispose() }
+            }
+        }
+        finally { $apk.Dispose() }
+    }
+    finally { $apkStream.Dispose() }
+
+    foreach ($metadata in @("application.ini", "platform.ini", "precomplete", "removed-files")) {
+        $source = Join-Path $metadataDirectory $metadata
+        if (Test-Path -LiteralPath $source) {
+            Copy-Item -LiteralPath $source -Destination $geckoviewDirectory -Force
+        }
+    }
+    Assert-CachedGeckoPackage -ObjDir $ObjDir -Abi $Abi -ExpectedLocales $ExpectedLocales
+    Write-Output "Imported upstream $ExpectedBaseline GeckoView package for $Abi from $ApkPath"
+}
+
 Add-Type -AssemblyName System.IO.Compression
 $expectedLocales = @("en-US") + $locales
 $previousTarget = $env:FENIX_ANDROID_TARGET
@@ -353,6 +548,26 @@ try {
                     -Abi $configuration.Abi `
                     -ExpectedLocales $expectedLocales
             }
+        }
+        elseif ($UseUpstreamGecko) {
+            $upstreamGecko = $upstreamGeckoManifest.PSObject.Properties[$baseline].Value.PSObject.Properties[$configuration.Abi]
+            if (-not $upstreamGecko) {
+                throw "Missing pinned upstream GeckoView source for $baseline/$($configuration.Abi) in $upstreamGeckoFile"
+            }
+            $sourceApk = Get-UpstreamGeckoApk `
+                -Baseline $baseline `
+                -Abi $configuration.Abi `
+                -Url $upstreamGecko.Value.url `
+                -ExpectedSha256 $upstreamGecko.Value.apkSha256 `
+                -ProvidedPath $UpstreamGeckoApk
+            Import-UpstreamGeckoPackage `
+                -ObjDir $configuration.ObjDir `
+                -Abi $configuration.Abi `
+                -ApkPath $sourceApk `
+                -ExpectedLocales $expectedLocales `
+                -ExpectedBaseline $baseline `
+                -ExpectedVersionCode $upstreamVersionCode `
+                -Provenance $upstreamGecko.Value
         }
         else {
             if (-not $SkipBuild) {

@@ -273,7 +273,11 @@ fun LazyGridItemScope.ReorderableDragItemContainer(
                 }
 
                 else -> {
-                    Modifier.animateItem(tween())
+                    Modifier.animateItem(
+                        fadeInSpec = tween(),
+                        placementSpec = tween(),
+                        fadeOutSpec = null,
+                    )
                 }
             },
         )
@@ -333,7 +337,7 @@ fun Modifier.detectGridPressAndDragGestures(
             onDragStart = { offset -> reorderState.onTouchSlopPassed(offset, true) },
             onDrag = { change, dragAmount ->
                 change.consume()
-                reorderState.onDrag(offset = dragAmount, preserveSelectMode = false)
+                reorderState.onDrag(offset = dragAmount, preserveSelectMode = true)
             },
             onDragEnd = reorderState::onDragInterrupted,
             onDragCancel = reorderState::onDragInterrupted,

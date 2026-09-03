@@ -727,13 +727,11 @@ fun Modifier.defaultGridItemAnimation(
      *
      * Additionally, per the spec, we don't want to see 'ghost' items of the tabs that are being
      * combined to show the group, and the group should start at its placed position.
+     * Fade-out stays disabled for grid items so a removed final cell cannot remain visible as
+     * non-interactive content until the next layout update.
      */
     this@defaultGridItemAnimation.animateItem(
-        fadeOutSpec = if (enteringGroupId != null) {
-            null
-        } else {
-            spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMediumLow)
-        },
+        fadeOutSpec = null,
         placementSpec = if (enteringGroupId != null) {
             null
         } else {

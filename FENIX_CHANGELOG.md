@@ -1,5 +1,37 @@
 # Fenix changes
 
+## 155.0-r10
+
+### 中文
+
+上游基线：`FIREFOX-ANDROID_155_RELEASE`
+
+#### 标签页与群组
+
+- 修复在“全部标签页”中关闭最后一个非群组标签页后的网格残留，移除不可操作的旧条目。
+- 修复群组内标签页长按后拖拽立即退出选择模式的问题，保留拖拽期间的选中状态。
+
+#### 发布与 GeckoView
+
+- 仅发布 `arm64-v8a` 架构 APK，严格沿用上游 `versionCode 2016180970`。
+- 使用官方 155.0 多语言 GeckoView 二进制组装，清理本地自编译 GeckoView 产物；校验基线、ABI、99 个 locale、`omni.ja` 和 Gecko 原生库后再打包。
+- `.idsig` 仅保留本地用于校验，不作为 GitHub Release 资产发布。
+
+### English
+
+Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
+
+#### Tabs and groups
+
+- Fixed the non-interactive grid residue left after closing the last ungrouped tab in All Tabs.
+- Fixed long-press drag immediately leaving selection mode inside a tab group; selection now remains active throughout the drag.
+
+#### Release and GeckoView
+
+- Publishes only the `arm64-v8a` APK and strictly preserves upstream `versionCode 2016180970`.
+- Packages the official Firefox Android 155.0 multi-locale GeckoView binaries after cleaning locally compiled GeckoView output; baseline, ABI, all 99 locales, `omni.ja`, and Gecko native libraries are verified before assembly.
+- `.idsig` is retained locally for verification and is not published as a GitHub Release asset.
+
 ## 155.0-r9
 
 ### 中文

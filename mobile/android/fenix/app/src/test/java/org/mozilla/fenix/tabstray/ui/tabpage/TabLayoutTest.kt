@@ -11,9 +11,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.DeviceConfigurationOverride
 import androidx.compose.ui.test.WindowSize
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -271,6 +274,69 @@ class TabLayoutTest {
 
         composeTestRule.onNodeWithTag("${TabsTrayTestTag.TAB_GROUP_ROOT}.${group.id}")
             .assertIsDisplayed()
+    }
+
+    @Test
+    fun `WHEN the last top-level tab is closed in list view THEN it is removed from the layout`() {
+        assertLastTopLevelTabIsRemoved(displayTabsInGrid = false)
+    }
+
+    @Test
+    fun `WHEN the last top-level tab is closed in grid view THEN it is removed from the layout`() {
+        assertLastTopLevelTabIsRemoved(displayTabsInGrid = true)
+    }
+
+    private fun assertLastTopLevelTabIsRemoved(displayTabsInGrid: Boolean) {
+        val group = createTabGroup(
+            id = "group",
+            tabs = listOf(createTab(id = "grouped-tab", url = "https://www.mozilla.org/grouped")),
+        )
+        val ungroupedTab = createTab(id = "ungrouped-tab", url = "https://www.mozilla.org/ungrouped")
+        var tabs by mutableStateOf<List<TabsTrayItem>>(listOf(group, ungroupedTab))
+
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalUnderTest provides true) {
+                FirefoxTheme(theme = Theme.Light) {
+                    Surface {
+                        TabLayout(
+                            tabs = tabs,
+                            displayTabsInGrid = displayTabsInGrid,
+                            dragAndDropEnabled = true,
+                            displayTabGroupOnboarding = false,
+                            selectedItemIndex = tabs.lastIndex,
+                            selectionMode = TabsTrayState.Mode.Normal,
+                            focusEnabled = true,
+                            tabInteractionHandler = fakeTabInteractionHandler(),
+                            onTabClose = { closedTab -> tabs = tabs.filterNot { it.id == closedTab.id } },
+                            onItemClick = { },
+                            onItemLongClick = { },
+                            onDeleteTabGroupClick = { },
+                            onEditTabGroupClick = { },
+                            onCloseTabGroupClick = { },
+                            onShareTabGroupClick = { },
+                            onTabGroupOnboardingDismiss = { },
+                            liveReorderEnabled = false,
+                        )
+                    }
+                }
+            }
+        }
+
+        val tabItemCountWithUngroupedTab = if (displayTabsInGrid) 2 else 1
+        val tabItemCountWithoutUngroupedTab = if (displayTabsInGrid) 1 else 0
+        composeTestRule.onAllNodesWithTag(TabsTrayTestTag.TAB_ITEM_ROOT)
+            .assertCountEquals(tabItemCountWithUngroupedTab)
+        if (displayTabsInGrid) {
+            composeTestRule.mainClock.autoAdvance = false
+        }
+        composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_ITEM_CLOSE).performClick()
+        if (displayTabsInGrid) {
+            composeTestRule.mainClock.advanceTimeByFrame()
+        }
+        composeTestRule.waitForIdle()
+        composeTestRule.onAllNodesWithTag(TabsTrayTestTag.TAB_ITEM_ROOT)
+            .assertCountEquals(tabItemCountWithoutUngroupedTab)
+        composeTestRule.mainClock.autoAdvance = true
     }
 
     private val gridColumnCount: Int
