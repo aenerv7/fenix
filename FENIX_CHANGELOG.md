@@ -22,6 +22,7 @@
 - 打包完整的官方 Android Gecko 语言集，使 WebExtension 和 Gecko 界面使用所选应用语言而不是回退到 `en-US`；本次 APK 已验证 99 个 Gecko locale，包括 `zh-CN`。
 - 移除密码、地址和信用卡等个人信息的管理入口、快捷方式、Intent、设置索引、后台初始化与维护，以及 Android 自动填充服务和相关活动。
 - 禁用登录信息自动填充，并从默认同步范围中移除密码、地址和信用卡数据及其设置项。
+- 保留并接通内置 VPN（IP Protection）的设置、主菜单、引导提示、状态反馈和位置选择入口，确保上游布局更新后 Fenix 的入口仍可用。
 
 #### 首次使用、商店与限时功能
 
@@ -74,6 +75,7 @@ The following is the complete set of effective Fenix changes in the final r12 bu
 - Packages the complete official Android Gecko locale set so WebExtension and Gecko UI follow the selected application language instead of falling back to `en-US`; this APK verifies 99 Gecko locales, including `zh-CN`.
 - Removed management entry points, shortcuts, intents, settings indexing, background initialization and maintenance for passwords, addresses, credit cards, and other personal information, along with the Android autofill service and its activities.
 - Disabled login autofill and removed passwords, addresses, and credit cards plus their settings from the default sync scope.
+- Kept and reconnected the built-in VPN (IP Protection) settings, main-menu entry, onboarding prompt, status feedback, and location picker so the Fenix entry points remain available after the upstream layout update.
 
 #### First use, store integration, and limited-time features
 
