@@ -7,7 +7,7 @@ Mozilla's general Firefox source documentation remains authoritative for the res
 
 ## Current fork customization summary
 
-The current upstream baseline is Firefox Android 155.0 (`FIREFOX-ANDROID_155_RELEASE`). The first
+The current upstream baseline is Firefox Android 155.0 (`FIREFOX-ANDROID_155_0_RELEASE`). The first
 upstream synchronization, including manual conflict resolution and the limited-time activity policy,
 is recorded in [FENIX_UPSTREAM_SYNC.md](FENIX_UPSTREAM_SYNC.md). Release-by-release user-facing notes
 are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
@@ -42,6 +42,10 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
   `versionCode`. The About "What's new" link and text refer to Fenix rather than Firefox.
 - Release notes are always bilingual: a complete `## 中文` section followed by an equivalent
   `## English` section.
+- Because GitHub keeps only the latest successful revision for each upstream baseline, the retained
+  release notes must list all effective user-facing Fenix changes relative to the exact official
+  upstream baseline, not only changes since the previous `rN`. Exclude intermediate behavior that
+  was later reverted, and keep artifact metadata and validation results current for the retained APK.
 
 ### Tabs and tab groups
 

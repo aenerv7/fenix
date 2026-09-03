@@ -96,9 +96,11 @@ only when re-signing an existing unsigned APK without rebuilding it.
 After publishing, verify the GitHub Release and its remote asset sizes and SHA-256 digests before
 removing anything. GitHub Release history uses per-baseline latest-revision retention: keep only the
 highest successfully published revision and matching tag for each upstream baseline. Remove older
-releases and tags only for the baseline just verified; this remote-release policy does not require
-deleting local APKs, `.idsig` files, notes, logs, or cross-release build caches. The full sequencing
-and validation rules are documented in
+releases and tags only for the baseline just verified. Because that leaves one retained release per
+baseline, its bilingual notes must describe every effective user-facing Fenix difference from the
+exact official baseline, not only the latest `rN` delta, and must omit intermediate behavior that was
+later reverted. This remote-release policy does not require deleting local APKs, `.idsig` files,
+notes, logs, or cross-release build caches. The full sequencing and validation rules are documented in
 [FENIX_DEVELOPMENT.md](../../FENIX_DEVELOPMENT.md).
 
 See [FENIX_DEVELOPMENT.md](../../FENIX_DEVELOPMENT.md) for setup, testing, emulator, and local signing

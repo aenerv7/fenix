@@ -4,41 +4,113 @@
 
 ### 中文
 
-上游基线：`FIREFOX-ANDROID_155_RELEASE`
+官方上游基线：`FIREFOX-ANDROID_155_0_RELEASE`
 
-#### 搜索小组件与实验室
+以下为 r12 最终版本相对于该官方基线的全部有效 Fenix 修改；不包含后来已撤销的中间实现。
 
-- 修复添加搜索小组件时预览资源显示为单独兔子图标的问题，恢复长条搜索框预览，并将较大的兔子图标固定在左侧。
-- 放大实际搜索小组件左侧的兔子图标，同时保留搜索文字和麦克风按钮的独立区域，避免图标遮挡搜索框。
-- 移除 Fenix 实验室顶部提示右侧的兔子图标，保留提示文字和实验室功能列表。
+#### 品牌、版本与项目链接
+
+- 将 Android 应用 ID 改为 `github.aenerv7.fenix`，产品名称改为 Fenix，并移除上游版本名称中的 `-default` 后缀；Focus 不在本项目的构建和发布范围内。
+- 在启动器、启动画面、主页、关于页面、Gecko About 页面和 favicon 中使用 Fenix 兔子品牌；启动器前景采用透明画布并缩放至原尺寸的 80%，避免图标过大。
+- 将打包 Android 语言中面向用户的 Firefox 产品名称替换为 Fenix，同时保留上游来源、许可证和兼容性说明中的必要 Mozilla/Firefox 引用。
+- “关于 Fenix”保留对 aenerv7@GitHub、Mozilla 和 Firefox 上游源码的本地化署名；支持链接指向项目 GitHub，隐私声明与权利链接指向 Fenix 项目文档，“更新内容”使用 Fenix 名称。
+- “关于 Fenix”在上游版本信息后显示当前第 12 次修改。`r12` 仅作为显示和发布元数据，不改变上游 `versionName 155.0` 或 arm64-v8a 的 `versionCode 2016180970`。
+
+#### 本地化与隐私裁剪
+
+- 补全稳定版使用的简体中文资源，包括标签页群组操作和标签，以及将移动端书签根目录显示为“移动收藏夹”。
+- 打包完整的官方 Android Gecko 语言集，使 WebExtension 和 Gecko 界面使用所选应用语言而不是回退到 `en-US`；本次 APK 已验证 99 个 Gecko locale，包括 `zh-CN`。
+- 移除密码、地址和信用卡等个人信息的管理入口、快捷方式、Intent、设置索引、后台初始化与维护，以及 Android 自动填充服务和相关活动。
+- 禁用登录信息自动填充，并从默认同步范围中移除密码、地址和信用卡数据及其设置项。
+
+#### 首次使用、商店与限时功能
+
+- 新安装默认视为已完成首次引导，直接使用默认配置启动；移除已无生产引用的旧 PWA 第三次访问安装引导对话框。
+- 移除 Google Play 评分入口、自动评价提示、Play Review SDK、商店回退逻辑及相关评分遥测。
+- 按限时活动策略完整移除已结束的 Sports/World Cup 功能，包括入口、状态、业务逻辑、测试、字符串、旗帜和专用图片，同时保留名称相似但无关的搜索设置。
+
+#### 标签页与群组
+
+- 群组标签页打开的链接默认留在原群组；链接菜单可选择在当前群组打开或新建群组。
+- 可配置工具栏快捷方式创建的新标签页保留在当前群组，随后提交的网址或搜索也保留群组关系；主页中的网址和搜索在当前标签页提交。
+- 群组展开页支持群组范围的多选和“移出群组”，部分删除撤销可恢复成员关系，删除全部标签页后的撤销可恢复被清空的群组。
+- 群组选择工具栏与内容宽度对齐，并正确处理层级、系统栏内边距、明暗主题、菜单位置和返回操作；第一次返回只退出选择状态，不会同时收起群组。
+- 使用上游群组顶部工具栏的新建标签页按钮并保证其在手机、平板和横竖屏均可见，移除重复的 Fenix 浮动按钮。
+- 将独立标签页加入群组后保持目标群组可见并正确选中；进入“全部标签页”时自动展开所选标签页所在群组并滚动到所选标签页，自动展开不播放打开动画。
+- 关闭最后一个非群组标签页时同步清理数据快照、Lazy 列表固定项和拖拽状态，避免残留不可操作的旧条目。
+- 修复群组内及“全部标签页”中的长按拖拽状态，在持续拖动期间保留正确的选择与重排状态，不再因同步切换交互模式而取消手势。
+
+#### 界面与兔子资源
+
+- 搜索小组件的运行时图标、布局和系统添加预览统一使用无背景 Fenix 兔子；添加预览恢复为横向长条搜索框，左侧兔子放大且不遮挡搜索文字或麦克风区域。
+- 移除默认浏览器提示中的 Mozilla 图片及其占位，将关闭按钮调整到右侧垂直居中。
+- Fenix 实验室空状态使用无背景兔子资源；顶部欢迎提示仅保留文字，移除右侧兔子图标。
 
 #### 发布与验证
 
-- 仅发布 `arm64-v8a` 架构 APK，严格沿用上游 `versionCode 2016180970`。
-- 使用官方 155.0 多语言 GeckoView 组装，校验基线、ABI、完整 locale 集、`omni.ja`、Gecko 原生库、应用 ID、签名和校验和后再发布。
+- 仅发布 `arm64-v8a` APK，使用官方 155.0 多语言 GeckoView 组装，并严格沿用官方 arm64-v8a `versionCode 2016180970`。
+- 发布流程校验官方基线、ABI、99 个 locale、`assets/omni.ja`、`libmozglue.so`、`libxul.so`、应用 ID、版本、APK Signature Scheme v2/v3、文件大小和 SHA-256。
+- 定向标签页群组、标签页托盘、搜索小组件和 Fenix 实验室回归覆盖已在相应修订中通过；r12 另通过 `fenix:ktlintFormat`、`SearchWidgetProviderTest` 和 `FirefoxLabsScreenTest` 任务。受 Windows Application Services 原生库限制的 Glean 测试会在本机跳过，仍需由 Linux 或 CI 覆盖。
+- 发布资产为 `Fenix-155.0-r12-arm64-v8a-release.apk`，大小 `130818099` 字节，SHA-256 为 `A8378072926261924AF86530DEC14516162A3706F7CBC54E3A41DA5E7499209C`。
 - `.idsig` 仅保留本地用于校验，不作为 GitHub Release 资产发布。
 
 ### English
 
-Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
+Official upstream baseline: `FIREFOX-ANDROID_155_0_RELEASE`
 
-#### Search widget and Labs
+The following is the complete set of effective Fenix changes in the final r12 build relative to that official baseline; intermediate implementations that were later reverted are excluded.
 
-- Fixed the add-widget preview showing a standalone rabbit image by restoring the horizontal search-bar preview with a larger rabbit anchored on the left.
-- Enlarged the rabbit in the left side of the actual search widget while keeping independent areas for the search text and microphone button so the icon cannot cover the search field.
-- Removed the rabbit illustration from the right side of the Fenix Labs welcome banner while keeping its text and experiment list.
+#### Branding, version, and project links
+
+- Changed the Android application ID to `github.aenerv7.fenix`, renamed the product to Fenix, and removed the upstream `-default` version-name suffix. Focus is outside this project's build and release scope.
+- Uses Fenix rabbit branding for the launcher, splash screen, homepage, About screen, Gecko About page, and favicons. The launcher foreground uses a transparent canvas with the rabbit scaled to 80% to avoid an oversized icon.
+- Replaced user-facing Firefox product-name text in packaged Android locales with Fenix while preserving required Mozilla/Firefox references in upstream-source, licensing, and compatibility text.
+- The About Fenix screen keeps localized attribution to aenerv7@GitHub, Mozilla, and the upstream Firefox source. Support links to the project GitHub repository, privacy and rights link to the Fenix project documentation, and What's New uses the Fenix name.
+- About Fenix displays modification number 12 after the upstream version. `r12` is display and release metadata only and does not change upstream `versionName 155.0` or the arm64-v8a `versionCode 2016180970`.
+
+#### Localization and privacy reductions
+
+- Filled missing Simplified Chinese resources used by the stable build, including tab-group actions and labels, and displays the mobile bookmarks root as “移动收藏夹”.
+- Packages the complete official Android Gecko locale set so WebExtension and Gecko UI follow the selected application language instead of falling back to `en-US`; this APK verifies 99 Gecko locales, including `zh-CN`.
+- Removed management entry points, shortcuts, intents, settings indexing, background initialization and maintenance for passwords, addresses, credit cards, and other personal information, along with the Android autofill service and its activities.
+- Disabled login autofill and removed passwords, addresses, and credit cards plus their settings from the default sync scope.
+
+#### First use, store integration, and limited-time features
+
+- New installations default to onboarding complete and start with the default configuration. The obsolete, unreferenced third-visit PWA installation onboarding dialog was also removed.
+- Removed the Google Play rating entry, automatic review prompts, Play Review SDK, store fallbacks, and related rating telemetry.
+- Fully removed the finished Sports/World Cup feature under the limited-time activity policy, including entry points, state, business logic, tests, strings, flags, and dedicated artwork, while retaining unrelated search settings with similar names.
+
+#### Tabs and tab groups
+
+- Links opened from a grouped tab remain in that group by default; link menus can open in the current group or create a new group.
+- New tabs created by the configurable toolbar shortcut remain in the current group, and subsequent URL or search submissions retain that group relationship; homepage URL and search submissions stay in the current tab.
+- Expanded groups support group-scoped multi-selection and Remove from group. Undo restores membership after partial deletion and restores an emptied group after all its tabs are deleted.
+- The group selection toolbar matches the content width and correctly handles layering, system-bar insets, light/dark themes, menu placement, and Back. The first Back exits selection without also collapsing the group.
+- Uses the upstream group-toolbar new-tab action and keeps it visible on phones, tablets, portrait, and landscape, with the duplicate Fenix floating action removed.
+- After moving a standalone tab into a group, the target group remains visible and correctly selected. Entering All Tabs automatically expands the selected tab's group and scrolls to the selected tab without playing the opening animation.
+- Closing the last ungrouped tab clears the data snapshot, pinned Lazy-list item, and drag state together so no stale, non-interactive row remains.
+- Fixed long-press drag state in expanded groups and All Tabs so selection and reordering remain valid during continued dragging instead of the gesture being cancelled by a synchronous interaction-mode change.
+
+#### UI and rabbit assets
+
+- The search widget runtime icon, layouts, and system add-widget preview consistently use the background-free Fenix rabbit. The add preview is a horizontal search bar with a larger rabbit on the left that does not cover the search text or microphone area.
+- Removed Mozilla artwork and its reserved space from the default-browser prompt, with the close button vertically centered at the right edge.
+- Fenix Labs uses the background-free rabbit for its empty state; the top welcome banner keeps only its text and no longer shows a rabbit on the right.
 
 #### Release and validation
 
-- Publishes only the `arm64-v8a` APK and strictly preserves upstream `versionCode 2016180970`.
-- Assembles the release with the official 155.0 multi-locale GeckoView and verifies the baseline, ABI, complete locale set, `omni.ja`, Gecko native libraries, application ID, signature, and checksums before publishing.
+- Publishes only the `arm64-v8a` APK, assembled with the official 155.0 multi-locale GeckoView, and strictly preserves official arm64-v8a `versionCode 2016180970`.
+- The release process verifies the official baseline, ABI, all 99 locales, `assets/omni.ja`, `libmozglue.so`, `libxul.so`, application ID, version, APK Signature Schemes v2/v3, file size, and SHA-256.
+- Focused tab-group, tab-tray, search-widget, and Fenix Labs regression coverage passed in the relevant revisions. r12 also passed the `fenix:ktlintFormat`, `SearchWidgetProviderTest`, and `FirefoxLabsScreenTest` tasks. Glean tests affected by missing Windows Application Services native libraries are skipped locally and still require Linux or CI coverage.
+- The release asset is `Fenix-155.0-r12-arm64-v8a-release.apk`, size `130818099` bytes, SHA-256 `A8378072926261924AF86530DEC14516162A3706F7CBC54E3A41DA5E7499209C`.
 - `.idsig` is retained locally for verification and is not published as a GitHub Release asset.
 
 ## 155.0-r11
 
 ### 中文
 
-上游基线：`FIREFOX-ANDROID_155_RELEASE`
+上游基线：`FIREFOX-ANDROID_155_0_RELEASE`
 
 #### 标签页与群组
 
@@ -53,7 +125,7 @@ Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
 
 ### English
 
-Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
+Upstream baseline: `FIREFOX-ANDROID_155_0_RELEASE`
 
 #### Tabs and groups
 
@@ -70,7 +142,7 @@ Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
 
 ### 中文
 
-上游基线：`FIREFOX-ANDROID_155_RELEASE`
+上游基线：`FIREFOX-ANDROID_155_0_RELEASE`
 
 #### 标签页与群组
 
@@ -85,7 +157,7 @@ Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
 
 ### English
 
-Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
+Upstream baseline: `FIREFOX-ANDROID_155_0_RELEASE`
 
 #### Tabs and groups
 
@@ -102,7 +174,7 @@ Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
 
 ### 中文
 
-上游基线：`FIREFOX-ANDROID_155_RELEASE`
+上游基线：`FIREFOX-ANDROID_155_0_RELEASE`
 
 #### 标签页与群组
 
@@ -121,7 +193,7 @@ Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
 
 ### English
 
-Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
+Upstream baseline: `FIREFOX-ANDROID_155_0_RELEASE`
 
 #### Tabs and groups
 
@@ -142,7 +214,7 @@ Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
 
 ### 中文
 
-上游基线：`FIREFOX-ANDROID_155_RELEASE`
+上游基线：`FIREFOX-ANDROID_155_0_RELEASE`
 
 #### 标签页群组
 
@@ -158,7 +230,7 @@ Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
 
 ### English
 
-Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
+Upstream baseline: `FIREFOX-ANDROID_155_0_RELEASE`
 
 #### Tab groups
 
@@ -176,7 +248,7 @@ Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
 
 ### 中文
 
-上游基线：`FIREFOX-ANDROID_155_RELEASE`
+上游基线：`FIREFOX-ANDROID_155_0_RELEASE`
 
 #### 标签页群组
 
@@ -193,7 +265,7 @@ Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
 
 ### English
 
-Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
+Upstream baseline: `FIREFOX-ANDROID_155_0_RELEASE`
 
 #### Tab groups
 
@@ -212,7 +284,7 @@ Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
 
 ### 中文
 
-上游基线：`FIREFOX-ANDROID_155_RELEASE`
+上游基线：`FIREFOX-ANDROID_155_0_RELEASE`
 
 #### 实验室徽标
 
@@ -236,7 +308,7 @@ Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
 
 ### English
 
-Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
+Upstream baseline: `FIREFOX-ANDROID_155_0_RELEASE`
 
 #### Labs badge
 
@@ -262,7 +334,7 @@ Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
 
 ### 中文
 
-上游基线：`FIREFOX-ANDROID_155_RELEASE`
+上游基线：`FIREFOX-ANDROID_155_0_RELEASE`
 
 #### 品牌
 
@@ -280,7 +352,7 @@ Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
 
 ### English
 
-Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
+Upstream baseline: `FIREFOX-ANDROID_155_0_RELEASE`
 
 #### Branding
 
