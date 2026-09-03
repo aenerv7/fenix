@@ -1,5 +1,37 @@
 # Fenix changes
 
+## 155.0-r11
+
+### 中文
+
+上游基线：`FIREFOX-ANDROID_155_RELEASE`
+
+#### 标签页与群组
+
+- 修复标签页长按拖拽过程中选择模式被同步清除的问题，长按后继续拖拽时保持正确的选择和重排状态。
+- 保留上游长按手势序列，避免在手势回调中同步切换交互模式导致拖拽被取消。
+
+#### 发布与验证
+
+- 仅发布 `arm64-v8a` 架构 APK，严格沿用上游 `versionCode 2016180970`。
+- 使用官方 155.0 多语言 GeckoView 组装，校验基线、ABI、完整 locale 集、`omni.ja`、Gecko 原生库、应用 ID、签名和校验和后再发布。
+- `.idsig` 仅保留本地用于校验，不作为 GitHub Release 资产发布。
+
+### English
+
+Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
+
+#### Tabs and groups
+
+- Fixed selection mode being cleared while dragging a tab after a long press; selection and reordering now remain in the correct state throughout the gesture.
+- Preserved the upstream long-press gesture sequence so changing interaction mode from a gesture callback cannot cancel the active drag.
+
+#### Release and validation
+
+- Publishes only the `arm64-v8a` APK and strictly preserves upstream `versionCode 2016180970`.
+- Assembles the release with the official 155.0 multi-locale GeckoView and verifies the baseline, ABI, complete locale set, `omni.ja`, Gecko native libraries, application ID, signature, and checksums before publishing.
+- `.idsig` is retained locally for verification and is not published as a GitHub Release asset.
+
 ## 155.0-r10
 
 ### 中文
