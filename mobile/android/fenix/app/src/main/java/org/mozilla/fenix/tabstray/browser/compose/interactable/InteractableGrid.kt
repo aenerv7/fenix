@@ -871,7 +871,7 @@ fun Modifier.detectGridPressAndDragGestures(
             onDragStart = { offset -> reorderState.onTouchSlopPassed(offset, true) },
             onDrag = { change, dragAmount ->
                 change.consume()
-                reorderState.onDrag(offset = dragAmount, preserveSelectMode = true)
+                reorderState.onDrag(offset = dragAmount, preserveSelectMode = false)
             },
             onDragEnd = reorderState::onDragEnd,
             onDragCancel = reorderState::onDragCancelled,

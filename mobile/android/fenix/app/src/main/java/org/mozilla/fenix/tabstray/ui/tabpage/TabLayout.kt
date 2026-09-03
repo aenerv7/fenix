@@ -565,9 +565,6 @@ private fun ReorderableTabGrid(
         },
         onLongPress = { itemInfo ->
             tabs.firstOrNull { tabItem -> tabItem.id == itemInfo.key }?.let { tab ->
-                if (tab !is TabsTrayItem.Tab || !tab.private) {
-                    isInMultiSelectMode = true
-                }
                 onItemLongClick(tab)
             }
         },
@@ -582,12 +579,9 @@ private fun ReorderableTabGrid(
     LaunchedEffect(selectionMode, reorderState.draggingItemKey) {
         if (reorderState.draggingItemKey == null) {
             isInMultiSelectMode = selectionMode is TabsTrayState.Mode.Select
-        }
-    }
-    LaunchedEffect(selectionMode) {
-        if (selectionMode is TabsTrayState.Mode.Normal) {
-            isInMultiSelectMode = false
-            reorderState.resetImmediately()
+            if (selectionMode is TabsTrayState.Mode.Normal) {
+                reorderState.resetImmediately()
+            }
         }
     }
 
@@ -700,12 +694,7 @@ private fun InteractableTabGrid(
     val gridInteractionState = createGridInteractionState(
         gridState = gridState,
         tabInteractionHandler = tabInteractionHandler,
-        onLongPress = rememberReactiveLongPressGrid(tabs = tabs) { item ->
-            if (item !is TabsTrayItem.Tab || !item.private) {
-                isInMultiSelectMode = true
-            }
-            onItemLongClick(item)
-        },
+        onLongPress = rememberReactiveLongPressGrid(tabs = tabs, onItemLongClick = onItemLongClick),
         liveReorderEnabled = liveReorderEnabled,
         ignoredItems = ignoredItems,
     )
@@ -730,12 +719,9 @@ private fun InteractableTabGrid(
     LaunchedEffect(selectionMode, gridInteractionState.draggedItem.key) {
         if (gridInteractionState.draggedItem.key == null) {
             isInMultiSelectMode = selectionMode is TabsTrayState.Mode.Select
-        }
-    }
-    LaunchedEffect(selectionMode) {
-        if (selectionMode is TabsTrayState.Mode.Normal) {
-            isInMultiSelectMode = false
-            gridInteractionState.resetImmediately()
+            if (selectionMode is TabsTrayState.Mode.Normal) {
+                gridInteractionState.resetImmediately()
+            }
         }
     }
 
@@ -1187,12 +1173,7 @@ private fun InteractableTabList(
     val listInteractionState = createListInteractionState(
         listState = state,
         ignoredItems = ignoredItems,
-        onLongPress = rememberReactiveLongPressList(tabs = tabs) { item ->
-            if (item !is TabsTrayItem.Tab || !item.private) {
-                isInMultiSelectMode = true
-            }
-            onItemLongClick(item)
-        },
+        onLongPress = rememberReactiveLongPressList(tabs = tabs, onItemLongClick = onItemLongClick),
         tabInteractionHandler = tabInteractionHandler,
         dragAndDropEnabled = dragAndDropEnabled,
         liveReorderEnabled = liveReorderEnabled,
@@ -1217,12 +1198,9 @@ private fun InteractableTabList(
     LaunchedEffect(selectionMode, listInteractionState.draggedItem.key) {
         if (listInteractionState.draggedItem.key == null) {
             isInMultiSelectMode = selectionMode is TabsTrayState.Mode.Select
-        }
-    }
-    LaunchedEffect(selectionMode) {
-        if (selectionMode is TabsTrayState.Mode.Normal) {
-            isInMultiSelectMode = false
-            listInteractionState.resetImmediately()
+            if (selectionMode is TabsTrayState.Mode.Normal) {
+                listInteractionState.resetImmediately()
+            }
         }
     }
     LaunchedEffect(dragProcessingState) {
@@ -1495,9 +1473,6 @@ private fun ReorderableTabList(
         },
         onLongPress = { itemInfo ->
             tabs.firstOrNull { tabItem -> tabItem.id == itemInfo.key }?.let { tab ->
-                if (tab !is TabsTrayItem.Tab || !tab.private) {
-                    isInMultiSelectMode = true
-                }
                 onItemLongClick(tab)
             }
         },
@@ -1517,12 +1492,9 @@ private fun ReorderableTabList(
     LaunchedEffect(selectionMode, reorderState.draggingItemKey) {
         if (reorderState.draggingItemKey == null) {
             isInMultiSelectMode = selectionMode is TabsTrayState.Mode.Select
-        }
-    }
-    LaunchedEffect(selectionMode) {
-        if (selectionMode is TabsTrayState.Mode.Normal) {
-            isInMultiSelectMode = false
-            reorderState.resetImmediately()
+            if (selectionMode is TabsTrayState.Mode.Normal) {
+                reorderState.resetImmediately()
+            }
         }
     }
 

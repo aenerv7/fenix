@@ -5,6 +5,86 @@
 Fenix is maintained as a focused Android fork. Use `fenix:*` Gradle tasks and do not build Focus.
 Mozilla's general Firefox source documentation remains authoritative for the rest of the tree.
 
+## Current fork customization summary
+
+The current upstream baseline is Firefox Android 155.0 (`FIREFOX-ANDROID_155_RELEASE`). The first
+upstream synchronization, including manual conflict resolution and the limited-time activity policy,
+is recorded in [FENIX_UPSTREAM_SYNC.md](FENIX_UPSTREAM_SYNC.md). Release-by-release user-facing notes
+are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
+
+### Upstream merge and activity policy
+
+- The 155.0 update was the first upstream merge after the original 154.0.1 Fenix baseline. Conflicts
+  were resolved file by file, preserving fork behavior and local-only files where they remained
+  compatible with the new upstream APIs.
+- A finished campaign, tournament, experiment, or other fixed-term activity is not retained merely
+  because it exists in the previous baseline. Remove its state, actions, reducers, entry points,
+  controller/interactor code, tests, strings, artwork, and flags. Keep shared infrastructure and
+  unrelated settings whose names only happen to overlap. The retired Sports/World Cup activity was
+  removed under this rule.
+- Upstream features that duplicate a fork-added control take precedence. The fork-added floating
+  new-tab action inside expanded groups was removed after the upstream group-toolbar plus action was
+  confirmed; the upstream action is required to remain visible on phones, tablets, and both
+  orientations.
+
+### Branding and localization
+
+- Visible Mozilla Firefox fox assets are removed from the fork's user-facing surfaces. Fenix Labs,
+  the About screen, the home-screen search widget, and launcher assets use the Fenix rabbit branding;
+  the default-browser prompt no longer displays Mozilla artwork. The Labs and in-app rabbit mark is
+  background-free; the launcher foreground uses a transparent canvas with the rabbit scaled to 80% so
+  the app icon is not oversized. The widget and launcher variants must be checked separately because
+  they use different Android resource paths.
+- The default-browser prompt no longer reserves space for the removed fox artwork; its close button
+  is vertically centered at the right edge.
+- The About Fenix screen displays the fork revision after the upstream version line using localized
+  Android resources. This revision is display metadata only and never changes `versionName` or
+  `versionCode`. The About "What's new" link and text refer to Fenix rather than Firefox.
+- Release notes are always bilingual: a complete `## 中文` section followed by an equivalent
+  `## English` section.
+
+### Tabs and tab groups
+
+- Expanded groups reuse the All Tabs selection toolbar styling and content width. Long-pressing a
+  group tab dispatches the group-scoped selection action, so the group toolbar appears without
+  changing the global tab-tray navigation behavior.
+- Back while a group-tab long-press selection toolbar is open is consumed by the expanded-group
+  screen. It closes the toolbar and clears selection/local drag state once; it must not collapse the
+  group or run the root back action a second time.
+- Closing the last ungrouped tab while a group remains must remove the item from both the immutable
+  browser-tab snapshot and the Lazy list/grid interaction state immediately. Reset missing drag keys
+  without starting a stale animation, so the removed tab cannot remain visible, selected, or
+  interactable until a later navigation.
+- The upstream long-press gesture sequence is intentionally preserved. Do not synchronously change
+  the `pointerInput` mode from the long-press callback: doing so cancels the active gesture. Normal
+  long-press drag paths use `preserveSelectMode = false`; selection-mode synchronization waits until
+  the active drag key is cleared. This lets a held long press select a tab and still lets a continued
+  drag move it. The corresponding guard is currently an unpublished working-tree fix after r10 and
+  must be verified before the next release.
+
+### Release and GeckoView decisions
+
+- Keep the exact upstream ABI-specific `versionCode`; the fork `rN` suffix is only release metadata
+  shown in About Fenix. Changing `versionCode` would break normal overwrite and downgrade paths.
+- Publish only the selected `arm64-v8a` APK for the current release workflow. `.idsig` files remain
+  local verification/re-signing inputs and are not GitHub Release assets.
+- For Fenix-only changes, reuse a validated multi-locale GeckoView package. When local GeckoView
+  compilation is intentionally avoided, import the official upstream multi-locale Fenix APK with
+  `-UseUpstreamGecko`; validate baseline, Gecko revision, ABI, all locales, `omni.ja`, native
+  libraries, versionCode, signature, and checksums before assembly. Never accept an API-only or
+  single-locale package as a release GeckoView.
+- GitHub Release retention is per upstream baseline: after the new release is verified, retain only
+  the highest successfully published `rN` release and matching remote tag for that baseline. This
+  does not require deleting local APKs, `.idsig` files, notes, logs, or reusable build caches.
+
+### Current validation state
+
+The latest unpublished long-press correction has passed the focused `InteractableGridTest`,
+`InteractableListTest`, `ReorderableGridTest`, `ReorderableListTest`, and `TabLayoutTest` suites,
+`mach format`, and `git diff --check`. It has not been packaged or published. The Windows
+`FenixGleanTestRule` native-library limitation remains documented below; affected tests need Linux or
+CI coverage even when the Windows task completes by skipping them.
+
 ## Repository-local state
 
 The wrapper at `tools/fenix/mach-local.ps1` redirects developer state into the checkout:
