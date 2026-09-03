@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -243,16 +242,6 @@ private fun FirefoxLabsBanner() {
                     stringResource(R.string.firefox_labs_experimental_description),
                     stringResource(R.string.app_name),
                 ),
-            )
-        },
-        illustration = {
-            Image(
-                modifier = Modifier
-                    .size(width = 66.dp, height = 62.dp)
-                    .padding(top = FirefoxTheme.layout.space.static150),
-                painter = painterResource(R.drawable.fenix_labs_rabbit),
-                contentDescription = null,
-                contentScale = ContentScale.Fit,
             )
         },
     )

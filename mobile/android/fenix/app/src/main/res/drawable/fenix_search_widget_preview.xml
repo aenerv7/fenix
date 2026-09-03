@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:top="2dp" android:bottom="2dp">
+    <item
+        android:width="320dp"
+        android:height="50dp"
+        android:top="2dp"
+        android:bottom="2dp">
         <shape>
             <corners android:radius="24dp" />
             <solid android:color="#FFF8F8FA" />
@@ -8,12 +12,12 @@
         </shape>
     </item>
     <item
-        android:width="44dp"
-        android:height="44dp"
+        android:width="56dp"
+        android:height="50dp"
         android:gravity="start|center_vertical"
-        android:left="12dp">
+        android:left="10dp">
         <bitmap
             android:src="@drawable/ic_launcher_rabbit_foreground"
-            android:gravity="center" />
+            android:gravity="fill" />
     </item>
 </layer-list>

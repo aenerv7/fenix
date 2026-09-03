@@ -1,5 +1,39 @@
 # Fenix changes
 
+## 155.0-r12
+
+### 中文
+
+上游基线：`FIREFOX-ANDROID_155_RELEASE`
+
+#### 搜索小组件与实验室
+
+- 修复添加搜索小组件时预览资源显示为单独兔子图标的问题，恢复长条搜索框预览，并将较大的兔子图标固定在左侧。
+- 放大实际搜索小组件左侧的兔子图标，同时保留搜索文字和麦克风按钮的独立区域，避免图标遮挡搜索框。
+- 移除 Fenix 实验室顶部提示右侧的兔子图标，保留提示文字和实验室功能列表。
+
+#### 发布与验证
+
+- 仅发布 `arm64-v8a` 架构 APK，严格沿用上游 `versionCode 2016180970`。
+- 使用官方 155.0 多语言 GeckoView 组装，校验基线、ABI、完整 locale 集、`omni.ja`、Gecko 原生库、应用 ID、签名和校验和后再发布。
+- `.idsig` 仅保留本地用于校验，不作为 GitHub Release 资产发布。
+
+### English
+
+Upstream baseline: `FIREFOX-ANDROID_155_RELEASE`
+
+#### Search widget and Labs
+
+- Fixed the add-widget preview showing a standalone rabbit image by restoring the horizontal search-bar preview with a larger rabbit anchored on the left.
+- Enlarged the rabbit in the left side of the actual search widget while keeping independent areas for the search text and microphone button so the icon cannot cover the search field.
+- Removed the rabbit illustration from the right side of the Fenix Labs welcome banner while keeping its text and experiment list.
+
+#### Release and validation
+
+- Publishes only the `arm64-v8a` APK and strictly preserves upstream `versionCode 2016180970`.
+- Assembles the release with the official 155.0 multi-locale GeckoView and verifies the baseline, ABI, complete locale set, `omni.ja`, Gecko native libraries, application ID, signature, and checksums before publishing.
+- `.idsig` is retained locally for verification and is not published as a GitHub Release asset.
+
 ## 155.0-r11
 
 ### 中文

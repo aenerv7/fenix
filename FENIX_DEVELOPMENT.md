@@ -79,11 +79,11 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
 
 ### Current validation state
 
-The 155.0-r11 long-press correction has passed the focused `InteractableGridTest`,
-`InteractableListTest`, `ReorderableGridTest`, `ReorderableListTest`, and `TabLayoutTest` suites,
-`mach format`, and `git diff --check`. The Windows `FenixGleanTestRule` native-library limitation
-remains documented below; affected tests need Linux or CI coverage even when the Windows task
-completes by skipping them.
+The 155.0-r12 search-widget and Fenix Labs UI corrections have passed the focused
+`SearchWidgetProviderTest` and `FirefoxLabsScreenTest` task, `fenix:ktlintFormat`, and
+`git diff --check`. The Windows `FenixGleanTestRule` native-library limitation remains documented
+below; affected tests need Linux or CI coverage even when the Windows task completes by skipping
+them.
 
 ## Repository-local state
 
