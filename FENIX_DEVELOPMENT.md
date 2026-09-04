@@ -14,6 +14,10 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
 
 ### Upstream merge and activity policy
 
+- Baseline updates are manually initiated and promoted. No scheduled GitHub Actions workflow merges
+  new Firefox Android releases into `fenix`. Use `tools/fenix/sync-official-release.ps1` to prepare a
+  candidate, then resolve and review it file by file, apply the product policies below, and complete
+  the documented validation before promotion.
 - The 155.0 update was the first upstream merge after the original 154.0.1 Fenix baseline. Conflicts
   were resolved file by file, preserving fork behavior and local-only files where they remained
   compatible with the new upstream APIs.

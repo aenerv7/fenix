@@ -78,7 +78,7 @@ Firefox Android 正式版标签为不可变基线，在每个正式版之上维�
 .\tools\fenix\sync-official-release.ps1 -Version 155.0
 ```
 
-脚本不会自动发布。冲突处理、验证、合并和打标签步骤见
+脚本只准备候选分支，不会自动合并或发布。冲突处理、验证、合并和打标签步骤见
 [FENIX_UPSTREAM_SYNC.md](FENIX_UPSTREAM_SYNC.md)。
 
 ## 许可、商标与源码
