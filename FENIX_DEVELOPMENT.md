@@ -35,6 +35,10 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
   background-free; the launcher foreground uses a transparent canvas with the rabbit scaled to 80% so
   the app icon is not oversized. The widget and launcher variants must be checked separately because
   they use different Android resource paths.
+- The add-widget preview must remain a wide horizontal search field. Its rabbit belongs in a larger,
+  contained left icon area, while the runtime layouts reserve separate space for the search text and
+  microphone action. The Fenix Labs welcome banner is text-only; the rabbit is reserved for the Labs
+  empty state instead of being used as a small banner decoration.
 - The default-browser prompt no longer reserves space for the removed fox artwork; its close button
   is vertically centered at the right edge.
 - The About Fenix screen displays the fork revision after the upstream version line using localized
@@ -46,6 +50,9 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
   release notes must list all effective user-facing Fenix changes relative to the exact official
   upstream baseline, not only changes since the previous `rN`. Exclude intermediate behavior that
   was later reverted, and keep artifact metadata and validation results current for the retained APK.
+  Before replacing an `rN`, derive the notes from the final source tree and baseline diff, verify that
+  the Chinese and English sections describe the same changes, and only then remove the superseded
+  remote release and tag.
 
 ### Tabs and tab groups
 
