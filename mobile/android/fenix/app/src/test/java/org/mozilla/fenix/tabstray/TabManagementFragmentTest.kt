@@ -27,6 +27,8 @@ import org.mozilla.fenix.helpers.MockkRetryTestRule
 import org.mozilla.fenix.home.HomeScreenViewModel
 import org.mozilla.fenix.navigation.NavControllerProvider
 import org.mozilla.fenix.tabstray.data.createTab
+import org.mozilla.fenix.tabstray.data.createTabGroup
+import org.mozilla.fenix.tabstray.navigation.TabManagerNavDestination
 import org.mozilla.fenix.tabstray.redux.state.Page
 import org.mozilla.fenix.tabstray.redux.state.TabsTrayState
 import org.mozilla.fenix.tabstray.ui.TabManagementFragment
@@ -212,6 +214,34 @@ class TabManagementFragmentTest {
                 selectedPage = Page.SyncedTabs,
                 mode = TabsTrayState.Mode.Normal,
                 tabState = fakeTab(isPrivate = false),
+            ),
+        )
+    }
+
+    @Test
+    fun `WHEN a grouped tab is selected in an expanded group THEN back exits group selection`() {
+        val group = createTabGroup()
+        val selectedTab = createTab(url = "https://mozilla.org")
+
+        assertTrue(
+            fragment.shouldExitExpandedTabGroupSelection(
+                destination = TabManagerNavDestination.ExpandedTabGroup(group),
+                mode = TabsTrayState.Mode.Select(
+                    selectedTabs = setOf(selectedTab),
+                    tabGroupId = group.id,
+                ),
+            ),
+        )
+    }
+
+    @Test
+    fun `WHEN no grouped tab is selected in an expanded group THEN back does not exit group selection`() {
+        val group = createTabGroup()
+
+        assertFalse(
+            fragment.shouldExitExpandedTabGroupSelection(
+                destination = TabManagerNavDestination.ExpandedTabGroup(group),
+                mode = TabsTrayState.Mode.Normal,
             ),
         )
     }

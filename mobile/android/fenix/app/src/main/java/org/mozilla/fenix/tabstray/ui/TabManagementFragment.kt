@@ -288,9 +288,19 @@ class TabManagementFragment : Fragment() {
                 false -> null
             }
 
-            BackHandler(enabled = state.backStack.lastOrNull() == TabManagerNavDestination.Root) {
+            BackHandler(
+                enabled = state.backStack.lastOrNull() == TabManagerNavDestination.Root ||
+                    state.backStack.lastOrNull() is TabManagerNavDestination.ExpandedTabGroup,
+            ) {
                 when {
-                    tabsTrayStore.state.mode is TabsTrayState.Mode.Select -> {
+                    shouldExitExpandedTabGroupSelection(
+                        destination = state.backStack.lastOrNull(),
+                        mode = tabsTrayStore.state.mode,
+                    ) ||
+                        (
+                            state.backStack.lastOrNull() == TabManagerNavDestination.Root &&
+                                tabsTrayStore.state.mode is TabsTrayState.Mode.Select
+                            ) -> {
                         tabsTrayStore.dispatch(TabsTrayAction.ExitSelectMode)
                     }
 
@@ -1254,6 +1264,18 @@ class TabManagementFragment : Fragment() {
         return requireComponents.settings.tabManagerOpeningAnimationEnabled &&
             tabMatchesPage(selectedPage, tabState) &&
             mode is TabsTrayState.Mode.Normal
+    }
+
+    @VisibleForTesting
+    internal fun shouldExitExpandedTabGroupSelection(
+        destination: TabManagerNavDestination?,
+        mode: TabsTrayState.Mode,
+    ): Boolean {
+        val expandedGroup = destination as? TabManagerNavDestination.ExpandedTabGroup
+        val selection = mode as? TabsTrayState.Mode.Select
+        return expandedGroup != null &&
+            selection?.tabGroupId == expandedGroup.group.id &&
+            selection.selectedTabs.isNotEmpty()
     }
 
     /**
