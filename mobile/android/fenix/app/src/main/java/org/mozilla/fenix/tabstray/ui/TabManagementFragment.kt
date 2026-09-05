@@ -122,6 +122,7 @@ import org.mozilla.fenix.tabstray.controller.TabManagerInteractor
 import org.mozilla.fenix.tabstray.data.TabData
 import org.mozilla.fenix.tabstray.data.TabGroupTheme
 import org.mozilla.fenix.tabstray.data.TabsTrayItem
+import org.mozilla.fenix.tabstray.data.toTabList
 import org.mozilla.fenix.tabstray.navigation.TabManagerNavDestination
 import org.mozilla.fenix.tabstray.redux.action.TabGroupAction
 import org.mozilla.fenix.tabstray.redux.action.TabsTrayAction
@@ -292,22 +293,7 @@ class TabManagementFragment : Fragment() {
                 enabled = state.backStack.lastOrNull() == TabManagerNavDestination.Root ||
                     state.backStack.lastOrNull() is TabManagerNavDestination.ExpandedTabGroup,
             ) {
-                when {
-                    shouldExitExpandedTabGroupSelection(
-                        destination = state.backStack.lastOrNull(),
-                        mode = tabsTrayStore.state.mode,
-                    ) ||
-                        (
-                            state.backStack.lastOrNull() == TabManagerNavDestination.Root &&
-                                tabsTrayStore.state.mode is TabsTrayState.Mode.Select
-                            ) -> {
-                        tabsTrayStore.dispatch(TabsTrayAction.ExitSelectMode)
-                    }
-
-                    else -> {
-                        onTabsTrayDismissed()
-                    }
-                }
+                handleBack(state)
             }
 
             FirefoxTheme(theme = TabManagerThemeProvider(selectedPage = state.selectedPage).provideTheme()) {
@@ -844,6 +830,60 @@ class TabManagementFragment : Fragment() {
         )
     }
 
+    private fun handleBack(state: TabsTrayState) {
+        val destination = state.backStack.lastOrNull()
+        val mode = state.mode
+
+        if (mode is TabsTrayState.Mode.Select &&
+            (mode.selectedTabs.isNotEmpty() || mode.selectedTabGroups.isNotEmpty())
+        ) {
+            tabsTrayStore.dispatch(TabsTrayAction.ExitSelectMode)
+            return
+        }
+
+        val focusedTab = findFocusedTab(state)
+        when (destination) {
+            is TabManagerNavDestination.ExpandedTabGroup -> {
+                if (shouldReturnToFocusedTab(
+                        destination = destination,
+                        focusedTabId = focusedTab?.id,
+                    )
+                ) {
+                    focusedTab?.let(::performTabClick)
+                } else {
+                    tabsTrayStore.dispatch(TabsTrayAction.NavigateBackInvoked)
+                }
+            }
+
+            TabManagerNavDestination.Root -> if (shouldReturnToFocusedTab(destination, focusedTab?.id)) {
+                focusedTab?.let(::performTabClick)
+            } else {
+                onTabsTrayDismissed()
+            }
+            else -> tabsTrayStore.dispatch(TabsTrayAction.NavigateBackInvoked)
+        }
+    }
+
+    private fun findFocusedTab(state: TabsTrayState): TabsTrayItem.Tab? {
+        val selectedTabId = state.selectedTabId ?: return null
+        return state.normalTabsState.items.toTabList().find { it.id == selectedTabId }
+            ?: state.inactiveTabs.tabs.find { it.id == selectedTabId }
+            ?: state.privateBrowsing.tabs.filterIsInstance<TabsTrayItem.Tab>().find { it.id == selectedTabId }
+    }
+
+    @VisibleForTesting
+    internal fun shouldReturnToFocusedTab(
+        destination: TabManagerNavDestination?,
+        focusedTabId: String?,
+    ): Boolean {
+        if (focusedTabId == null) return false
+        return when (destination) {
+            TabManagerNavDestination.Root -> true
+            is TabManagerNavDestination.ExpandedTabGroup -> destination.group.tabs.any { it.id == focusedTabId }
+            else -> false
+        }
+    }
+
     private fun shareTabGroup(
         group: TabsTrayItem.TabGroup,
         @ColorInt dotColor: Int,
@@ -1264,18 +1304,6 @@ class TabManagementFragment : Fragment() {
         return requireComponents.settings.tabManagerOpeningAnimationEnabled &&
             tabMatchesPage(selectedPage, tabState) &&
             mode is TabsTrayState.Mode.Normal
-    }
-
-    @VisibleForTesting
-    internal fun shouldExitExpandedTabGroupSelection(
-        destination: TabManagerNavDestination?,
-        mode: TabsTrayState.Mode,
-    ): Boolean {
-        val expandedGroup = destination as? TabManagerNavDestination.ExpandedTabGroup
-        val selection = mode as? TabsTrayState.Mode.Select
-        return expandedGroup != null &&
-            selection?.tabGroupId == expandedGroup.group.id &&
-            selection.selectedTabs.isNotEmpty()
     }
 
     /**

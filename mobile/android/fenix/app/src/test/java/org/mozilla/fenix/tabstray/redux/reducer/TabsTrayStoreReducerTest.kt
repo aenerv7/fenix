@@ -413,6 +413,32 @@ class TabsTrayStoreReducerTest {
     }
 
     @Test
+    fun `WHEN manually collapsing expanded tab group with grouped selection THEN selection and group are dismissed`() {
+        val tab = createTab("https://mozilla.org")
+        val group = createTabGroup(tabs = mutableListOf(tab))
+        val initialState = TabsTrayState(
+            mode = Mode.Select(selectedTabs = setOf(tab), tabGroupId = group.id),
+            backStack = listOf(
+                TabManagerNavDestination.Root,
+                TabManagerNavDestination.ExpandedTabGroup(group),
+            ),
+        )
+
+        val resultState = TabsTrayReducer.reduce(
+            state = initialState,
+            action = TabsTrayAction.NavigateBackInvoked,
+        )
+
+        assertEquals(
+            initialState.copy(
+                mode = Mode.Normal,
+                backStack = listOf(TabManagerNavDestination.Root),
+            ),
+            resultState,
+        )
+    }
+
+    @Test
     fun `WHEN navigating back from expanded tab group after exiting select mode THEN group is dismissed`() {
         val tab = createTab("https://mozilla.org")
         val group = createTabGroup()

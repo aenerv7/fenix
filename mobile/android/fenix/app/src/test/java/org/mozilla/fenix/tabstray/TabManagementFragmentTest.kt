@@ -219,29 +219,36 @@ class TabManagementFragmentTest {
     }
 
     @Test
-    fun `WHEN a grouped tab is selected in an expanded group THEN back exits group selection`() {
-        val group = createTabGroup()
+    fun `WHEN focused tab belongs to expanded group THEN back returns to focused tab`() {
         val selectedTab = createTab(url = "https://mozilla.org")
+        val group = createTabGroup(tabs = listOf(selectedTab))
 
         assertTrue(
-            fragment.shouldExitExpandedTabGroupSelection(
+            fragment.shouldReturnToFocusedTab(
                 destination = TabManagerNavDestination.ExpandedTabGroup(group),
-                mode = TabsTrayState.Mode.Select(
-                    selectedTabs = setOf(selectedTab),
-                    tabGroupId = group.id,
-                ),
+                focusedTabId = selectedTab.id,
             ),
         )
     }
 
     @Test
-    fun `WHEN no grouped tab is selected in an expanded group THEN back does not exit group selection`() {
+    fun `WHEN focused tab is outside expanded group THEN back does not return to focused tab`() {
         val group = createTabGroup()
 
         assertFalse(
-            fragment.shouldExitExpandedTabGroupSelection(
+            fragment.shouldReturnToFocusedTab(
                 destination = TabManagerNavDestination.ExpandedTabGroup(group),
-                mode = TabsTrayState.Mode.Normal,
+                focusedTabId = "outside-group",
+            ),
+        )
+    }
+
+    @Test
+    fun `WHEN focused tab exists on root THEN back returns to focused tab`() {
+        assertTrue(
+            fragment.shouldReturnToFocusedTab(
+                destination = TabManagerNavDestination.Root,
+                focusedTabId = "focused-tab",
             ),
         )
     }
