@@ -11,10 +11,17 @@
 
 - 使用 `github.aenerv7.fenix` application ID、Fenix 名称和兔子品牌，保留必要的 Mozilla/Firefox 上游与许可证说明；Focus 不在构建范围内。
 - 补全简体中文和官方 Android Gecko 多语言资源；关于页、更新链接、搜索组件、启动器和 Fenix Labs 使用 Fenix 品牌。
+- 启动器透明前景缩放至 80%；应用内徽标无背景，主页和关于页显示 Fenix wordmark。搜索小组件保持横向预览并独立预留图标、文字和麦克风区域；默认浏览器提示移除 Mozilla 图片及占位，关闭按钮右侧居中；Labs 欢迎横幅仅保留文字，空状态保留独立徽标。
+- 关于页保留本地化的维护者及上游署名，支持、隐私与权利、更新链接指向 Fenix 项目；显示第 6 次修改，但不改变 Android 包版本。移动书签根目录显示为“移动收藏夹”。
 - 移除密码、地址、信用卡等个人信息管理入口、自动填充服务和默认同步范围；移除 Google Play 评分集成及已结束的 Sports/World Cup 活动。
+- 同时移除相关快捷方式、Intent、设置索引、后台初始化和维护，禁用登录自动填充；移除评分提示、SDK、回退及相关遥测。限时活动的状态、逻辑、测试、字符串和专用资源一并移除，保留无关的同名搜索设置。
 - 保留 IP Protection 入口，默认完成首次引导，并维持 Fenix 的隐私、商店和设置裁剪策略。
+- IP Protection 的设置、主菜单、引导、状态与位置选择保持接通；移除已无生产引用的旧 PWA 第三次访问安装引导。
 - 群组标签页打开链接默认留在原群组，支持群组范围多选、移出、删除撤销和空群组恢复；群组工具栏、菜单、返回行为和拖拽状态保持正确。
+- 链接菜单支持在当前群组或新群组打开；可配置工具栏快捷方式创建的新标签及后续网址或搜索保留群组关系，主页提交在当前标签页完成。部分删除撤销恢复成员关系，全部删除撤销恢复空群组。
+- 群组多选工具栏与内容宽度对齐，处理系统栏内边距、明暗主题、菜单方向、层级和动画；保留上游持续长按拖拽时序，不在手势回调中同步切换交互模式。使用上游顶部新建标签按钮，移除重复浮动按钮。
 - 从群组标签页进入“全部标签页”时自动展开并定位到当前标签；群组弹层始终跳过半高状态直接全高打开，不再依据窗口尺寸或标签数量计算初始高度。
+- 自动展开不播放打开动画，手动打开保留动画；把独立标签加入群组后保持目标群组可见且正确选中。
 - 系统返回优先取消标签页或群组的长按选择并关闭对应工具栏；无选择时，若聚焦标签属于当前展开群组则显示该标签，否则收起群组；全部标签页根页直接显示聚焦标签。手动收起群组只关闭群组并清除选择，不打开标签页。群组内部在无选择时也接收系统返回事件。
 - 关闭最后一个非群组标签页时清理快照、列表固定项和拖拽状态；新建标签页工具栏和搜索组件在手机、平板、横竖屏保持可用。
 
@@ -22,7 +29,10 @@
 
 - 仅发布 `arm64-v8a` APK，使用官方 155.0.1 多语言 GeckoView，严格沿用官方 `versionCode 2016182530`；未进行本地 GeckoView 编译或打包。
 - 发布流程校验官方基线、ABI、99 个 Gecko locale（含 `zh-CN`）、`assets/omni.ja`、Gecko 原生库、application ID、版本、签名和校验和。
-- APK：`Fenix-155.0.1-r6-arm64-v8a-release.apk`。构建后补充大小与 SHA-256。官方 GeckoView APK SHA-256：`C0DCF28DC5ABF68094A4C7E53496939C91939331483AB8C073193620E7310775`。
+- Release 编译及 lintVital 已通过；最终 `fenix:ktlint` 和 97 项定向单元/Compose 测试通过，0 失败、0 跳过。覆盖 Android 9/15 弹窗 Back dispatcher、自动展开、连续返回、选择清理、手动收起及真实 Fragment 的聚焦标签分支。本轮未连接设备，未做真机验收，也未运行 Linux/上游 CI 测试。
+- 全量源文档使用新输出目录、启用 autodoc 构建通过：退出码 0，`Failures: 0`，上游白名单中的 `Known Failures: 787`。局部构建的总目录缺页警告已由完整构建核验，未增加警告屏蔽规则。
+- APK：`Fenix-155.0.1-r6-arm64-v8a-release.apk`，大小 `130793410` 字节，SHA-256：`51765D824817AC34FA74A11A510A4006C72AD1EE31EB1BC82B54280268E30CFF`。官方 GeckoView APK SHA-256：`C0DCF28DC5ABF68094A4C7E53496939C91939331483AB8C073193620E7310775`。
+- 对应完整源码：[fenix-155.0.1-r6](https://github.com/aenerv7/fenix/tree/fenix-155.0.1-r6)。Fenix 是非官方独立修改版，不受 Mozilla 赞助或背书；维护与支持由本项目提供。保留 MPL 2.0 和第三方许可；Firefox 是 Mozilla Foundation 的商标。
 - `.idsig` 仅保留本地校验和重签名使用，不作为 GitHub Release 资产；Windows Glean 原生库限制仍需 Linux 或 CI 覆盖。
 
 ### English
@@ -35,10 +45,17 @@ to that baseline.
 
 - Uses the `github.aenerv7.fenix` application ID, Fenix name, and rabbit branding while retaining required Mozilla/Firefox upstream and licensing references; Focus is outside the build scope.
 - Completes Simplified Chinese and official Android Gecko locale resources; the About screen, What's New link, search widget, launcher, and Fenix Labs use Fenix branding.
+- Scales the transparent launcher foreground to 80%; in-app marks are background-free, and home/About show the Fenix wordmark. The search widget keeps a horizontal preview with separate icon, text, and microphone areas. The default-browser prompt removes Mozilla artwork and its reserved space and centers the close button on the right. The Labs welcome banner is text-only, with a dedicated mark in its empty state.
+- About retains localized maintainer/upstream attribution and points support, privacy/rights, and update links to Fenix. It displays modification number 6 without changing Android package versions. The mobile bookmarks root uses the Simplified Chinese label "移动收藏夹".
 - Removes management entry points, autofill service, and default sync scope for passwords, addresses, credit cards, and other personal data; removes Google Play rating integration and the finished Sports/World Cup activity.
+- Also removes related shortcuts, intents, settings indexing, background initialization and maintenance, and disables login autofill. Removes review prompts, SDK, fallbacks, and related telemetry. The retired activity's state, logic, tests, strings, and dedicated assets are removed while unrelated similarly named search settings remain.
 - Keeps the IP Protection entry point, marks new installations onboarding-complete, and preserves Fenix privacy, store, and settings reductions.
+- IP Protection settings, main menu, onboarding, status, and location picker remain connected. Removes the obsolete, unreferenced third-visit PWA installation onboarding.
 - Keeps grouped-tab links in their group by default and supports group-scoped selection, remove, delete undo, and empty-group restoration; group toolbars, menus, Back behavior, and drag state remain consistent.
+- Link menus support opening in the current or a new group. New tabs from the configurable toolbar shortcut and subsequent URLs/searches retain their group relationship; homepage submissions stay in the current tab. Partial-delete undo restores membership, and undo after deleting all members restores the group.
+- The group selection toolbar matches content width and handles system-bar insets, light/dark themes, menu direction, layering, and animation. Preserves upstream continued long-press dragging without switching interaction mode synchronously in gesture callbacks. Uses the upstream top-toolbar new-tab action and removes the duplicate floating button.
 - Opening All Tabs from a grouped tab expands and locates the current tab; group sheets always skip the half-expanded state and open fully, with no window-size or tab-count height calculation.
+- Automatic group expansion skips the opening animation, while manual opening retains it. Moving a standalone tab into a group keeps the destination visible and correctly selected.
 - System Back first clears non-empty tab/group selection and its toolbar. With no selection, it shows the focused tab if that tab belongs to the expanded group, or collapses the group otherwise; root Back shows the focused tab. Manual dismissal only collapses the group and clears selection, without opening a tab. Group content handles system Back even with no selection.
 - Clearing the last ungrouped tab removes its snapshot, pinned list item, and drag state; the group new-tab toolbar and search widget remain usable on phones, tablets, portrait, and landscape.
 
@@ -46,7 +63,10 @@ to that baseline.
 
 - Publishes only the `arm64-v8a` APK using the official 155.0.1 multi-locale GeckoView and exact official `versionCode 2016182530`; no local GeckoView compilation or packaging was performed.
 - The release process verifies the official baseline, ABI, all 99 Gecko locales (including `zh-CN`), `assets/omni.ja`, Gecko native libraries, application ID, version, signature, and checksums.
-- APK: `Fenix-155.0.1-r6-arm64-v8a-release.apk`. Size and SHA-256 will be recorded after the build. Official GeckoView APK SHA-256: `C0DCF28DC5ABF68094A4C7E53496939C91939331483AB8C073193620E7310775`.
+- Release compilation and lintVital passed. Final `fenix:ktlint` and 97 focused unit/Compose tests passed with zero failures or skips. Coverage includes the Android 9/15 dialog Back dispatcher, automatic expansion, consecutive Back presses, selection cleanup, manual dismissal, and focused-tab branches in the real Fragment. No device was connected for this run; physical-device acceptance and Linux/upstream CI tests were not performed.
+- Full source documentation passed with autodoc enabled and a fresh output directory: exit code 0, `Failures: 0`, and `Known Failures: 787` covered by the upstream allowlist. The partial build's missing global-toctree pages were checked by the complete build; no warning suppression rules were added.
+- APK: `Fenix-155.0.1-r6-arm64-v8a-release.apk`, size `130793410` bytes, SHA-256: `51765D824817AC34FA74A11A510A4006C72AD1EE31EB1BC82B54280268E30CFF`. Official GeckoView APK SHA-256: `C0DCF28DC5ABF68094A4C7E53496939C91939331483AB8C073193620E7310775`.
+- Complete corresponding source: [fenix-155.0.1-r6](https://github.com/aenerv7/fenix/tree/fenix-155.0.1-r6). Fenix is an independent unofficial modified build, not sponsored or endorsed by Mozilla; this project provides maintenance and support. MPL 2.0 and third-party licenses are retained; Firefox is a trademark of the Mozilla Foundation.
 - `.idsig` is retained locally for verification and re-signing and is not a GitHub Release asset; the Windows Glean native-library limitation still requires Linux or CI coverage.
 
 ## 155.0-r14
@@ -281,7 +301,7 @@ Upstream baseline: `FIREFOX-ANDROID_155_0_RELEASE`
 - 发布图标使用透明画布上缩小至原尺寸 80% 的兔子徽标，修复启动器图标资源缺失问题；应用内不带背景的兔子资源保持不变。
 - 仅发布 `arm64-v8a` 架构 APK，严格沿用上游 `versionCode 2016180970`。
 - `.idsig` 仅保留本地用于校验，不作为 GitHub Release 资产发布。
-- 本次仅改动 Fenix Kotlin、资源和构建校验逻辑，复用已验证的 155.0 多语言 GeckoView；未来复用上游预编译 GeckoView 必须匹配基线、Gecko 修订、ABI、完整语言集和原生库 SHA-256，否则回退编译。
+- 本次仅改动 Fenix Kotlin、资源和构建校验逻辑，复用已验证的 155.0 多语言 GeckoView。现行发布约定要求上游包匹配基线、Gecko 修订、ABI、完整语言集和原生库 SHA-256；校验失败必须停止，禁止回退本地编译或打包。
 
 ### English
 
@@ -297,7 +317,7 @@ Upstream baseline: `FIREFOX-ANDROID_155_0_RELEASE`
 - The launcher now uses a transparent rabbit foreground scaled to 80% of its original size, fixing the missing launcher icon; the background-free in-app rabbit resource is unchanged.
 - Published the `arm64-v8a` APK only and kept the upstream `versionCode 2016180970`.
 - `.idsig` is retained locally for verification and is not published as a GitHub Release asset.
-- This revision changes only Fenix Kotlin, resources, and build validation logic, so it reuses the validated 155.0 multi-locale GeckoView package. Any future upstream prebuilt GeckoView reuse must match the baseline, Gecko revision, ABI, complete locale set, and native-library SHA-256, or fall back to compilation.
+- This revision changes only Fenix Kotlin, resources, and build validation logic, so it reuses the validated 155.0 multi-locale GeckoView package. Current release policy requires the upstream package to match the baseline, Gecko revision, ABI, complete locale set, and native-library SHA-256. Failed validation must stop the release; falling back to local compilation or packaging is prohibited.
 
 ## 155.0-r4
 

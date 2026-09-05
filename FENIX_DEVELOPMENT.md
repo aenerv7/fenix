@@ -80,8 +80,8 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
   the `pointerInput` mode from the long-press callback: doing so cancels the active gesture. Normal
   long-press drag paths use `preserveSelectMode = false`; selection-mode synchronization waits until
   the active drag key is cleared. This lets a held long press select a tab and still lets a continued
-  drag move it. The corresponding guard is currently an unpublished working-tree fix after r10 and
-  must be verified before the next release.
+  drag move it. This guard is part of the retained Fenix behavior and must remain covered by
+  regression tests when tab interaction changes.
 
 ### Release and GeckoView decisions
 
