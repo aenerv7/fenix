@@ -358,7 +358,7 @@ function Get-UpstreamGeckoApk {
         $resolvedPath = Join-Path $cacheDirectory $filename
         if (-not (Test-Path -LiteralPath $resolvedPath)) {
             New-Item -ItemType Directory -Force -Path $cacheDirectory | Out-Null
-            Write-Output "Downloading upstream GeckoView source APK: $Url"
+            Write-Host "Downloading upstream GeckoView source APK: $Url"
             Invoke-WebRequest -UseBasicParsing -Uri $Url -OutFile $resolvedPath
         }
     }
