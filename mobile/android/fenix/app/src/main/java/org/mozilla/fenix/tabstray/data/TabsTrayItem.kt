@@ -9,15 +9,11 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.asImageBitmap
 import mozilla.components.browser.state.state.TabSessionState
 import mozilla.components.browser.state.state.isActive
-import mozilla.components.compose.base.theme.layout.AcornWindowSize
 import mozilla.components.concept.engine.utils.ABOUT_HOME_URL
 import org.mozilla.fenix.compose.TabThumbnailImageData
 import org.mozilla.fenix.ext.maxActiveTime
 import org.mozilla.fenix.tabstray.ext.toDisplayTitle
 import java.util.UUID
-
-private const val SMALL_WINDOW_FULL_EXPAND_TAB_COUNT = 4
-private const val MEDIUM_LARGE_WINDOW_FULL_EXPAND_TAB_COUNT = 8
 
 /**
  * Data entity representing items in the Tabs Tray.
@@ -121,15 +117,6 @@ sealed interface TabsTrayItem {
         val thumbnails by lazy {
             tabs.take(4).map { it.toThumbnailImageData() }
         }
-
-        /**
-         * Helper function to determine whether to fully expand a tab group.
-         *
-         * @param windowSize The [AcornWindowSize] of the app window.
-         */
-        fun shouldFullyExpandOnFirstOpen(windowSize: AcornWindowSize): Boolean =
-            (windowSize == AcornWindowSize.Small && tabs.size >= SMALL_WINDOW_FULL_EXPAND_TAB_COUNT) ||
-                (windowSize.isNotSmall() && tabs.size >= MEDIUM_LARGE_WINDOW_FULL_EXPAND_TAB_COUNT)
     }
 
     /**

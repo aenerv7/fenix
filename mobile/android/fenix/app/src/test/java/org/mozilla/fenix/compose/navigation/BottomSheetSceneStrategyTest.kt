@@ -23,6 +23,7 @@ import org.mozilla.fenix.theme.FirefoxTheme
 import org.mozilla.fenix.theme.Theme
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
 
 private const val ROOT = "Root"
 private const val FIRST_SHEET = "FirstSheet"
@@ -73,20 +74,13 @@ class BottomSheetSceneStrategyTest {
     }
 
     @Test
-    fun `WHEN bottom sheet expansion metadata changes THEN scenes are not equal`() {
-        val collapsedSheet = NavEntry(
-            key = FIRST_SHEET,
-            metadata = sheetMetadata(fullyExpandOnFirstOpen = false),
-        ) {}
-        val expandedSheet = NavEntry(
-            key = FIRST_SHEET,
-            metadata = sheetMetadata(fullyExpandOnFirstOpen = true),
-        ) {}
+    fun `WHEN a bottom sheet opts out of partial expansion THEN metadata disables partial state`() {
+        val metadata = BottomSheetSceneStrategy.bottomSheet(
+            skipPartiallyExpanded = true,
+            handleContentDescription = "",
+        )
 
-        val collapsed = requireNotNull(calculateScene(root, collapsedSheet))
-        val expanded = requireNotNull(calculateScene(root, expandedSheet))
-
-        assertNotEquals(collapsed, expanded)
+        assertTrue(metadata[BottomSheetSceneStrategy.SKIP_PARTIALLY_EXPANDED_KEY] as Boolean)
     }
 
     @Test
@@ -117,11 +111,8 @@ class BottomSheetSceneStrategyTest {
         composeTestRule.onNodeWithText(FIRST_SHEET).assertDoesNotExist()
     }
 
-    private fun sheetMetadata(fullyExpandOnFirstOpen: Boolean = false): Map<String, Any> =
-        BottomSheetSceneStrategy.bottomSheet(
-            handleContentDescription = "",
-            fullyExpandOnFirstOpen = fullyExpandOnFirstOpen,
-        )
+    private fun sheetMetadata(): Map<String, Any> =
+        BottomSheetSceneStrategy.bottomSheet(handleContentDescription = "")
 
     private fun calculateScene(vararg entries: NavEntry<String>) =
         with(BottomSheetSceneStrategy<String>()) {

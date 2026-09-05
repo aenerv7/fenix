@@ -500,18 +500,14 @@ class TabManagementFragment : Fragment() {
 
                             entry<TabManagerNavDestination.ExpandedTabGroup>(
                                 metadata = { destination ->
-                                    val group = state.tabGroupState.groups
-                                        .find { it.id == destination.group.id } ?: destination.group
                                     BottomSheetSceneStrategy.bottomSheet(
+                                        skipPartiallyExpanded = true,
                                         handleContentDescription = resources.getString(
                                             R.string.tab_group_sheet_dismiss_description,
                                         ),
                                         showBetaLabel = true,
                                         modalBottomSheetProperties = ModalBottomSheetProperties(
                                             shouldDismissOnBackPress = false,
-                                        ),
-                                        fullyExpandOnFirstOpen = group.shouldFullyExpandOnFirstOpen(
-                                            windowSize = windowSize,
                                         ),
                                         skipOpeningAnimation = destination.skipOpeningAnimation,
                                     )

@@ -96,7 +96,7 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
 
 ### Current validation state
 
-The 155.0-r13 tab-group sheet correction has passed `fenix:ktlintFormat`, `fenix:ktlint`,
+The 155.0-r14 tab-group sheet correction has passed `fenix:ktlintFormat`, `fenix:ktlint`,
 `fenix:compileDebugKotlin`, and the targeted unit-test task. The arm64-v8a release was assembled
 with the pinned upstream GeckoView package using `-UseUpstreamGecko`; no local GeckoView build was
 performed. The Windows `FenixGleanTestRule` native-library limitation remains documented below;

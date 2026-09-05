@@ -10,7 +10,7 @@ Firefox Android 正式版标签为不可变基线，在每个正式版之上维�
 可迁移的补丁。
 
 - 当前上游基线：`FIREFOX-ANDROID_155_0_RELEASE`
-- 当前 Fenix 版本：`155.0-r13`
+- 当前 Fenix 版本：`155.0-r14`
 - 应用名称：`Fenix`
 - Android application ID：`github.aenerv7.fenix`
 - 正式版品牌：白色凤眼海棠侏儒兔图标与 `Fenix` wordmark
