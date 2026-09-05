@@ -66,6 +66,12 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
 - Back while a group-tab long-press selection toolbar is open is consumed by the expanded-group
   screen. It closes the toolbar and clears selection/local drag state once; it must not collapse the
   group or run the root back action a second time.
+- The expanded-group content must handle system Back even with no selection. If the browser's
+  focused tab belongs to the currently displayed group, show that tab; otherwise collapse the group.
+  Root Back first clears non-empty tab/group selection, then shows the focused browser tab.
+  Manual sheet dismissal (drag, scrim, or handle) always collapses the group and clears its selection;
+  it must never open a browser tab. Keep this callback separate from system Back. Cover the actual
+  modal dialog's Back dispatcher in tests, not just the membership predicate.
 - Closing the last ungrouped tab while a group remains must remove the item from both the immutable
   browser-tab snapshot and the Lazy list/grid interaction state immediately. Reset missing drag keys
   without starting a stale animation, so the removed tab cannot remain visible, selected, or

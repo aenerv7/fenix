@@ -122,7 +122,6 @@ import org.mozilla.fenix.tabstray.controller.TabManagerInteractor
 import org.mozilla.fenix.tabstray.data.TabData
 import org.mozilla.fenix.tabstray.data.TabGroupTheme
 import org.mozilla.fenix.tabstray.data.TabsTrayItem
-import org.mozilla.fenix.tabstray.data.toTabList
 import org.mozilla.fenix.tabstray.navigation.TabManagerNavDestination
 import org.mozilla.fenix.tabstray.redux.action.TabGroupAction
 import org.mozilla.fenix.tabstray.redux.action.TabsTrayAction
@@ -293,7 +292,7 @@ class TabManagementFragment : Fragment() {
                 enabled = state.backStack.lastOrNull() == TabManagerNavDestination.Root ||
                     state.backStack.lastOrNull() is TabManagerNavDestination.ExpandedTabGroup,
             ) {
-                handleBack(state)
+                handleBack(tabsTrayStore.state)
             }
 
             FirefoxTheme(theme = TabManagerThemeProvider(selectedPage = state.selectedPage).provideTheme()) {
@@ -582,10 +581,10 @@ class TabManagementFragment : Fragment() {
                                     displayTabsInGrid = state.config.displayTabsInGrid,
                                     tabInteractionHandler = tabInteractionHandler,
                                     selectionMode = expandedGroupSelectionMode,
-                                        onExitSelectMode = {
-                                            tabsTrayStore.dispatch(TabsTrayAction.ExitSelectMode)
-                                        },
-                                        onBack = { handleBack(state) },
+                                    onExitSelectMode = {
+                                        tabsTrayStore.dispatch(TabsTrayAction.ExitSelectMode)
+                                    },
+                                    onBack = { handleBack(tabsTrayStore.state) },
                                     onItemLongClick = { item ->
                                         if (item is TabsTrayItem.Tab) {
                                             tabsTrayStore.dispatch(
@@ -842,34 +841,29 @@ class TabManagementFragment : Fragment() {
             return
         }
 
-        val focusedTab = findFocusedTab(state)
+        val focusedTabId = requireComponents.core.store.state.selectedTabId
         when (destination) {
             is TabManagerNavDestination.ExpandedTabGroup -> {
+                val group = state.tabGroupState.groups.find { it.id == destination.group.id }
+                    ?: destination.group
                 if (shouldReturnToFocusedTab(
-                        destination = destination,
-                        focusedTabId = focusedTab?.id,
+                        destination = destination.copy(group = group),
+                        focusedTabId = focusedTabId,
                     )
                 ) {
-                    focusedTab?.let(::performTabClick)
+                    tabManagerController.handleNavigationRequested()
                 } else {
                     tabsTrayStore.dispatch(TabsTrayAction.NavigateBackInvoked)
                 }
             }
 
-            TabManagerNavDestination.Root -> if (shouldReturnToFocusedTab(destination, focusedTab?.id)) {
-                focusedTab?.let(::performTabClick)
+            TabManagerNavDestination.Root -> if (shouldReturnToFocusedTab(destination, focusedTabId)) {
+                tabManagerController.handleNavigationRequested()
             } else {
                 onTabsTrayDismissed()
             }
             else -> tabsTrayStore.dispatch(TabsTrayAction.NavigateBackInvoked)
         }
-    }
-
-    private fun findFocusedTab(state: TabsTrayState): TabsTrayItem.Tab? {
-        val selectedTabId = state.selectedTabId ?: return null
-        return state.normalTabsState.items.toTabList().find { it.id == selectedTabId }
-            ?: state.inactiveTabs.tabs.find { it.id == selectedTabId }
-            ?: state.privateBrowsing.tabs.filterIsInstance<TabsTrayItem.Tab>().find { it.id == selectedTabId }
     }
 
     @VisibleForTesting

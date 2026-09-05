@@ -15,7 +15,7 @@
 - 保留 IP Protection 入口，默认完成首次引导，并维持 Fenix 的隐私、商店和设置裁剪策略。
 - 群组标签页打开链接默认留在原群组，支持群组范围多选、移出、删除撤销和空群组恢复；群组工具栏、菜单、返回行为和拖拽状态保持正确。
 - 从群组标签页进入“全部标签页”时自动展开并定位到当前标签；群组弹层始终跳过半高状态直接全高打开，不再依据窗口尺寸或标签数量计算初始高度。
-- 返回 expanded 群组时，只有群组内存在长按选中的标签才退出选择并关闭工具栏；没有群组选中时直接返回当前浏览标签页，不再先收起群组。
+- 系统返回优先取消标签页或群组的长按选择并关闭对应工具栏；无选择时，若聚焦标签属于当前展开群组则显示该标签，否则收起群组；全部标签页根页直接显示聚焦标签。手动收起群组只关闭群组并清除选择，不打开标签页。群组内部在无选择时也接收系统返回事件。
 - 关闭最后一个非群组标签页时清理快照、列表固定项和拖拽状态；新建标签页工具栏和搜索组件在手机、平板、横竖屏保持可用。
 
 #### 发布与验证
@@ -39,7 +39,7 @@ to that baseline.
 - Keeps the IP Protection entry point, marks new installations onboarding-complete, and preserves Fenix privacy, store, and settings reductions.
 - Keeps grouped-tab links in their group by default and supports group-scoped selection, remove, delete undo, and empty-group restoration; group toolbars, menus, Back behavior, and drag state remain consistent.
 - Opening All Tabs from a grouped tab expands and locates the current tab; group sheets always skip the half-expanded state and open fully, with no window-size or tab-count height calculation.
-- When backing out of an expanded group, only a non-empty long-press selection exits selection and closes the toolbar; with no grouped tab selected, Back returns directly to the current browser tab instead of collapsing the group first.
+- System Back first clears non-empty tab/group selection and its toolbar. With no selection, it shows the focused tab if that tab belongs to the expanded group, or collapses the group otherwise; root Back shows the focused tab. Manual dismissal only collapses the group and clears selection, without opening a tab. Group content handles system Back even with no selection.
 - Clearing the last ungrouped tab removes its snapshot, pinned list item, and drag state; the group new-tab toolbar and search widget remain usable on phones, tablets, portrait, and landscape.
 
 #### Release and validation

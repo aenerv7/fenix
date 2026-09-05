@@ -92,6 +92,7 @@ import mozilla.components.ui.icons.R as iconsR
  * @param selectionMenu The multi-select menu shown in a separate overlay above the toolbar.
  * @param snackbarHostState Snackbar state rendered above the multi-select toolbar.
  * @param onExitSelectMode Invoked when Back is pressed while tab selection is active.
+ * @param onBack Invoked on system Back when no tabs are selected.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -119,7 +120,7 @@ fun ExpandedTabGroup(
     }
 
     BackHandler {
-        if (selectionMode is TabsTrayState.Mode.Select) {
+        if (selectionMode.selectedTabs.isNotEmpty() || selectionMode.selectedTabGroups.isNotEmpty()) {
             selectionMenuExpanded = false
             onExitSelectMode()
         } else {
