@@ -367,7 +367,7 @@ class TabManagementFragment : Fragment() {
                 ) {
                     NavDisplay(
                         backStack = state.backStack,
-                        onBack = { handleBack(state) },
+                        onBack = { tabsTrayStore.dispatch(TabsTrayAction.NavigateBackInvoked) },
                         transitionSpec = defaultTransitionSpec(),
                         popTransitionSpec = popTransitionSpec(),
                         predictivePopTransitionSpec = defaultPredictivePopTransitionSpec(),
@@ -503,7 +503,7 @@ class TabManagementFragment : Fragment() {
                                         ),
                                         showBetaLabel = true,
                                         modalBottomSheetProperties = ModalBottomSheetProperties(
-                                            shouldDismissOnBackPress = true,
+                                            shouldDismissOnBackPress = false,
                                         ),
                                         skipOpeningAnimation = destination.skipOpeningAnimation,
                                     )
@@ -582,9 +582,10 @@ class TabManagementFragment : Fragment() {
                                     displayTabsInGrid = state.config.displayTabsInGrid,
                                     tabInteractionHandler = tabInteractionHandler,
                                     selectionMode = expandedGroupSelectionMode,
-                                    onExitSelectMode = {
-                                        tabsTrayStore.dispatch(TabsTrayAction.ExitSelectMode)
-                                    },
+                                        onExitSelectMode = {
+                                            tabsTrayStore.dispatch(TabsTrayAction.ExitSelectMode)
+                                        },
+                                        onBack = { handleBack(state) },
                                     onItemLongClick = { item ->
                                         if (item is TabsTrayItem.Tab) {
                                             tabsTrayStore.dispatch(

@@ -106,6 +106,7 @@ fun ExpandedTabGroup(
     selectionMenu: @Composable (Boolean, (Boolean) -> Unit) -> Unit = { _, _ -> },
     snackbarHostState: SnackbarHostState? = null,
     onExitSelectMode: () -> Unit = {},
+    onBack: () -> Unit = {},
 ) {
     var selectionMenuExpanded by remember { mutableStateOf(false) }
     var groupWidth by remember { mutableIntStateOf(0) }
@@ -117,9 +118,13 @@ fun ExpandedTabGroup(
         }
     }
 
-    BackHandler(enabled = selectionMode is TabsTrayState.Mode.Select) {
-        selectionMenuExpanded = false
-        onExitSelectMode()
+    BackHandler {
+        if (selectionMode is TabsTrayState.Mode.Select) {
+            selectionMenuExpanded = false
+            onExitSelectMode()
+        } else {
+            onBack()
+        }
     }
 
     Box(
@@ -246,6 +251,7 @@ fun ExpandedTabGroup(
     selectionBanner: @Composable (Boolean, (Boolean) -> Unit) -> Unit = { _, _ -> },
     selectionMenu: @Composable (Boolean, (Boolean) -> Unit) -> Unit = { _, _ -> },
     snackbarHostState: SnackbarHostState? = null,
+    onBack: () -> Unit = {},
 ) {
     ExpandedTabGroup(
         group = group,
@@ -265,6 +271,7 @@ fun ExpandedTabGroup(
         selectionBanner = selectionBanner,
         selectionMenu = selectionMenu,
         snackbarHostState = snackbarHostState,
+        onBack = onBack,
     )
 }
 
