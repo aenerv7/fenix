@@ -10,7 +10,7 @@ param(
     [string] $KeyAlias = "magi-opensource",
     [string] $PropertiesPath,
     [switch] $SkipBuild,
-    [switch] $ReuseGecko,
+    [switch] $BuildLocalGecko,
     [switch] $UseUpstreamGecko,
     [string] $UpstreamGeckoApk
 )
@@ -118,8 +118,8 @@ if (-not $locales -or -not $locales.Contains("zh-CN")) {
     throw "The official Android locale list is empty or does not contain zh-CN: $localeFile"
 }
 
-if ($UseUpstreamGecko -and $ReuseGecko) {
-    throw "-UseUpstreamGecko and -ReuseGecko are mutually exclusive"
+if ($UseUpstreamGecko -and $BuildLocalGecko) {
+    throw "-UseUpstreamGecko and -BuildLocalGecko are mutually exclusive"
 }
 if ($UseUpstreamGecko -and $UpstreamGeckoApk -and $selectedConfigurations.Count -ne 1) {
     throw "-UpstreamGeckoApk can only be used when exactly one ABI is selected"
@@ -526,30 +526,19 @@ try {
         $env:MOZ_OBJDIR = Join-Path $root $configuration.ObjDir
         Remove-Item Env:MOZ_CHROME_MULTILOCALE -ErrorAction SilentlyContinue
 
-        if ($ReuseGecko) {
-            try {
-                Assert-CachedGeckoPackage `
-                    -ObjDir $configuration.ObjDir `
-                    -Abi $configuration.Abi `
-                    -ExpectedLocales $expectedLocales
-                Write-Output "Reusing cached Gecko package for $($configuration.Abi)"
-            }
-            catch {
-                if ($SkipBuild) {
-                    throw "Cached Gecko package for $($configuration.Abi) is invalid and -SkipBuild prevents repair: $($_.Exception.Message)"
-                }
-
-                Write-Output "Cached Gecko package for $($configuration.Abi) is invalid; rebuilding its multi-locale package"
+        if ($BuildLocalGecko) {
+            if (-not $SkipBuild) {
                 Invoke-LocalMach -Arguments @("build")
                 Invoke-LocalMach -Arguments @("package")
-                Invoke-LocalMach -Arguments (@("package-multi-locale", "--locales") + $locales)
-                Assert-CachedGeckoPackage `
-                    -ObjDir $configuration.ObjDir `
-                    -Abi $configuration.Abi `
-                    -ExpectedLocales $expectedLocales
             }
+            Invoke-LocalMach -Arguments (@("package-multi-locale", "--locales") + $locales)
+            Assert-CachedGeckoPackage `
+                -ObjDir $configuration.ObjDir `
+                -Abi $configuration.Abi `
+                -ExpectedLocales $expectedLocales
+            Write-Output "Built local GeckoView package for $($configuration.Abi)"
         }
-        elseif ($UseUpstreamGecko) {
+        else {
             $upstreamGecko = $upstreamGeckoManifest.PSObject.Properties[$baseline].Value.PSObject.Properties[$configuration.Abi]
             if (-not $upstreamGecko) {
                 throw "Missing pinned upstream GeckoView source for $baseline/$($configuration.Abi) in $upstreamGeckoFile"
@@ -568,14 +557,6 @@ try {
                 -ExpectedBaseline $baseline `
                 -ExpectedVersionCode $upstreamVersionCode `
                 -Provenance $upstreamGecko.Value
-        }
-        else {
-            if (-not $SkipBuild) {
-                Invoke-LocalMach -Arguments @("build")
-                Invoke-LocalMach -Arguments @("package")
-            }
-
-            Invoke-LocalMach -Arguments (@("package-multi-locale", "--locales") + $locales)
         }
 
         $env:MOZ_CHROME_MULTILOCALE = $locales -join " "

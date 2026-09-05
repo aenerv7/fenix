@@ -83,22 +83,24 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
   shown in About Fenix. Changing `versionCode` would break normal overwrite and downgrade paths.
 - Publish only the selected `arm64-v8a` APK for the current release workflow. `.idsig` files remain
   local verification/re-signing inputs and are not GitHub Release assets.
-- For Fenix-only changes, reuse a validated multi-locale GeckoView package. When local GeckoView
-  compilation is intentionally avoided, import the official upstream multi-locale Fenix APK with
-  `-UseUpstreamGecko`; validate baseline, Gecko revision, ABI, all locales, `omni.ja`, native
-  libraries, versionCode, signature, and checksums before assembly. Never accept an API-only or
-  single-locale package as a release GeckoView.
+- For Fenix-only changes, always import the pinned official multi-locale Fenix APK with
+  `-UseUpstreamGecko`; never build or package GeckoView locally. Validate baseline, Gecko revision,
+  ABI, all locales, `omni.ja`, native libraries, versionCode, signature, and checksums before
+  assembly. Never accept an API-only or single-locale package as a release GeckoView.
+- Local GeckoView packaging is an explicit exception only when GeckoView, Gecko, C++, Rust, or
+  Gecko locale sources changed. Use `-BuildLocalGecko` only for that case and record the changed
+  native source in the release notes.
 - GitHub Release retention is per upstream baseline: after the new release is verified, retain only
   the highest successfully published `rN` release and matching remote tag for that baseline. This
   does not require deleting local APKs, `.idsig` files, notes, logs, or reusable build caches.
 
 ### Current validation state
 
-The 155.0-r12 search-widget and Fenix Labs UI corrections have passed the focused
-`SearchWidgetProviderTest` and `FirefoxLabsScreenTest` task, `fenix:ktlintFormat`, and
-`git diff --check`. The Windows `FenixGleanTestRule` native-library limitation remains documented
-below; affected tests need Linux or CI coverage even when the Windows task completes by skipping
-them.
+The 155.0-r13 tab-group sheet correction has passed `fenix:ktlintFormat`, `fenix:ktlint`,
+`fenix:compileDebugKotlin`, and the targeted unit-test task. The arm64-v8a release was assembled
+with the pinned upstream GeckoView package using `-UseUpstreamGecko`; no local GeckoView build was
+performed. The Windows `FenixGleanTestRule` native-library limitation remains documented below;
+affected tests need Linux or CI coverage even when the Windows task completes by skipping them.
 
 ## Repository-local state
 
@@ -160,78 +162,61 @@ same wrapper.
 # Kotlin formatting and lint
 .\tools\fenix\mach-local.ps1 gradle fenix:ktlintFormat fenix:ktlint
 
-# Multi-locale release APKs, without Focus
-.\tools\fenix\build-release-local.ps1
+# Arm64 multi-locale release APK using the official upstream GeckoView package
+.\tools\fenix\build-release-local.ps1 -UseUpstreamGecko -Abi arm64-v8a
 ```
 
-Release builds must use `build-release-local.ps1`. It creates separate Gecko builds for arm64-v8a,
-armeabi-v7a, and x86_64, reads the upstream Android locale list, packages the matching Gecko locales
-into GeckoView, and assembles Fenix without regenerating the multi-locale omnijar. It then verifies
-the complete locale set and matching Gecko native libraries and signs every selected ABI APK. Running
-`fenix:assembleRelease` directly produces an `en-US`-only GeckoView even though the Android UI
-resources remain multilingual, and a single Gecko target cannot supply valid native libraries for
-the other ABI APKs.
+Release builds must use `build-release-local.ps1`. By default, and for every Fenix-only change, it
+downloads the pinned official multi-locale GeckoView package for each selected ABI, verifies the
+baseline, locale set, native libraries, versionCode, signature, and checksum, then assembles and
+signs Fenix. Running `fenix:assembleRelease` directly is not a release workflow because it can stage
+an incomplete single-locale GeckoView package.
 
-### Reuse-first release policy
+### GeckoView source policy
 
-A full multi-ABI Gecko and Fenix release is expensive. Reuse existing validated output by default,
-and use the least expensive operation that can produce a correct release. Apply this order:
+The release workflow must never compile or package GeckoView locally for Fenix-only changes. Apply
+this order:
 
 1. Reuse existing signed APKs when they were built from the intended source changes and already pass
    version, application ID, ABI, locale, signature, and checksum validation.
 2. Re-sign an existing validated unsigned APK when only the signing output needs to change.
-3. For Fenix-only Kotlin, resource, or manifest changes, rebuild the application with `-ReuseGecko`
-   and keep the verified multi-locale Gecko packages.
-4. Retry only the failed or invalid ABI with `-Abi`; preserve completed ABI artifacts.
-5. Run the default full build only when a broader option above cannot produce a valid artifact.
+3. For Fenix-only Kotlin, resource, or manifest changes, assemble with `-UseUpstreamGecko` and keep
+   the verified upstream GeckoView package.
+4. Retry only the failed or invalid ABI with `-UseUpstreamGecko -Abi`; preserve completed artifacts.
+5. Use `-BuildLocalGecko` only after a GeckoView, Gecko, C++, Rust, or Gecko locale source change.
 
 Creating a commit or annotated release tag after a successful build does not by itself invalidate
 the APKs, provided the exact intended source changes were present during the build. Do not rebuild
 solely to align commit or tag metadata unless a release contract explicitly requires that metadata
-inside the binaries. Before starting a full build while reusable artifacts exist, identify the input
-that makes reuse unsafe. If no such input exists, reuse the artifacts or ask for explicit approval to
-rebuild.
+inside the binaries. For Fenix-only changes, a local GeckoView package is never a valid fallback.
 
-A full build is required after changes to Gecko, C++, Rust, Gecko locale sources, the upstream
-baseline, or another build input that affects the native or multi-locale package. It is also required
-when the relevant cache or artifacts are missing, fail validation, or have uncertain provenance.
-Validation failure is a reason to rebuild only the affected layer or ABI, not automatically every
-artifact.
+Local GeckoView packaging is required only after changes to GeckoView, Gecko, C++, Rust, Gecko
+locale sources, the upstream baseline, or another build input that affects the native or
+multi-locale package. Use `-BuildLocalGecko` explicitly in that case. For all other changes, use the
+pinned upstream package and treat any local GeckoView package as invalid release input.
 
 Debug and test Gradle tasks can replace an object directory's staged GeckoView package with an
-`en-US`-only package. This does not invalidate previously verified signed APKs. The release script's
-`-ReuseGecko` validation inspects `res/multilocale.txt` inside the staged `omni.ja`, not only whether
-the file exists. If the cached package is incomplete, the script automatically rebuilds the Gecko
-package and its complete locale set before assembling Fenix; with `-SkipBuild`, it fails explicitly
-instead of producing a single-language APK. Do not discard valid signed artifacts merely because a
-later test changed intermediate build state.
+`en-US`-only package. This does not invalidate previously verified signed APKs. Always restore the
+official package with `-UseUpstreamGecko` before assembling a Fenix-only release; never repair it by
+silently compiling Gecko locally.
 
 To retry one architecture while preserving completed APKs, pass its ABI to the release script:
 
 ```powershell
-.\tools\fenix\build-release-local.ps1 -Abi x86_64
+.\tools\fenix\build-release-local.ps1 -UseUpstreamGecko -Abi x86_64
 ```
 
-For Fenix-only Kotlin, resource, or manifest changes after a successful full release build, reuse
-the cached Gecko packages:
+For Fenix-only Kotlin, resource, or manifest changes, use the pinned upstream package:
 
 ```powershell
-.\tools\fenix\build-release-local.ps1 -ReuseGecko -Abi arm64-v8a
+.\tools\fenix\build-release-local.ps1 -UseUpstreamGecko -Abi arm64-v8a
 ```
 
-Omit `-Abi` to rebuild all supported APKs. This path verifies the cached Gecko libraries and exact
-multi-locale package, repairs an invalid cached package automatically, and then rebuilds the Android
-application. Do not use it after changing Gecko, C++, Rust, or Gecko locale sources; use the default
-full build in that case.
-
-`-ReuseGecko` reuses only a repository-local package that has already been validated for the current
-upstream baseline. For a release that must avoid local Gecko compilation, use
-`-UseUpstreamGecko -Abi arm64-v8a`. This downloads the official multi-locale Fenix APK for the
-current baseline, verifies the baseline version, ABI, exact locale manifest, versionCode, and
-required Gecko libraries, then replaces the selected object's Gecko package before assembling
-Fenix. The downloaded source is cached under `.tmp\upstream-geckoview\` and is not a release asset.
-A custom source may be passed with `-UpstreamGeckoApk`, but it must pass the same checks; missing or
-ambiguous provenance is a hard failure, not a silent fallback to a self-compiled GeckoView.
+Omit `-Abi` to produce all supported APKs. The script downloads the official multi-locale package,
+verifies its provenance and contents, and assembles the Android application. A custom source may be
+passed with `-UpstreamGeckoApk`, but it must pass the same checks; missing or ambiguous provenance is
+a hard failure. To package a changed GeckoView locally, use `-BuildLocalGecko` and document the
+native source change; do not use that switch for Fenix-only changes.
 
 Signed filenames use the baseline from `FENIX_UPSTREAM_RELEASE`. When the current commit already has
 a matching `fenix-<version>-rN` tag, that revision is reused. Otherwise the script selects the next

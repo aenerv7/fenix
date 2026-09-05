@@ -73,6 +73,23 @@ class BottomSheetSceneStrategyTest {
     }
 
     @Test
+    fun `WHEN bottom sheet expansion metadata changes THEN scenes are not equal`() {
+        val collapsedSheet = NavEntry(
+            key = FIRST_SHEET,
+            metadata = sheetMetadata(fullyExpandOnFirstOpen = false),
+        ) {}
+        val expandedSheet = NavEntry(
+            key = FIRST_SHEET,
+            metadata = sheetMetadata(fullyExpandOnFirstOpen = true),
+        ) {}
+
+        val collapsed = requireNotNull(calculateScene(root, collapsedSheet))
+        val expanded = requireNotNull(calculateScene(root, expandedSheet))
+
+        assertNotEquals(collapsed, expanded)
+    }
+
+    @Test
     fun `WHEN a second sheet is pushed THEN the second sheet content is displayed`() {
         val backStack = mutableStateListOf(ROOT, FIRST_SHEET)
 
@@ -100,8 +117,11 @@ class BottomSheetSceneStrategyTest {
         composeTestRule.onNodeWithText(FIRST_SHEET).assertDoesNotExist()
     }
 
-    private fun sheetMetadata(): Map<String, Any> =
-        BottomSheetSceneStrategy.bottomSheet(handleContentDescription = "")
+    private fun sheetMetadata(fullyExpandOnFirstOpen: Boolean = false): Map<String, Any> =
+        BottomSheetSceneStrategy.bottomSheet(
+            handleContentDescription = "",
+            fullyExpandOnFirstOpen = fullyExpandOnFirstOpen,
+        )
 
     private fun calculateScene(vararg entries: NavEntry<String>) =
         with(BottomSheetSceneStrategy<String>()) {

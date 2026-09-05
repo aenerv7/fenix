@@ -1,12 +1,12 @@
 # Fenix changes
 
-## 155.0-r12
+## 155.0-r13
 
 ### 中文
 
 官方上游基线：`FIREFOX-ANDROID_155_0_RELEASE`
 
-以下为 r12 最终版本相对于该官方基线的全部有效 Fenix 修改；不包含后来已撤销的中间实现。
+以下为 r13 最终版本相对于该官方基线的全部有效 Fenix 修改；不包含后来已撤销的中间实现。
 
 #### 品牌、版本与项目链接
 
@@ -14,7 +14,7 @@
 - 在启动器、启动画面、主页、关于页面、Gecko About 页面和 favicon 中使用 Fenix 兔子品牌；启动器前景采用透明画布并缩放至原尺寸的 80%，避免图标过大。
 - 将打包 Android 语言中面向用户的 Firefox 产品名称替换为 Fenix，同时保留上游来源、许可证和兼容性说明中的必要 Mozilla/Firefox 引用。
 - “关于 Fenix”保留对 aenerv7@GitHub、Mozilla 和 Firefox 上游源码的本地化署名；支持链接指向项目 GitHub，隐私声明与权利链接指向 Fenix 项目文档，“更新内容”使用 Fenix 名称。
-- “关于 Fenix”在上游版本信息后显示当前第 12 次修改。`r12` 仅作为显示和发布元数据，不改变上游 `versionName 155.0` 或 arm64-v8a 的 `versionCode 2016180970`。
+- “关于 Fenix”在上游版本信息后显示当前第 13 次修改。`r13` 仅作为显示和发布元数据，不改变上游 `versionName 155.0` 或 arm64-v8a 的 `versionCode 2016180970`。
 
 #### 本地化与隐私裁剪
 
@@ -40,6 +40,7 @@
 - 将独立标签页加入群组后保持目标群组可见并正确选中；进入“全部标签页”时自动展开所选标签页所在群组并滚动到所选标签页，自动展开不播放打开动画。
 - 关闭最后一个非群组标签页时同步清理数据快照、Lazy 列表固定项和拖拽状态，避免残留不可操作的旧条目。
 - 修复群组内及“全部标签页”中的长按拖拽状态，在持续拖动期间保留正确的选择与重排状态，不再因同步切换交互模式而取消手势。
+- 修复从群组内标签页打开“全部标签页”时群组弹层错误回弹到半高的问题；现在会根据最新群组内容保持正确的全展开状态。
 
 #### 界面与兔子资源
 
@@ -51,15 +52,15 @@
 
 - 仅发布 `arm64-v8a` APK，使用官方 155.0 多语言 GeckoView 组装，并严格沿用官方 arm64-v8a `versionCode 2016180970`。
 - 发布流程校验官方基线、ABI、99 个 locale、`assets/omni.ja`、`libmozglue.so`、`libxul.so`、应用 ID、版本、APK Signature Scheme v2/v3、文件大小和 SHA-256。
-- 定向标签页群组、标签页托盘、搜索小组件和 Fenix 实验室回归覆盖已在相应修订中通过；r12 另通过 `fenix:ktlintFormat`、`SearchWidgetProviderTest` 和 `FirefoxLabsScreenTest` 任务。受 Windows Application Services 原生库限制的 Glean 测试会在本机跳过，仍需由 Linux 或 CI 覆盖。
-- 发布资产为 `Fenix-155.0-r12-arm64-v8a-release.apk`，大小 `130818099` 字节，SHA-256 为 `A8378072926261924AF86530DEC14516162A3706F7CBC54E3A41DA5E7499209C`。
+- 定向标签页群组、标签页托盘、搜索小组件和 Fenix 实验室回归覆盖已在相应修订中通过；r13 另通过 `fenix:ktlintFormat`、`fenix:ktlint`、`fenix:compileDebugKotlin` 和目标单元测试任务。受 Windows Application Services 原生库限制的 Glean 测试会在本机跳过，仍需由 Linux 或 CI 覆盖。
+- 发布资产为 `Fenix-155.0-r13-arm64-v8a-release.apk`，大小 `130818099` 字节，SHA-256 为 `0E6B571EE1E9000E538539967DE9DC44C273B554C0E9F397C6CAA1B192343092`。
 - `.idsig` 仅保留本地用于校验，不作为 GitHub Release 资产发布。
 
 ### English
 
 Official upstream baseline: `FIREFOX-ANDROID_155_0_RELEASE`
 
-The following is the complete set of effective Fenix changes in the final r12 build relative to that official baseline; intermediate implementations that were later reverted are excluded.
+The following is the complete set of effective Fenix changes in the final r13 build relative to that official baseline; intermediate implementations that were later reverted are excluded.
 
 #### Branding, version, and project links
 
@@ -67,7 +68,7 @@ The following is the complete set of effective Fenix changes in the final r12 bu
 - Uses Fenix rabbit branding for the launcher, splash screen, homepage, About screen, Gecko About page, and favicons. The launcher foreground uses a transparent canvas with the rabbit scaled to 80% to avoid an oversized icon.
 - Replaced user-facing Firefox product-name text in packaged Android locales with Fenix while preserving required Mozilla/Firefox references in upstream-source, licensing, and compatibility text.
 - The About Fenix screen keeps localized attribution to aenerv7@GitHub, Mozilla, and the upstream Firefox source. Support links to the project GitHub repository, privacy and rights link to the Fenix project documentation, and What's New uses the Fenix name.
-- About Fenix displays modification number 12 after the upstream version. `r12` is display and release metadata only and does not change upstream `versionName 155.0` or the arm64-v8a `versionCode 2016180970`.
+- About Fenix displays modification number 13 after the upstream version. `r13` is display and release metadata only and does not change upstream `versionName 155.0` or the arm64-v8a `versionCode 2016180970`.
 
 #### Localization and privacy reductions
 
@@ -93,6 +94,7 @@ The following is the complete set of effective Fenix changes in the final r12 bu
 - After moving a standalone tab into a group, the target group remains visible and correctly selected. Entering All Tabs automatically expands the selected tab's group and scrolls to the selected tab without playing the opening animation.
 - Closing the last ungrouped tab clears the data snapshot, pinned Lazy-list item, and drag state together so no stale, non-interactive row remains.
 - Fixed long-press drag state in expanded groups and All Tabs so selection and reordering remain valid during continued dragging instead of the gesture being cancelled by a synchronous interaction-mode change.
+- Fixed the group sheet snapping back to half-expanded when All Tabs is opened from a grouped tab; the latest group contents now determine whether the sheet stays fully expanded.
 
 #### UI and rabbit assets
 
@@ -104,8 +106,8 @@ The following is the complete set of effective Fenix changes in the final r12 bu
 
 - Publishes only the `arm64-v8a` APK, assembled with the official 155.0 multi-locale GeckoView, and strictly preserves official arm64-v8a `versionCode 2016180970`.
 - The release process verifies the official baseline, ABI, all 99 locales, `assets/omni.ja`, `libmozglue.so`, `libxul.so`, application ID, version, APK Signature Schemes v2/v3, file size, and SHA-256.
-- Focused tab-group, tab-tray, search-widget, and Fenix Labs regression coverage passed in the relevant revisions. r12 also passed the `fenix:ktlintFormat`, `SearchWidgetProviderTest`, and `FirefoxLabsScreenTest` tasks. Glean tests affected by missing Windows Application Services native libraries are skipped locally and still require Linux or CI coverage.
-- The release asset is `Fenix-155.0-r12-arm64-v8a-release.apk`, size `130818099` bytes, SHA-256 `A8378072926261924AF86530DEC14516162A3706F7CBC54E3A41DA5E7499209C`.
+- Focused tab-group, tab-tray, search-widget, and Fenix Labs regression coverage passed in the relevant revisions. r13 also passed `fenix:ktlintFormat`, `fenix:ktlint`, `fenix:compileDebugKotlin`, and the targeted unit-test tasks. Glean tests affected by missing Windows Application Services native libraries are skipped locally and still require Linux or CI coverage.
+- The release asset is `Fenix-155.0-r13-arm64-v8a-release.apk`, size `130818099` bytes, SHA-256 `0E6B571EE1E9000E538539967DE9DC44C273B554C0E9F397C6CAA1B192343092`.
 - `.idsig` is retained locally for verification and is not published as a GitHub Release asset.
 
 ## 155.0-r11

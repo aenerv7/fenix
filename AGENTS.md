@@ -48,6 +48,10 @@ You can find the review identifier by inspecting the commit log with:
 
 ## Workflow
 - This repository moves fast. If the local checkout looks old compared to `origin/main`, suggest pulling the latest changes before going further.
+- Fenix release invariant: for Fenix-only changes, always use the pinned upstream GeckoView package
+  via `tools/fenix/build-release-local.ps1 -UseUpstreamGecko`. Never compile or package GeckoView
+  locally unless GeckoView, Gecko, C++, Rust, or Gecko locale sources changed; that exception must
+  use the explicit `-BuildLocalGecko` switch and be recorded in the release notes.
 - You can run tests by using `./mach test --auto`. Once you are satisfied with the tests you run locally, use `mach try auto` to run tests in CI
 - When running slow commands like `./mach test`, `./mach mochitest`, etc., NEVER pipe their output through `tail`, `grep`, `head`, or other filters. Instead redirect output to a temporary file in `artifacts/` (create if necessary) and selectively read this file. This avoids having to re-run slow commands multiple times to extract different pieces of information.
 - Do not run `./mach build faster` when only front-end test files (JS, HTML, etc.) were modified — they don't need compilation.

@@ -81,7 +81,7 @@ At minimum:
 .\tools\fenix\mach-local.ps1 gradle fenix:ktlint
 .\tools\fenix\mach-local.ps1 gradle fenix:testDebugUnitTest
 .\tools\fenix\mach-local.ps1 gradle fenix:assembleDebug
-.\tools\fenix\mach-local.ps1 gradle fenix:assembleRelease
+.\tools\fenix\build-release-local.ps1 -UseUpstreamGecko -Abi arm64-v8a
 ```
 
 Also install the debug APK and manually verify:

@@ -79,8 +79,8 @@ internal class BottomSheetScene<T : Any>(
             )
         }
 
-        LaunchedEffect(Unit) {
-            if (fullyExpandOnFirstOpen && !skipOpeningAnimation) {
+        LaunchedEffect(fullyExpandOnFirstOpen) {
+            if (fullyExpandOnFirstOpen) {
                 // There is a race condition with the sheet's initial animation and invoking `sheetState.expand()`.
                 // Wait a minor amount of time to invoke the full expansion.
                 delay(duration = firstOpenDelay)
@@ -133,7 +133,12 @@ internal class BottomSheetScene<T : Any>(
             previousEntries == other.previousEntries &&
             overlaidEntries == other.overlaidEntries &&
             entry == other.entry &&
-            modalBottomSheetProperties == other.modalBottomSheetProperties
+            modalBottomSheetProperties == other.modalBottomSheetProperties &&
+            skipPartiallyExpanded == other.skipPartiallyExpanded &&
+            handleContentDescription == other.handleContentDescription &&
+            showBetaLabel == other.showBetaLabel &&
+            fullyExpandOnFirstOpen == other.fullyExpandOnFirstOpen &&
+            skipOpeningAnimation == other.skipOpeningAnimation
     }
 
     override fun hashCode(): Int {
@@ -141,7 +146,12 @@ internal class BottomSheetScene<T : Any>(
             previousEntries.hashCode() * 31 +
             overlaidEntries.hashCode() * 31 +
             entry.hashCode() * 31 +
-            modalBottomSheetProperties.hashCode() * 31
+            modalBottomSheetProperties.hashCode() * 31 +
+            skipPartiallyExpanded.hashCode() * 31 +
+            handleContentDescription.hashCode() * 31 +
+            showBetaLabel.hashCode() * 31 +
+            fullyExpandOnFirstOpen.hashCode() * 31 +
+            skipOpeningAnimation.hashCode()
     }
 }
 
