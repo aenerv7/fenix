@@ -7,6 +7,7 @@ Fenix uses official Firefox Android release tags as immutable baselines:
 ```text
 FIREFOX-ANDROID_154_0_1_RELEASE  + Fenix QoL commits = fenix-154.0.1-r1
 FIREFOX-ANDROID_155_0_RELEASE    + upstream delta + Fenix changes = fenix-155.0-r1
+FIREFOX-ANDROID_155_0_1_RELEASE  + upstream delta + Fenix changes = fenix-155.0.1-r1
 ```
 
 Daily development branches and prerelease build tags are not used as stable baselines. The canonical
@@ -38,14 +39,14 @@ Start from a clean, tested `fenix` branch:
 ```powershell
 git switch fenix
 git status --short
-.\tools\fenix\sync-official-release.ps1 -Version 155.0
+.\tools\fenix\sync-official-release.ps1 -Version 155.0.1
 ```
 
 The script performs these operations:
 
 1. Validates the version and clean worktree.
-2. Resolves `FIREFOX-ANDROID_155_0_RELEASE` from the official repository.
-3. Creates `sync/firefox-android-155.0` from `fenix`.
+2. Resolves `FIREFOX-ANDROID_155_0_1_RELEASE` from the official repository.
+3. Creates `sync/firefox-android-155.0.1` from `fenix`.
 4. Starts a merge with the new official tag and applies the upstream tree delta to Fenix.
 5. Updates `FENIX_UPSTREAM_RELEASE` after the patch applies successfully.
 
@@ -60,7 +61,7 @@ each affected file, stage it, update the baseline marker, and commit the prepare
 git status
 git add <resolved-files>
 git add FENIX_UPSTREAM_RELEASE
-git commit -m "Update Fenix baseline to Firefox Android 155.0"
+git commit -m "Update Fenix baseline to Firefox Android 155.0.1"
 ```
 
 To abandon the candidate safely:
@@ -68,7 +69,7 @@ To abandon the candidate safely:
 ```powershell
 git merge --abort
 git switch fenix
-git branch -D sync/firefox-android-155.0
+git branch -D sync/firefox-android-155.0.1
 ```
 
 After manually completing a conflicted sync, update `FENIX_UPSTREAM_RELEASE` to the new version.
@@ -106,11 +107,11 @@ Commit the updated baseline marker and any conflict resolutions, then merge the 
 
 ```powershell
 git add FENIX_UPSTREAM_RELEASE
-git commit -m "Update Fenix baseline to Firefox Android 155.0"
+git commit -m "Update Fenix baseline to Firefox Android 155.0.1"
 git switch fenix
-git merge --ff-only sync/firefox-android-155.0
-git tag -a fenix-155.0-r1 -m "Fenix 155.0-r1"
-git push origin fenix fenix-155.0-r1
+git merge --ff-only sync/firefox-android-155.0.1
+git tag -a fenix-155.0.1-r1 -m "Fenix 155.0.1-r1"
+git push origin fenix fenix-155.0.1-r1
 ```
 
 ## Manual synchronization policy
@@ -186,6 +187,24 @@ The published result is [Fenix 155.0-r1](https://github.com/aenerv7/fenix/releas
 Its release notes record the exact source tag and APK SHA-256. Future upstream updates should reuse
 this sequence, review each conflict against the current Fenix behavior, and run the limited-time
 activity policy before assuming that every upstream file from the previous release should be kept.
+
+## Firefox Android 155.0.1 synchronization
+
+The 155.0.1 update was prepared from the official `FIREFOX-ANDROID_155_0_1_RELEASE` tag in the
+candidate worktree `sync/firefox-android-155.0.1`. The upstream delta was merged into the Fenix
+155.0-r14 tree and all localization conflicts were resolved in favor of the existing Fenix product
+policy, branding, and Simplified Chinese resources. The candidate merge is recorded in commit
+`d6a29c7d19da`.
+
+The update preserves the Fenix tab-group behavior that always opens the group sheet fully expanded,
+the retired Sports/World Cup removal, privacy and autofill reductions, and Fenix branding. The
+release uses the pinned official 155.0.1 arm64-v8a GeckoView package recorded in
+`FENIX_UPSTREAM_GECKOVIEW.json`; local GeckoView compilation is prohibited because no Fenix-authored
+Gecko or native source changed.
+
+The promotion target is `fenix-155.0.1-r1`, with only the arm64-v8a APK published. The exact official
+arm64-v8a versionCode is `2016182530`; the release checklist also verifies all 99 Gecko locales,
+native library hashes, application ID, signature schemes, and the final APK checksum.
 
 ## Source-to-binary traceability
 

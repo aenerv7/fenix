@@ -7,7 +7,7 @@ Mozilla's general Firefox source documentation remains authoritative for the res
 
 ## Current fork customization summary
 
-The current upstream baseline is Firefox Android 155.0 (`FIREFOX-ANDROID_155_0_RELEASE`). The first
+The current upstream baseline is Firefox Android 155.0.1 (`FIREFOX-ANDROID_155_0_1_RELEASE`). The first
 upstream synchronization, including manual conflict resolution and the limited-time activity policy,
 is recorded in [FENIX_UPSTREAM_SYNC.md](FENIX_UPSTREAM_SYNC.md). Release-by-release user-facing notes
 are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
@@ -87,20 +87,22 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
   `-UseUpstreamGecko`; never build or package GeckoView locally. Validate baseline, Gecko revision,
   ABI, all locales, `omni.ja`, native libraries, versionCode, signature, and checksums before
   assembly. Never accept an API-only or single-locale package as a release GeckoView.
-- Local GeckoView packaging is an explicit exception only when GeckoView, Gecko, C++, Rust, or
-  Gecko locale sources changed. Use `-BuildLocalGecko` only for that case and record the changed
-  native source in the release notes.
+- Local GeckoView packaging is an explicit exception only when Fenix itself changes GeckoView,
+  Gecko, C++, Rust, or Gecko locale sources. An upstream baseline update must use that baseline's
+  pinned official package. Use `-BuildLocalGecko` only for Fenix-authored native or Gecko locale
+  changes and record those changes in the release notes.
 - GitHub Release retention is per upstream baseline: after the new release is verified, retain only
   the highest successfully published `rN` release and matching remote tag for that baseline. This
   does not require deleting local APKs, `.idsig` files, notes, logs, or reusable build caches.
 
 ### Current validation state
 
-The 155.0-r14 tab-group sheet correction has passed `fenix:ktlintFormat`, `fenix:ktlint`,
-`fenix:compileDebugKotlin`, and the targeted unit-test task. The arm64-v8a release was assembled
-with the pinned upstream GeckoView package using `-UseUpstreamGecko`; no local GeckoView build was
-performed. The Windows `FenixGleanTestRule` native-library limitation remains documented below;
-affected tests need Linux or CI coverage even when the Windows task completes by skipping them.
+The 155.0.1-r1 candidate preserves the tested 155.0-r14 Fenix changes while applying the official
+155.0.1 upstream delta. Its validation results are recorded in the release notes. The arm64-v8a
+release uses the pinned official 155.0.1 GeckoView package through `-UseUpstreamGecko`; no local
+GeckoView build is permitted for this baseline update. The Windows `FenixGleanTestRule`
+native-library limitation remains documented below; affected tests need Linux or CI coverage even
+when the Windows task completes by skipping them.
 
 ## Repository-local state
 
@@ -190,10 +192,11 @@ the APKs, provided the exact intended source changes were present during the bui
 solely to align commit or tag metadata unless a release contract explicitly requires that metadata
 inside the binaries. For Fenix-only changes, a local GeckoView package is never a valid fallback.
 
-Local GeckoView packaging is required only after changes to GeckoView, Gecko, C++, Rust, Gecko
-locale sources, the upstream baseline, or another build input that affects the native or
-multi-locale package. Use `-BuildLocalGecko` explicitly in that case. For all other changes, use the
-pinned upstream package and treat any local GeckoView package as invalid release input.
+Local GeckoView packaging is required only after Fenix-authored changes to GeckoView, Gecko, C++,
+Rust, or Gecko locale sources. Updating to an official upstream baseline uses that baseline's pinned
+official package. Use `-BuildLocalGecko` explicitly only for the source-change exception. For all
+other changes, use the pinned upstream package and treat any local GeckoView package as invalid
+release input.
 
 Debug and test Gradle tasks can replace an object directory's staged GeckoView package with an
 `en-US`-only package. This does not invalidate previously verified signed APKs. Always restore the
@@ -228,8 +231,8 @@ Release APKs must use the exact versionCode from the corresponding official upst
 same baseline and ABI. The checked-in `FENIX_UPSTREAM_VERSION_CODES.json` records those values;
 update it from the official Mozilla archive when changing `FENIX_UPSTREAM_RELEASE`. The release
 script passes the recorded value to Gradle and verifies the resulting APK manifest, so a build-time
-clock value cannot silently become the release versionCode. For the 155.0 baseline, the official
-values are arm64-v8a `2016180970`, armeabi-v7a `2016180968`, and x86_64 `2016180974`.
+clock value cannot silently become the release versionCode. For the 155.0.1 baseline, the official
+arm64-v8a value is `2016182530`.
 
 Do not add a fork revision offset: a fork build is a modified build of that upstream versionCode,
 and changing it would prevent normal downgrade or replacement workflows.
@@ -273,13 +276,14 @@ For a narrow test class, append Gradle's test selector:
 Slow command output should be redirected to `artifacts/` and inspected there instead of piping the
 live process through output filters.
 
-### Windows native-test limitation in the 154.0.1 and 155.0 baselines
+### Windows native-test limitation in the 154.0.1, 155.0, and 155.0.1 baselines
 
 Some Fenix JVM test classes use `FenixGleanTestRule`, which loads Application Services through JNA.
 The upstream `full-megazord-libsForTests-154.0.1.jar` contains Linux and macOS megazord libraries but
 does not contain the required Windows native libraries. On native Windows, these classes fail during
 test-rule initialization with `UnsatisfiedLinkError` for `jnidispatch.dll`; their test bodies have not
-started at that point. The same limitation was observed when validating the 155.0 baseline.
+started at that point. The same limitation was observed when validating the 155.0 and 155.0.1
+baselines.
 
 Do not repeatedly clear Gradle caches or download only `jnidispatch.dll`: JNA is merely the first
 missing layer, and the Windows megazord is absent as well. Run affected Glean-backed unit tests in a

@@ -1,5 +1,52 @@
 # Fenix changes
 
+## 155.0.1-r1
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_155_0_1_RELEASE`。本版本同步 Firefox Android 155.0.1
+上游修订，并保留 Fenix 相对于该基线的全部有效产品改动。
+
+#### 有效 Fenix 改动
+
+- 使用 `github.aenerv7.fenix` application ID、Fenix 名称和兔子品牌，保留必要的 Mozilla/Firefox 上游与许可证说明；Focus 不在构建范围内。
+- 补全简体中文和官方 Android Gecko 多语言资源；关于页、更新链接、搜索组件、启动器和 Fenix Labs 使用 Fenix 品牌。
+- 移除密码、地址、信用卡等个人信息管理入口、自动填充服务和默认同步范围；移除 Google Play 评分集成及已结束的 Sports/World Cup 活动。
+- 保留 IP Protection 入口，默认完成首次引导，并维持 Fenix 的隐私、商店和设置裁剪策略。
+- 群组标签页打开链接默认留在原群组，支持群组范围多选、移出、删除撤销和空群组恢复；群组工具栏、菜单、返回行为和拖拽状态保持正确。
+- 从群组标签页进入“全部标签页”时自动展开并定位到当前标签；群组弹层始终跳过半高状态直接全高打开，不再依据窗口尺寸或标签数量计算初始高度。
+- 关闭最后一个非群组标签页时清理快照、列表固定项和拖拽状态；新建标签页工具栏和搜索组件在手机、平板、横竖屏保持可用。
+
+#### 发布与验证
+
+- 仅发布 `arm64-v8a` APK，使用官方 155.0.1 多语言 GeckoView，严格沿用官方 `versionCode 2016182530`；未进行本地 GeckoView 编译或打包。
+- 发布流程校验官方基线、ABI、99 个 Gecko locale（含 `zh-CN`）、`assets/omni.ja`、Gecko 原生库、application ID、版本、签名和校验和。
+- APK：`Fenix-155.0.1-r1-arm64-v8a-release.apk`。官方 GeckoView APK SHA-256：`C0DCF28DC5ABF68094A4C7E53496939C91939331483AB8C073193620E7310775`。
+- `.idsig` 仅保留本地校验和重签名使用，不作为 GitHub Release 资产；Windows Glean 原生库限制仍需 Linux 或 CI 覆盖。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_155_0_1_RELEASE`. This release synchronizes the
+Firefox Android 155.0.1 upstream revision and retains every effective Fenix product change relative
+to that baseline.
+
+#### Effective Fenix changes
+
+- Uses the `github.aenerv7.fenix` application ID, Fenix name, and rabbit branding while retaining required Mozilla/Firefox upstream and licensing references; Focus is outside the build scope.
+- Completes Simplified Chinese and official Android Gecko locale resources; the About screen, What's New link, search widget, launcher, and Fenix Labs use Fenix branding.
+- Removes management entry points, autofill service, and default sync scope for passwords, addresses, credit cards, and other personal data; removes Google Play rating integration and the finished Sports/World Cup activity.
+- Keeps the IP Protection entry point, marks new installations onboarding-complete, and preserves Fenix privacy, store, and settings reductions.
+- Keeps grouped-tab links in their group by default and supports group-scoped selection, remove, delete undo, and empty-group restoration; group toolbars, menus, Back behavior, and drag state remain consistent.
+- Opening All Tabs from a grouped tab expands and locates the current tab; group sheets always skip the half-expanded state and open fully, with no window-size or tab-count height calculation.
+- Clearing the last ungrouped tab removes its snapshot, pinned list item, and drag state; the group new-tab toolbar and search widget remain usable on phones, tablets, portrait, and landscape.
+
+#### Release and validation
+
+- Publishes only the `arm64-v8a` APK using the official 155.0.1 multi-locale GeckoView and exact official `versionCode 2016182530`; no local GeckoView compilation or packaging was performed.
+- The release process verifies the official baseline, ABI, all 99 Gecko locales (including `zh-CN`), `assets/omni.ja`, Gecko native libraries, application ID, version, signature, and checksums.
+- APK: `Fenix-155.0.1-r1-arm64-v8a-release.apk`. Official GeckoView APK SHA-256: `C0DCF28DC5ABF68094A4C7E53496939C91939331483AB8C073193620E7310775`.
+- `.idsig` is retained locally for verification and re-signing and is not a GitHub Release asset; the Windows Glean native-library limitation still requires Linux or CI coverage.
+
 ## 155.0-r14
 
 ### 中文
