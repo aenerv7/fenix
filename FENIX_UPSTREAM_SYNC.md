@@ -202,7 +202,7 @@ release uses the pinned official 155.0.1 arm64-v8a GeckoView package recorded in
 `FENIX_UPSTREAM_GECKOVIEW.json`; local GeckoView compilation is prohibited because no Fenix-authored
 Gecko or native source changed.
 
-The promotion target is `fenix-155.0.1-r4`, with only the arm64-v8a APK published. The exact official
+The promotion target is `fenix-155.0.1-r5`, with only the arm64-v8a APK published. The exact official
 arm64-v8a versionCode is `2016182530`; the release checklist also verifies all 99 Gecko locales,
 native library hashes, application ID, signature schemes, and the final APK checksum.
 

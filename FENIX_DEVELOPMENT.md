@@ -97,7 +97,7 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
 
 ### Current validation state
 
-The 155.0.1-r4 candidate preserves the tested 155.0-r14 Fenix changes while applying the official
+The 155.0.1-r5 candidate preserves the tested 155.0-r14 Fenix changes while applying the official
 155.0.1 upstream delta. Its validation results are recorded in the release notes. The arm64-v8a
 release uses the pinned official 155.0.1 GeckoView package through `-UseUpstreamGecko`; no local
 GeckoView build is permitted for this baseline update. The Windows `FenixGleanTestRule`

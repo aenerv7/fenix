@@ -503,7 +503,7 @@ class TabManagementFragment : Fragment() {
                                         ),
                                         showBetaLabel = true,
                                         modalBottomSheetProperties = ModalBottomSheetProperties(
-                                            shouldDismissOnBackPress = false,
+                                            shouldDismissOnBackPress = true,
                                         ),
                                         skipOpeningAnimation = destination.skipOpeningAnimation,
                                     )
