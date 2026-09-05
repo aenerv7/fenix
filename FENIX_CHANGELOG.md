@@ -21,7 +21,7 @@
 
 - 仅发布 `arm64-v8a` APK，使用官方 155.0.1 多语言 GeckoView，严格沿用官方 `versionCode 2016182530`；未进行本地 GeckoView 编译或打包。
 - 发布流程校验官方基线、ABI、99 个 Gecko locale（含 `zh-CN`）、`assets/omni.ja`、Gecko 原生库、application ID、版本、签名和校验和。
-- APK：`Fenix-155.0.1-r1-arm64-v8a-release.apk`。官方 GeckoView APK SHA-256：`C0DCF28DC5ABF68094A4C7E53496939C91939331483AB8C073193620E7310775`。
+- APK：`Fenix-155.0.1-r1-arm64-v8a-release.apk`，大小 `130793410` 字节，SHA-256：`151F251FAC9C82E6800FFAE442F960138D8B2181874863BF3EC73016D9E37EF5`。官方 GeckoView APK SHA-256：`C0DCF28DC5ABF68094A4C7E53496939C91939331483AB8C073193620E7310775`。
 - `.idsig` 仅保留本地校验和重签名使用，不作为 GitHub Release 资产；Windows Glean 原生库限制仍需 Linux 或 CI 覆盖。
 
 ### English
@@ -44,7 +44,7 @@ to that baseline.
 
 - Publishes only the `arm64-v8a` APK using the official 155.0.1 multi-locale GeckoView and exact official `versionCode 2016182530`; no local GeckoView compilation or packaging was performed.
 - The release process verifies the official baseline, ABI, all 99 Gecko locales (including `zh-CN`), `assets/omni.ja`, Gecko native libraries, application ID, version, signature, and checksums.
-- APK: `Fenix-155.0.1-r1-arm64-v8a-release.apk`. Official GeckoView APK SHA-256: `C0DCF28DC5ABF68094A4C7E53496939C91939331483AB8C073193620E7310775`.
+- APK: `Fenix-155.0.1-r1-arm64-v8a-release.apk`, size `130793410` bytes, SHA-256 `151F251FAC9C82E6800FFAE442F960138D8B2181874863BF3EC73016D9E37EF5`. Official GeckoView APK SHA-256: `C0DCF28DC5ABF68094A4C7E53496939C91939331483AB8C073193620E7310775`.
 - `.idsig` is retained locally for verification and re-signing and is not a GitHub Release asset; the Windows Glean native-library limitation still requires Linux or CI coverage.
 
 ## 155.0-r14
