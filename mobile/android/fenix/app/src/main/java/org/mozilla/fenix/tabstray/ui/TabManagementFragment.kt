@@ -367,7 +367,7 @@ class TabManagementFragment : Fragment() {
                 ) {
                     NavDisplay(
                         backStack = state.backStack,
-                        onBack = { tabsTrayStore.dispatch(TabsTrayAction.NavigateBackInvoked) },
+                        onBack = { handleBack(state) },
                         transitionSpec = defaultTransitionSpec(),
                         popTransitionSpec = popTransitionSpec(),
                         predictivePopTransitionSpec = defaultPredictivePopTransitionSpec(),
