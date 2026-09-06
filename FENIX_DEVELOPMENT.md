@@ -60,6 +60,11 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
 
 ### Tabs and tab groups
 
+- URL and search suggestion clicks must use the current `AppStore.searchState.sourceTabId` and
+  verify that it still exists in `BrowserStore`, matching direct toolbar submission. Never use the
+  suggestion screen's initial `SearchFragmentState.tabId` to decide whether to create a tab: it may
+  be null or stale while editing an existing grouped tab. Preserve existing-tab/group membership,
+  private mode, and the new-tab fallback when the search source is absent or has been closed.
 - Expanded groups reuse the All Tabs selection toolbar styling and content width. Long-pressing a
   group tab dispatches the group-scoped selection action, so the group toolbar appears without
   changing the global tab-tray navigation behavior.
@@ -103,7 +108,7 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
 
 ### Current validation state
 
-The 155.0.1-r6 candidate preserves the tested 155.0-r14 Fenix changes while applying the official
+The 155.0.1-r7 candidate preserves the tested 155.0-r14 Fenix changes while applying the official
 155.0.1 upstream delta. Its validation results are recorded in the release notes. The arm64-v8a
 release uses the pinned official 155.0.1 GeckoView package through `-UseUpstreamGecko`; no local
 GeckoView build is permitted for this baseline update. The Windows `FenixGleanTestRule`

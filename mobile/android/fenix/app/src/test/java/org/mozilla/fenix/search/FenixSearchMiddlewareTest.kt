@@ -457,9 +457,9 @@ class FenixSearchMiddlewareTest {
         val flags = LoadUrlFlags.all()
         every { settings.enableHomepageAsNewTab } returns true
         val middleware = buildMiddleware(useCases = useCases)
-        val store = buildStore(middleware)
+        buildStore(middleware)
 
-        middleware.loadUrlUseCase(store).invoke(url, flags, null, null)
+        middleware.loadUrlUseCase().invoke(url, flags, null, null)
 
         verify { navController.navigate(R.id.browserFragment) }
         verify {

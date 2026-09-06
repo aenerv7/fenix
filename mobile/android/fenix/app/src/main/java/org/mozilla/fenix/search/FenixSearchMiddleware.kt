@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import mozilla.components.browser.state.action.AwesomeBarAction
 import mozilla.components.browser.state.search.DefaultSearchEngineProvider
 import mozilla.components.browser.state.search.SearchEngine
+import mozilla.components.browser.state.selector.findTab
 import mozilla.components.browser.state.store.BrowserStore
 import mozilla.components.compose.browser.toolbar.store.BrowserEditToolbarAction
 import mozilla.components.compose.browser.toolbar.store.BrowserToolbarStore
@@ -284,7 +285,7 @@ class FenixSearchMiddleware(
             scope = ProcessLifecycleOwner.get().lifecycleScope,
             browsingModeManager = browsingModeManager,
             includeSelectedTab = store.state.tabId == null,
-            loadUrlUseCase = loadUrlUseCase(store),
+            loadUrlUseCase = loadUrlUseCase(),
             searchUseCase = searchUseCase(store),
             selectTabUseCase = selectTabUseCase(),
             suggestionsStringsProvider = DefaultSuggestionsStringsProvider(
@@ -297,9 +298,7 @@ class FenixSearchMiddleware(
     }
 
     @VisibleForTesting
-    internal fun loadUrlUseCase(
-        store: Store<SearchFragmentState, SearchFragmentAction>,
-    ) = object : LoadUrlUseCase {
+    internal fun loadUrlUseCase() = object : LoadUrlUseCase {
         override fun invoke(
             url: String,
             flags: LoadUrlFlags,
@@ -308,11 +307,7 @@ class FenixSearchMiddleware(
         ) {
             openToBrowserAndLoad(
                 url = url,
-                createNewTab = if (settings.enableHomepageAsNewTab) {
-                    false
-                } else {
-                    store.state.tabId == null
-                },
+                createNewTab = shouldCreateNewTab(),
                 usePrivateMode = browsingModeManager.mode.isPrivate,
                 flags = flags,
             )
@@ -336,11 +331,7 @@ class FenixSearchMiddleware(
 
             openToBrowserAndLoad(
                 url = searchTerms,
-                createNewTab = if (settings.enableHomepageAsNewTab) {
-                    false
-                } else {
-                    store.state.tabId == null
-                },
+                createNewTab = shouldCreateNewTab(),
                 usePrivateMode = browsingModeManager.mode.isPrivate,
                 forceSearch = true,
                 searchEngine = searchEngine,
@@ -373,6 +364,12 @@ class FenixSearchMiddleware(
 
             browserStore.dispatch(AwesomeBarAction.EngagementFinished(abandoned = false))
         }
+    }
+
+    private fun shouldCreateNewTab(): Boolean {
+        if (settings.enableHomepageAsNewTab) return false
+        val sourceTabId = appStore.state.searchState.sourceTabId
+        return sourceTabId == null || browserStore.state.findTab(sourceTabId) == null
     }
 
     private fun openToBrowserAndLoad(
