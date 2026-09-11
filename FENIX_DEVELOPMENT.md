@@ -34,7 +34,8 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
 ### Branding and localization
 
 - Visible Mozilla Firefox fox assets are removed from the fork's user-facing surfaces. Fenix Labs,
-  the About screen, the home-screen search widget, and launcher assets use the Fenix rabbit branding;
+  the About screen, the home-screen search widget, Custom Tab "Powered by Fenix" menu item, and
+  launcher assets use the Fenix rabbit branding;
   the default-browser prompt no longer displays Mozilla artwork. The Labs and in-app rabbit mark is
   background-free; the launcher foreground uses a transparent canvas with the rabbit scaled to 80% so
   the app icon is not oversized. The widget and launcher variants must be checked separately because

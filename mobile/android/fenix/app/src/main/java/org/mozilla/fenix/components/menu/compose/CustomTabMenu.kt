@@ -162,7 +162,7 @@ internal fun CustomTabMenu(
         },
     ) {
         if (isBottomToolbar) {
-            PoweredByFirefoxItem(
+            PoweredByFenixItem(
                 modifier = Modifier.padding(top = 8.dp, bottom = 4.dp),
             )
         }
@@ -265,7 +265,7 @@ internal fun CustomTabMenu(
         }
 
         if (!isBottomToolbar) {
-            PoweredByFirefoxItem(
+            PoweredByFenixItem(
                 modifier = Modifier.padding(top = 4.dp),
             )
         }
@@ -292,18 +292,18 @@ internal fun CustomTabAddons(
 }
 
 /**
- * A menu item that shows the "Powered by Firefox" text and logo.
+ * A menu item that shows the "Powered by Fenix" text and logo.
  *
  * @param modifier [Modifier] to be applied to the layout.
  */
 @Composable
-private fun PoweredByFirefoxItem(modifier: Modifier = Modifier) {
+private fun PoweredByFenixItem(modifier: Modifier = Modifier) {
     Row(
         horizontalArrangement = Arrangement.Center,
         modifier = modifier.fillMaxWidth(),
     ) {
         Image(
-            painter = painterResource(id = R.drawable.ic_firefox),
+            painter = painterResource(id = R.drawable.fenix_labs_rabbit),
             contentDescription = null,
             modifier = Modifier
                 .size(16.dp)
