@@ -1,20 +1,22 @@
 # Fenix changes
 
-## 155.0.1-r7
+## 155.0.1-r8
 
 ### 中文
 
-官方上游基线：`FIREFOX-ANDROID_155_0_1_RELEASE`。本版本同步 Firefox Android 155.0.1
+官方上游基线：`FIREFOX-ANDROID_155_0_1_RELEASE`。本版本修复自定义标签页菜单的品牌图标，沿用 Firefox Android 155.0.1
 上游修订，并保留 Fenix 相对于该基线的全部有效产品改动。
 
 #### 有效 Fenix 改动
+
+- 将自定义标签页菜单中「由 Fenix 驱动」左侧的 Firefox 图标替换为现有透明背景 Fenix 兔子图标；顶部和底部工具栏布局均使用相同资源，保留原有尺寸、间距和本地化文字。
 
 - 修复点击地址栏网址或搜索建议时在群组外新建标签的问题：改用本次搜索的实时来源标签，来源仍存在时在原标签加载并保留群组关系；来源缺失或已关闭时才按原规则新建，保留隐私模式和主页作为新标签的设置行为。
 
 - 使用 `github.aenerv7.fenix` application ID、Fenix 名称和兔子品牌，保留必要的 Mozilla/Firefox 上游与许可证说明；Focus 不在构建范围内。
 - 补全简体中文和官方 Android Gecko 多语言资源；关于页、更新链接、搜索组件、启动器和 Fenix Labs 使用 Fenix 品牌。
 - 启动器透明前景缩放至 80%；应用内徽标无背景，主页和关于页显示 Fenix wordmark。搜索小组件保持横向预览并独立预留图标、文字和麦克风区域；默认浏览器提示移除 Mozilla 图片及占位，关闭按钮右侧居中；Labs 欢迎横幅仅保留文字，空状态保留独立徽标。
-- 关于页保留本地化的维护者及上游署名，支持、隐私与权利、更新链接指向 Fenix 项目；显示第 7 次修改，但不改变 Android 包版本。移动书签根目录显示为“移动收藏夹”。
+- 关于页保留本地化的维护者及上游署名，支持、隐私与权利、更新链接指向 Fenix 项目；显示第 8 次修改，但不改变 Android 包版本。移动书签根目录显示为“移动收藏夹”。
 - 移除密码、地址、信用卡等个人信息管理入口、自动填充服务和默认同步范围；移除 Google Play 评分集成及已结束的 Sports/World Cup 活动。
 - 同时移除相关快捷方式、Intent、设置索引、后台初始化和维护，禁用登录自动填充；移除评分提示、SDK、回退及相关遥测。限时活动的状态、逻辑、测试、字符串和专用资源一并移除，保留无关的同名搜索设置。
 - 保留 IP Protection 入口，默认完成首次引导，并维持 Fenix 的隐私、商店和设置裁剪策略。
@@ -31,26 +33,28 @@
 
 - 仅发布 `arm64-v8a` APK，使用官方 155.0.1 多语言 GeckoView，严格沿用官方 `versionCode 2016182530`；未进行本地 GeckoView 编译或打包。
 - 发布流程校验官方基线、ABI、99 个 Gecko locale（含 `zh-CN`）、`assets/omni.ja`、Gecko 原生库、application ID、版本、签名和校验和。
-- `fenix:ktlint`、92 项定向测试及 Release 构建/lintVital 通过；定向测试 0 失败、0 跳过。新增 5 项建议路由测试分别覆盖现存来源、已关闭来源、无来源、主页设置和隐私模式，每项均执行网址与搜索建议点击；同时回归底层网址加载和群组返回。原有 Glean 搜索测试在 Windows 原生库初始化阶段受阻，不计为通过；本轮无真机验证，`mach try auto --no-push` 仅检查 CI 配置，未提交或运行远端 CI。
-- 本次不变更上游基线；沿用上一修订的全量文档基线检查，本次启用 autodoc 的文档增量构建退出码 0、`Failures: 0`、`Known Failures: 14`，未新增警告屏蔽规则。
-- APK：`Fenix-155.0.1-r7-arm64-v8a-release.apk`，大小 `130793410` 字节，SHA-256：`CBBFE51FFACF113A5F92DD5D5E08F22BD20FFE651C50FA68A825FEED4428843B`。
-- 对应完整源码：[fenix-155.0.1-r7](https://github.com/aenerv7/fenix/tree/fenix-155.0.1-r7)。Fenix 是非官方独立修改版，不受 Mozilla 赞助或背书；维护与支持由本项目提供。保留 MPL 2.0 和第三方许可；Firefox 是 Mozilla Foundation 的商标。
+- `fenix:ktlint`、Release 构建及 lintVital 通过。已核对 Release 编译产物中两种工具栏布局均调用 Fenix 品牌组件，并检查最终 APK 的兔子资源、包名、版本、ABI、签名及校验和。本次仅替换图标，未新增或重跑单元测试；当前未连接 Android 设备，未做真机或模拟器界面验证。`mach try auto` 因缺少 Mozilla Auth0 登录授权未启动远端 CI，不计为通过。
+- 本次不变更上游基线，沿用既有全量文档基线检查；本次启用 autodoc 的 Fenix 文档构建退出码 0、`Failures: 0`、`Known Failures: 15`，未新增警告屏蔽规则。
+- APK：`Fenix-155.0.1-r8-arm64-v8a-release.apk`，大小 `130793410` 字节，SHA-256：`A722C2D351086A9572E0E641BCDE7BA334B039587E4B66F4C85936B63EC89A7D`。
+- 对应完整源码：[fenix-155.0.1-r8](https://github.com/aenerv7/fenix/tree/fenix-155.0.1-r8)。Fenix 是非官方独立修改版，不受 Mozilla 赞助或背书；维护与支持由本项目提供。保留 MPL 2.0 和第三方许可；Firefox 是 Mozilla Foundation 的商标。
 - `.idsig` 仅保留本地校验和重签名使用，不作为 GitHub Release 资产；Windows Glean 原生库限制仍需 Linux 或 CI 覆盖。
 
 ### English
 
-Official upstream baseline: `FIREFOX-ANDROID_155_0_1_RELEASE`. This release synchronizes the
-Firefox Android 155.0.1 upstream revision and retains every effective Fenix product change relative
-to that baseline.
+Official upstream baseline: `FIREFOX-ANDROID_155_0_1_RELEASE`. This release fixes Custom Tab menu
+branding while retaining the Firefox Android 155.0.1 baseline and every effective Fenix product
+change relative to that baseline.
 
 #### Effective Fenix changes
+
+- Replaces the Firefox icon beside Powered by Fenix in the Custom Tab menu with the existing transparent Fenix rabbit. Top and bottom toolbar layouts share the same resource and retain the existing size, spacing, and localized text.
 
 - Fixes URL/search suggestion clicks creating an ungrouped tab by using the current search source. Suggestions load in the existing source tab and preserve its group when the source still exists; missing or closed sources retain the new-tab fallback, with private mode and homepage-as-new-tab behavior preserved.
 
 - Uses the `github.aenerv7.fenix` application ID, Fenix name, and rabbit branding while retaining required Mozilla/Firefox upstream and licensing references; Focus is outside the build scope.
 - Completes Simplified Chinese and official Android Gecko locale resources; the About screen, What's New link, search widget, launcher, and Fenix Labs use Fenix branding.
 - Scales the transparent launcher foreground to 80%; in-app marks are background-free, and home/About show the Fenix wordmark. The search widget keeps a horizontal preview with separate icon, text, and microphone areas. The default-browser prompt removes Mozilla artwork and its reserved space and centers the close button on the right. The Labs welcome banner is text-only, with a dedicated mark in its empty state.
-- About retains localized maintainer/upstream attribution and points support, privacy/rights, and update links to Fenix. It displays modification number 7 without changing Android package versions. The mobile bookmarks root uses the Simplified Chinese label "移动收藏夹".
+- About retains localized maintainer/upstream attribution and points support, privacy/rights, and update links to Fenix. It displays modification number 8 without changing Android package versions. The mobile bookmarks root uses the Simplified Chinese label "移动收藏夹".
 - Removes management entry points, autofill service, and default sync scope for passwords, addresses, credit cards, and other personal data; removes Google Play rating integration and the finished Sports/World Cup activity.
 - Also removes related shortcuts, intents, settings indexing, background initialization and maintenance, and disables login autofill. Removes review prompts, SDK, fallbacks, and related telemetry. The retired activity's state, logic, tests, strings, and dedicated assets are removed while unrelated similarly named search settings remain.
 - Keeps the IP Protection entry point, marks new installations onboarding-complete, and preserves Fenix privacy, store, and settings reductions.
@@ -67,10 +71,10 @@ to that baseline.
 
 - Publishes only the `arm64-v8a` APK using the official 155.0.1 multi-locale GeckoView and exact official `versionCode 2016182530`; no local GeckoView compilation or packaging was performed.
 - The release process verifies the official baseline, ABI, all 99 Gecko locales (including `zh-CN`), `assets/omni.ja`, Gecko native libraries, application ID, version, signature, and checksums.
-- `fenix:ktlint`, 92 focused tests, and the Release build/lintVital passed; focused tests had zero failures or skips. Five new routing tests each execute URL and search suggestion clicks, covering existing, closed, and missing sources, homepage configuration, and private mode; underlying URL loading and group Back behavior are also covered. The original Glean search suite was blocked during Windows native-library initialization and is not counted as passing. No physical-device verification was performed; `mach try auto --no-push` checked CI configuration only, without submitting or running remote CI.
-- The upstream baseline is unchanged, retaining the preceding revision's full documentation baseline gate. This revision's autodoc-enabled incremental documentation build exited 0 with `Failures: 0` and `Known Failures: 14`; no warning suppression rules were added.
-- APK: `Fenix-155.0.1-r7-arm64-v8a-release.apk`, size `130793410` bytes, SHA-256: `CBBFE51FFACF113A5F92DD5D5E08F22BD20FFE651C50FA68A825FEED4428843B`.
-- Complete corresponding source: [fenix-155.0.1-r7](https://github.com/aenerv7/fenix/tree/fenix-155.0.1-r7). Fenix is an independent unofficial modified build, not sponsored or endorsed by Mozilla; this project provides maintenance and support. MPL 2.0 and third-party licenses are retained; Firefox is a trademark of the Mozilla Foundation.
+- `fenix:ktlint`, the Release build, and lintVital passed. Release bytecode confirms both toolbar layouts call the Fenix-branded component; the final APK rabbit resource, package name, version, ABI, signature, and checksum were checked. This icon-only change adds no tests and does not rerun unit tests. No Android device was connected, so no physical-device or emulator UI verification was performed. `mach try auto` could not start remote CI without Mozilla Auth0 authorization and is not counted as passing.
+- The upstream baseline is unchanged and retains the existing full documentation baseline gate. The autodoc-enabled Fenix documentation build for this revision exited 0 with `Failures: 0` and `Known Failures: 15`; no warning suppression rules were added.
+- APK: `Fenix-155.0.1-r8-arm64-v8a-release.apk`, size `130793410` bytes, SHA-256: `A722C2D351086A9572E0E641BCDE7BA334B039587E4B66F4C85936B63EC89A7D`.
+- Complete corresponding source: [fenix-155.0.1-r8](https://github.com/aenerv7/fenix/tree/fenix-155.0.1-r8). Fenix is an independent unofficial modified build, not sponsored or endorsed by Mozilla; this project provides maintenance and support. MPL 2.0 and third-party licenses are retained; Firefox is a trademark of the Mozilla Foundation.
 - `.idsig` is retained locally for verification and re-signing and is not a GitHub Release asset; the Windows Glean native-library limitation still requires Linux or CI coverage.
 
 ## 155.0-r14

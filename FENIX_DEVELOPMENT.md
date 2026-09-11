@@ -109,10 +109,12 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
 
 ### Current validation state
 
-The 155.0.1-r7 candidate preserves the tested 155.0-r14 Fenix changes while applying the official
-155.0.1 upstream delta. Its validation results are recorded in the release notes. The arm64-v8a
+The 155.0.1-r8 release replaces the Custom Tab menu's remaining Firefox icon with the existing
+transparent Fenix rabbit. Kotlin lint, Release assembly/lintVital, package checks, and the Fenix
+documentation build passed. No device UI checks or unit tests were run for this icon-only change;
+remote try CI requires Mozilla Auth0 authorization unavailable in this environment. The arm64-v8a
 release uses the pinned official 155.0.1 GeckoView package through `-UseUpstreamGecko`; no local
-GeckoView build is permitted for this baseline update. The Windows `FenixGleanTestRule`
+GeckoView build is permitted for this release. The Windows `FenixGleanTestRule`
 native-library limitation remains documented below; affected tests need Linux or CI coverage even
 when the Windows task completes by skipping them.
 
