@@ -1,5 +1,143 @@
 # Fenix changes
 
+## 156.0-r1
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_156_0_RELEASE`。本版本将上游基线更新到 Firefox Android 156.0，并把
+Fenix 的全部有效产品改动重新落位到 156.0 代码之上。
+
+上游 155.0.1 到 156.0 的增量为约 1.67 万个文件。此前一次 156.0-r1 候选版本必须撤回：它的合并提交
+只改动了基线标记文件，源码仍停留在 155.0.1，而版本说明与 GeckoView 二进制却按 156.0 声明，导致打开即
+崩溃。本次重新合并后，候选相对于 Fenix 父提交实际改动约 1.67 万个文件，并已逐项校验。
+
+#### 有效 Fenix 改动
+
+- 使用 `github.aenerv7.fenix` application ID、Fenix 名称和兔子品牌，保留必要的 Mozilla/Firefox
+  上游与许可证说明；Focus 不在构建范围内。
+- 主页、关于页和关于弹层使用透明背景的 Fenix 兔子 wordmark，替换上游的 Firefox wordmark 组件；
+  私人浏览解锁页与生物识别解锁页使用 Fenix wordmark 资源。启动器透明前景缩放至 80%，圆形与
+  monochrome 图标沿用同一兔子前景。
+- 补全简体中文和官方 Android Gecko 多语言资源；关于页、更新链接、搜索组件、启动器和 Fenix Labs
+  使用 Fenix 品牌；关于页保留本地化的维护者及上游署名，显示第 1 次修改，但不改变 Android 包版本。
+- 搜索小组件保持横向预览并独立预留图标、文字和麦克风区域，新建标签按钮使用兔子图标而非动态应用图标。
+- 移除密码、地址、信用卡等个人信息管理入口、自动填充服务、自动填充配置和默认同步范围；同步设置只保留
+  书签、历史和标签页。
+- 移除 Google Play 评分集成、评分提示中间件、自定义评分弹层及其遥测，移除 Play 商店相关依赖与设置项；
+  设置搜索索引相应移除自动填充和登录条目。
+- 移除自定义标签页菜单与主菜单中的密码入口；移除主页 Firefox wordmark 组件及其测试。
+- 保留已结束的 Sports/World Cup 活动移除结果；限时活动的状态、逻辑、测试、字符串和专用资源保持移除，
+  保留无关的同名搜索设置。
+- 保留 IP Protection 入口，设置、主菜单、引导、状态与位置选择保持接通，并采用 156.0 的代理激活动画状态。
+- 群组标签页打开链接默认留在原群组，支持群组范围多选、移出、删除撤销和空群组恢复；群组工具栏、菜单、
+  返回行为和拖拽状态保持正确。
+- 链接菜单支持在当前群组或新群组打开；可配置工具栏快捷方式创建的新标签保留群组关系，部分删除撤销恢复
+  成员关系，全部删除撤销恢复空群组。
+- 从群组标签页进入“全部标签页”时自动展开并定位到当前标签；群组弹层始终跳过半高状态直接全高打开。
+- 系统返回优先取消标签页或群组的长按选择并关闭对应工具栏；无选择时，若聚焦标签属于当前展开群组则显示
+  该标签，否则收起群组；手动收起群组只关闭群组并清除选择，不打开标签页。
+- 关闭最后一个非群组标签页时清理快照、列表固定项和拖拽状态；新建标签页工具栏和搜索组件在手机、平板、
+  横竖屏保持可用。
+- URL 和搜索建议点击沿用当前搜索来源标签，来源仍存在时保留群组关系，来源缺失或已关闭时才新建标签。
+
+#### 发布与验证
+
+- 仅发布 `arm64-v8a` APK，使用官方 156.0 多语言 GeckoView，严格沿用官方 `versionCode 2016183650`
+  和上游 `versionName 156.0`；未进行本地 GeckoView 编译或打包。
+- 发布流程校验官方基线、ABI、99 个 Gecko locale（含 `zh-CN`）、`assets/omni.ja`、Gecko 原生库、
+  application ID、版本、签名和校验和；APK Signature Scheme v2 与 v3 均通过。
+- `fenix:compileDebugKotlin`、`fenix:spotlessKotlinCheck`、`fenix:testDebugUnitTest` 的测试源码编译与
+  `fenix:assembleDebug` 通过。156.0 用 Spotless/ktfmt 取代 ktlint，全树已按新格式化规则统一。
+- `fenix:testDebugUnitTest` 执行 6057 项测试，253 项失败。其中 229 项为已记录的 Windows Glean/JNA
+  原生库限制，其余为 Windows 环境的 Robolectric DataStore 重命名、SQLite 路径与路径分隔符差异。设置搜索
+  索引回归已修复，相关测试通过。无失败项可归因于本次合并。
+- 已将该 Release APK 安装到 Android 34 x86_64 模拟器（arm64-v8a 转译）并实际启动：`HomeActivity`
+  处于 resumed 且可见，进程持续存活，无 `FATAL EXCEPTION`；GeckoView 引擎正常初始化并上报遥测。
+  界面确认显示兔子 wordmark、“Fenix”名称、搜索栏、“You're protected”保护状态与标签计数，Fenix
+  品牌与 156.0 代码均生效。
+- 全量文档 gate 通过：`Failures: 0`、`Known Failures: 443`、`build succeeded`，未新增警告屏蔽规则。
+- APK：`Fenix-156.0-r1-arm64-v8a-release.apk`，大小 `131010652` 字节，SHA-256：`4435B8708E934F136853B5BF5D5A67AFC07B3BB27372448D069D306DFBAA7980`。
+- 对应完整源码：[fenix-156.0-r1](https://github.com/aenerv7/fenix/tree/fenix-156.0-r1)。Fenix 是非官方独立修改版，不受 Mozilla 赞助或背书；维护与支持由本项目提供。保留 MPL 2.0 和第三方许可；Firefox 是 Mozilla Foundation 的商标。
+- `.idsig` 仅保留本地校验和重签名使用，不作为 GitHub Release 资产；Windows Glean 原生库限制仍需 Linux 或 CI 覆盖。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_156_0_RELEASE`. This release updates the baseline to
+Firefox Android 156.0 and re-applies every effective Fenix product change on top of the 156.0 sources.
+
+The 155.0.1 to 156.0 upstream delta spans about 16.7k files. An earlier 156.0-r1 candidate had to be
+withdrawn: its merge commit changed only the baseline marker, leaving the sources on 155.0.1 while the
+release notes and GeckoView binaries declared 156.0. That mismatch crashed the app on startup. The
+replacement merge changes about 16.7k files relative to the Fenix parent and each item was verified.
+
+#### Effective Fenix changes
+
+- Uses the `github.aenerv7.fenix` application ID, Fenix name, and rabbit branding while retaining
+  required Mozilla/Firefox upstream and licensing references; Focus is outside the build scope.
+- Home, About, and the About dialog use the transparent Fenix rabbit wordmark in place of upstream's
+  Firefox wordmark composables; the private-browsing unlock screen and biometric unlock screen use
+  Fenix wordmark resources. The transparent launcher foreground is scaled to 80%, and the round and
+  monochrome icons reuse the same rabbit foreground.
+- Completes Simplified Chinese and official Android Gecko locale resources; the About screen, update
+  links, search widget, launcher, and Fenix Labs use Fenix branding. About retains localized
+  maintainer/upstream attribution and displays modification number 1 without changing Android package
+  versions.
+- The search widget keeps a horizontal preview with separate icon, text, and microphone areas, and its
+  new-tab button uses the rabbit icon instead of the dynamic app icon.
+- Removes management entry points, the autofill service, autofill configuration, and default sync
+  scope for passwords, addresses, credit cards, and other personal data; sync settings retain only
+  bookmarks, history, and tabs.
+- Removes Google Play rating integration, the review-prompt middleware, the custom review-prompt
+  bottom sheet and its telemetry, the Play Store dependency and settings entries; the settings search
+  index consequently drops the autofill and logins entries.
+- Removes the passwords entry points from the Custom Tab menu and the main menu, and removes the home
+  Firefox wordmark component and its tests.
+- Keeps the retired Sports/World Cup activity removed: its state, logic, tests, strings, and dedicated
+  assets stay out, while unrelated similarly named search settings remain.
+- Keeps the IP Protection entry point, with settings, main menu, onboarding, state, and location
+  selection wired, and adopts the 156.0 proxy-activation animation state.
+- Keeps grouped-tab links in their group by default and supports group-scoped selection, remove,
+  delete undo, and empty-group restoration; group toolbars, menus, Back behavior, and drag state
+  remain consistent.
+- Link menus support opening in the current or a new group. New tabs from the configurable toolbar
+  shortcut retain their group relationship; partial-delete undo restores membership, and undo after
+  deleting all members restores the group.
+- Opening All Tabs from a grouped tab expands and locates the current tab; group sheets always skip
+  the half-expanded state and open fully.
+- System Back first clears non-empty tab/group selection and its toolbar. With no selection, it shows
+  the focused tab if that tab belongs to the expanded group, or collapses the group otherwise; manual
+  dismissal only collapses the group and clears selection, without opening a tab.
+- Clearing the last ungrouped tab removes its snapshot, pinned list item, and drag state; the group
+  new-tab toolbar and search widget remain usable on phones, tablets, portrait, and landscape.
+- URL and search suggestion clicks use the current search source tab, preserving its group when the
+  source still exists and only creating a new tab when the source is missing or closed.
+
+#### Release and validation
+
+- Publishes only the `arm64-v8a` APK using the official 156.0 multi-locale GeckoView and the exact
+  official `versionCode 2016183650` with upstream `versionName 156.0`; no local GeckoView compilation
+  or packaging was performed.
+- The release process verifies the official baseline, ABI, all 99 Gecko locales (including `zh-CN`),
+  `assets/omni.ja`, Gecko native libraries, application ID, version, signature, and checksums; APK
+  Signature Scheme v2 and v3 both pass.
+- `fenix:compileDebugKotlin`, `fenix:spotlessKotlinCheck`, the `fenix:testDebugUnitTest` test-source
+  compilation, and `fenix:assembleDebug` pass. Version 156.0 replaces ktlint with Spotless/ktfmt, and
+  the whole tree was normalized to the new formatting rules.
+- `fenix:testDebugUnitTest` ran 6057 tests with 253 failures. 229 are the documented Windows
+  Glean/JNA native-library limitation; the remainder are Windows-environment Robolectric DataStore
+  rename, SQLite path, and path-separator differences. The settings search index regression was fixed
+  and its tests now pass. No failure is attributable to this merge.
+- The release APK was installed on an Android 34 x86_64 emulator (arm64-v8a translation) and actually
+  launched: `HomeActivity` was resumed and visible, the process stayed alive with no
+  `FATAL EXCEPTION`, and the GeckoView engine initialized and reported telemetry normally. The UI was
+  confirmed to show the rabbit wordmark, the "Fenix" name, the search bar, the "You're protected"
+  status, and the tab counter, so both Fenix branding and 156.0 code are in effect.
+- The full documentation gate passes: `Failures: 0`, `Known Failures: 443`, `build succeeded`, with no
+  new warning suppression rules.
+- APK: `Fenix-156.0-r1-arm64-v8a-release.apk`, size `131010652` bytes, SHA-256: `4435B8708E934F136853B5BF5D5A67AFC07B3BB27372448D069D306DFBAA7980`.
+- Complete corresponding source: [fenix-156.0-r1](https://github.com/aenerv7/fenix/tree/fenix-156.0-r1). Fenix is an independent unofficial modified build, not sponsored or endorsed by Mozilla; this project provides maintenance and support. MPL 2.0 and third-party licenses are retained; Firefox is a trademark of the Mozilla Foundation.
+- `.idsig` is retained locally for verification and re-signing and is not a GitHub Release asset; the Windows Glean native-library limitation still requires Linux or CI coverage.
+
 ## 155.0.1-r8
 
 ### 中文
