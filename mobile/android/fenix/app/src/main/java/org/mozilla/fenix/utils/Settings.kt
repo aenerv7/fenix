@@ -19,7 +19,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.preference.PreferenceManager
 import java.io.File
 import java.security.InvalidParameterException
-import java.util.concurrent.TimeUnit.MILLISECONDS
 import mozilla.components.concept.engine.Engine
 import mozilla.components.concept.engine.Engine.HttpsOnlyMode
 import mozilla.components.feature.sitepermissions.SitePermissionsRules
@@ -73,8 +72,6 @@ import org.mozilla.fenix.tabstray.DefaultTabManagementFeatureHelper
 import org.mozilla.fenix.termsofuse.TOU_VERSION
 import org.mozilla.fenix.utils.Settings.Companion.LONGFOX_PEEK_ANIMATION_MAX_SHOWS
 import org.mozilla.fenix.wallpapers.Wallpaper
-import java.io.File
-import java.security.InvalidParameterException
 
 private const val AUTOPLAY_USER_SETTING = "AUTOPLAY_USER_SETTING"
 private const val MAX_ANIMATION_FOREGROUND = 5
@@ -124,593 +121,645 @@ class Settings(
          */
         internal var searchGroupMinimumSites: Int = 2
 
-        private fun Action.toInt() = when (this) {
-            Action.BLOCKED -> BLOCKED_INT
-            Action.ASK_TO_ALLOW -> ASK_TO_ALLOW_INT
-            Action.ALLOWED -> ALLOWED_INT
-        }
+        private fun Action.toInt() =
+            when (this) {
+                Action.BLOCKED -> BLOCKED_INT
+                Action.ASK_TO_ALLOW -> ASK_TO_ALLOW_INT
+                Action.ALLOWED -> ALLOWED_INT
+            }
 
-        private fun AutoplayAction.toInt() = when (this) {
-            AutoplayAction.BLOCKED -> BLOCKED_INT
-            AutoplayAction.ALLOWED -> ALLOWED_INT
-        }
+        private fun AutoplayAction.toInt() =
+            when (this) {
+                AutoplayAction.BLOCKED -> BLOCKED_INT
+                AutoplayAction.ALLOWED -> ALLOWED_INT
+            }
 
-        private fun Int.toAction() = when (this) {
-            BLOCKED_INT -> Action.BLOCKED
-            ASK_TO_ALLOW_INT -> Action.ASK_TO_ALLOW
-            ALLOWED_INT -> Action.ALLOWED
-            else -> throw InvalidParameterException("$this is not a valid SitePermissionsRules.Action")
-        }
+        private fun Int.toAction() =
+            when (this) {
+                BLOCKED_INT -> Action.BLOCKED
+                ASK_TO_ALLOW_INT -> Action.ASK_TO_ALLOW
+                ALLOWED_INT -> Action.ALLOWED
+                else -> throw InvalidParameterException("$this is not a valid SitePermissionsRules.Action")
+            }
 
-        private fun Int.toAutoplayAction() = when (this) {
-            BLOCKED_INT -> AutoplayAction.BLOCKED
-            ALLOWED_INT -> AutoplayAction.ALLOWED
-            // Users from older versions may have saved invalid values. Migrate them to BLOCKED
-            ASK_TO_ALLOW_INT -> AutoplayAction.BLOCKED
-            else -> throw InvalidParameterException("$this is not a valid SitePermissionsRules.AutoplayAction")
-        }
+        private fun Int.toAutoplayAction() =
+            when (this) {
+                BLOCKED_INT -> AutoplayAction.BLOCKED
+                ALLOWED_INT -> AutoplayAction.ALLOWED
+                // Users from older versions may have saved invalid values. Migrate them to BLOCKED
+                ASK_TO_ALLOW_INT -> AutoplayAction.BLOCKED
+                else -> throw InvalidParameterException("$this is not a valid SitePermissionsRules.AutoplayAction")
+            }
 
-        /**
-         * DoH setting is set to "Default", corresponds to TRR_MODE_OFF (0) from GeckoView
-         */
+        /** DoH setting is set to "Default", corresponds to TRR_MODE_OFF (0) from GeckoView */
         private const val DOH_SETTINGS_DEFAULT = 0
 
-        /**
-         * DoH setting is set to "Increased", corresponds to TRR_MODE_FIRST (2) from GeckoView
-         */
+        /** DoH setting is set to "Increased", corresponds to TRR_MODE_FIRST (2) from GeckoView */
         private const val DOH_SETTINGS_INCREASED = 2
 
-        /**
-         * DoH setting is set to "Max", corresponds to TRR_MODE_ONLY (3) from GeckoView
-         */
+        /** DoH setting is set to "Max", corresponds to TRR_MODE_ONLY (3) from GeckoView */
         private const val DOH_SETTINGS_MAX = 3
 
-        /**
-         * DoH is disabled, corresponds to TRR_MODE_DISABLED (5) from GeckoView
-         */
+        /** DoH is disabled, corresponds to TRR_MODE_DISABLED (5) from GeckoView */
         private const val DOH_SETTINGS_OFF = 5
 
-        /**
-         * Bug 1946867 - Currently "hardcoded" to the DoH TRR URI of Cloudflare
-         */
+        /** Bug 1946867 - Currently "hardcoded" to the DoH TRR URI of Cloudflare */
         private const val CLOUDFLARE_URI = "https://mozilla.cloudflare-dns.com/dns-query"
     }
 
     private val logger = Logger("Settings")
 
     @VisibleForTesting
-    internal val isCrashReportEnabledInBuild: Boolean =
-        BuildConfig.CRASH_REPORTING && Config.channel.isReleased
+    internal val isCrashReportEnabledInBuild: Boolean = BuildConfig.CRASH_REPORTING && Config.channel.isReleased
 
-    override val preferences: SharedPreferences =
-        appContext.getSharedPreferences(FENIX_PREFERENCES, MODE_PRIVATE)
+    override val preferences: SharedPreferences = appContext.getSharedPreferences(FENIX_PREFERENCES, MODE_PRIVATE)
 
-    /**
-     * Indicates if the recent saved bookmarks functionality should be visible.
-     */
-    var showBookmarksHomeFeature by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_customization_bookmarks),
-        default = { homescreenSections[HomeScreenSection.BOOKMARKS] == true },
-    )
+    /** Indicates if the recent saved bookmarks functionality should be visible. */
+    var showBookmarksHomeFeature by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_customization_bookmarks),
+            default = { homescreenSections[HomeScreenSection.BOOKMARKS] == true },
+        )
 
-    /**
-     * Indicates if the recent tabs functionality should be visible.
-     */
-    var showRecentTabsFeature by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_recent_tabs),
-        default = { homescreenSections[HomeScreenSection.JUMP_BACK_IN] == true },
-    )
+    /** Indicates if the recent tabs functionality should be visible. */
+    var showRecentTabsFeature by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_recent_tabs),
+            default = { homescreenSections[HomeScreenSection.JUMP_BACK_IN] == true },
+        )
 
-    /**
-     * Indicates if the stories homescreen section should be shown.
-     */
+    /** Indicates if the stories homescreen section should be shown. */
     @Suppress("DEPRECATION")
-    var showPocketRecommendationsFeature by lazyFeatureFlagBooleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_pocket_homescreen_recommendations),
-        featureFlag = ContentRecommendationsFeatureHelper.isContentRecommendationsFeatureEnabled(appContext),
-        defaultValue = { homescreenSections[HomeScreenSection.POCKET] == true },
-    )
+    var showPocketRecommendationsFeature by
+        lazyFeatureFlagBooleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_pocket_homescreen_recommendations),
+            featureFlag = ContentRecommendationsFeatureHelper.isContentRecommendationsFeatureEnabled(appContext),
+            defaultValue = { homescreenSections[HomeScreenSection.POCKET] == true },
+        )
+
+    /** Indicates what simple toolbar shortcut key is currently selected. */
+    var toolbarSimpleShortcutKey: String by
+        stringPreference(
+            key = appContext.getPreferenceKey(R.string.pref_key_toolbar_simple_shortcut),
+            default = { ShortcutType.NEW_TAB.value },
+            persistDefaultIfNotExists = true,
+        )
+
+    /** Indicates what expanded toolbar shortcut key is currently selected. */
+    var toolbarExpandedShortcutKey: String by
+        stringPreference(
+            key = appContext.getPreferenceKey(R.string.pref_key_toolbar_expanded_shortcut),
+            default = { ShortcutType.BOOKMARK.value },
+            persistDefaultIfNotExists = true,
+        )
 
     /**
-     * Indicates what simple toolbar shortcut key is currently selected.
+     * Indicates what shortcut key is currently selected for the simple toolbar while the tab strip is enabled. The tab
+     * strip provides its own "new tab" button, so this uses a separate option set that excludes it.
      */
-    var toolbarSimpleShortcutKey: String by stringPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_toolbar_simple_shortcut),
-        default = { ShortcutType.NEW_TAB.value },
-        persistDefaultIfNotExists = true,
-    )
+    var toolbarTabStripShortcutKey: String by
+        stringPreference(
+            key = appContext.getPreferenceKey(R.string.pref_key_toolbar_tab_strip_shortcut),
+            default = { ShortcutType.SHARE.value },
+            persistDefaultIfNotExists = true,
+        )
 
     /**
-     * Indicates what expanded toolbar shortcut key is currently selected.
-     */
-    var toolbarExpandedShortcutKey: String by stringPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_toolbar_expanded_shortcut),
-        default = { ShortcutType.BOOKMARK.value },
-        persistDefaultIfNotExists = true,
-    )
-
-    /**
-     * Indicates what shortcut key is currently selected for the simple toolbar while the tab strip is
-     * enabled. The tab strip provides its own "new tab" button, so this uses a separate option set that
-     * excludes it.
-     */
-    var toolbarTabStripShortcutKey: String by stringPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_toolbar_tab_strip_shortcut),
-        default = { ShortcutType.SHARE.value },
-        persistDefaultIfNotExists = true,
-    )
-
-    /**
-     * The shortcut key that the simple toolbar's primary slot should currently use: the tab-strip
-     * specific key when the tab strip is enabled, otherwise the regular simple toolbar key.
+     * The shortcut key that the simple toolbar's primary slot should currently use: the tab-strip specific key when the
+     * tab strip is enabled, otherwise the regular simple toolbar key.
      */
     val activeSimpleToolbarShortcutKey: String
         get() = if (isTabStripEnabled) toolbarTabStripShortcutKey else toolbarSimpleShortcutKey
 
-    /**
-     * Indicates if the Pocket recommendations homescreen section should also show sponsored stories.
-     */
+    /** Indicates if the Pocket recommendations homescreen section should also show sponsored stories. */
     @Suppress("DEPRECATION")
-    val showPocketSponsoredStories by lazyFeatureFlagBooleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_pocket_sponsored_stories),
-        defaultValue = { homescreenSections[HomeScreenSection.POCKET_SPONSORED_STORIES] == true },
-        featureFlag = ContentRecommendationsFeatureHelper.isPocketSponsoredStoriesFeatureEnabled(appContext),
-    )
+    val showPocketSponsoredStories by
+        lazyFeatureFlagBooleanPreference(
+            key = appContext.getPreferenceKey(R.string.pref_key_pocket_sponsored_stories),
+            defaultValue = { homescreenSections[HomeScreenSection.POCKET_SPONSORED_STORIES] == true },
+            featureFlag = ContentRecommendationsFeatureHelper.isPocketSponsoredStoriesFeatureEnabled(appContext),
+        )
 
-    /**
-     * Indicates whether or not the "Recently Visited" section should be shown on the home screen.
-     */
-    var historyMetadataUIFeature by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_history_metadata_feature),
-        default = { homescreenSections[HomeScreenSection.RECENT_EXPLORATIONS] == true },
-    )
+    /** Indicates whether or not the "Recently Visited" section should be shown on the home screen. */
+    var historyMetadataUIFeature by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_history_metadata_feature),
+            default = { homescreenSections[HomeScreenSection.RECENT_EXPLORATIONS] == true },
+        )
 
-    /**
-     * Indicates whether or not the "Synced Tabs" section should be shown on the home screen.
-     */
+    /** Indicates whether or not the "Synced Tabs" section should be shown on the home screen. */
     val showSyncedTabs: Boolean
         get() = FxNimbus.features.homescreen.value().sectionsEnabled[HomeScreenSection.SYNCED_TABS] == true
 
-    /**
-     * Indicates whether or not the "Collections" section should be shown on the home screen.
-     */
+    /** Indicates whether or not the "Collections" section should be shown on the home screen. */
     val collections: Boolean
-        get() = FxNimbus.features.homescreen.value().sectionsEnabled[HomeScreenSection.COLLECTIONS] == true
+        get() =
+            !hideCollectionsUi &&
+                FxNimbus.features.homescreen.value().sectionsEnabled[HomeScreenSection.COLLECTIONS] == true
 
-    /**
-     * Whether the Collections UI should be hidden.
-     */
-    var hideCollectionsUi by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_hide_collections),
-        default = { FxNimbus.features.collectionsToTabGroupsMigration.value().hideCollectionsUi },
-    )
+    /** Whether the Collections UI should be hidden. */
+    var hideCollectionsUi by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_hide_collections),
+            default = { FxNimbus.features.collectionsToTabGroupsMigration.value().hideCollectionsUi },
+        )
 
-    /**
-     * Indicates whether or not the Firefox Japan Guide default site should be shown.
-     */
+    /** Whether the Collections to Tab Groups migration should run. */
+    var migrateCollectionsToTabGroupsEnabled by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_migrate_collections_to_tab_groups),
+            default = { FxNimbus.features.collectionsToTabGroupsMigration.value().enabled },
+        )
+
+    /** Whether the Collections to Tab Groups has been migrated. */
+    var hasMigratedCollectionsToTabGroups by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_has_migrated_collections_to_tab_groups),
+            default = false,
+        )
+
+    /** The set of Collections IDs migrated to Tab Groups. */
+    var migratedCollectionIds by
+        stringSetPreference(
+            appContext.getPreferenceKey(R.string.pref_key_migrated_collection_ids),
+            default = setOf(),
+        )
+
+    /** Indicates whether the collections migration card should be shown. */
+    var shouldShowCollectionsMigrationCard by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_show_collections_migration_card),
+            default = false,
+        )
+
+    /** Indicates whether or not the Firefox Japan Guide default site should be shown. */
     val showFirefoxJpGuideDefaultSite: Boolean
         get() = FxNimbus.features.firefoxJpGuideDefaultSite.value().enabled
 
-    /**
-     * Indicates whether or not top sites should be shown on the home screen.
-     */
-    var showTopSitesFeature by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_show_top_sites),
-        default = { homescreenSections[HomeScreenSection.TOP_SITES] == true },
-    )
+    /** Indicates whether or not top sites should be shown on the home screen. */
+    var showTopSitesFeature by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_show_top_sites),
+            default = { homescreenSections[HomeScreenSection.TOP_SITES] == true },
+        )
 
-    /**
-     * Indicates whether or not the privacy report should be shown on the home screen.
-     */
-    var showPrivacyReportFeature by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_privacy_report),
-        default = { homescreenSections[HomeScreenSection.PRIVACY_REPORT] == true },
-    )
+    /** Indicates whether or not the privacy report should be shown on the home screen. */
+    var showPrivacyReportFeature by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_privacy_report),
+            default = { homescreenSections[HomeScreenSection.PRIVACY_REPORT] == true },
+        )
 
-    /**
-     * Indicates whether or not the privacy report should be shown in the tab manager.
-     */
-    var showPrivacyReportInTabManager by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_privacy_report_tab_manager),
-        default = true,
-    )
+    /** Indicates whether or not the privacy report should be shown in the tab manager. */
+    var showPrivacyReportInTabManager by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_privacy_report_tab_manager),
+            default = true,
+        )
 
     private val homescreenSections: Map<HomeScreenSection, Boolean>
         get() = FxNimbus.features.homescreen.value().sectionsEnabled
 
-    /**
-     * Indicates if the recent tabs homepage section settings should be visible
-     */
+    /** Indicates if the recent tabs homepage section settings should be visible */
     val showHomepageRecentTabsSectionToggle: Boolean
         get() = !enableHomepageSearchBar
 
-    /**
-     * Indicates if the bookmarks homepage section settings should be visible
-     */
+    /** Indicates if the bookmarks homepage section settings should be visible */
     val showHomepageBookmarksSectionToggle: Boolean
         get() = !enableHomepageSearchBar
 
-    /**
-     * Indicates if the recently visited homepage section settings should be visible
-     */
+    /** Indicates if the recently visited homepage section settings should be visible */
     val showHomepageRecentlyVisitedSectionToggle: Boolean
         get() = !enableHomepageSearchBar
 
-    /**
-     * Indicates whether or not the homepage should use edge to edge background
-     */
+    /** Indicates whether or not the homepage should use edge to edge background */
     val enableHomepageEdgeToEdgeBackgroundFeature: Boolean
         get() = FxNimbus.features.homescreenEdgeToEdgeBackground.value().enabled
 
-    var numberOfAppLaunches by intPreference(
-        appContext.getPreferenceKey(R.string.pref_key_times_app_opened),
-        default = 0,
-    )
+    var numberOfAppLaunches by
+        intPreference(
+            appContext.getPreferenceKey(R.string.pref_key_times_app_opened),
+            default = 0,
+        )
 
-    var lastCfrShownTimeInMillis by longPreference(
-        appContext.getPreferenceKey(R.string.pref_key_last_cfr_shown_time),
-        default = 0L,
-    )
+    var lastCfrShownTimeInMillis by
+        longPreference(
+            appContext.getPreferenceKey(R.string.pref_key_last_cfr_shown_time),
+            default = 0L,
+        )
 
     val canShowCfr: Boolean
         get() = (currentTimeMillis() - lastCfrShownTimeInMillis) > THREE_DAYS_MS
 
-    val cfrPopupsEnabled by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_cfr_popups_enabled),
-        default = { FxNimbus.features.enablePopups.value().cfrPopupsEnabled },
-    )
+    val cfrPopupsEnabled by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_cfr_popups_enabled),
+            default = { FxNimbus.features.enablePopups.value().cfrPopupsEnabled },
+        )
 
-    val inAppMessagesEnabled by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_in_app_messages_enabled),
-        default = { FxNimbus.features.enablePopups.value().inAppMessagesEnabled },
-    )
+    val inAppMessagesEnabled by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_in_app_messages_enabled),
+            default = { FxNimbus.features.enablePopups.value().inAppMessagesEnabled },
+        )
 
-    var forceEnableZoom by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_accessibility_force_enable_zoom),
-        default = false,
-    )
+    var forceEnableZoom by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_accessibility_force_enable_zoom),
+            default = false,
+        )
 
-    var adjustCampaignId by stringPreference(
-        appContext.getPreferenceKey(R.string.pref_key_adjust_campaign),
-        default = "",
-    )
+    var adjustCampaignId by
+        stringPreference(
+            appContext.getPreferenceKey(R.string.pref_key_adjust_campaign),
+            default = "",
+        )
 
-    var adjustNetwork by stringPreference(
-        appContext.getPreferenceKey(R.string.pref_key_adjust_network),
-        default = "",
-    )
+    var adjustNetwork by
+        stringPreference(
+            appContext.getPreferenceKey(R.string.pref_key_adjust_network),
+            default = "",
+        )
 
-    var adjustAdGroup by stringPreference(
-        appContext.getPreferenceKey(R.string.pref_key_adjust_adgroup),
-        default = "",
-    )
+    var adjustAdGroup by
+        stringPreference(
+            appContext.getPreferenceKey(R.string.pref_key_adjust_adgroup),
+            default = "",
+        )
 
-    var adjustCreative by stringPreference(
-        appContext.getPreferenceKey(R.string.pref_key_adjust_creative),
-        default = "",
-    )
-
-    /**
-     * The Glean debug view tag that may be persisted across app restarts. Empty when no tag is persisted. Only
-     * captured from a tag set through Glean's debug intent using `persistDebugViewTag` at startup.
-     */
-    var gleanDebugViewTag by stringPreference(
-        appContext.getPreferenceKey(R.string.pref_key_glean_debug_view_tag),
-        default = "",
-    )
-
-    var nimbusExperimentsFetched by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_nimbus_experiments_fetched),
-        default = false,
-    )
-
-    var utmParamsKnown by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_utm_params_known),
-        default = false,
-    )
-
-    var utmSource by stringPreference(
-        appContext.getPreferenceKey(R.string.pref_key_utm_source),
-        default = "",
-    )
-
-    var utmMedium by stringPreference(
-        appContext.getPreferenceKey(R.string.pref_key_utm_medium),
-        default = "",
-    )
-
-    var utmCampaign by stringPreference(
-        appContext.getPreferenceKey(R.string.pref_key_utm_campaign),
-        default = "",
-    )
-
-    var utmTerm by stringPreference(
-        appContext.getPreferenceKey(R.string.pref_key_utm_term),
-        default = "",
-    )
-
-    var utmContent by stringPreference(
-        appContext.getPreferenceKey(R.string.pref_key_utm_content),
-        default = "",
-    )
-
-    var isUserMetaAttributed by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_is_user_meta_attributed),
-        default = false,
-    )
-
-    var isUserTikTokAttributed by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_is_user_tiktok_attributed),
-        default = false,
-    )
-
-    var isUserRedditAttributed by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_is_user_reddit_attributed),
-        default = false,
-    )
-
-    var isUserXTwitterAttributed by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_is_user_x_twitter_attributed),
-        default = false,
-    )
-
-    var isUserMolocoAttributed by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_is_user_moloco_attributed),
-        default = false,
-    )
-
-    var isUserRakutenAttributed by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_is_user_rakuten_attributed),
-        default = false,
-    )
-
-    var isUserSkyflagAttributed by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_is_user_skyflag_attributed),
-        default = false,
-    )
+    var adjustCreative by
+        stringPreference(
+            appContext.getPreferenceKey(R.string.pref_key_adjust_creative),
+            default = "",
+        )
 
     /**
-     * Whether the `referrals` ping has already been submitted for this profile. A referral code
-     * must only ever be reported once.
+     * The Glean debug view tag that may be persisted across app restarts. Empty when no tag is persisted. Only captured
+     * from a tag set through Glean's debug intent using `persistDebugViewTag` at startup.
      */
-    var referralPingSubmitted by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_referral_ping_submitted),
-        default = false,
-    )
+    var gleanDebugViewTag by
+        stringPreference(
+            appContext.getPreferenceKey(R.string.pref_key_glean_debug_view_tag),
+            default = "",
+        )
 
-    var rtamoAddonDownloadUrl by stringPreference(
-        appContext.getPreferenceKey(R.string.pref_key_rtamo_addon_download_url),
-        default = "",
-    )
+    var nimbusExperimentsFetched by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_nimbus_experiments_fetched),
+            default = false,
+        )
 
-    var rtamoAddonImageUrl by stringPreference(
-        appContext.getPreferenceKey(R.string.pref_key_rtamo_addon_image_url),
-        default = "",
-    )
+    var utmParamsKnown by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_utm_params_known),
+            default = false,
+        )
 
-    var rtamoAddonName by stringPreference(
-        appContext.getPreferenceKey(R.string.pref_key_rtamo_addon_name),
-        default = "",
-    )
+    var utmSource by
+        stringPreference(
+            appContext.getPreferenceKey(R.string.pref_key_utm_source),
+            default = "",
+        )
 
-    var contileContextId by stringPreference(
-        appContext.getPreferenceKey(R.string.pref_key_contile_context_id),
-        default = { TopSites.contextId.generateAndSet().toString() },
-        persistDefaultIfNotExists = true,
-    )
+    var utmMedium by
+        stringPreference(
+            appContext.getPreferenceKey(R.string.pref_key_utm_medium),
+            default = "",
+        )
 
-    var currentWallpaperName by stringPreference(
-        appContext.getPreferenceKey(R.string.pref_key_current_wallpaper),
-        default = if (enableHomepageEdgeToEdgeBackgroundFeature) {
-            Wallpaper.EdgeToEdge.name
-        } else {
-            Wallpaper.Default.name
-        },
-    )
+    var utmCampaign by
+        stringPreference(
+            appContext.getPreferenceKey(R.string.pref_key_utm_campaign),
+            default = "",
+        )
+
+    var utmTerm by
+        stringPreference(
+            appContext.getPreferenceKey(R.string.pref_key_utm_term),
+            default = "",
+        )
+
+    var utmContent by
+        stringPreference(
+            appContext.getPreferenceKey(R.string.pref_key_utm_content),
+            default = "",
+        )
+
+    var isUserMetaAttributed by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_is_user_meta_attributed),
+            default = false,
+        )
+
+    var isUserTikTokAttributed by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_is_user_tiktok_attributed),
+            default = false,
+        )
+
+    var isUserRedditAttributed by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_is_user_reddit_attributed),
+            default = false,
+        )
+
+    var isUserXTwitterAttributed by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_is_user_x_twitter_attributed),
+            default = false,
+        )
+
+    var isUserMolocoAttributed by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_is_user_moloco_attributed),
+            default = false,
+        )
+
+    var isUserRakutenAttributed by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_is_user_rakuten_attributed),
+            default = false,
+        )
+
+    var isUserSkyflagAttributed by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_is_user_skyflag_attributed),
+            default = false,
+        )
 
     /**
-     * A cache of the text color to use on text overlaying the current wallpaper.
-     * The value will be `0` if the color is unavailable.
+     * Whether the `referrals` ping has already been submitted for this profile. A referral code must only ever be
+     * reported once.
      */
-    var currentWallpaperTextColor by longPreference(
-        appContext.getPreferenceKey(R.string.pref_key_current_wallpaper_text_color),
-        default = 0,
-    )
+    var referralPingSubmitted by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_referral_ping_submitted),
+            default = false,
+        )
+
+    /** The referral code carried by the install referrer, recorded for display in the debug drawer only. */
+    var referralCode by
+        stringPreference(
+            appContext.getPreferenceKey(R.string.pref_key_referral_code),
+            default = "",
+        )
+
+    var rtamoAddonDownloadUrl by
+        stringPreference(
+            appContext.getPreferenceKey(R.string.pref_key_rtamo_addon_download_url),
+            default = "",
+        )
+
+    var rtamoAddonImageUrl by
+        stringPreference(
+            appContext.getPreferenceKey(R.string.pref_key_rtamo_addon_image_url),
+            default = "",
+        )
+
+    var rtamoAddonName by
+        stringPreference(
+            appContext.getPreferenceKey(R.string.pref_key_rtamo_addon_name),
+            default = "",
+        )
+
+    var contileContextId by
+        stringPreference(
+            appContext.getPreferenceKey(R.string.pref_key_contile_context_id),
+            default = { TopSites.contextId.generateAndSet().toString() },
+            persistDefaultIfNotExists = true,
+        )
+
+    var currentWallpaperName by
+        stringPreference(
+            appContext.getPreferenceKey(R.string.pref_key_current_wallpaper),
+            default =
+                if (enableHomepageEdgeToEdgeBackgroundFeature) {
+                    Wallpaper.EdgeToEdge.name
+                } else {
+                    Wallpaper.Default.name
+                },
+        )
 
     /**
-     * A cache of the background color to use on cards overlaying the current wallpaper when the user's
-     * theme is set to Light.
+     * A cache of the text color to use on text overlaying the current wallpaper. The value will be `0` if the color is
+     * unavailable.
      */
-    var currentWallpaperCardColorLight by longPreference(
-        appContext.getPreferenceKey(R.string.pref_key_current_wallpaper_card_color_light),
-        default = 0,
-    )
+    var currentWallpaperTextColor by
+        longPreference(
+            appContext.getPreferenceKey(R.string.pref_key_current_wallpaper_text_color),
+            default = 0,
+        )
 
     /**
-     * A cache of the background color to use on cards overlaying the current wallpaper when the user's
-     * theme is set to Dark.
+     * A cache of the background color to use on cards overlaying the current wallpaper when the user's theme is set to
+     * Light.
      */
-    var currentWallpaperCardColorDark by longPreference(
-        appContext.getPreferenceKey(R.string.pref_key_current_wallpaper_card_color_dark),
-        default = 0,
-    )
+    var currentWallpaperCardColorLight by
+        longPreference(
+            appContext.getPreferenceKey(R.string.pref_key_current_wallpaper_card_color_light),
+            default = 0,
+        )
 
     /**
-     * Indicates if the current legacy wallpaper should be migrated.
+     * A cache of the background color to use on cards overlaying the current wallpaper when the user's theme is set to
+     * Dark.
      */
-    var shouldMigrateLegacyWallpaper by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_should_migrate_wallpaper),
-        default = true,
-    )
+    var currentWallpaperCardColorDark by
+        longPreference(
+            appContext.getPreferenceKey(R.string.pref_key_current_wallpaper_card_color_dark),
+            default = 0,
+        )
 
-    /**
-     * Indicates if the current legacy wallpaper card colors should be migrated.
-     */
-    var shouldMigrateLegacyWallpaperCardColors by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_should_migrate_wallpaper_card_colors),
-        default = true,
-    )
+    /** Indicates if the current legacy wallpaper should be migrated. */
+    var shouldMigrateLegacyWallpaper by
+        booleanPreference(
+            key = appContext.getPreferenceKey(R.string.pref_key_should_migrate_wallpaper),
+            default = true,
+        )
 
-    /**
-     * Indicates if the wallpaper onboarding dialog should be shown.
-     */
-    var showWallpaperOnboarding by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_wallpapers_onboarding),
-        default = true,
-    )
+    /** Indicates if the current legacy wallpaper card colors should be migrated. */
+    var shouldMigrateLegacyWallpaperCardColors by
+        booleanPreference(
+            key = appContext.getPreferenceKey(R.string.pref_key_should_migrate_wallpaper_card_colors),
+            default = true,
+        )
 
-    var openLinksInAPrivateTab by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_open_links_in_a_private_tab),
-        default = false,
-    )
+    /** Indicates if the wallpaper onboarding dialog should be shown. */
+    var showWallpaperOnboarding by
+        booleanPreference(
+            key = appContext.getPreferenceKey(R.string.pref_key_wallpapers_onboarding),
+            default = true,
+        )
+
+    var openLinksInAPrivateTab by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_open_links_in_a_private_tab),
+            default = false,
+        )
 
     val shouldSecureModeBeOverridden
-        get() = allowScreenshotsInPrivateMode || allowScreenCaptureInSecureScreens ||
-        // Allow FTL videos from macrobenchmark tests to capture what is happening in the CUJ
-            isBenchmarkBuild
-    var allowScreenshotsInPrivateMode by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_allow_screenshots_in_private_mode),
-        default = false,
-    )
+        get() =
+            allowScreenshotsInPrivateMode ||
+                allowScreenCaptureInSecureScreens ||
+                // Allow FTL videos from macrobenchmark tests to capture what is happening in the CUJ
+                isBenchmarkBuild
 
-    var allowScreenCaptureInSecureScreens by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_dev_debug_allow_capture_of_secure_screens),
-        default = false,
-    )
+    var allowScreenshotsInPrivateMode by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_allow_screenshots_in_private_mode),
+            default = false,
+        )
 
-    var privateBrowsingLockedFeatureEnabled by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_private_browsing_locked_enabled),
-        default = { FxNimbus.features.privateBrowsingLock.value().enabled },
-    )
+    var allowScreenCaptureInSecureScreens by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_dev_debug_allow_capture_of_secure_screens),
+            default = false,
+        )
 
-    var privateBrowsingModeLocked by booleanPreference(
-        appContext.getString(R.string.pref_key_private_browsing_locked),
-        false,
-    )
+    var privateBrowsingLockedFeatureEnabled by
+        booleanPreference(
+            key = appContext.getPreferenceKey(R.string.pref_key_private_browsing_locked_enabled),
+            default = { FxNimbus.features.privateBrowsingLock.value().enabled },
+        )
 
-    var shouldReturnToBrowser by booleanPreference(
-        appContext.getString(R.string.pref_key_return_to_browser),
-        false,
-    )
+    var privateBrowsingModeLocked by
+        booleanPreference(
+            appContext.getString(R.string.pref_key_private_browsing_locked),
+            false,
+        )
 
-    var shouldShowMenuBanner by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_show_menu_banner),
-        default = true,
-    )
+    var shouldReturnToBrowser by
+        booleanPreference(
+            appContext.getString(R.string.pref_key_return_to_browser),
+            false,
+        )
 
-    var defaultSearchEngineName by stringPreference(
-        appContext.getPreferenceKey(R.string.pref_key_search_engine),
-        default = "",
-    )
+    var shouldShowMenuBanner by
+        booleanPreference(
+            key = appContext.getPreferenceKey(R.string.pref_key_show_menu_banner),
+            default = true,
+        )
 
-    var openInAppOpened by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_open_in_app_opened),
-        default = false,
-    )
+    var defaultSearchEngineName by
+        stringPreference(
+            appContext.getPreferenceKey(R.string.pref_key_search_engine),
+            default = "",
+        )
 
-    var installPwaOpened by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_install_pwa_opened),
-        default = false,
-    )
+    var openInAppOpened by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_open_in_app_opened),
+            default = false,
+        )
+
+    var installPwaOpened by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_install_pwa_opened),
+            default = false,
+        )
 
     val isCrashReportingEnabled: Boolean
-        get() = isCrashReportEnabledInBuild &&
-            preferences.getBoolean(
-                appContext.getPreferenceKey(R.string.pref_key_crash_reporter),
-                true,
-            )
-
-    var crashReportChoice by stringPreference(
-        appContext.getPreferenceKey(R.string.pref_key_crash_reporting_choice),
-        default = CrashReportOption.Ask.toString(),
-    )
-
-    val isRemoteDebuggingEnabled by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_remote_debugging),
-        default = false,
-    )
-
-    var isTelemetryEnabled by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_telemetry),
-        default = true,
-    )
-
-    var isMarketingTelemetryEnabled by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_marketing_telemetry),
-        default = false,
-    )
-
-    var hasMadeMarketingTelemetrySelection by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_marketing_telemetry_selection_made),
-        default = false,
-    )
-
-    var hasAcceptedTermsOfService by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_terms_accepted),
-        default = false,
-        persistDefaultIfNotExists = true,
-    )
-
-    /**
-     * The date the user accepted the Terms of Use.
-     */
-    var termsOfUseAcceptedTimeInMillis by longPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_terms_accepted_date),
-        default = {
-            if (hasAcceptedTermsOfService) {
-                getApplicationInstalledTime(
-                    packageManagerCompatHelper = packageManagerCompatHelper,
-                    packageName = packageName,
-                    logger = logger,
+        get() =
+            isCrashReportEnabledInBuild &&
+                preferences.getBoolean(
+                    appContext.getPreferenceKey(R.string.pref_key_crash_reporter),
+                    true,
                 )
-            } else {
-                0L
-            }
-        },
-    )
 
-    var isTermsOfUsePublishedDebugDateEnabled by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_terms_latest_date),
-        default = false,
-        persistDefaultIfNotExists = true,
-    )
+    var crashReportChoice by
+        stringPreference(
+            appContext.getPreferenceKey(R.string.pref_key_crash_reporting_choice),
+            default = CrashReportOption.Ask.toString(),
+        )
 
-    var privacyNoticeBannerLastDisplayedTimeInMillis by longPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_privacy_notice_banner_last_displayed_time),
-        default = 0,
-    )
+    val isRemoteDebuggingEnabled by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_remote_debugging),
+            default = false,
+        )
 
-    /**
-     * The version of the Terms of Use that the user has accepted.
-     */
-    var termsOfUseAcceptedVersion by intPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_terms_accepted_version),
-        default = { if (hasAcceptedTermsOfService) TOU_VERSION else 0 },
-    )
+    var isTelemetryEnabled by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_telemetry),
+            default = true,
+        )
 
-    /**
-     * Returns true if the terms of use feature flag is enabled
-     */
-    var isTermsOfUsePromptEnabled by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_terms_prompt_enabled),
-        default = { FxNimbus.features.termsOfUsePrompt.value().enabled },
-    )
+    var isMarketingTelemetryEnabled by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_marketing_telemetry),
+            default = false,
+        )
 
-    /**
-     * Returns true if the nimbus flag for showing the terms of use drag handle is true.
-     */
-    var shouldShowTermsOfUsePromptDragHandle by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_terms_prompt_drag_handle_enabled),
-        default = { FxNimbus.features.termsOfUsePrompt.value().enableDragToDismiss },
-    )
+    var hasMadeMarketingTelemetrySelection by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_marketing_telemetry_selection_made),
+            default = false,
+        )
 
-    /**
-     * The ID of the content option for the Terms of Use prompt.
-     */
-    var termsOfUsePromptContentOptionId by stringPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_terms_prompt_content_option),
-        default = { FxNimbus.features.termsOfUsePrompt.value().contentOption.name },
-    )
+    var hasAcceptedTermsOfService by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_terms_accepted),
+            default = false,
+            persistDefaultIfNotExists = true,
+        )
+
+    /** The date the user accepted the Terms of Use. */
+    var termsOfUseAcceptedTimeInMillis by
+        longPreference(
+            key = appContext.getPreferenceKey(R.string.pref_key_terms_accepted_date),
+            default = {
+                if (hasAcceptedTermsOfService) {
+                    getApplicationInstalledTime(
+                        packageManagerCompatHelper = packageManagerCompatHelper,
+                        packageName = packageName,
+                        logger = logger,
+                    )
+                } else {
+                    0L
+                }
+            },
+        )
+
+    var isTermsOfUsePublishedDebugDateEnabled by
+        booleanPreference(
+            appContext.getPreferenceKey(R.string.pref_key_terms_latest_date),
+            default = false,
+            persistDefaultIfNotExists = true,
+        )
+
+    var privacyNoticeBannerLastDisplayedTimeInMillis by
+        longPreference(
+            key = appContext.getPreferenceKey(R.string.pref_key_privacy_notice_banner_last_displayed_time),
+            default = 0,
+        )
+
+    /** The version of the Terms of Use that the user has accepted. */
+    var termsOfUseAcceptedVersion by
+        intPreference(
+            key = appContext.getPreferenceKey(R.string.pref_key_terms_accepted_version),
+            default = { if (hasAcceptedTermsOfService) TOU_VERSION else 0 },
+        )
+
+    /** Returns true if the terms of use feature flag is enabled */
+    var isTermsOfUsePromptEnabled by
+        booleanPreference(
+            key = appContext.getPreferenceKey(R.string.pref_key_terms_prompt_enabled),
+            default = { FxNimbus.features.termsOfUsePrompt.value().enabled },
+        )
+
+    /** Returns true if the nimbus flag for showing the terms of use drag handle is true. */
+    var shouldShowTermsOfUsePromptDragHandle by
+        booleanPreference(
+            key = appContext.getPreferenceKey(R.string.pref_key_terms_prompt_drag_handle_enabled),
+            default = { FxNimbus.features.termsOfUsePrompt.value().enableDragToDismiss },
+        )
+
+    /** The ID of the content option for the Terms of Use prompt. */
+    var termsOfUsePromptContentOptionId by
+        stringPreference(
+            key = appContext.getPreferenceKey(R.string.pref_key_terms_prompt_content_option),
+            default = { FxNimbus.features.termsOfUsePrompt.value().contentOption.name },
+        )
 
     /**
      * The maximum number of times the Terms of Use prompt should be displayed.

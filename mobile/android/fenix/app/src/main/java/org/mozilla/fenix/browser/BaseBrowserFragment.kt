@@ -73,7 +73,6 @@ import mozilla.components.feature.downloads.CurrentDownloadState
 import mozilla.components.feature.downloads.DownloadsFeature
 import mozilla.components.feature.downloads.NegativeActionCallback
 import mozilla.components.feature.downloads.PositiveActionCallback
-import mozilla.components.feature.downloads.R as downloadsR
 import mozilla.components.feature.downloads.manager.FetchDownloadManager
 import mozilla.components.feature.downloads.temporary.CopyDownloadFeature
 import mozilla.components.feature.downloads.temporary.ShareResourceFeature

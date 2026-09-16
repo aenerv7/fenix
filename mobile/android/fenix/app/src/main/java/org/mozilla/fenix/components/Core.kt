@@ -658,8 +658,11 @@ class Core(
 
     val loginExceptionStorage by lazyMonitored { LoginExceptionStorage(context) }
 
-    val summarizationSettings: FenixSummarizationSettingsBinding by lazyMonitored {
-        FenixSummarizationSettingsBinding(SummarizationSettings.dataStore(context))
+    val summarizationSettingsBinding: FenixSummarizationSettingsBinding by lazyMonitored {
+        FenixSummarizationSettingsBinding(
+            summarizationSettings = SummarizationSettings.dataStore(context),
+            aiFeatureBlockStorage = AIFeatureBlockStorage.dataStore(context),
+        )
     }
 
     /**
@@ -669,7 +672,7 @@ class Core(
     val summarizeFeatureSettings: FenixSummarizationFeatureConfiguration by lazyMonitored {
         FenixSummarizationFeatureConfiguration(
             settings = context.components.settings,
-            summarizationSettingsBinding = summarizationSettings,
+            summarizationSettingsBinding = summarizationSettingsBinding,
         )
     }
 

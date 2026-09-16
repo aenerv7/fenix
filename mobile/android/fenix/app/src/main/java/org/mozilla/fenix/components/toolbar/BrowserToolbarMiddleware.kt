@@ -158,11 +158,6 @@ import org.mozilla.fenix.translations.TranslationsEnabledSettings
 import org.mozilla.fenix.utils.Settings
 import org.mozilla.fenix.utils.Stories.hasUrlOfAHomeScreenStory
 import org.mozilla.fenix.utils.Stories.hasUrlOfAStoriesScreenStory
-import mozilla.components.browser.toolbar.R as toolbarR
-import mozilla.components.feature.summarize.R as summariesR
-import mozilla.components.lib.state.Action as MVIAction
-import mozilla.components.ui.icons.R as iconsR
-import mozilla.components.ui.tabcounter.R as tabcounterR
 
 @VisibleForTesting
 internal sealed class DisplayActions(override val source: Source) : BrowserToolbarEvent {
@@ -186,6 +181,8 @@ internal sealed class DisplayActions(override val source: Source) : BrowserToolb
 @VisibleForTesting
 internal sealed class StartPageActions(override val source: Source) : BrowserToolbarEvent {
     data object SiteInfoClicked : StartPageActions(Source.AddressBar.PageStart)
+
+    data object ProxyActivationAnimationFinished : StartPageActions(Source.AddressBar.PageStart)
 }
 
 @VisibleForTesting
@@ -1012,7 +1009,9 @@ class BrowserToolbarMiddleware(
 
     private fun observeIPProtectionUpdates(store: Store<BrowserToolbarState, BrowserToolbarAction>) {
         ipProtectionStore.observeWhileActive {
-            distinctUntilChangedBy { it.proxyStatus }
+            // Includes proxyActivation so start page actions rebuild once the pending pill
+            // animation is consumed (ProxyActivationShown), dropping the pill again.
+            distinctUntilChangedBy { it.proxyStatus to it.proxyActivation }
                 .collect {
                     updateStartPageActions(store)
                 }
@@ -1440,28 +1439,42 @@ class BrowserToolbarMiddleware(
         onClick: BrowserToolbarInteraction,
         testTag: String? = null,
     ): Action {
-        return if (ipProtectionStore.state.proxyStatus == Authorized.Active) {
-            Action.AnimatedPillActionRes(
-                iconResId = drawableResId,
-                overlayResId = iconsR.drawable.mozac_ic_globe_24,
-                textResId = R.string.ip_protection_toolbar_pill_label,
-                contentDescriptionResId = R.string.ip_protection_toolbar_pill_description,
-                animated = !ipProtectionStore.state.proxyActiveShown,
-                highlighted = highlighted,
-                onClick = onClick,
-                testTag = testTag,
-                onAnimationStarted = {
-                    ipProtectionStore.dispatch(IPProtectionAction.ProxyActiveShown)
-                },
-            )
-        } else {
-            ActionButtonRes(
-                drawableResId = drawableResId,
-                contentDescription = contentDescription,
-                highlighted = highlighted,
-                onClick = onClick,
-                testTag = testTag,
-            )
+        val ipProtectionState = ipProtectionStore.state
+        return when {
+            ipProtectionState.proxyStatus == Authorized.Active ->
+                Action.AnimatedPillActionRes(
+                    iconResId = drawableResId,
+                    overlayResId = iconsR.drawable.mozac_ic_globe_24,
+                    textResId = R.string.ip_protection_toolbar_pill_label,
+                    contentDescriptionResId = R.string.ip_protection_toolbar_pill_description,
+                    animated = ipProtectionState.proxyActivation == ProxyActivation.TurningOn,
+                    highlighted = highlighted,
+                    onClick = onClick,
+                    testTag = testTag,
+                    onAnimationFinished = StartPageActions.ProxyActivationAnimationFinished,
+                )
+
+            ipProtectionState.proxyActivation == ProxyActivation.TurningOff ->
+                Action.AnimatedPillActionRes(
+                    iconResId = drawableResId,
+                    overlayResId = iconsR.drawable.mozac_ic_globe_24,
+                    textResId = R.string.ip_protection_toolbar_pill_label_off,
+                    contentDescriptionResId = R.string.ip_protection_toolbar_pill_description_off,
+                    animated = true,
+                    highlighted = highlighted,
+                    onClick = onClick,
+                    testTag = testTag,
+                    onAnimationFinished = StartPageActions.ProxyActivationAnimationFinished,
+                )
+
+            else ->
+                ActionButtonRes(
+                    drawableResId = drawableResId,
+                    contentDescription = contentDescription,
+                    highlighted = highlighted,
+                    onClick = onClick,
+                    testTag = testTag,
+                )
         }
     }
 

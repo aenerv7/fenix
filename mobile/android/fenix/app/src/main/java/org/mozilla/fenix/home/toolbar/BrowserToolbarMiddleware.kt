@@ -51,12 +51,16 @@ import mozilla.components.compose.browser.toolbar.store.BrowserToolbarState
 import mozilla.components.compose.browser.toolbar.store.Mode
 import mozilla.components.compose.browser.toolbar.ui.BrowserToolbarQuery
 import mozilla.components.concept.engine.utils.ABOUT_HOME_URL
+import mozilla.components.feature.summarize.R as summariesR
+import mozilla.components.lib.state.Action as MVIAction
 import mozilla.components.lib.state.Middleware
 import mozilla.components.lib.state.State
 import mozilla.components.lib.state.Store
 import mozilla.components.lib.state.ext.flow
 import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.utils.ClipboardHandler
+import mozilla.components.ui.icons.R as iconsR
+import mozilla.components.ui.tabcounter.R as tabcounterR
 import org.mozilla.fenix.GleanMetrics.Events
 import org.mozilla.fenix.NavGraphDirections
 import org.mozilla.fenix.R
@@ -97,15 +101,21 @@ private const val DISPLAY_TOOLBAR_DELAY_AFTER_VOICE_REQUEST = 1_000L
 @VisibleForTesting
 internal sealed class DisplayActions : BrowserToolbarEvent {
     data class MenuClicked(override val source: Source) : DisplayActions()
+
     data object FakeClicked : DisplayActions()
+
     data object VoiceSearchClicked : DisplayActions()
 }
 
 internal sealed class TabCounterInteractions : BrowserToolbarEvent {
     data class TabCounterClicked(override val source: Source) : TabCounterInteractions()
+
     data class TabCounterLongClicked(override val source: Source) : TabCounterInteractions()
+
     data class AddNewTab(override val source: Source) : TabCounterInteractions()
+
     data class AddNewTabFromToolbarShortcut(override val source: Source) : TabCounterInteractions()
+
     data class AddNewPrivateTab(override val source: Source) : TabCounterInteractions()
 }
 
@@ -565,98 +575,110 @@ class BrowserToolbarMiddleware(
     internal fun buildHomeAction(
         action: HomeToolbarAction,
         source: Source = Source.Unknown,
-    ): Action = when (action) {
-        HomeToolbarAction.TabCounter -> {
-            val isInPrivateMode = browsingModeManager.mode.isPrivate
-            val tabsCount = browserStore.state.getNormalOrPrivateTabs(isInPrivateMode).size
+    ): Action =
+        when (action) {
+            HomeToolbarAction.TabCounter -> {
+                val isInPrivateMode = browsingModeManager.mode.isPrivate
+                val tabsCount = browserStore.state.getNormalOrPrivateTabs(isInPrivateMode).size
 
-            val tabCounterDescription = if (isInPrivateMode) {
-                uiContext.getString(tabcounterR.string.mozac_tab_counter_private, tabsCount.toString())
-            } else {
-                uiContext.getString(tabcounterR.string.mozac_tab_counter_open_tab_tray, tabsCount.toString())
+                val tabCounterDescription =
+                    if (isInPrivateMode) {
+                        uiContext.getString(tabcounterR.string.mozac_tab_counter_private, tabsCount.toString())
+                    } else {
+                        uiContext.getString(tabcounterR.string.mozac_tab_counter_open_tab_tray, tabsCount.toString())
+                    }
+
+                TabCounterAction(
+                    count = tabsCount,
+                    contentDescription = tabCounterDescription,
+                    showPrivacyMask = isInPrivateMode,
+                    onClick = TabCounterClicked(source),
+                    onLongClick = buildTabCounterMenu(source),
+                )
             }
 
-            TabCounterAction(
-                count = tabsCount,
-                contentDescription = tabCounterDescription,
-                showPrivacyMask = isInPrivateMode,
-                onClick = TabCounterClicked(source),
-                onLongClick = buildTabCounterMenu(source),
-            )
+            HomeToolbarAction.Menu -> {
+                val highlighted =
+                    appStore.state.supportedMenuNotifications
+                        .filterNot { it is SupportedMenuNotifications.Summarize }
+                        .any { it != SupportedMenuNotifications.OpenInApp }
+                ActionButtonRes(
+                    drawableResId = iconsR.drawable.mozac_ic_ellipsis_vertical_24,
+                    contentDescription = R.string.content_description_menu,
+                    highlighted = highlighted,
+                    onClick = MenuClicked(source),
+                )
+            }
+
+            HomeToolbarAction.FakeBookmark ->
+                ActionButtonRes(
+                    drawableResId = iconsR.drawable.mozac_ic_bookmark_24,
+                    contentDescription = R.string.browser_menu_bookmark_this_page_2,
+                    state = ActionButton.State.DISABLED,
+                    onClick = FakeClicked,
+                )
+
+            HomeToolbarAction.FakeShare ->
+                ActionButtonRes(
+                    drawableResId = iconsR.drawable.mozac_ic_share_android_24,
+                    contentDescription = R.string.browser_menu_share,
+                    state = ActionButton.State.DISABLED,
+                    onClick = FakeClicked,
+                )
+
+            HomeToolbarAction.NewTab,
+            HomeToolbarAction.NewTabShortcut,
+            ->
+                ActionButtonRes(
+                    drawableResId = iconsR.drawable.mozac_ic_plus_24,
+                    contentDescription =
+                        if (browsingModeManager.mode == Private) {
+                            R.string.home_screen_shortcut_open_new_private_tab_2
+                        } else {
+                            R.string.home_screen_shortcut_open_new_tab_2
+                        },
+                    onClick =
+                        if (browsingModeManager.mode == Private) {
+                            AddNewPrivateTab(source)
+                        } else if (action == HomeToolbarAction.NewTabShortcut) {
+                            AddNewTabFromToolbarShortcut(source)
+                        } else {
+                            AddNewTab(source)
+                        },
+                )
+
+            HomeToolbarAction.FakeTranslate ->
+                ActionButtonRes(
+                    drawableResId = iconsR.drawable.mozac_ic_translate_24,
+                    contentDescription = R.string.browser_toolbar_translate,
+                    state = ActionButton.State.DISABLED,
+                    onClick = FakeClicked,
+                )
+
+            HomeToolbarAction.FakeHomepage ->
+                ActionButtonRes(
+                    drawableResId = iconsR.drawable.mozac_ic_home_24,
+                    contentDescription = R.string.browser_menu_homepage,
+                    state = ActionButton.State.DISABLED,
+                    onClick = FakeClicked,
+                )
+
+            HomeToolbarAction.FakeBack ->
+                ActionButtonRes(
+                    drawableResId = iconsR.drawable.mozac_ic_back_24,
+                    contentDescription = R.string.browser_menu_back,
+                    state = ActionButton.State.DISABLED,
+                    onClick = FakeClicked,
+                )
+
+            HomeToolbarAction.FakeSummarize ->
+                ActionButtonRes(
+                    drawableResId = iconsR.drawable.mozac_ic_lightning_24,
+                    contentDescription = summariesR.string.mozac_summarize_settings_summarize_pages,
+                    state = ActionButton.State.DISABLED,
+                    onClick = FakeClicked,
+                )
         }
-
-        HomeToolbarAction.Menu -> {
-            val highlighted = appStore.state.supportedMenuNotifications
-                .filterNot { it is SupportedMenuNotifications.Summarize }
-                .any { it != SupportedMenuNotifications.OpenInApp }
-            ActionButtonRes(
-                drawableResId = iconsR.drawable.mozac_ic_ellipsis_vertical_24,
-                contentDescription = R.string.content_description_menu,
-                highlighted = highlighted,
-                onClick = MenuClicked(source),
-            )
-        }
-
-        HomeToolbarAction.FakeBookmark -> ActionButtonRes(
-            drawableResId = iconsR.drawable.mozac_ic_bookmark_24,
-            contentDescription = R.string.browser_menu_bookmark_this_page_2,
-            state = ActionButton.State.DISABLED,
-            onClick = FakeClicked,
-        )
-
-        HomeToolbarAction.FakeShare -> ActionButtonRes(
-            drawableResId = iconsR.drawable.mozac_ic_share_android_24,
-            contentDescription = R.string.browser_menu_share,
-            state = ActionButton.State.DISABLED,
-            onClick = FakeClicked,
-        )
-
-        HomeToolbarAction.NewTab,
-        HomeToolbarAction.NewTabShortcut,
-            -> ActionButtonRes(
-            drawableResId = iconsR.drawable.mozac_ic_plus_24,
-            contentDescription = if (browsingModeManager.mode == Private) {
-                R.string.home_screen_shortcut_open_new_private_tab_2
-            } else {
-                R.string.home_screen_shortcut_open_new_tab_2
-            },
-            onClick = if (browsingModeManager.mode == Private) {
-                AddNewPrivateTab(source)
-            } else if (action == HomeToolbarAction.NewTabShortcut) {
-                AddNewTabFromToolbarShortcut(source)
-            } else {
-                AddNewTab(source)
-            },
-        )
-
-        HomeToolbarAction.FakeTranslate -> ActionButtonRes(
-            drawableResId = iconsR.drawable.mozac_ic_translate_24,
-            contentDescription = R.string.browser_toolbar_translate,
-            state = ActionButton.State.DISABLED,
-            onClick = FakeClicked,
-        )
-
-        HomeToolbarAction.FakeHomepage -> ActionButtonRes(
-            drawableResId = iconsR.drawable.mozac_ic_home_24,
-            contentDescription = R.string.browser_menu_homepage,
-            state = ActionButton.State.DISABLED,
-            onClick = FakeClicked,
-        )
-
-        HomeToolbarAction.FakeBack -> ActionButtonRes(
-            drawableResId = iconsR.drawable.mozac_ic_back_24,
-            contentDescription = R.string.browser_menu_back,
-            state = ActionButton.State.DISABLED,
-            onClick = FakeClicked,
-        )
-
-        HomeToolbarAction.FakeSummarize -> ActionButtonRes(
-            drawableResId = iconsR.drawable.mozac_ic_lightning_24,
-            contentDescription = summariesR.string.mozac_summarize_settings_summarize_pages,
-            state = ActionButton.State.DISABLED,
-            onClick = FakeClicked,
-        )
-    }
 
     private suspend fun isTranslationsFeatureAvailable(): Boolean {
         val isTranslationEngineSupported = browserStore.state.translationEngine.isEngineSupported ?: false
@@ -666,17 +688,19 @@ class BrowserToolbarMiddleware(
     }
 
     @VisibleForTesting
-    internal suspend fun ShortcutType.toHomeToolbarAction() = when (this) {
-        ShortcutType.NEW_TAB -> HomeToolbarAction.NewTabShortcut
-        ShortcutType.SHARE -> HomeToolbarAction.FakeShare
-        ShortcutType.BOOKMARK -> HomeToolbarAction.FakeBookmark
-        ShortcutType.TRANSLATE -> when (isTranslationsFeatureAvailable()) {
-            true -> HomeToolbarAction.FakeTranslate
-            false -> HomeToolbarAction.FakeBookmark // the first available option in settings.
+    internal suspend fun ShortcutType.toHomeToolbarAction() =
+        when (this) {
+            ShortcutType.NEW_TAB -> HomeToolbarAction.NewTabShortcut
+            ShortcutType.SHARE -> HomeToolbarAction.FakeShare
+            ShortcutType.BOOKMARK -> HomeToolbarAction.FakeBookmark
+            ShortcutType.TRANSLATE ->
+                when (isTranslationsFeatureAvailable()) {
+                    true -> HomeToolbarAction.FakeTranslate
+                    false -> HomeToolbarAction.FakeBookmark // the first available option in settings.
+                }
+            ShortcutType.HOMEPAGE -> HomeToolbarAction.FakeHomepage
+            ShortcutType.BACK -> HomeToolbarAction.FakeBack
+            ShortcutType.SUMMARIZE -> HomeToolbarAction.FakeSummarize
+            ShortcutType.NONE -> null
         }
-        ShortcutType.HOMEPAGE -> HomeToolbarAction.FakeHomepage
-        ShortcutType.BACK -> HomeToolbarAction.FakeBack
-        ShortcutType.SUMMARIZE -> HomeToolbarAction.FakeSummarize
-        ShortcutType.NONE -> null
-    }
 }

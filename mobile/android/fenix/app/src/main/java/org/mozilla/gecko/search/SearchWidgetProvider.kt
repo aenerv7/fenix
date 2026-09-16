@@ -18,14 +18,17 @@ import android.widget.RemoteViews
 import androidx.annotation.Dimension
 import androidx.annotation.Dimension.Companion.DP
 import androidx.annotation.VisibleForTesting
+import mozilla.components.browser.state.state.selectedOrDefaultSearchEngine
 import org.mozilla.fenix.GleanMetrics.Metrics
 import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.IntentReceiverActivity
 import org.mozilla.fenix.R
 import org.mozilla.fenix.ext.components
+import org.mozilla.fenix.ext.isGoogleSearchEngine
 import org.mozilla.fenix.home.intent.StartSearchIntentProcessor
 import org.mozilla.fenix.utils.IntentUtils
 import org.mozilla.fenix.utils.Settings
+import org.mozilla.fenix.widget.LensSearchActivity
 import org.mozilla.fenix.widget.VoiceSearchActivity
 import org.mozilla.fenix.widget.VoiceSearchActivity.Companion.SPEECH_PROCESSING
 
@@ -200,16 +203,20 @@ class SearchWidgetProvider : AppWidgetProvider() {
                     setOnClickPendingIntent(R.id.button_search_widget_voice, voiceSearchIntent)
                 }
                 R.layout.search_widget_medium,
-                R.layout.search_widget_large,
-                -> {
+                R.layout.search_widget_large -> {
                     setOnClickPendingIntent(R.id.button_search_widget_new_tab, textSearchIntent)
                     setOnClickPendingIntent(R.id.button_search_widget_voice, voiceSearchIntent)
                     setOnClickPendingIntent(R.id.button_search_widget_new_tab_icon, textSearchIntent)
+                    setOnClickPendingIntent(R.id.button_search_widget_lens, lensSearchIntent)
                     setTextViewText(R.id.button_search_widget_new_tab, text)
                     // Unlike "small" widget, "medium" and "large" sizes do not have separate layouts
-                    // that exclude the microphone icon, which is why we must hide it accordingly here.
+                    // that exclude the microphone and lens icons, which is why we must hide them
+                    // accordingly here.
                     if (voiceSearchIntent == null) {
                         setViewVisibility(R.id.button_search_widget_voice, View.GONE)
+                    }
+                    if (lensSearchIntent == null) {
+                        setViewVisibility(R.id.button_search_widget_lens, View.GONE)
                     }
                 }
             }

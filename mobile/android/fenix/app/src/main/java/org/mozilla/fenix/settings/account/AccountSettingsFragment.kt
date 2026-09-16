@@ -5,6 +5,7 @@
 package org.mozilla.fenix.settings.account
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.InputFilter
 import android.text.format.DateUtils
@@ -18,6 +19,7 @@ import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
+import com.google.android.material.R as materialR
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import mozilla.appservices.syncmanager.SyncTelemetry
@@ -100,11 +102,12 @@ class AccountSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFr
 
     override fun onStop() {
         super.onStop()
-        val allEngines = listOf(
-            SyncEngine.Bookmarks,
-            SyncEngine.History,
-            SyncEngine.Tabs,
-        )
+        val allEngines =
+            listOf(
+                SyncEngine.Bookmarks,
+                SyncEngine.History,
+                SyncEngine.Tabs,
+            )
         val enabledEngines = mutableListOf<String>()
         val disabledEngines = mutableListOf<String>()
         val syncEnginesStatus = SyncEnginesStorage(requireContext()).getStatus()
@@ -244,25 +247,27 @@ class AccountSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFr
         updateSyncEngineStates()
         setDisabledWhileSyncing(accountManager.isSyncActive())
 
-        fun SyncEngine.prefId(): Int = when (this) {
-            SyncEngine.History -> R.string.pref_key_sync_history
-            SyncEngine.Bookmarks -> R.string.pref_key_sync_bookmarks
-            SyncEngine.Tabs -> R.string.pref_key_sync_tabs
-            else -> throw IllegalStateException("Accessing internal sync engines")
-        }
+        fun SyncEngine.prefId(): Int =
+            when (this) {
+                SyncEngine.History -> R.string.pref_key_sync_history
+                SyncEngine.Bookmarks -> R.string.pref_key_sync_bookmarks
+                SyncEngine.Tabs -> R.string.pref_key_sync_tabs
+                else -> throw IllegalStateException("Accessing internal sync engines")
+            }
 
         listOf(
-            SyncEngine.History,
-            SyncEngine.Bookmarks,
-            SyncEngine.Tabs,
-        ).forEach {
-            requirePreference<CheckBoxPreference>(it.prefId()).apply {
-                setOnPreferenceChangeListener { _, newValue ->
-                    updateSyncEngineState(it, newValue as Boolean)
-                    true
+                SyncEngine.History,
+                SyncEngine.Bookmarks,
+                SyncEngine.Tabs,
+            )
+            .forEach {
+                requirePreference<CheckBoxPreference>(it.prefId()).apply {
+                    setOnPreferenceChangeListener { _, newValue ->
+                        updateSyncEngineState(it, newValue as Boolean)
+                        true
+                    }
                 }
             }
-        }
     }
 
     /**
@@ -278,9 +283,7 @@ class AccountSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFr
         }
     }
 
-    /**
-     * Updates the status of all [SyncEngine] states.
-     */
+    /** Updates the status of all [SyncEngine] states. */
     private fun updateSyncEngineStates() {
         val syncEnginesStatus = SyncEnginesStorage(requireContext()).getStatus()
         requirePreference<CheckBoxPreference>(R.string.pref_key_sync_bookmarks).apply {

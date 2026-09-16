@@ -33,6 +33,7 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import mozilla.components.ui.icons.R as iconsR
 import org.mozilla.fenix.R
 import org.mozilla.fenix.browser.browsingmode.BrowsingMode
 import org.mozilla.fenix.home.ui.HomepageTestTag.HOMEPAGE_WORDMARK
@@ -48,26 +49,29 @@ fun HomepageHeader(
     browsingMode: BrowsingMode,
     browsingModeChanged: (BrowsingMode) -> Unit,
 ) {
-    val privateBrowsingButtonColor = if (browsingMode.isPrivate) {
-        colorResource(getAttr(iconsR.attr.mozac_ic_private_mode_circle_fill_icon_color))
-    } else {
-        WallpaperTheme.onWallpaper
-    }
+    // In private mode there is no wallpaper, so the browsing button uses its dedicated
+    // private-mode icon color.
+    val privateBrowsingButtonColor =
+        if (browsingMode.isPrivate) {
+            colorResource(getAttr(iconsR.attr.mozac_ic_private_mode_circle_fill_icon_color))
+        } else {
+            WallpaperTheme.onWallpaper
+        }
 
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(start = 16.dp, end = 16.dp, top = 18.dp, bottom = 32.dp),
+        modifier =
+            Modifier.fillMaxWidth()
+                .wrapContentHeight()
+                .padding(start = 16.dp, end = 16.dp, top = 18.dp, bottom = 32.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
-            modifier = Modifier
-                .height(40.dp)
-                .semantics {
-                    testTagsAsResourceId = true
-                    testTag = HOMEPAGE_WORDMARK
-                },
+            modifier =
+                Modifier.height(40.dp)
+                    .semantics {
+                        testTagsAsResourceId = true
+                        testTag = HOMEPAGE_WORDMARK
+                    },
             painter = painterResource(getAttr(R.attr.fenixLogo)),
             contentDescription = stringResource(R.string.app_name),
         )
