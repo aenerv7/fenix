@@ -224,7 +224,7 @@ class TabManagementFragmentTest {
             fragment.shouldReturnToFocusedTab(
                 destination = TabManagerNavDestination.ExpandedTabGroup(group),
                 focusedTabId = selectedTab.id,
-            ),
+            )
         )
     }
 
@@ -236,7 +236,7 @@ class TabManagementFragmentTest {
             fragment.shouldReturnToFocusedTab(
                 destination = TabManagerNavDestination.ExpandedTabGroup(group),
                 focusedTabId = "outside-group",
-            ),
+            )
         )
     }
 
@@ -246,7 +246,7 @@ class TabManagementFragmentTest {
             fragment.shouldReturnToFocusedTab(
                 destination = TabManagerNavDestination.Root,
                 focusedTabId = "focused-tab",
-            ),
+            )
         )
     }
 

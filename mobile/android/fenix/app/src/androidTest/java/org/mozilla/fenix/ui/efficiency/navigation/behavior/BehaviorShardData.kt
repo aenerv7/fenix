@@ -10,12 +10,9 @@ object BehaviorShardData {
         shardCount: Int,
         runStateOverride: String? = null,
     ): List<Array<Any>> {
-        val runState = runStateOverride
-            ?: System.getProperty("testRunState")?.takeIf { it.isNotBlank() }
-            ?: ""
+        val runState = runStateOverride ?: System.getProperty("testRunState")?.takeIf { it.isNotBlank() } ?: ""
 
-        return BehaviorCaseFactory
-            .buildBehaviorCasesForShard(
+        return BehaviorCaseFactory.buildBehaviorCasesForShard(
                 runState = runState,
                 shardIndex = shardIndex,
                 shardCount = shardCount,

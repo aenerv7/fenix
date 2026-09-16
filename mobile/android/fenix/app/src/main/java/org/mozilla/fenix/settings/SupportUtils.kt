@@ -9,16 +9,16 @@ import android.content.Intent
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
+import com.google.android.material.R as materialR
+import java.io.UnsupportedEncodingException
+import java.net.URLEncoder
+import java.util.Locale
 import mozilla.components.support.ktx.android.content.appVersionName
 import mozilla.components.support.ktx.android.content.getColorFromAttr
 import org.mozilla.fenix.BuildConfig
 import org.mozilla.fenix.IntentReceiverActivity
 import org.mozilla.fenix.customtabs.EXTRA_IS_SANDBOX_CUSTOM_TAB
 import org.mozilla.fenix.settings.account.AuthIntentReceiverActivity
-import java.io.UnsupportedEncodingException
-import java.net.URLEncoder
-import java.util.Locale
-import com.google.android.material.R as materialR
 
 object SupportUtils {
     const val GOOGLE_URL = "https://www.google.com/"

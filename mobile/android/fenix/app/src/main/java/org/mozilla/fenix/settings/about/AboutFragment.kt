@@ -149,42 +149,46 @@ class AboutFragment(private val toastHandler: ToastHandler = DefaultToastHandler
     }
 
     private fun populateAboutHeader() {
-        val aboutText = try {
-            val packageInfo = requireContext().packageManagerCompatHelper.getPackageInfoCompat(
-                requireContext().packageName,
-                0,
-            )
-            val versionCode = PackageInfoCompat.getLongVersionCode(packageInfo).toString()
-            val maybeFenixVcsHash = if (BuildConfig.VCS_HASH.isNotBlank()) ", ${BuildConfig.VCS_HASH}" else ""
-            val maybeGecko = getString(R.string.gecko_view_abbreviation)
-            val geckoVersion =
-                GeckoViewBuildConfig.MOZ_APP_VERSION + "-" + GeckoViewBuildConfig.MOZ_APP_BUILDID
-            val appServicesAbbreviation = getString(R.string.app_services_abbreviation)
-            val appServicesVersion = mozilla.components.Build.APPLICATION_SERVICES_VERSION
-            val operatingSystemAbbrevation = "OS"
-            val operatingSystemVersion = "Android ${Build.VERSION.RELEASE}"
-            val fenixRevision = if (BuildConfig.FENIX_RELEASE_REVISION > 0) {
-                "\n" + getString(R.string.about_fenix_revision, BuildConfig.FENIX_RELEASE_REVISION)
-            } else {
+        val aboutText =
+            try {
+                val packageInfo =
+                    requireContext()
+                        .packageManagerCompatHelper
+                        .getPackageInfoCompat(
+                            requireContext().packageName,
+                            0,
+                        )
+                val versionCode = PackageInfoCompat.getLongVersionCode(packageInfo).toString()
+                val maybeFenixVcsHash = if (BuildConfig.VCS_HASH.isNotBlank()) ", ${BuildConfig.VCS_HASH}" else ""
+                val maybeGecko = getString(R.string.gecko_view_abbreviation)
+                val geckoVersion = GeckoViewBuildConfig.MOZ_APP_VERSION + "-" + GeckoViewBuildConfig.MOZ_APP_BUILDID
+                val appServicesAbbreviation = getString(R.string.app_services_abbreviation)
+                val appServicesVersion = mozilla.components.Build.APPLICATION_SERVICES_VERSION
+                val operatingSystemAbbrevation = "OS"
+                val operatingSystemVersion = "Android ${Build.VERSION.RELEASE}"
+                val fenixRevision =
+                    if (BuildConfig.FENIX_RELEASE_REVISION > 0) {
+                        "\n" + getString(R.string.about_fenix_revision, BuildConfig.FENIX_RELEASE_REVISION)
+                    } else {
+                        ""
+                    }
+
+                String.format(
+                    "%s (Build #%s)%s%s\n%s: %s\n%s: %s\n%s: %s",
+                    packageInfo.versionName,
+                    versionCode,
+                    maybeFenixVcsHash,
+                    fenixRevision,
+                    maybeGecko,
+                    geckoVersion,
+                    appServicesAbbreviation,
+                    appServicesVersion,
+                    operatingSystemAbbrevation,
+                    operatingSystemVersion,
+                )
+            } catch (e: PackageManager.NameNotFoundException) {
                 ""
             }
-
-            String.format(
-                "%s (Build #%s)%s%s\n%s: %s\n%s: %s\n%s: %s",
-                packageInfo.versionName,
-                versionCode,
-                maybeFenixVcsHash,
-                fenixRevision,
-                maybeGecko,
-                geckoVersion,
-                appServicesAbbreviation,
-                appServicesVersion,
-                operatingSystemAbbrevation,
-                operatingSystemVersion,
-            )
-        } catch (e: PackageManager.NameNotFoundException) {
-            ""
-        }
 
         val content = getString(R.string.about_content, appName)
         val buildDate = BuildConfig.BUILD_DATE

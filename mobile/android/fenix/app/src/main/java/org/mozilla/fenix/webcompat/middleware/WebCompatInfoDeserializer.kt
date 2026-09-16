@@ -8,12 +8,8 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import mozilla.components.support.base.log.logger.Logger
 
-/**
- * Deserializer for [WebCompatInfoDto].
- */
-class WebCompatInfoDeserializer(
-    private val json: Json,
-) {
+/** Deserializer for [WebCompatInfoDto]. */
+class WebCompatInfoDeserializer(private val json: Json) {
 
     private val logger = Logger("WebCompatInfoDeserializer")
 

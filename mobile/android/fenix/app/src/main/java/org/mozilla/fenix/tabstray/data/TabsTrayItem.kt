@@ -7,32 +7,24 @@ package org.mozilla.fenix.tabstray.data
 import android.graphics.Bitmap
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.asImageBitmap
+import java.util.UUID
 import mozilla.components.browser.state.state.TabSessionState
 import mozilla.components.browser.state.state.isActive
 import mozilla.components.concept.engine.utils.ABOUT_HOME_URL
 import org.mozilla.fenix.compose.TabThumbnailImageData
 import org.mozilla.fenix.ext.maxActiveTime
 import org.mozilla.fenix.tabstray.ext.toDisplayTitle
-import java.util.UUID
 
-/**
- * Data entity representing items in the Tabs Tray.
- */
+/** Data entity representing items in the Tabs Tray. */
 @Immutable
 sealed interface TabsTrayItem {
-    /**
-     * The ID of the item.
-     */
+    /** The ID of the item. */
     val id: String
 
-    /**
-     * Whether the entity represents a Homepage item.
-     */
+    /** Whether the entity represents a Homepage item. */
     val isHomepageItem: Boolean
 
-    /**
-     * Whether the entity is focused.
-     */
+    /** Whether the entity is focused. */
     val isFocused: Boolean
 
     /**

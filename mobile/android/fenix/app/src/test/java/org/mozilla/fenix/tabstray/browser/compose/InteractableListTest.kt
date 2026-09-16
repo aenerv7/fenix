@@ -608,9 +608,8 @@ class InteractableListTest {
 
     @Test
     fun `WHEN the dragged item is removed THEN resetIfItemMissing clears the interaction`() {
-        val reorderState = fakeListInteractionState(
-            mockListState(mockItems = listOf(mockListItem(key = TabKeys.TAB_ALPHA))),
-        )
+        val reorderState =
+            fakeListInteractionState(mockListState(mockItems = listOf(mockListItem(key = TabKeys.TAB_ALPHA))))
         reorderState.onTouchSlopPassed(0f, false)
 
         reorderState.resetIfItemMissing(setOf(TabKeys.TAB_BETA))

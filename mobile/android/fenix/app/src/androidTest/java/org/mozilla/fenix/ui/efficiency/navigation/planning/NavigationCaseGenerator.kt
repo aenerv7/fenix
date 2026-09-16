@@ -35,7 +35,8 @@ object NavigationCaseGenerator {
                     page = { ${case.propertyName} },
                     state = runState.ifBlank { "Navigation Reachability" },
                 ),
-                """.trimIndent(),
+                """
+                    .trimIndent(),
             )
         }
 

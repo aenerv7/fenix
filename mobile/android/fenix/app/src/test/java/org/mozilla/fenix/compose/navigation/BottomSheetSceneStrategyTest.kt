@@ -12,18 +12,17 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.entryProvider
-import androidx.navigation3.scene.OverlayScene
 import androidx.navigation3.scene.SceneStrategyScope
 import androidx.navigation3.ui.NavDisplay
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mozilla.fenix.theme.FirefoxTheme
 import org.mozilla.fenix.theme.Theme
-import kotlin.test.assertEquals
-import kotlin.test.assertNotEquals
-import kotlin.test.assertTrue
 
 private const val ROOT = "Root"
 private const val FIRST_SHEET = "FirstSheet"
@@ -74,10 +73,11 @@ class BottomSheetSceneStrategyTest {
 
     @Test
     fun `WHEN a bottom sheet opts out of partial expansion THEN metadata disables partial state`() {
-        val metadata = BottomSheetSceneStrategy.bottomSheet(
-            skipPartiallyExpanded = true,
-            handleContentDescription = "",
-        )
+        val metadata =
+            BottomSheetSceneStrategy.bottomSheet(
+                skipPartiallyExpanded = true,
+                handleContentDescription = "",
+            )
 
         assertTrue(metadata[BottomSheetSceneStrategy.SKIP_PARTIALLY_EXPANDED_KEY] as Boolean)
     }

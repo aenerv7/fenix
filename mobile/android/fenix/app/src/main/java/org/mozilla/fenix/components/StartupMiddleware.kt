@@ -13,12 +13,11 @@ import mozilla.components.lib.state.Store
 import org.mozilla.fenix.ext.components
 
 /**
- * [Middleware] implementation for adding a homepage tab during application startup to ensure that
- * a tab is always available.
+ * [Middleware] implementation for adding a homepage tab during application startup to ensure that a tab is always
+ * available.
  *
  * @param applicationContext The application [Context].
- * @param repository [HomepageAsANewTabPreferencesRepository] used to access the homepage as a
- * new tab preferences.
+ * @param repository [HomepageAsANewTabPreferencesRepository] used to access the homepage as a new tab preferences.
  */
 class StartupMiddleware(
     private val applicationContext: Context,
@@ -29,10 +28,7 @@ class StartupMiddleware(
         next: (BrowserAction) -> Unit,
         action: BrowserAction,
     ) {
-        if (action is RestoreCompleteAction &&
-            store.state.tabs.isEmpty() &&
-            repository.getHomepageAsANewTabEnabled()
-        ) {
+        if (action is RestoreCompleteAction && store.state.tabs.isEmpty() && repository.getHomepageAsANewTabEnabled()) {
             // After previous sessions are restored, add a new homepage tab if
             // there are no tabs on startup.
             val useCases = applicationContext.components.useCases.fenixBrowserUseCases

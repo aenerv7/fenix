@@ -12,17 +12,16 @@ import org.mozilla.fenix.ui.efficiency.navigation.behavior.BehaviorCase
 import org.mozilla.fenix.ui.efficiency.navigation.behavior.BehaviorShardData
 
 @RunWith(Parameterized::class)
-class BehaviorShard01(
-    private val case: BehaviorCase,
-) : BaseBehaviorShardTest(case) {
+class BehaviorShard01(private val case: BehaviorCase) : BaseBehaviorShardTest(case) {
 
     companion object {
         @JvmStatic
         @Parameterized.Parameters(name = "{index}: {0}")
-        fun data(): List<Array<Any>> = BehaviorShardData.loadShard(
-            shardIndex = 1,
-            shardCount = 1,
-        )
+        fun data(): List<Array<Any>> =
+            BehaviorShardData.loadShard(
+                shardIndex = 1,
+                shardCount = 1,
+            )
     }
 
     @Test

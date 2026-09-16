@@ -605,15 +605,13 @@ sealed class AppAction : Action {
         data class CannotOpenFile(val downloadState: DownloadState) : DownloadAction()
     }
 
-    /**
-     * [AppAction]s related to the search feature.
-     */
+    /** [AppAction]s related to the search feature. */
     sealed class SearchAction : AppAction() {
         /**
          * A new search has started.
          *
-         * @property tabId The ID of the tab that triggered the search.
-         * May be `null` if search was not started from a browser tab.
+         * @property tabId The ID of the tab that triggered the search. May be `null` if search was not started from a
+         *   browser tab.
          * @property source The application feature from where a new search was started.
          */
         data class SearchStarted(

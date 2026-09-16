@@ -19,10 +19,7 @@ class TabGroupLinkUseCases(
         tabGroupRepository.tabGroupDataFlow.first().tabGroupAssignments.containsKey(tabId)
 
     suspend fun addTabToParentGroup(parentTabId: String, tabId: String) {
-        val groupId = tabGroupRepository.tabGroupDataFlow
-            .first()
-            .tabGroupAssignments[parentTabId]
-            ?: return
+        val groupId = tabGroupRepository.tabGroupDataFlow.first().tabGroupAssignments[parentTabId] ?: return
 
         tabGroupRepository.addTabGroupAssignment(
             tabId = tabId,
@@ -46,16 +43,14 @@ class TabGroupLinkUseCases(
             return
         }
 
-        val lastTheme = tabGroupData.tabGroups
-            .maxByOrNull { it.lastModified }
-            ?.theme
-            ?.toTabGroupTheme()
+        val lastTheme = tabGroupData.tabGroups.maxByOrNull { it.lastModified }?.theme?.toTabGroupTheme()
         val newTheme = lastTheme?.next() ?: TabGroupTheme.default
-        val tabGroup = TabGroup(
-            title = newGroupTitle(tabGroupData.tabGroups.size + 1),
-            theme = newTheme.name,
-            lastModified = dateTimeProvider.currentTimeMillis(),
-        )
+        val tabGroup =
+            TabGroup(
+                title = newGroupTitle(tabGroupData.tabGroups.size + 1),
+                theme = newTheme.name,
+                lastModified = dateTimeProvider.currentTimeMillis(),
+            )
 
         tabGroupRepository.createTabGroupWithTabs(
             tabGroup = tabGroup,
@@ -63,6 +58,8 @@ class TabGroupLinkUseCases(
         )
     }
 
-    private fun String.toTabGroupTheme(): TabGroupTheme =
-        runCatching { TabGroupTheme.valueOf(this) }.getOrDefault(TabGroupTheme.default)
+    private fun String.toTabGroupTheme(): TabGroupTheme = runCatching {
+        TabGroupTheme.valueOf(this)
+    }
+        .getOrDefault(TabGroupTheme.default)
 }

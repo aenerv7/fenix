@@ -227,19 +227,20 @@ private fun LabsShareFeedbackLink(
 @Composable
 private fun FirefoxLabsBanner() {
     PromoCard(
-        modifier = Modifier
-            .padding(
-                horizontal = FirefoxTheme.layout.space.dynamic200,
-                vertical = FirefoxTheme.layout.space.static100,
-            )
-            .height(IntrinsicSize.Min),
+        modifier =
+            Modifier.padding(
+                    horizontal = FirefoxTheme.layout.space.dynamic200,
+                    vertical = FirefoxTheme.layout.space.static100,
+                )
+                .height(IntrinsicSize.Min),
         title = { Text(text = stringResource(R.string.firefox_labs_banner_title_2)) },
         message = {
             Text(
-                text = String.format(
-                    stringResource(R.string.firefox_labs_experimental_description),
-                    stringResource(R.string.app_name),
-                ),
+                text =
+                    String.format(
+                        stringResource(R.string.firefox_labs_experimental_description),
+                        stringResource(R.string.app_name),
+                    )
             )
         },
     )
@@ -278,19 +279,18 @@ private fun FirefoxLabsTopAppBar(onNavigationIconClick: () -> Unit) {
 private fun EmptyState(modifier: Modifier = Modifier) {
     val isWideScreen = AcornWindowSize.getWindowSize().isNotSmall()
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .wrapContentSize()
-            .thenConditional(
-                modifier = Modifier.width(IntrinsicSize.Min),
-                predicate = { !isWideScreen },
-            ),
+        modifier =
+            modifier
+                .fillMaxSize()
+                .wrapContentSize()
+                .thenConditional(
+                    modifier = Modifier.width(IntrinsicSize.Min),
+                    predicate = { !isWideScreen },
+                ),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Image(
-            modifier = Modifier
-                .width(180.dp)
-                .height(103.dp),
+            modifier = Modifier.width(180.dp).height(103.dp),
             painter = painterResource(R.drawable.fenix_labs_rabbit),
             contentDescription = null,
             contentScale = ContentScale.Fit,

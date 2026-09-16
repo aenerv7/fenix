@@ -93,16 +93,13 @@ class HomeScreenRobot(private val composeTestRule: ComposeTestRule) {
         verifyHomeScreenAppBarItems()
         composeTestRule.waitForIdle()
         mDevice.waitForIdle()
-        assertUIObjectExists(
-            itemContainingText(
-                getStringResource(R.string.felt_privacy_desc_card_title),
-            ),
-        )
+        assertUIObjectExists(itemContainingText(getStringResource(R.string.felt_privacy_desc_card_title)))
     }
 
     fun verifyHomeScreenAppBarItems() = assertUIObjectExists(homeScreen(), privateBrowsingButton())
 
     fun verifyHomePrivateBrowsingButton() = assertUIObjectExists(privateBrowsingButton())
+
     fun verifyHomeMenuButton() = assertUIObjectExists(menuButton())
 
     fun verifyHomeComponent() {
@@ -1223,57 +1220,63 @@ private fun isPrivateModeEnabled(): Boolean {
     }
 }
 
-private fun navigationToolbar() =
-    itemWithResId("$packageName:id/composable_toolbar")
-private fun menuButton() =
-    itemWithDescription(getStringResource(R.string.content_description_menu))
+private fun navigationToolbar() = itemWithResId("$packageName:id/composable_toolbar")
+
+private fun menuButton() = itemWithDescription(getStringResource(R.string.content_description_menu))
+
 private fun tabCounter(numberOfOpenTabs: String) =
     itemWithResIdAndText("$packageName:id/counter_text", numberOfOpenTabs)
 
 fun deleteFromHistory() =
     onView(
-        allOf(
-            withId(menuR.id.simple_text),
-            withText(R.string.delete_from_history),
-        ),
-    ).inRoot(RootMatchers.isPlatformPopup())
+            allOf(
+                withId(menuR.id.simple_text),
+                withText(R.string.delete_from_history),
+            )
+        )
+        .inRoot(RootMatchers.isPlatformPopup())
 
-private fun pocketStoriesList() =
-    UiScrollable(UiSelector().resourceId(POCKET_STORIES)).setAsHorizontalList()
+private fun pocketStoriesList() = UiScrollable(UiSelector().resourceId(POCKET_STORIES)).setAsHorizontalList()
 
 private fun firefoxOptionSetAsDefaultBrowserDialogRadioButton() =
     itemWithClassNameAndIndex(
-        className = "android.widget.RadioButton",
-        index = 2,
-    ).getFromParent(
-        UiSelector().className("android.widget.LinearLayout").index(1),
-    )
+            className = "android.widget.RadioButton",
+            index = 2,
+        )
+        .getFromParent(UiSelector().className("android.widget.LinearLayout").index(1))
 
 private fun ComposeTestRule.topSiteItem(title: String) =
     onAllNodesWithTag(TopSitesTestTag.TOP_SITE_ITEM_ROOT).filter(hasAnyChild(hasText(title))).onFirst()
 
-private fun ComposeTestRule.contextMenuItemOpenInPrivateTab() = onAllNodesWithTag(TopSitesTestTag.OPEN_IN_PRIVATE_TAB).onFirst()
+private fun ComposeTestRule.contextMenuItemOpenInPrivateTab() =
+    onAllNodesWithTag(TopSitesTestTag.OPEN_IN_PRIVATE_TAB).onFirst()
 
 private fun ComposeTestRule.contextMenuItemEdit() = onAllNodesWithTag(TopSitesTestTag.EDIT).onFirst()
 
 private fun ComposeTestRule.contextMenuItemRemove() = onAllNodesWithTag(TopSitesTestTag.REMOVE).onFirst()
 
-private fun ComposeTestRule.addWebsiteDialogCancelButton() = onNode(
-    hasText("Cancel").and(
-        hasAnyAncestor(
-            isDialog().and(
-                hasAnyDescendant(hasText(getStringResource(R.string.homepage_shortcuts_add_website_title))),
-            ),
-        ),
-    ),
-)
+private fun ComposeTestRule.addWebsiteDialogCancelButton() =
+    onNode(
+        hasText("Cancel")
+            .and(
+                hasAnyAncestor(
+                    isDialog()
+                        .and(
+                            hasAnyDescendant(hasText(getStringResource(R.string.homepage_shortcuts_add_website_title)))
+                        )
+                )
+            )
+    )
 
-private fun ComposeTestRule.addWebsiteDialogSaveButton() = onNode(
-    hasText("Save").and(
-        hasAnyAncestor(
-            isDialog().and(
-                hasAnyDescendant(hasText(getStringResource(R.string.homepage_shortcuts_add_website_title))),
-            ),
-        ),
-    ),
-)
+private fun ComposeTestRule.addWebsiteDialogSaveButton() =
+    onNode(
+        hasText("Save")
+            .and(
+                hasAnyAncestor(
+                    isDialog()
+                        .and(
+                            hasAnyDescendant(hasText(getStringResource(R.string.homepage_shortcuts_add_website_title)))
+                        )
+                )
+            )
+    )

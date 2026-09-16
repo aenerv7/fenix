@@ -26,9 +26,7 @@ import org.mozilla.fenix.home.intent.FennecBookmarkShortcutsIntentProcessor
 import org.mozilla.fenix.intent.ExternalDeepLinkIntentProcessor
 import org.mozilla.fenix.perf.lazyMonitored
 
-/**
- * Component group for miscellaneous components.
- */
+/** Component group for miscellaneous components. */
 @Suppress("LongParameterList")
 class IntentProcessors(
     private val context: Context,

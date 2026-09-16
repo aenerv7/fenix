@@ -96,58 +96,69 @@ class MenuNavigationMiddleware(
             when (action) {
                 is MenuAction.Navigate.MozillaAccount -> {
                     when (action.accountState) {
-                        Authenticated -> navController.nav(
-                            R.id.menuDialogFragment,
-                            MenuDialogFragmentDirections.actionGlobalAccountSettingsFragment(),
-                        )
+                        Authenticated ->
+                            navController.nav(
+                                R.id.menuDialogFragment,
+                                MenuDialogFragmentDirections.actionGlobalAccountSettingsFragment(),
+                            )
 
-                        AuthenticationProblem -> navController.nav(
-                            R.id.menuDialogFragment,
-                            MenuDialogFragmentDirections.actionGlobalAccountProblemFragment(
-                                entrypoint = action.accesspoint.toFenixFxAEntryPoint(),
-                            ),
-                        )
+                        AuthenticationProblem ->
+                            navController.nav(
+                                R.id.menuDialogFragment,
+                                MenuDialogFragmentDirections.actionGlobalAccountProblemFragment(
+                                    entrypoint = action.accesspoint.toFenixFxAEntryPoint()
+                                ),
+                            )
 
-                        is Authenticating, NotAuthenticated, Unknown -> navController.nav(
-                            R.id.menuDialogFragment,
-                            MenuDialogFragmentDirections.actionGlobalTurnOnSync(
-                                entrypoint = action.accesspoint.toFenixFxAEntryPoint(),
-                            ),
-                        )
+                        is Authenticating,
+                        NotAuthenticated,
+                        Unknown ->
+                            navController.nav(
+                                R.id.menuDialogFragment,
+                                MenuDialogFragmentDirections.actionGlobalTurnOnSync(
+                                    entrypoint = action.accesspoint.toFenixFxAEntryPoint()
+                                ),
+                            )
                     }
                 }
 
-                is MenuAction.Navigate.Settings -> navController.nav(
-                    R.id.menuDialogFragment,
-                    MenuDialogFragmentDirections.actionGlobalSettingsFragment(),
-                )
+                is MenuAction.Navigate.Settings ->
+                    navController.nav(
+                        R.id.menuDialogFragment,
+                        MenuDialogFragmentDirections.actionGlobalSettingsFragment(),
+                    )
 
-                is MenuAction.Navigate.CustomizeHomepage -> navController.nav(
-                    R.id.menuDialogFragment,
-                    MenuDialogFragmentDirections.actionGlobalHomeSettingsFragment(),
-                )
+                is MenuAction.Navigate.CustomizeHomepage ->
+                    navController.nav(
+                        R.id.menuDialogFragment,
+                        MenuDialogFragmentDirections.actionGlobalHomeSettingsFragment(),
+                    )
 
-                is MenuAction.Navigate.InstalledAddonDetails -> navController.nav(
-                    R.id.menuDialogFragment,
-                    MenuDialogFragmentDirections.actionMenuDialogFragmentToInstalledAddonDetailsFragment(
-                        addon = action.addon,
-                    ),
-                )
+                is MenuAction.Navigate.InstalledAddonDetails ->
+                    navController.nav(
+                        R.id.menuDialogFragment,
+                        MenuDialogFragmentDirections.actionMenuDialogFragmentToInstalledAddonDetailsFragment(
+                            addon = action.addon
+                        ),
+                    )
 
-                is MenuAction.Navigate.Bookmarks -> navController.nav(
-                    R.id.menuDialogFragment,
-                    MenuDialogFragmentDirections.actionGlobalBookmarkFragment(BookmarkRoot.Mobile.id),
-                )
+                is MenuAction.Navigate.Bookmarks ->
+                    navController.nav(
+                        R.id.menuDialogFragment,
+                        MenuDialogFragmentDirections.actionGlobalBookmarkFragment(BookmarkRoot.Mobile.id),
+                    )
 
-                is MenuAction.Navigate.History -> navController.nav(
-                    R.id.menuDialogFragment,
-                    MenuDialogFragmentDirections.actionGlobalHistoryFragment(),
-                )
+                is MenuAction.Navigate.History ->
+                    navController.nav(
+                        R.id.menuDialogFragment,
+                        MenuDialogFragmentDirections.actionGlobalHistoryFragment(),
+                    )
 
-                is MenuAction.Navigate.Downloads -> navController.nav(
-                    R.id.menuDialogFragment,
-                    MenuDialogFragmentDirections.actionGlobalDownloadsFragment(),
-                )
+                is MenuAction.Navigate.Downloads ->
+                    navController.nav(
+                        R.id.menuDialogFragment,
+                        MenuDialogFragmentDirections.actionGlobalDownloadsFragment(),
+                    )
 
                 is MenuAction.Navigate.EditBookmark -> {
                     currentState.browserMenuState?.bookmarkState?.guid?.let { guidToEdit ->

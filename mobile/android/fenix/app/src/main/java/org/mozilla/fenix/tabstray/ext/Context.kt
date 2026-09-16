@@ -8,9 +8,7 @@ import android.content.Context
 
 const val MIN_COLUMN_WIDTH_DP = 180
 
-/**
- * Returns the number of grid columns we can fit on the screen in the tabs tray.
- */
+/** Returns the number of grid columns we can fit on the screen in the tabs tray. */
 internal val Context.numberOfGridColumns: Int
     get() {
         val displayMetrics = resources.displayMetrics

@@ -1,11 +1,11 @@
 package org.mozilla.fenix.ui.efficiency.navigation.pairs
 
 import android.util.Log
+import androidx.compose.ui.test.junit4.v2.AndroidComposeTestRule as AndroidComposeTestRuleV2
 import org.mozilla.fenix.helpers.HomeActivityIntentTestRule
 import org.mozilla.fenix.ui.efficiency.helpers.PageContext
 import org.mozilla.fenix.ui.efficiency.navigation.NavigationRegistry
 import org.mozilla.fenix.ui.efficiency.navigation.planning.PageCatalog
-import androidx.compose.ui.test.junit4.v2.AndroidComposeTestRule as AndroidComposeTestRuleV2
 
 object NavigationPairGraphBootstrap {
 
@@ -16,12 +16,15 @@ object NavigationPairGraphBootstrap {
             return
         }
 
-        val composeRule = AndroidComposeTestRuleV2(
-            HomeActivityIntentTestRule(
-                skipOnboarding = true,
-                isPageLoadTranslationsPromptEnabled = false,
-            ),
-        ) { it.activity }
+        val composeRule =
+            AndroidComposeTestRuleV2(
+                HomeActivityIntentTestRule(
+                    skipOnboarding = true,
+                    isPageLoadTranslationsPromptEnabled = false,
+                )
+            ) {
+                it.activity
+            }
 
         val pageContext = PageContext(composeRule)
 

@@ -102,9 +102,7 @@ sealed interface TabGroupAction : TabsTrayAction {
      */
     data class SelectedTabsClosedFromGroup(val groupId: String) : TabGroupAction, TabsStorageAction
 
-    /**
-     * Restores closed tabs to their original tab group after an undo.
-     */
+    /** Restores closed tabs to their original tab group after an undo. */
     data class RestoreTabsToGroup(
         val group: TabsTrayItem.TabGroup,
         val tabIds: List<String>,

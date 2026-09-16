@@ -28,18 +28,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import mozilla.components.compose.base.button.IconButton
+import mozilla.components.ui.icons.R as iconsR
 import org.mozilla.fenix.R
 import org.mozilla.fenix.theme.FirefoxTheme
 import org.mozilla.fenix.theme.PreviewThemeProvider
 import org.mozilla.fenix.theme.Theme
-import mozilla.components.ui.icons.R as iconsR
 
 /**
  * A full-width banner shown in the menu prompting the user to set Firefox as their default browser.
  *
- * The entire banner text area is clickable to launch the
- * system default-browser picker. An “X” icon at the end lets the user permanently dismiss the
- * banner.
+ * The entire banner text area is clickable to launch the system default-browser picker. An “X” icon at the end lets the
+ * user permanently dismiss the banner.
  *
  * @param onDismiss Invoked when the user taps the dismiss icon (“X”).
  * @param onClick Invoked when the user taps anywhere else on the banner.
@@ -54,22 +53,20 @@ fun MenuBanner(
     val appName = stringResource(R.string.app_name)
 
     Surface(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
+        modifier = modifier.fillMaxWidth().clickable(onClick = onClick),
         shape = MaterialTheme.shapes.extraLarge,
         color = MaterialTheme.colorScheme.surfaceBright,
     ) {
         Box {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        start = 24.dp,
-                        top = 12.dp,
-                        end = 48.dp,
-                        bottom = 10.dp,
-                    ),
+                modifier =
+                    Modifier.fillMaxWidth()
+                        .padding(
+                            start = 24.dp,
+                            top = 12.dp,
+                            end = 48.dp,
+                            bottom = 10.dp,
+                        )
             ) {
                 Text(
                     text = stringResource(id = R.string.browser_menu_default_banner_title, appName),
@@ -93,16 +90,12 @@ fun MenuBanner(
             IconButton(
                 onClick = onDismiss,
                 contentDescription = stringResource(id = R.string.browser_menu_default_banner_dismiss_promotion),
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .size(48.dp)
-                    .semantics(mergeDescendants = true) {},
+                modifier = Modifier.align(Alignment.CenterEnd).size(48.dp).semantics(mergeDescendants = true) {},
             ) {
                 Icon(
                     painter = painterResource(id = iconsR.drawable.mozac_ic_cross_20),
                     contentDescription = null,
-                    modifier = Modifier
-                        .padding(end = 12.dp),
+                    modifier = Modifier.padding(end = 12.dp),
                     tint = MaterialTheme.colorScheme.secondary,
                 )
             }

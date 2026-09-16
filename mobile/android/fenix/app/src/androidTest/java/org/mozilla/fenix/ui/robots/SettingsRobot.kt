@@ -54,17 +54,14 @@ import org.mozilla.fenix.helpers.TestHelper.scrollToElementByText
 import org.mozilla.fenix.helpers.click
 import org.mozilla.fenix.helpers.ext.waitNotNull
 
-/**
- * Implementation of Robot Pattern for the settings menu.
- */
+/** Implementation of Robot Pattern for the settings menu. */
 class SettingsRobot {
 
     // BASICS SECTION
     fun verifyGeneralHeading() {
         scrollToElementByText("General")
         Log.i(TAG, "verifyGeneralHeading: Trying to verify that the \"General\" heading is visible")
-        onView(withText("General"))
-            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+        onView(withText("General")).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
         Log.i(TAG, "verifyGeneralHeading: Verified that the \"General\" heading is visible")
     }
 

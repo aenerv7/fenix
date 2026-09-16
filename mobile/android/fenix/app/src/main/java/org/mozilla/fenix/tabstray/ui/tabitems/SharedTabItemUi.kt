@@ -712,77 +712,84 @@ private fun Modifier.tabItemInteractionAnimation(
 
 /**
  * The default animations for a tab GridItem.
+ *
  * @param lazyGridItemScope The [LazyGridItemScope] (needed to define animateItem())
- * @param enteringGroupId The id of the group entering composition, if any.  Can be null.
+ * @param enteringGroupId The id of the group entering composition, if any. Can be null.
  */
 @Composable
 fun Modifier.defaultGridItemAnimation(
     lazyGridItemScope: LazyGridItemScope,
     enteringGroupId: String?,
-): Modifier = with(lazyGridItemScope) {
-    /*
-     * We need to explicitly set each of the LazyGrid animations to NULL to prevent some defaults
-     * from occurring while the group entrance animation is playing.  Items are by default
-     * clipped to their bounds while fade in/out animations are playing, and the group animation
-     * scales to overshoot its bounds.
-     *
-     * Additionally, per the spec, we don't want to see 'ghost' items of the tabs that are being
-     * combined to show the group, and the group should start at its placed position.
-     * Fade-out stays disabled for grid items so a removed final cell cannot remain visible as
-     * non-interactive content until the next layout update.
-     */
-    this@defaultGridItemAnimation.animateItem(
-        fadeOutSpec = null,
-        placementSpec = if (enteringGroupId != null) {
-            null
-        } else {
-            spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMediumLow)
-        },
-        fadeInSpec = if (enteringGroupId != null) {
-            null
-        } else {
-            spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMedium)
-        },
-    )
-}
+): Modifier =
+    with(lazyGridItemScope) {
+        /*
+         * We need to explicitly set each of the LazyGrid animations to NULL to prevent some defaults
+         * from occurring while the group entrance animation is playing.  Items are by default
+         * clipped to their bounds while fade in/out animations are playing, and the group animation
+         * scales to overshoot its bounds.
+         *
+         * Additionally, per the spec, we don't want to see 'ghost' items of the tabs that are being
+         * combined to show the group, and the group should start at its placed position.
+         * Fade-out stays disabled for grid items so a removed final cell cannot remain visible as
+         * non-interactive content until the next layout update.
+         */
+        this@defaultGridItemAnimation.animateItem(
+            fadeOutSpec = null,
+            placementSpec =
+                if (enteringGroupId != null) {
+                    null
+                } else {
+                    spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMediumLow)
+                },
+            fadeInSpec =
+                if (enteringGroupId != null) {
+                    null
+                } else {
+                    spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMedium)
+                },
+        )
+    }
 
 /**
  * The default animations for a tab ListItem.
+ *
  * @param lazyListItemScope The [LazyItemScope] (needed to define animateItem())
- * @param enteringGroupId The id of the group entering composition, if any.  Can be null.
+ * @param enteringGroupId The id of the group entering composition, if any. Can be null.
  */
 @Composable
 fun Modifier.defaultListItemAnimation(
     lazyListItemScope: LazyItemScope,
     enteringGroupId: String?,
-): Modifier = with(lazyListItemScope) {
-    this@defaultListItemAnimation.animateItem(
-        // When the group entrance animation is playing, all fade-out animations should be suppressed.
-        // You should not see the exiting tabs fade out that are becoming a group.
-        fadeOutSpec = if (enteringGroupId != null) {
-            null
-        } else {
-            spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMediumLow)
-        },
-        // When the group entrance animation is playing, all grid shuffle animations should be suppressed.
-        // The group should appear to enter at the place it was dropped (without translating up/down/left/right).
-        // Nearby tabs should not appear to shuffle to make room for the group.
-        placementSpec = if (enteringGroupId != null) {
-            null
-        } else {
-            spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMediumLow)
-        },
-        fadeInSpec = spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMedium),
-    )
-}
+): Modifier =
+    with(lazyListItemScope) {
+        this@defaultListItemAnimation.animateItem(
+            // When the group entrance animation is playing, all fade-out animations should be suppressed.
+            // You should not see the exiting tabs fade out that are becoming a group.
+            fadeOutSpec =
+                if (enteringGroupId != null) {
+                    null
+                } else {
+                    spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMediumLow)
+                },
+            // When the group entrance animation is playing, all grid shuffle animations should be suppressed.
+            // The group should appear to enter at the place it was dropped (without translating up/down/left/right).
+            // Nearby tabs should not appear to shuffle to make room for the group.
+            placementSpec =
+                if (enteringGroupId != null) {
+                    null
+                } else {
+                    spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMediumLow)
+                },
+            fadeInSpec = spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMedium),
+        )
+    }
 
 /**
  * Creates a [SwipeToDismissBoxState] for the tab item identified by [tabId].
  *
- * Deliberately not [androidx.compose.material3.rememberSwipeToDismissBoxState], which saves its
- * current value: a lazy layout keeps an item's saved state around after the item leaves the list,
- * so a tab restored through the undo snackbar would return as swiped away
- * and be dismissed again on its first composition.
+ * Deliberately not [androidx.compose.material3.rememberSwipeToDismissBoxState], which saves its current value: a lazy
+ * layout keeps an item's saved state around after the item leaves the list, so a tab restored through the undo snackbar
+ * would return as swiped away and be dismissed again on its first composition.
  *
  * @param tabId The id of the tab the state belongs to.
  */

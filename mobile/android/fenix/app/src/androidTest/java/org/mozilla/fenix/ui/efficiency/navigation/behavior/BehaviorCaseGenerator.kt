@@ -12,8 +12,8 @@ object BehaviorCaseGenerator {
     /**
      * Existing API.
      *
-     * Keep this because it matches the Navigation/Interaction generator pattern:
-     * dump boilerplate/templates first, execute later.
+     * Keep this because it matches the Navigation/Interaction generator pattern: dump boilerplate/templates first,
+     * execute later.
      */
     fun logBehaviorCaseBoilerplate(
         includeSkipped: Boolean = true,
@@ -29,8 +29,7 @@ object BehaviorCaseGenerator {
     /**
      * Alias for readability in tests.
      *
-     * Use this when the test name is "logBehaviorCasePlans".
-     * Internally it still prints boilerplate.
+     * Use this when the test name is "logBehaviorCasePlans". Internally it still prints boilerplate.
      */
     fun logBehaviorCasePlans(
         profile: BehaviorMatrixProfile = BehaviorRunArguments.matrixProfile(),
@@ -42,34 +41,29 @@ object BehaviorCaseGenerator {
         )
     }
 
-    fun logBehaviorPlanSummary(
-        profile: BehaviorMatrixProfile = BehaviorRunArguments.matrixProfile(),
-    ) {
+    fun logBehaviorPlanSummary(profile: BehaviorMatrixProfile = BehaviorRunArguments.matrixProfile()) {
         val plans = buildPlans(profile)
         logBehaviorPlanSummary(plans)
     }
 
-    fun logBehaviorMatrixSummary(
-        profile: BehaviorMatrixProfile = BehaviorRunArguments.matrixProfile(),
-    ) {
+    fun logBehaviorMatrixSummary(profile: BehaviorMatrixProfile = BehaviorRunArguments.matrixProfile()) {
         val plans = buildPlans(profile)
         logBehaviorMatrixSummary(plans)
     }
 
-    fun logBehaviorMatrixSummary(
-        plans: List<BehaviorCasePlan>,
-    ) {
+    fun logBehaviorMatrixSummary(plans: List<BehaviorCasePlan>) {
         val byContext = plans.groupBy { it.context.toString() }
         val byFeatureEntity = plans.groupBy { "${it.feature}.${it.entity}" }
         val byTemplate = plans.groupBy { it.templateId }
 
-        val skippedByReason = plans
-            .mapNotNull { plan ->
-                plan.skippedReason?.let { reason ->
-                    reason to plan.automationId
+        val skippedByReason =
+            plans
+                .mapNotNull { plan ->
+                    plan.skippedReason?.let { reason ->
+                        reason to plan.automationId
+                    }
                 }
-            }
-            .groupBy({ it.first }, { it.second })
+                .groupBy({ it.first }, { it.second })
 
         if (skippedByReason.isNotEmpty()) {
             line("")
@@ -80,11 +74,9 @@ object BehaviorCaseGenerator {
                     val distinctAutomationIds = automationIds.distinct().sorted()
 
                     line("  - $reason")
-                    distinctAutomationIds
-                        .take(10)
-                        .forEach { automationId ->
-                            line("      used by $automationId")
-                        }
+                    distinctAutomationIds.take(10).forEach { automationId ->
+                        line("      used by $automationId")
+                    }
 
                     if (distinctAutomationIds.size > 10) {
                         line("      ...and ${distinctAutomationIds.size - 10} more")
@@ -106,10 +98,7 @@ object BehaviorCaseGenerator {
         byContext.entries
             .sortedBy { it.key }
             .forEach { (context, contextPlans) ->
-                line(
-                    "  - $context: " +
-                        "${contextPlans.count { it.isRunnable }}/${contextPlans.size} runnable",
-                )
+                line("  - $context: " + "${contextPlans.count { it.isRunnable }}/${contextPlans.size} runnable")
             }
 
         line("")
@@ -117,10 +106,7 @@ object BehaviorCaseGenerator {
         byFeatureEntity.entries
             .sortedBy { it.key }
             .forEach { (key, featurePlans) ->
-                line(
-                    "  - $key: " +
-                        "${featurePlans.count { it.isRunnable }}/${featurePlans.size} runnable",
-                )
+                line("  - $key: " + "${featurePlans.count { it.isRunnable }}/${featurePlans.size} runnable")
             }
 
         line("")
@@ -128,19 +114,17 @@ object BehaviorCaseGenerator {
         byTemplate.entries
             .sortedBy { it.key }
             .forEach { (templateId, templatePlans) ->
-                line(
-                    "  - $templateId: " +
-                        "${templatePlans.count { it.isRunnable }}/${templatePlans.size} runnable",
-                )
+                line("  - $templateId: " + "${templatePlans.count { it.isRunnable }}/${templatePlans.size} runnable")
             }
 
-        val missingGroups = plans
-            .flatMap { plan ->
-                plan.missingRequirements.map { missing ->
-                    missing to plan.automationId
+        val missingGroups =
+            plans
+                .flatMap { plan ->
+                    plan.missingRequirements.map { missing ->
+                        missing to plan.automationId
+                    }
                 }
-            }
-            .groupBy({ it.first }, { it.second })
+                .groupBy({ it.first }, { it.second })
 
         if (missingGroups.isNotEmpty()) {
             line("")
@@ -149,13 +133,9 @@ object BehaviorCaseGenerator {
                 .sortedBy { it.key }
                 .forEach { (missingRequirement, automationIds) ->
                     line("  - $missingRequirement")
-                    automationIds
-                        .distinct()
-                        .sorted()
-                        .take(10)
-                        .forEach { automationId ->
-                            line("      used by $automationId")
-                        }
+                    automationIds.distinct().sorted().take(10).forEach { automationId ->
+                        line("      used by $automationId")
+                    }
 
                     if (automationIds.distinct().size > 10) {
                         line("      ...and ${automationIds.distinct().size - 10} more")
@@ -166,9 +146,7 @@ object BehaviorCaseGenerator {
         line("--------------------------------------------------")
     }
 
-    fun logBehaviorPlanSummary(
-        plans: List<BehaviorCasePlan>,
-    ) {
+    fun logBehaviorPlanSummary(plans: List<BehaviorCasePlan>) {
         val grouped = plans.groupBy { it.feature to it.entity }
 
         line("Behavior plan summary")
@@ -179,27 +157,22 @@ object BehaviorCaseGenerator {
                 compareBy(
                     { it.key.first },
                     { it.key.second },
-                ),
+                )
             )
             .forEach { (featureEntity, featurePlans) ->
                 val runnable = featurePlans.count { it.isRunnable }
 
-                line(
-                    "${featureEntity.first}.${featureEntity.second}: " +
-                        "$runnable/${featurePlans.size} runnable",
-                )
+                line("${featureEntity.first}.${featureEntity.second}: " + "$runnable/${featurePlans.size} runnable")
 
-                featurePlans
-                    .sortedWith(compareBy({ it.templateId }, { it.context.toString() }))
-                    .forEach { plan ->
-                        line(
-                            "  - ${plan.automationId} " +
-                                "runnable=${plan.isRunnable} " +
-                                "context=${plan.context} " +
-                                "missing=${plan.missingRequirements} " +
-                                "skippedReason=${plan.skippedReason}",
-                        )
-                    }
+                featurePlans.sortedWith(compareBy({ it.templateId }, { it.context.toString() })).forEach { plan ->
+                    line(
+                        "  - ${plan.automationId} " +
+                            "runnable=${plan.isRunnable} " +
+                            "context=${plan.context} " +
+                            "missing=${plan.missingRequirements} " +
+                            "skippedReason=${plan.skippedReason}"
+                    )
+                }
             }
 
         line("--------------------------------------------------")
@@ -225,68 +198,83 @@ object BehaviorCaseGenerator {
         line("--------------------------------------------------")
     }
 
-    private fun buildPlans(
-        profile: BehaviorMatrixProfile,
-    ): List<BehaviorCasePlan> {
+    private fun buildPlans(profile: BehaviorMatrixProfile): List<BehaviorCasePlan> {
         BehaviorGraphBootstrap.ensureInitialized()
 
-        return BehaviorTestPlanner.buildBehaviorCasePlans(
-            contexts = BehaviorContextMatrix.variants(profile),
-        )
+        return BehaviorTestPlanner.buildBehaviorCasePlans(contexts = BehaviorContextMatrix.variants(profile))
     }
 
     private fun BehaviorCasePlan.toBoilerplateBlock(): String {
-        val capabilityBlock = if (capabilityIds.isEmpty()) {
-            "emptyList()"
-        } else {
-            capabilityIds.joinToString(
-                separator = ",\n                    ",
-                prefix = "listOf(\n                    ",
-                postfix = ",\n                )",
-            ) { "\"$it\"" }
-        }
+        val capabilityBlock =
+            if (capabilityIds.isEmpty()) {
+                "emptyList()"
+            } else {
+                capabilityIds.joinToString(
+                    separator = ",\n                    ",
+                    prefix = "listOf(\n                    ",
+                    postfix = ",\n                )",
+                ) {
+                    "\"$it\""
+                }
+            }
 
-        val requiredOperationsBlock = if (requiredOperations.isEmpty()) {
-            "emptyList()"
-        } else {
-            requiredOperations.joinToString(
+        val requiredOperationsBlock =
+            if (requiredOperations.isEmpty()) {
+                "emptyList()"
+            } else {
+                requiredOperations.joinToString(
+                    separator = ", ",
+                    prefix = "listOf(",
+                    postfix = ")",
+                ) {
+                    "BehaviorOperation.$it"
+                }
+            }
+
+        val dataBlock =
+            data.values.entries
+                .sortedBy { it.key }
+                .joinToString(
+                    separator = ", ",
+                    prefix = "mapOf(",
+                    postfix = ")",
+                ) {
+                    "\"${it.key}\" to \"${it.value}\""
+                }
+
+        val contextBlock =
+            context.values.entries
+                .sortedBy { it.key }
+                .joinToString(
+                    separator = ", ",
+                    prefix = "mapOf(",
+                    postfix = ")",
+                ) {
+                    "\"${it.key}\" to \"${it.value}\""
+                }
+
+        val navigationTransitionsBlock =
+            navigationTransitions.joinToString(
                 separator = ", ",
                 prefix = "listOf(",
                 postfix = ")",
-            ) { "BehaviorOperation.$it" }
-        }
+            ) {
+                "\"$it\""
+            }
 
-        val dataBlock = data.values.entries
-            .sortedBy { it.key }
-            .joinToString(
+        val missingRequirementsBlock =
+            missingRequirements.joinToString(
                 separator = ", ",
-                prefix = "mapOf(",
+                prefix = "listOf(",
                 postfix = ")",
-            ) { "\"${it.key}\" to \"${it.value}\"" }
+            ) {
+                "\"$it\""
+            }
 
-        val contextBlock = context.values.entries
-            .sortedBy { it.key }
-            .joinToString(
-                separator = ", ",
-                prefix = "mapOf(",
-                postfix = ")",
-            ) { "\"${it.key}\" to \"${it.value}\"" }
-
-        val navigationTransitionsBlock = navigationTransitions.joinToString(
-            separator = ", ",
-            prefix = "listOf(",
-            postfix = ")",
-        ) { "\"$it\"" }
-
-        val missingRequirementsBlock = missingRequirements.joinToString(
-            separator = ", ",
-            prefix = "listOf(",
-            postfix = ")",
-        ) { "\"$it\"" }
-
-        val skippedReasonBlock = skippedReason?.let {
-            "\"${it.escapeForKotlin()}\""
-        } ?: "null"
+        val skippedReasonBlock =
+            skippedReason?.let {
+                "\"${it.escapeForKotlin()}\""
+            } ?: "null"
 
         return """
             // automationId=$automationId
@@ -324,7 +312,8 @@ object BehaviorCaseGenerator {
                 missingRequirements = $missingRequirementsBlock,
                 skippedReason = $skippedReasonBlock,
             )
-        """.trimIndent()
+        """
+            .trimIndent()
     }
 
     private fun line(message: String) {
@@ -333,25 +322,21 @@ object BehaviorCaseGenerator {
     }
 
     private fun String.escapeForKotlin(): String {
-        return replace("\\", "\\\\")
-            .replace("\"", "\\\"")
-            .replace("\n", "\\n")
+        return replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n")
     }
 
     fun logBehaviorContextManifest() {
         line("Behavior context manifest")
         line("--------------------------------------------------")
 
-        BehaviorContextManifest.all
-            .sortedWith(compareBy({ it.key }, { it.value }))
-            .forEach { spec ->
-                line(
-                    "${spec.id} " +
-                        "status=${spec.status} " +
-                        "applicationMode=${spec.applicationMode} " +
-                        "reason=${spec.reason}",
-                )
-            }
+        BehaviorContextManifest.all.sortedWith(compareBy({ it.key }, { it.value })).forEach { spec ->
+            line(
+                "${spec.id} " +
+                    "status=${spec.status} " +
+                    "applicationMode=${spec.applicationMode} " +
+                    "reason=${spec.reason}"
+            )
+        }
 
         line("--------------------------------------------------")
     }
@@ -375,7 +360,7 @@ object BehaviorCaseGenerator {
                 line(
                     "    - $context " +
                         "supported=${decision.isSupported}" +
-                        decision.skippedReason?.let { " reason=$it" }.orEmpty(),
+                        decision.skippedReason?.let { " reason=$it" }.orEmpty()
                 )
             }
 
@@ -383,16 +368,14 @@ object BehaviorCaseGenerator {
         }
 
         line("Manifest:")
-        BehaviorContextManifest.all
-            .sortedWith(compareBy({ it.key }, { it.value }))
-            .forEach { spec ->
-                line(
-                    "  - ${spec.id} " +
-                        "status=${spec.status} " +
-                        "applicationMode=${spec.applicationMode} " +
-                        "reason=${spec.reason}",
-                )
-            }
+        BehaviorContextManifest.all.sortedWith(compareBy({ it.key }, { it.value })).forEach { spec ->
+            line(
+                "  - ${spec.id} " +
+                    "status=${spec.status} " +
+                    "applicationMode=${spec.applicationMode} " +
+                    "reason=${spec.reason}"
+            )
+        }
 
         line("--------------------------------------------------")
     }

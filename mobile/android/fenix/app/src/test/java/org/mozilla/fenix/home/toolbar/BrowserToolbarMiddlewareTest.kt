@@ -701,12 +701,13 @@ class BrowserToolbarMiddlewareTest {
     @Test
     fun `GIVEN a selected homepage tab WHEN the page origin is clicked THEN search in that tab`() {
         val homepageTab = createTab(ABOUT_HOME_URL)
-        val browserStore = BrowserStore(
-            BrowserState(
-                tabs = listOf(homepageTab),
-                selectedTabId = homepageTab.id,
-            ),
-        )
+        val browserStore =
+            BrowserStore(
+                BrowserState(
+                    tabs = listOf(homepageTab),
+                    selectedTabId = homepageTab.id,
+                )
+            )
         val (_, toolbarStore) = buildMiddlewareAndAddToStore(browserStore = browserStore)
 
         toolbarStore.dispatch(toolbarStore.state.displayState.pageOrigin.onClick as BrowserToolbarAction)
@@ -717,12 +718,13 @@ class BrowserToolbarMiddlewareTest {
     @Test
     fun `GIVEN a selected web page WHEN the page origin is clicked THEN do not reuse that tab`() {
         val webTab = createTab("https://example.com")
-        val browserStore = BrowserStore(
-            BrowserState(
-                tabs = listOf(webTab),
-                selectedTabId = webTab.id,
-            ),
-        )
+        val browserStore =
+            BrowserStore(
+                BrowserState(
+                    tabs = listOf(webTab),
+                    selectedTabId = webTab.id,
+                )
+            )
         val (_, toolbarStore) = buildMiddlewareAndAddToStore(browserStore = browserStore)
 
         toolbarStore.dispatch(toolbarStore.state.displayState.pageOrigin.onClick as BrowserToolbarAction)
@@ -945,102 +947,97 @@ class BrowserToolbarMiddlewareTest {
     }
 
     @Test
-    fun `GIVEN SupportedMenuNotifications doesn't contains NotDefaultBrowser but other notification THEN menu button is not highlighted`() = runTest {
-        val appStore = AppStore(
-            initialState = AppState(
-                supportedMenuNotifications = emptySet(),
-            ),
-        )
-        val (_, toolbarStore) = buildMiddlewareAndAddToStore(
-            appStore = appStore,
-        )
+    fun `GIVEN SupportedMenuNotifications doesn't contains NotDefaultBrowser but other notification THEN menu button is not highlighted`() =
+        runTest {
+            val appStore = AppStore(initialState = AppState(supportedMenuNotifications = emptySet()))
+            val (_, toolbarStore) = buildMiddlewareAndAddToStore(appStore = appStore)
 
-        testDispatcher.scheduler.advanceUntilIdle()
-        val menuButton = toolbarStore.state.displayState.browserActionsEnd[1] as ActionButtonRes
-        assertEquals(expectedMenuButton(false), menuButton)
-    }
+            testDispatcher.scheduler.advanceUntilIdle()
+            val menuButton = toolbarStore.state.displayState.browserActionsEnd[1] as ActionButtonRes
+            assertEquals(expectedMenuButton(false), menuButton)
+        }
 
     @Test
-    fun `GIVEN menu is highlighted from browser not being set as default during onboarding WHEN clicking the menu button THEN remove highlight`() = runTest {
-        val appStore = AppStore(
-            initialState = AppState(
-                supportedMenuNotifications = setOf(SupportedMenuNotifications.NotDefaultBrowser),
-            ),
-        )
-        val (_, toolbarStore) = buildMiddlewareAndAddToStore(
-            appStore = appStore,
-        )
+    fun `GIVEN menu is highlighted from browser not being set as default during onboarding WHEN clicking the menu button THEN remove highlight`() =
+        runTest {
+            val appStore =
+                AppStore(
+                    initialState =
+                        AppState(supportedMenuNotifications = setOf(SupportedMenuNotifications.NotDefaultBrowser))
+                )
+            val (_, toolbarStore) = buildMiddlewareAndAddToStore(appStore = appStore)
 
-        testDispatcher.scheduler.advanceUntilIdle()
-        val initialMenuButton = toolbarStore.state.displayState.browserActionsEnd[1] as ActionButtonRes
-        assertEquals(expectedMenuButton(true), initialMenuButton)
+            testDispatcher.scheduler.advanceUntilIdle()
+            val initialMenuButton = toolbarStore.state.displayState.browserActionsEnd[1] as ActionButtonRes
+            assertEquals(expectedMenuButton(true), initialMenuButton)
 
-        appStore.dispatch(
-            AppAction.MenuNotification.RemoveMenuNotification(
-                SupportedMenuNotifications.NotDefaultBrowser,
-            ),
-        )
+            appStore.dispatch(
+                AppAction.MenuNotification.RemoveMenuNotification(SupportedMenuNotifications.NotDefaultBrowser)
+            )
 
-        testDispatcher.scheduler.advanceUntilIdle()
-        val updatedMenuButton = toolbarStore.state.displayState.browserActionsEnd[1] as ActionButtonRes
-        assertEquals(expectedMenuButton(), updatedMenuButton)
-    }
+            testDispatcher.scheduler.advanceUntilIdle()
+            val updatedMenuButton = toolbarStore.state.displayState.browserActionsEnd[1] as ActionButtonRes
+            assertEquals(expectedMenuButton(), updatedMenuButton)
+        }
 
     @Test
-    fun `GIVEN expanded toolbar use translate shortcut WHEN initializing toolbar THEN show DISABLED Translate in navigation actions`() = runTest {
-        every { testContext.components.settings.shouldUseExpandedToolbar } returns true
-        every { testContext.components.settings.toolbarExpandedShortcutKey } returns ShortcutType.TRANSLATE.value
+    fun `GIVEN expanded toolbar use translate shortcut WHEN initializing toolbar THEN show DISABLED Translate in navigation actions`() =
+        runTest {
+            every { testContext.components.settings.shouldUseExpandedToolbar } returns true
+            every { testContext.components.settings.toolbarExpandedShortcutKey } returns ShortcutType.TRANSLATE.value
 
-        val (_, toolbarStore) = buildMiddlewareAndAddToStore()
+            val (_, toolbarStore) = buildMiddlewareAndAddToStore()
 
-        val translateButton = toolbarStore.state.displayState.navigationActions.first() as ActionButtonRes
-        assertEquals(expectedTranslateButton, translateButton)
-    }
-
-    @Test
-    fun `GIVEN expanded toolbar use homepage shortcut WHEN initializing toolbar THEN show DISABLED Homepage in navigation actions`() = runTest {
-        every { testContext.components.settings.shouldUseExpandedToolbar } returns true
-        every { testContext.components.settings.toolbarExpandedShortcutKey } returns ShortcutType.HOMEPAGE.value
-
-        val (_, toolbarStore) = buildMiddlewareAndAddToStore()
-
-        val homepageButton = toolbarStore.state.displayState.navigationActions.first() as ActionButtonRes
-        assertEquals(expectedHomepageButton, homepageButton)
-    }
+            val translateButton = toolbarStore.state.displayState.navigationActions.first() as ActionButtonRes
+            assertEquals(expectedTranslateButton, translateButton)
+        }
 
     @Test
-    fun `GIVEN expanded toolbar use back shortcut WHEN initializing toolbar THEN show DISABLED Back in navigation actions`() = runTest {
-        every { testContext.components.settings.shouldUseExpandedToolbar } returns true
-        every { testContext.components.settings.toolbarExpandedShortcutKey } returns ShortcutType.BACK.value
+    fun `GIVEN expanded toolbar use homepage shortcut WHEN initializing toolbar THEN show DISABLED Homepage in navigation actions`() =
+        runTest {
+            every { testContext.components.settings.shouldUseExpandedToolbar } returns true
+            every { testContext.components.settings.toolbarExpandedShortcutKey } returns ShortcutType.HOMEPAGE.value
 
-        val (_, toolbarStore) = buildMiddlewareAndAddToStore()
+            val (_, toolbarStore) = buildMiddlewareAndAddToStore()
 
-        val backButton = toolbarStore.state.displayState.navigationActions.first() as ActionButtonRes
-        assertEquals(expectedBackButton, backButton)
-    }
+            val homepageButton = toolbarStore.state.displayState.navigationActions.first() as ActionButtonRes
+            assertEquals(expectedHomepageButton, homepageButton)
+        }
+
+    @Test
+    fun `GIVEN expanded toolbar use back shortcut WHEN initializing toolbar THEN show DISABLED Back in navigation actions`() =
+        runTest {
+            every { testContext.components.settings.shouldUseExpandedToolbar } returns true
+            every { testContext.components.settings.toolbarExpandedShortcutKey } returns ShortcutType.BACK.value
+
+            val (_, toolbarStore) = buildMiddlewareAndAddToStore()
+
+            val backButton = toolbarStore.state.displayState.navigationActions.first() as ActionButtonRes
+            assertEquals(expectedBackButton, backButton)
+        }
 
     @Test
     fun `GIVEN selected homepage tab is grouped WHEN clicking new tab shortcut THEN add homepage tab with grouped parent`() =
         runTest(testDispatcher) {
             every { testContext.components.settings.tabGroupsEnabled } returns true
             val groupedTab = createTab("https://example.com")
-            val browserStore = BrowserStore(
-                BrowserState(
-                    tabs = listOf(groupedTab),
-                    selectedTabId = groupedTab.id,
-                ),
-            )
+            val browserStore =
+                BrowserStore(
+                    BrowserState(
+                        tabs = listOf(groupedTab),
+                        selectedTabId = groupedTab.id,
+                    )
+                )
             val browserUseCases: FenixBrowserUseCases = mockk(relaxed = true)
             val tabGroupLinkUseCases: TabGroupLinkUseCases = mockk(relaxed = true)
             coEvery { tabGroupLinkUseCases.isTabInGroup(groupedTab.id) } returns true
-            val (middleware, toolbarStore) = buildMiddlewareAndAddToStore(
-                browserStore = browserStore,
-                fenixBrowserUseCases = browserUseCases,
-                tabGroupLinkUseCases = tabGroupLinkUseCases,
-            )
-            val shortcut = middleware.buildHomeAction(
-                action = HomeToolbarAction.NewTabShortcut,
-            ) as ActionButtonRes
+            val (middleware, toolbarStore) =
+                buildMiddlewareAndAddToStore(
+                    browserStore = browserStore,
+                    fenixBrowserUseCases = browserUseCases,
+                    tabGroupLinkUseCases = tabGroupLinkUseCases,
+                )
+            val shortcut = middleware.buildHomeAction(action = HomeToolbarAction.NewTabShortcut) as ActionButtonRes
 
             assertEquals(AddNewTabFromToolbarShortcut(Source.Unknown), shortcut.onClick)
             toolbarStore.dispatch(shortcut.onClick as BrowserToolbarEvent)
@@ -1133,23 +1130,22 @@ class BrowserToolbarMiddlewareTest {
         isWideScreen: () -> Boolean = { false },
         isTallScreen: () -> Boolean = { true },
     ): Pair<BrowserToolbarMiddleware, BrowserToolbarStore> {
-        val middleware = buildMiddleware(
-            uiContext = uiContext,
-            appStore = appStore,
-            browserStore = browserStore,
-            clipboard = clipboard,
-            fenixBrowserUseCases = fenixBrowserUseCases,
-            tabGroupLinkUseCases = tabGroupLinkUseCases,
-            navController = navController,
-            browsingModeManager = browsingModeManager,
-            settings = settings,
-            translationsFeatureSettings = translationsFeatureSettings,
-            isWideScreen = isWideScreen,
-            isTallScreen = isTallScreen,
-        )
-        val store = buildStore(
-            middleware = middleware,
-        )
+        val middleware =
+            buildMiddleware(
+                uiContext = uiContext,
+                appStore = appStore,
+                browserStore = browserStore,
+                clipboard = clipboard,
+                fenixBrowserUseCases = fenixBrowserUseCases,
+                tabGroupLinkUseCases = tabGroupLinkUseCases,
+                navController = navController,
+                browsingModeManager = browsingModeManager,
+                settings = settings,
+                translationsFeatureSettings = translationsFeatureSettings,
+                isWideScreen = isWideScreen,
+                isTallScreen = isTallScreen,
+            )
+        val store = buildStore(middleware = middleware)
 
         return middleware to store
     }
@@ -1167,29 +1163,27 @@ class BrowserToolbarMiddlewareTest {
         translationsFeatureSettings: TranslationsEnabledSettings = this.translationsFeatureSettings,
         isWideScreen: () -> Boolean = { false },
         isTallScreen: () -> Boolean = { true },
-    ) = BrowserToolbarMiddleware(
-        uiContext = uiContext,
-        appStore = appStore,
-        browserStore = browserStore,
-        clipboard = clipboard,
-        fenixBrowserUseCases = fenixBrowserUseCases,
-        tabGroupLinkUseCases = tabGroupLinkUseCases,
-        navController = navController,
-        browsingModeManager = browsingModeManager,
-        settings = settings,
-        translationsFeatureSettings = translationsFeatureSettings,
-        isWideScreen = isWideScreen,
-        isTallScreen = isTallScreen,
-        scope = testScope,
-    )
+    ) =
+        BrowserToolbarMiddleware(
+            uiContext = uiContext,
+            appStore = appStore,
+            browserStore = browserStore,
+            clipboard = clipboard,
+            fenixBrowserUseCases = fenixBrowserUseCases,
+            tabGroupLinkUseCases = tabGroupLinkUseCases,
+            navController = navController,
+            browsingModeManager = browsingModeManager,
+            settings = settings,
+            translationsFeatureSettings = translationsFeatureSettings,
+            isWideScreen = isWideScreen,
+            isTallScreen = isTallScreen,
+            scope = testScope,
+        )
 
-    private fun buildStore(
-        middleware: BrowserToolbarMiddleware,
-    ) = BrowserToolbarStore(
-        middleware = listOf(middleware),
-    ).also {
-        testDispatcher.scheduler.advanceUntilIdle() // to complete the initial setup happening in coroutines
-    }
+    private fun buildStore(middleware: BrowserToolbarMiddleware) =
+        BrowserToolbarStore(middleware = listOf(middleware)).also {
+            testDispatcher.scheduler.advanceUntilIdle() // to complete the initial setup happening in coroutines
+        }
 
     private fun registerSpeechRecognizer() {
         val component = ComponentName("com.test", "VoiceTest")

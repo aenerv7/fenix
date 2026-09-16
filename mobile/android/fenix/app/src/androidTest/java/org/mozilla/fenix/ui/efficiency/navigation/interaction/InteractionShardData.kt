@@ -7,12 +7,9 @@ object InteractionShardData {
         shardCount: Int,
         runStateOverride: String? = null,
     ): List<Array<Any>> {
-        val runState = runStateOverride
-            ?: System.getProperty("testRunState")?.takeIf { it.isNotBlank() }
-            ?: ""
+        val runState = runStateOverride ?: System.getProperty("testRunState")?.takeIf { it.isNotBlank() } ?: ""
 
-        return InteractionCaseFactory
-            .buildInteractionCasesForShard(
+        return InteractionCaseFactory.buildInteractionCasesForShard(
                 runState = runState,
                 shardIndex = shardIndex,
                 shardCount = shardCount,

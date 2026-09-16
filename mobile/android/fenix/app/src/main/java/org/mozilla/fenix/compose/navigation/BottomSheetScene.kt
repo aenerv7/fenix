@@ -29,9 +29,8 @@ import mozilla.components.compose.base.BottomSheetHandle
 import org.mozilla.fenix.compose.BetaLabel
 import org.mozilla.fenix.compose.navigation.BottomSheetSceneStrategy.Companion.bottomSheet
 import org.mozilla.fenix.theme.FirefoxTheme
-/**
- * An [OverlayScene] that renders an [entry] within a [ModalBottomSheet].
- */
+
+/** An [OverlayScene] that renders an [entry] within a [ModalBottomSheet]. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("LongParameterList")
 internal class BottomSheetScene<T : Any>(
@@ -51,26 +50,26 @@ internal class BottomSheetScene<T : Any>(
 
     override val content: @Composable (() -> Unit) = {
         val density = LocalDensity.current
-        val sheetState = if (skipOpeningAnimation) {
-            remember(density) {
-                SheetState(
-                    skipPartiallyExpanded = skipPartiallyExpanded,
-                    positionalThreshold = { with(density) { 56.dp.toPx() } },
-                    velocityThreshold = { with(density) { 125.dp.toPx() } },
-                    initialValue = if (skipPartiallyExpanded) {
-                        SheetValue.Expanded
-                    } else {
-                        SheetValue.PartiallyExpanded
-                    },
-                    confirmValueChange = { true },
-                    skipHiddenState = false,
-                )
+        val sheetState =
+            if (skipOpeningAnimation) {
+                remember(density) {
+                    SheetState(
+                        skipPartiallyExpanded = skipPartiallyExpanded,
+                        positionalThreshold = { with(density) { 56.dp.toPx() } },
+                        velocityThreshold = { with(density) { 125.dp.toPx() } },
+                        initialValue =
+                            if (skipPartiallyExpanded) {
+                                SheetValue.Expanded
+                            } else {
+                                SheetValue.PartiallyExpanded
+                            },
+                        confirmValueChange = { true },
+                        skipHiddenState = false,
+                    )
+                }
+            } else {
+                rememberModalBottomSheetState(skipPartiallyExpanded = skipPartiallyExpanded)
             }
-        } else {
-            rememberModalBottomSheetState(
-                skipPartiallyExpanded = skipPartiallyExpanded,
-            )
-        }
 
         ModalBottomSheet(
             onDismissRequest = onBack,
@@ -170,13 +169,12 @@ class BottomSheetSceneStrategy<T : Any> : SceneStrategy<T> {
 
     companion object {
         /**
-         * Function to be called on the [NavEntry.metadata] to mark this entry as something that
-         * should be displayed within a [ModalBottomSheet].
+         * Function to be called on the [NavEntry.metadata] to mark this entry as something that should be displayed
+         * within a [ModalBottomSheet].
          *
          * @param skipPartiallyExpanded Whether to skip the partially expanded sheet state.
          * @param handleContentDescription Content description for the bottom sheet's drag handle.
-         * @param modalBottomSheetProperties properties that should be passed to the containing
-         * [ModalBottomSheet].
+         * @param modalBottomSheetProperties properties that should be passed to the containing [ModalBottomSheet].
          * @param showBetaLabel Whether to display the beta label next to the bottom sheet's drag handle
          * @param skipOpeningAnimation Whether to display the bottom sheet without its opening animation.
          */
@@ -187,13 +185,14 @@ class BottomSheetSceneStrategy<T : Any> : SceneStrategy<T> {
             modalBottomSheetProperties: ModalBottomSheetProperties = ModalBottomSheetProperties(),
             showBetaLabel: Boolean = false,
             skipOpeningAnimation: Boolean = false,
-        ): Map<String, Any> = mapOf(
-            BOTTOM_SHEET_KEY to modalBottomSheetProperties,
-            SKIP_PARTIALLY_EXPANDED_KEY to skipPartiallyExpanded,
-            HANDLE_CONTENT_DESCRIPTION_KEY to handleContentDescription,
-            SHOW_BETA_LABEL_KEY to showBetaLabel,
-            SKIP_OPENING_ANIMATION_KEY to skipOpeningAnimation,
-        )
+        ): Map<String, Any> =
+            mapOf(
+                BOTTOM_SHEET_KEY to modalBottomSheetProperties,
+                SKIP_PARTIALLY_EXPANDED_KEY to skipPartiallyExpanded,
+                HANDLE_CONTENT_DESCRIPTION_KEY to handleContentDescription,
+                SHOW_BETA_LABEL_KEY to showBetaLabel,
+                SKIP_OPENING_ANIMATION_KEY to skipOpeningAnimation,
+            )
 
         internal const val BOTTOM_SHEET_KEY = "bottom_sheet"
         internal const val SKIP_PARTIALLY_EXPANDED_KEY = "skip_partially_expanded"

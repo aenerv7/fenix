@@ -173,9 +173,7 @@ internal fun CustomTabMenu(
         },
     ) {
         if (isBottomToolbar) {
-            PoweredByFenixItem(
-                modifier = Modifier.padding(top = 8.dp, bottom = 4.dp),
-            )
+            PoweredByFenixItem(modifier = Modifier.padding(top = 8.dp, bottom = 4.dp))
         }
 
         MenuGroup {
@@ -291,9 +289,7 @@ internal fun CustomTabMenu(
         }
 
         if (!isBottomToolbar) {
-            PoweredByFenixItem(
-                modifier = Modifier.padding(top = 4.dp),
-            )
+            PoweredByFenixItem(modifier = Modifier.padding(top = 4.dp))
         }
     }
 }
@@ -329,18 +325,17 @@ private fun PoweredByFenixItem(modifier: Modifier = Modifier) {
         Image(
             painter = painterResource(id = R.drawable.fenix_labs_rabbit),
             contentDescription = null,
-            modifier = Modifier
-                .size(16.dp)
-                .align(Alignment.CenterVertically),
+            modifier = Modifier.size(16.dp).align(Alignment.CenterVertically),
         )
 
         Spacer(Modifier.width(4.dp))
 
         Text(
-            text = stringResource(
-                id = R.string.browser_menu_powered_by2,
-                stringResource(id = R.string.app_name),
-            ),
+            text =
+                stringResource(
+                    id = R.string.browser_menu_powered_by2,
+                    stringResource(id = R.string.app_name),
+                ),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = FirefoxTheme.typography.caption,
         )

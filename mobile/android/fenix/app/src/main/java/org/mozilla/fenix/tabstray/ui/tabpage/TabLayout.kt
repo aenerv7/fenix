@@ -492,7 +492,7 @@ private fun TabLayoutScrollHelper(
             }
             .let { (viewportHeight, itemHeight) ->
                 val offset = -(viewportHeight - itemHeight - bottomPaddingPx)
-                withFrameNanos { }
+                withFrameNanos {}
                 scrollToItem(targetIndex, offset)
                 hasScrolledToInitialPosition = true
             }
@@ -500,17 +500,22 @@ private fun TabLayoutScrollHelper(
 }
 
 private fun calculateScrollDimensions(state: ScrollableState): Pair<Int, Int>? {
-    val (viewportHeight, items) = when (state) {
-        is LazyListState -> state.layoutInfo.viewportSize.height to state.layoutInfo.visibleItemsInfo.map {
-            it.key to it.size
-        }
+    val (viewportHeight, items) =
+        when (state) {
+            is LazyListState ->
+                state.layoutInfo.viewportSize.height to
+                    state.layoutInfo.visibleItemsInfo.map {
+                        it.key to it.size
+                    }
 
-        is LazyGridState -> state.layoutInfo.viewportSize.height to state.layoutInfo.visibleItemsInfo.map {
-            it.key to it.size.height
-        }
+            is LazyGridState ->
+                state.layoutInfo.viewportSize.height to
+                    state.layoutInfo.visibleItemsInfo.map {
+                        it.key to it.size.height
+                    }
 
-        else -> return null
-    }
+            else -> return null
+        }
 
     if (viewportHeight <= 0) return null
 
@@ -557,23 +562,26 @@ private fun ReorderableTabGrid(
         isHeaderPresent = header != null,
     )
     var isInMultiSelectMode by remember { mutableStateOf(selectionMode is TabsTrayState.Mode.Select) }
-    val reorderState = createGridReorderState(
-        gridState = gridState,
-        onMove = { initialTab, newTab ->
-            tabInteractionHandler.onMove(
-                (initialTab.key as String),
-                (newTab.key as String),
-                initialTab.index < newTab.index,
-            )
-        },
-        onLongPress = { itemInfo ->
-            tabs.firstOrNull { tabItem -> tabItem.id == itemInfo.key }?.let { tab ->
-                onItemLongClick(tab)
-            }
-        },
-        ignoredItems = ignoredItems.toList(),
-        tabInteractionHandler = tabInteractionHandler,
-    )
+    val reorderState =
+        createGridReorderState(
+            gridState = gridState,
+            onMove = { initialTab, newTab ->
+                tabInteractionHandler.onMove(
+                    (initialTab.key as String),
+                    (newTab.key as String),
+                    initialTab.index < newTab.index,
+                )
+            },
+            onLongPress = { itemInfo ->
+                tabs
+                    .firstOrNull { tabItem -> tabItem.id == itemInfo.key }
+                    ?.let { tab ->
+                        onItemLongClick(tab)
+                    }
+            },
+            ignoredItems = ignoredItems.toList(),
+            tabInteractionHandler = tabInteractionHandler,
+        )
     val tabKeys = tabs.mapTo(hashSetOf()) { it.id }
     LaunchedEffect(tabKeys) {
         reorderState.resetIfItemMissing(itemKeys = tabKeys)
@@ -696,21 +704,23 @@ private fun InteractableTabGrid(
     )
 
     var isInMultiSelectMode by remember { mutableStateOf(selectionMode is TabsTrayState.Mode.Select) }
-    val gridInteractionState = createGridInteractionState(
-        gridState = gridState,
-        tabInteractionHandler = tabInteractionHandler,
-        onLongPress = rememberReactiveLongPressGrid(tabs = tabs, onItemLongClick = onItemLongClick),
-        liveReorderEnabled = liveReorderEnabled,
-        ignoredItems = ignoredItems,
-    )
+    val gridInteractionState =
+        createGridInteractionState(
+            gridState = gridState,
+            tabInteractionHandler = tabInteractionHandler,
+            onLongPress = rememberReactiveLongPressGrid(tabs = tabs, onItemLongClick = onItemLongClick),
+            liveReorderEnabled = liveReorderEnabled,
+            ignoredItems = ignoredItems,
+        )
     val tabKeys = tabs.mapTo(hashSetOf()) { it.id }
     LaunchedEffect(tabKeys) {
         gridInteractionState.resetIfItemMissing(itemKeys = tabKeys)
     }
     // Don't show the onboarding card while a drag is active
-    val showOnboardingCardInGrid by remember(displayTabGroupOnboarding) {
-        derivedStateOf { displayTabGroupOnboarding && gridInteractionState.draggedItem.key == null }
-    }
+    val showOnboardingCardInGrid by
+        remember(displayTabGroupOnboarding) {
+            derivedStateOf { displayTabGroupOnboarding && gridInteractionState.draggedItem.key == null }
+        }
     val onboardingCardInView by remember {
         derivedStateOf { gridState.layoutInfo.visibleItemsInfo.any { it.key == TAB_GROUP_ONBOARDING_ITEM_KEY } }
     }
@@ -1219,26 +1229,26 @@ private fun InteractableTabList(
         isHeaderPresent = header != null,
     )
     var isInMultiSelectMode by remember {
-        mutableStateOf(
-            selectionMode is TabsTrayState.Mode.Select,
-        )
+        mutableStateOf(selectionMode is TabsTrayState.Mode.Select)
     }
-    val listInteractionState = createListInteractionState(
-        listState = state,
-        ignoredItems = ignoredItems,
-        onLongPress = rememberReactiveLongPressList(tabs = tabs, onItemLongClick = onItemLongClick),
-        tabInteractionHandler = tabInteractionHandler,
-        dragAndDropEnabled = dragAndDropEnabled,
-        liveReorderEnabled = liveReorderEnabled,
-    )
+    val listInteractionState =
+        createListInteractionState(
+            listState = state,
+            ignoredItems = ignoredItems,
+            onLongPress = rememberReactiveLongPressList(tabs = tabs, onItemLongClick = onItemLongClick),
+            tabInteractionHandler = tabInteractionHandler,
+            dragAndDropEnabled = dragAndDropEnabled,
+            liveReorderEnabled = liveReorderEnabled,
+        )
     val tabKeys = tabs.mapTo(hashSetOf()) { it.id }
     LaunchedEffect(tabKeys) {
         listInteractionState.resetIfItemMissing(itemKeys = tabKeys)
     }
     // Don't show the onboarding card while a drag is active
-    val showOnboardingCardInList by remember(displayTabGroupOnboarding) {
-        derivedStateOf { displayTabGroupOnboarding && listInteractionState.draggedItem.key == null }
-    }
+    val showOnboardingCardInList by
+        remember(displayTabGroupOnboarding) {
+            derivedStateOf { displayTabGroupOnboarding && listInteractionState.draggedItem.key == null }
+        }
     val onboardingCardInView by remember {
         derivedStateOf { state.layoutInfo.visibleItemsInfo.any { it.key == TAB_GROUP_ONBOARDING_ITEM_KEY } }
     }
@@ -1561,28 +1571,31 @@ private fun ReorderableTabList(
 
     var isInMultiSelectMode by remember { mutableStateOf(selectionMode is TabsTrayState.Mode.Select) }
 
-    val reorderState = createListReorderState(
-        listState = state,
-        onMove = { initialTab, newTab ->
-            tabInteractionHandler.onMove(
-                sourceKey = initialTab.key as String,
-                targetKey = newTab.key as String,
-                placeAfter = initialTab.index < newTab.index,
-            )
-        },
-        onLongPress = { itemInfo ->
-            tabs.firstOrNull { tabItem -> tabItem.id == itemInfo.key }?.let { tab ->
-                onItemLongClick(tab)
-            }
-        },
-        ignoredItems = ignoredItems.toList(),
-        onExitLongPress = { sourceKey ->
-            tabInteractionHandler.onDragStart(
-                sourceKey = sourceKey as String,
-                preserveSelectMode = isInMultiSelectMode,
-            )
-        },
-    )
+    val reorderState =
+        createListReorderState(
+            listState = state,
+            onMove = { initialTab, newTab ->
+                tabInteractionHandler.onMove(
+                    sourceKey = initialTab.key as String,
+                    targetKey = newTab.key as String,
+                    placeAfter = initialTab.index < newTab.index,
+                )
+            },
+            onLongPress = { itemInfo ->
+                tabs
+                    .firstOrNull { tabItem -> tabItem.id == itemInfo.key }
+                    ?.let { tab ->
+                        onItemLongClick(tab)
+                    }
+            },
+            ignoredItems = ignoredItems.toList(),
+            onExitLongPress = { sourceKey ->
+                tabInteractionHandler.onDragStart(
+                    sourceKey = sourceKey as String,
+                    preserveSelectMode = isInMultiSelectMode,
+                )
+            },
+        )
     val tabKeys = tabs.mapTo(hashSetOf()) { it.id }
     LaunchedEffect(tabKeys) {
         reorderState.resetIfItemMissing(itemKeys = tabKeys)

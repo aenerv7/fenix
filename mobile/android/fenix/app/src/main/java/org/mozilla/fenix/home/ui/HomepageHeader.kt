@@ -67,11 +67,10 @@ fun HomepageHeader(
     ) {
         Image(
             modifier =
-                Modifier.height(40.dp)
-                    .semantics {
-                        testTagsAsResourceId = true
-                        testTag = HOMEPAGE_WORDMARK
-                    },
+                Modifier.height(40.dp).semantics {
+                    testTagsAsResourceId = true
+                    testTag = HOMEPAGE_WORDMARK
+                },
             painter = painterResource(getAttr(R.attr.fenixLogo)),
             contentDescription = stringResource(R.string.app_name),
         )

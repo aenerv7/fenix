@@ -41,61 +41,50 @@ object TabGroupActionReducer {
                 state.copy(
                     mode = TabsTrayState.Mode.Normal,
                     backStack = state.backStack.popTabGroupFlow(),
-                    tabGroupState = state.tabGroupState.copy(
-                        dragProcessingState = DragProcessingState.COMPLETED,
-                    ),
+                    tabGroupState = state.tabGroupState.copy(dragProcessingState = DragProcessingState.COMPLETED),
                 )
             }
             is TabGroupAction.TabGroupClicked -> processTabGroupClick(state, action.group)
             is TabGroupAction.TabAddedToGroup -> state
-            is TabGroupAction.SelectedTabsAddedToGroup -> state.copy(
-                mode = TabsTrayState.Mode.Normal,
-                backStack = state.backStack.popTabGroupFlow(),
-            )
-            is TabGroupAction.SelectedTabsRemovedFromGroup -> state.copy(
-                mode = TabsTrayState.Mode.Normal,
-                backStack = listOf(TabManagerNavDestination.Root),
-            )
-            is TabGroupAction.SelectedTabsClosedFromGroup -> state.copy(
-                mode = TabsTrayState.Mode.Normal,
-                backStack = listOf(TabManagerNavDestination.Root),
-            )
+            is TabGroupAction.SelectedTabsAddedToGroup ->
+                state.copy(
+                    mode = TabsTrayState.Mode.Normal,
+                    backStack = state.backStack.popTabGroupFlow(),
+                )
+            is TabGroupAction.SelectedTabsRemovedFromGroup ->
+                state.copy(
+                    mode = TabsTrayState.Mode.Normal,
+                    backStack = listOf(TabManagerNavDestination.Root),
+                )
+            is TabGroupAction.SelectedTabsClosedFromGroup ->
+                state.copy(
+                    mode = TabsTrayState.Mode.Normal,
+                    backStack = listOf(TabManagerNavDestination.Root),
+                )
             is TabGroupAction.RestoreTabsToGroup -> state
-            is TabGroupAction.DeleteClicked -> state.copy(
-                backStack = state.backStack + DeleteTabGroupConfirmationDialog(group = action.group),
-            )
-            is TabGroupAction.DeleteConfirmed -> state.copy(
-                backStack = state.backStack.popDeleteTabGroupFlow(),
-            )
+            is TabGroupAction.DeleteClicked ->
+                state.copy(backStack = state.backStack + DeleteTabGroupConfirmationDialog(group = action.group))
+            is TabGroupAction.DeleteConfirmed -> state.copy(backStack = state.backStack.popDeleteTabGroupFlow())
             is TabGroupAction.EditTabGroupClicked -> reduceEditTabGroupClicked(state, action)
             is TabGroupAction.NewGroupCreated ->
                 state.copy(tabGroupState = state.tabGroupState.copy(enteringGroupId = action.id))
             is TabGroupAction.NewGroupAnimationFinished ->
                 state.copy(tabGroupState = state.tabGroupState.copy(enteringGroupId = null))
             is TabGroupAction.OpenTabGroupClicked -> state.navigateToExpandedTabGroup(action.group)
-            is TabGroupAction.CloseTabGroupClicked -> state.copy(
-                backStack = listOf(TabManagerNavDestination.Root),
-            )
-            is TabGroupAction.DragAndDropInitiated -> state.copy(
-                normalTabsState = state.normalTabsState.copy(
-                    itemFocusIndicatorEnabled = true,
-                ),
-            )
+            is TabGroupAction.CloseTabGroupClicked -> state.copy(backStack = listOf(TabManagerNavDestination.Root))
+            is TabGroupAction.DragAndDropInitiated ->
+                state.copy(normalTabsState = state.normalTabsState.copy(itemFocusIndicatorEnabled = true))
             is TabGroupAction.TabClosed -> reduceTabClosed(state, action)
-            is TabGroupAction.CloseTabAndDeleteGroupConfirmed -> state.copy(
-                backStack = state.backStack.popDeleteTabGroupFlow(),
-            )
-            is TabGroupAction.OnboardingDismissed -> state.copy(
-                config = state.config.copy(tabGroupsOnboardingEnabled = false),
-            )
-            is TabGroupAction.OnboardingShown -> state.copy(
-                tabGroupState = state.tabGroupState.copy(hasRecordedOnboardingImpression = true),
-            )
-            is TabGroupAction.DragAndDropProcessed -> state.copy(
-                tabGroupState = state.tabGroupState.copy(
-                    dragProcessingState = DragProcessingState.COMPLETED,
-                ),
-            )
+            is TabGroupAction.CloseTabAndDeleteGroupConfirmed ->
+                state.copy(backStack = state.backStack.popDeleteTabGroupFlow())
+            is TabGroupAction.OnboardingDismissed ->
+                state.copy(config = state.config.copy(tabGroupsOnboardingEnabled = false))
+            is TabGroupAction.OnboardingShown ->
+                state.copy(tabGroupState = state.tabGroupState.copy(hasRecordedOnboardingImpression = true))
+            is TabGroupAction.DragAndDropProcessed ->
+                state.copy(
+                    tabGroupState = state.tabGroupState.copy(dragProcessingState = DragProcessingState.COMPLETED)
+                )
         }
     }
 
@@ -206,34 +195,36 @@ object TabGroupActionReducer {
     private fun processTabGroupClick(
         currentState: TabsTrayState,
         group: TabsTrayItem.TabGroup,
-    ): TabsTrayState = when (currentState.mode) {
-        is TabsTrayState.Mode.Normal, is TabsTrayState.Mode.DragAndDrop -> currentState.copy(
-            backStack = currentState.backStack + ExpandedTabGroup(group = group),
-        )
+    ): TabsTrayState =
+        when (currentState.mode) {
+            is TabsTrayState.Mode.Normal,
+            is TabsTrayState.Mode.DragAndDrop ->
+                currentState.copy(backStack = currentState.backStack + ExpandedTabGroup(group = group))
 
-        is TabsTrayState.Mode.Select -> {
-            val selectedTabs = currentState.mode.selectedTabs.toHashSet()
-            val selectedTabGroups = currentState.mode.selectedTabGroups.toHashSet()
+            is TabsTrayState.Mode.Select -> {
+                val selectedTabs = currentState.mode.selectedTabs.toHashSet()
+                val selectedTabGroups = currentState.mode.selectedTabGroups.toHashSet()
 
-            if (group in currentState.mode.selectedTabGroups) {
-                selectedTabGroups.remove(group)
-                selectedTabs.removeAll(group.tabs.toSet())
-            } else {
-                selectedTabGroups.add(group)
-                selectedTabs.addAll(group.tabs)
+                if (group in currentState.mode.selectedTabGroups) {
+                    selectedTabGroups.remove(group)
+                    selectedTabs.removeAll(group.tabs.toSet())
+                } else {
+                    selectedTabGroups.add(group)
+                    selectedTabs.addAll(group.tabs)
+                }
+
+                val newMode =
+                    if (selectedTabs.isEmpty() && selectedTabGroups.isEmpty()) {
+                        TabsTrayState.Mode.Normal
+                    } else {
+                        TabsTrayState.Mode.Select(
+                            selectedTabs = selectedTabs,
+                            selectedTabGroups = selectedTabGroups,
+                            tabGroupId = currentState.mode.tabGroupId,
+                        )
+                    }
+
+                currentState.copy(mode = newMode)
             }
-
-            val newMode = if (selectedTabs.isEmpty() && selectedTabGroups.isEmpty()) {
-                TabsTrayState.Mode.Normal
-            } else {
-                TabsTrayState.Mode.Select(
-                    selectedTabs = selectedTabs,
-                    selectedTabGroups = selectedTabGroups,
-                    tabGroupId = currentState.mode.tabGroupId,
-                )
-            }
-
-            currentState.copy(mode = newMode)
         }
-    }
 }

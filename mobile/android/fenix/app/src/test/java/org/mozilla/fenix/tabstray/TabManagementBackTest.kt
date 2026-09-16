@@ -36,9 +36,7 @@ class TabManagementBackTest {
     private val tab = createTab("https://example.com")
     private val group = createTabGroup(tabs = listOf(tab))
     private val destination = TabManagerNavDestination.ExpandedTabGroup(group)
-    private val groupState = TabsTrayState(
-        backStack = listOf(TabManagerNavDestination.Root, destination),
-    )
+    private val groupState = TabsTrayState(backStack = listOf(TabManagerNavDestination.Root, destination))
 
     @Before
     fun setup() {
@@ -65,7 +63,11 @@ class TabManagementBackTest {
 
     @Test
     fun `Back uses latest group membership rather than destination snapshot`() {
-        back(groupState.copy(tabGroupState = TabsTrayState.TabGroupState(groups = listOf(group.copy(tabs = emptyList())))))
+        back(
+            groupState.copy(
+                tabGroupState = TabsTrayState.TabGroupState(groups = listOf(group.copy(tabs = emptyList())))
+            )
+        )
         verify(exactly = 1) { store.dispatch(TabsTrayAction.NavigateBackInvoked) }
         verify(exactly = 0) { controller.handleNavigationRequested() }
     }

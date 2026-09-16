@@ -147,19 +147,13 @@ sealed interface TabsTrayAction : Action {
         val preserveSelectMode: Boolean,
     ) : TabsTrayAction
 
-    /**
-     * [TabsTrayAction] fired when a tab drag is cancelled from the tabs tray.
-     */
+    /** [TabsTrayAction] fired when a tab drag is cancelled from the tabs tray. */
     object TabDragCancel : TabsTrayAction
 
-    /**
-     * Long pressed a [TabsTrayItem] in the TabsTray.
-     */
+    /** Long pressed a [TabsTrayItem] in the TabsTray. */
     data class TabItemLongClicked(val item: TabsTrayItem) : TabsTrayAction
 
-    /**
-     * Long pressed a tab inside an expanded tab group.
-     */
+    /** Long pressed a tab inside an expanded tab group. */
     data class TabGroupTabLongClicked(
         val tab: TabsTrayItem.Tab,
         val groupId: String,

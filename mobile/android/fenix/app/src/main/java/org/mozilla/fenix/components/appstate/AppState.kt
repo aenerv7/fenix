@@ -70,15 +70,14 @@ import org.mozilla.fenix.wallpapers.WallpaperState
  * @property showFindInPage Whether or not to show the find in page feature.
  * @property crashState State related to the crash reporter.
  * @property wasLastTabClosedPrivate Whether the last remaining tab that was closed in private mode. This is used to
- * display an undo snackbar message relevant to the browsing mode. If null, no snackbar is shown.
+ *   display an undo snackbar message relevant to the browsing mode. If null, no snackbar is shown.
  * @property wasNativeDefaultBrowserPromptShown Whether the native default browser prompt was shown to the user.
  * @property webCompatState The [WebCompatState] when the feature was last used.
  * @property setupChecklistState Optional [SetupChecklistState] for the Setup Checklist feature.
  * @property searchState The current search state.
  * @property lensState The [LensState] for Google Lens image search.
  * @property qrScannerState The [QrScannerState] when the feature was last used.
- * @property isPrivateScreenLocked Whether the private browsing mode is currently locked behind
- * authentication.
+ * @property isPrivateScreenLocked Whether the private browsing mode is currently locked behind authentication.
  * @property voiceSearchState The [VoiceSearchState] representing the current state of voice search functionality.
  * @property isDefaultBrowser Whether Firefox is the default browser or not.
  * @property blockedTrackersState The [BlockedTrackersState] with data about blocked trackers.

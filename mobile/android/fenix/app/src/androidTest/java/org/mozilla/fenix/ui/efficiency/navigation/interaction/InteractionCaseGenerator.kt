@@ -32,7 +32,8 @@ object InteractionCaseGenerator {
                     ),
                     state = runState.ifBlank { "Interaction Factory" },
                 ),
-                """.trimIndent(),
+                """
+                    .trimIndent(),
             )
         }
 

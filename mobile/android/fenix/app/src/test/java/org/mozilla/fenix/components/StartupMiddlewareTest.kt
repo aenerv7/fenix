@@ -74,9 +74,7 @@ class StartupMiddlewareTest {
     fun `GIVEN homepage as a new tab is enabled and a tab was restored WHEN restore complete action is dispatched THEN do nothing`() {
         settings.enableHomepageAsNewTab = true
         val tab = createTab("https://www.mozilla.org", id = "test-tab1")
-        val store = createStore(
-            initialState = BrowserState(tabs = listOf(tab)),
-        )
+        val store = createStore(initialState = BrowserState(tabs = listOf(tab)))
 
         store.dispatch(RestoreCompleteAction)
 
@@ -87,10 +85,9 @@ class StartupMiddlewareTest {
         }
     }
 
-    private fun createStore(
-        initialState: BrowserState = BrowserState(),
-    ) = BrowserStore(
-        initialState = initialState,
-        middleware = listOf(middleware, captureActionsMiddleware),
-    )
+    private fun createStore(initialState: BrowserState = BrowserState()) =
+        BrowserStore(
+            initialState = initialState,
+            middleware = listOf(middleware, captureActionsMiddleware),
+        )
 }

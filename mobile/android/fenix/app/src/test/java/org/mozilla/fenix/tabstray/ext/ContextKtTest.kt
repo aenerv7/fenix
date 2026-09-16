@@ -18,10 +18,11 @@ class ContextKtTest {
     fun `WHEN screen density is very low THEN numberOfGridColumns will still be a minimum of 2`() {
         val context = mockk<Context>()
         val resources = mockk<Resources>()
-        val displayMetrics = DisplayMetrics().apply {
-            widthPixels = 1
-            density = 1f
-        }
+        val displayMetrics =
+            DisplayMetrics().apply {
+                widthPixels = 1
+                density = 1f
+            }
 
         every { context.resources } returns resources
         every { resources.displayMetrics } returns displayMetrics

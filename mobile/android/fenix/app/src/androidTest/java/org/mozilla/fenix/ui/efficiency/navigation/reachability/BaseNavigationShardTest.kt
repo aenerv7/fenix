@@ -3,14 +3,9 @@ package org.mozilla.fenix.ui.efficiency.navigation.reachability
 import android.util.Log
 import org.mozilla.fenix.ui.efficiency.helpers.BasePage
 import org.mozilla.fenix.ui.efficiency.helpers.BaseTest
-import org.mozilla.fenix.ui.efficiency.navigation.reachability.NavigationCase
 
-/**
- * Shared logic for all generated/manual navigation shard entrypoint classes.
- */
-abstract class BaseNavigationShardTest(
-    private val case: NavigationCase,
-) : BaseTest() {
+/** Shared logic for all generated/manual navigation shard entrypoint classes. */
+abstract class BaseNavigationShardTest(private val case: NavigationCase) : BaseTest() {
 
     protected fun runNavigationCase() {
         Log.i(

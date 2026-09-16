@@ -26,9 +26,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import junit.framework.TestCase.assertEquals
-import kotlin.math.ceil
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 import mozilla.components.compose.base.utils.LocalUnderTest
 import org.junit.Rule
 import org.junit.Test
@@ -177,24 +175,27 @@ class TabLayoutTest {
 
     @Test
     fun `WHEN the selected tab becomes a tab group THEN the group is scrolled into view`() {
-        val selectedTab = createTab(
-            id = "selected-tab",
-            title = "Selected tab",
-            url = "https://www.mozilla.org/selected",
-        )
-        val groupTab = createTab(id = "group-tab", url = "https://www.mozilla.org/group")
-        val group = createTabGroup(
-            id = "target-group",
-            title = "Target group",
-            tabs = listOf(groupTab),
-        )
-        val standaloneTabs = List(12) { index ->
+        val selectedTab =
             createTab(
-                id = "tab-$index",
-                title = "Tab $index",
-                url = "https://www.mozilla.org/$index",
+                id = "selected-tab",
+                title = "Selected tab",
+                url = "https://www.mozilla.org/selected",
             )
-        }
+        val groupTab = createTab(id = "group-tab", url = "https://www.mozilla.org/group")
+        val group =
+            createTabGroup(
+                id = "target-group",
+                title = "Target group",
+                tabs = listOf(groupTab),
+            )
+        val standaloneTabs =
+            List(12) { index ->
+                createTab(
+                    id = "tab-$index",
+                    title = "Tab $index",
+                    url = "https://www.mozilla.org/$index",
+                )
+            }
         var tabs by mutableStateOf<List<TabsTrayItem>>(listOf(group) + standaloneTabs + selectedTab)
         var selectedItemIndex by mutableStateOf(tabs.lastIndex)
 
@@ -211,14 +212,14 @@ class TabLayoutTest {
                             selectionMode = TabsTrayState.Mode.Normal,
                             focusEnabled = true,
                             tabInteractionHandler = fakeTabInteractionHandler(),
-                            onTabClose = { },
-                            onItemClick = { },
-                            onItemLongClick = { },
-                            onDeleteTabGroupClick = { },
-                            onEditTabGroupClick = { },
-                            onCloseTabGroupClick = { },
-                            onShareTabGroupClick = { },
-                            onTabGroupOnboardingDismiss = { },
+                            onTabClose = {},
+                            onItemClick = {},
+                            onItemLongClick = {},
+                            onDeleteTabGroupClick = {},
+                            onEditTabGroupClick = {},
+                            onCloseTabGroupClick = {},
+                            onShareTabGroupClick = {},
+                            onTabGroupOnboardingDismiss = {},
                             liveReorderEnabled = false,
                         )
                     }
@@ -231,8 +232,7 @@ class TabLayoutTest {
         selectedItemIndex = 0
         composeTestRule.waitForIdle()
 
-        composeTestRule.onNodeWithTag("${TabsTrayTestTag.TAB_GROUP_ROOT}.${group.id}")
-            .assertIsDisplayed()
+        composeTestRule.onNodeWithTag("${TabsTrayTestTag.TAB_GROUP_ROOT}.${group.id}").assertIsDisplayed()
     }
 
     @Test
@@ -246,10 +246,11 @@ class TabLayoutTest {
     }
 
     private fun assertLastTopLevelTabIsRemoved(displayTabsInGrid: Boolean) {
-        val group = createTabGroup(
-            id = "group",
-            tabs = listOf(createTab(id = "grouped-tab", url = "https://www.mozilla.org/grouped")),
-        )
+        val group =
+            createTabGroup(
+                id = "group",
+                tabs = listOf(createTab(id = "grouped-tab", url = "https://www.mozilla.org/grouped")),
+            )
         val ungroupedTab = createTab(id = "ungrouped-tab", url = "https://www.mozilla.org/ungrouped")
         var tabs by mutableStateOf<List<TabsTrayItem>>(listOf(group, ungroupedTab))
 
@@ -267,13 +268,13 @@ class TabLayoutTest {
                             focusEnabled = true,
                             tabInteractionHandler = fakeTabInteractionHandler(),
                             onTabClose = { closedTab -> tabs = tabs.filterNot { it.id == closedTab.id } },
-                            onItemClick = { },
-                            onItemLongClick = { },
-                            onDeleteTabGroupClick = { },
-                            onEditTabGroupClick = { },
-                            onCloseTabGroupClick = { },
-                            onShareTabGroupClick = { },
-                            onTabGroupOnboardingDismiss = { },
+                            onItemClick = {},
+                            onItemLongClick = {},
+                            onDeleteTabGroupClick = {},
+                            onEditTabGroupClick = {},
+                            onCloseTabGroupClick = {},
+                            onShareTabGroupClick = {},
+                            onTabGroupOnboardingDismiss = {},
                             liveReorderEnabled = false,
                         )
                     }
@@ -283,8 +284,7 @@ class TabLayoutTest {
 
         val tabItemCountWithUngroupedTab = if (displayTabsInGrid) 2 else 1
         val tabItemCountWithoutUngroupedTab = if (displayTabsInGrid) 1 else 0
-        composeTestRule.onAllNodesWithTag(TabsTrayTestTag.TAB_ITEM_ROOT)
-            .assertCountEquals(tabItemCountWithUngroupedTab)
+        composeTestRule.onAllNodesWithTag(TabsTrayTestTag.TAB_ITEM_ROOT).assertCountEquals(tabItemCountWithUngroupedTab)
         if (displayTabsInGrid) {
             composeTestRule.mainClock.autoAdvance = false
         }
@@ -293,13 +293,15 @@ class TabLayoutTest {
             composeTestRule.mainClock.advanceTimeByFrame()
         }
         composeTestRule.waitForIdle()
-        composeTestRule.onAllNodesWithTag(TabsTrayTestTag.TAB_ITEM_ROOT)
+        composeTestRule
+            .onAllNodesWithTag(TabsTrayTestTag.TAB_ITEM_ROOT)
             .assertCountEquals(tabItemCountWithoutUngroupedTab)
         composeTestRule.mainClock.autoAdvance = true
     }
 
     private val gridColumnCount: Int
-        get() = composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_GRID).fetchSemanticsNode().config[TabGridColumnCountKey]
+        get() =
+            composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_GRID).fetchSemanticsNode().config[TabGridColumnCountKey]
 
     @Composable
     private fun GridContainer(width: Dp) {

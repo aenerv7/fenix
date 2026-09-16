@@ -47,7 +47,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
@@ -69,12 +68,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
 import androidx.compose.ui.window.PopupProperties
+import kotlin.math.max
 import mozilla.components.compose.base.badge.BadgedIcon
 import mozilla.components.compose.base.button.IconButton
 import mozilla.components.compose.base.menu.DropdownMenu
 import mozilla.components.compose.base.menu.MenuItem
 import mozilla.components.compose.base.text.Text
 import mozilla.components.compose.base.text.value
+import mozilla.components.ui.icons.R as iconsR
 import mozilla.components.ui.tabcounter.TabCounter
 import org.mozilla.fenix.R
 import org.mozilla.fenix.compose.Banner
@@ -93,8 +94,6 @@ import org.mozilla.fenix.tabstray.ui.tabstray.TabsTray
 import org.mozilla.fenix.theme.FirefoxTheme
 import org.mozilla.fenix.theme.ThemedValue
 import org.mozilla.fenix.theme.ThemedValueProvider
-import kotlin.math.max
-import mozilla.components.ui.icons.R as iconsR
 
 private const val TAB_COUNT_SHOW_CFR = 6
 private const val MENU_ENTER_DURATION_MILLIS = 120
@@ -147,35 +146,38 @@ fun TabsTrayBanner(
     onTabAutoCloseBannerDismiss: () -> Unit,
     onTabAutoCloseBannerShown: () -> Unit,
 ) {
-    val isInMultiSelectMode by remember(state.mode, state.backStack) {
-        derivedStateOf {
-            state.shouldShowMultiSelectBanner()
+    val isInMultiSelectMode by
+        remember(state.mode, state.backStack) {
+            derivedStateOf {
+                state.shouldShowMultiSelectBanner()
+            }
         }
-    }
-    val showTabAutoCloseBanner by remember(
-        state.config.showTabAutoCloseBanner,
-        state.normalTabsState.tabCount,
-        state.privateBrowsing.tabs.size,
-    ) {
-        derivedStateOf {
-            state.config.showTabAutoCloseBanner && max(
-                state.normalTabsState.tabCount,
-                state.privateBrowsing.tabs.size,
-            ) >= TAB_COUNT_SHOW_CFR
+    val showTabAutoCloseBanner by
+        remember(
+            state.config.showTabAutoCloseBanner,
+            state.normalTabsState.tabCount,
+            state.privateBrowsing.tabs.size,
+        ) {
+            derivedStateOf {
+                state.config.showTabAutoCloseBanner &&
+                    max(
+                        state.normalTabsState.tabCount,
+                        state.privateBrowsing.tabs.size,
+                    ) >= TAB_COUNT_SHOW_CFR
+            }
         }
-    }
-    val syncedTabCount = remember(state.sync.syncedTabs) {
-        state.sync.syncedTabs
-            .filterIsInstance<SyncedTabsListItem.DeviceSection>()
-            .sumOf { deviceSection: SyncedTabsListItem.DeviceSection -> deviceSection.tabs.size }
-    }
+    val syncedTabCount =
+        remember(state.sync.syncedTabs) {
+            state.sync.syncedTabs.filterIsInstance<SyncedTabsListItem.DeviceSection>().sumOf {
+                deviceSection: SyncedTabsListItem.DeviceSection ->
+                deviceSection.tabs.size
+            }
+        }
 
     var hasAcknowledgedAutoCloseBanner by remember { mutableStateOf(false) }
     var hasAcknowledgedPbmLockBanner by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier.testTag(tag = TabsTrayTestTag.BANNER_ROOT),
-    ) {
+    Column(modifier = Modifier.testTag(tag = TabsTrayTestTag.BANNER_ROOT)) {
         if (isInMultiSelectMode) {
             MultiSelectTabsTrayBanner(
                 selectedTabCount = state.mode.selectedTabs.size,
@@ -432,8 +434,7 @@ private fun BannerTab(
  * @param onShareSelectedTabs Invoked when the user clicks on the share tabs button.
  * @param onBookmarkSelectedTabsClick Invoked when the user clicks the menu item to bookmark the selected tabs.
  * @param onCloseSelectedTabsClick Invoked when the user clicks the menu item to close the selected tabs.
- * @param onMakeSelectedTabsInactive Invoked when the user clicks the menu item to set the
- * selected tabs as inactive.
+ * @param onMakeSelectedTabsInactive Invoked when the user clicks the menu item to set the selected tabs as inactive.
  * @param onAddToTabGroup Invoked when the user adds to a tab group.
  * @param onRemoveFromTabGroup Invoked when the user removes the selected tabs from their group.
  */
@@ -459,16 +460,18 @@ internal fun MultiSelectTabsTrayBanner(
     onAddToTabGroup: () -> Unit,
     onRemoveFromTabGroup: () -> Unit = {},
 ) {
-    val buttonsEnabled by remember(selectedTabCount) {
-        derivedStateOf {
-            selectedTabCount > 0
+    val buttonsEnabled by
+        remember(selectedTabCount) {
+            derivedStateOf {
+                selectedTabCount > 0
+            }
         }
-    }
-    val buttonTint = if (buttonsEnabled) {
-        MaterialTheme.colorScheme.onSurface
-    } else {
-        MaterialTheme.colorScheme.secondary
-    }
+    val buttonTint =
+        if (buttonsEnabled) {
+            MaterialTheme.colorScheme.onSurface
+        } else {
+            MaterialTheme.colorScheme.secondary
+        }
     var internalMenuExpanded by remember { mutableStateOf(false) }
     val showMenu = menuExpanded ?: internalMenuExpanded
     val setMenuExpanded: (Boolean) -> Unit = { expanded ->
@@ -477,93 +480,97 @@ internal fun MultiSelectTabsTrayBanner(
         }
         onMenuExpandedChange(expanded)
     }
-    val resolvedMenuItems = menuItems ?: generateMultiSelectBannerMenuItems(
-        shouldShowInactiveButton = shouldShowInactiveButton,
-        shouldShowAddToTabGroupButton = shouldShowAddToTabGroupButton,
-        shouldShowSaveToCollectionButton = shouldShowSaveToCollectionButton,
-        shouldShowRemoveFromTabGroupButton = shouldShowRemoveFromTabGroupButton,
-        onShareSelectedTabs = onShareSelectedTabs,
-        onSaveToCollectionsClick = onSaveToCollectionsClick,
-        onMakeSelectedTabsInactive = onMakeSelectedTabsInactive,
-        onAddToTabGroup = onAddToTabGroup,
-        onRemoveFromTabGroup = onRemoveFromTabGroup,
-    )
+    val resolvedMenuItems =
+        menuItems
+            ?: generateMultiSelectBannerMenuItems(
+                shouldShowInactiveButton = shouldShowInactiveButton,
+                shouldShowAddToTabGroupButton = shouldShowAddToTabGroupButton,
+                shouldShowSaveToCollectionButton = shouldShowSaveToCollectionButton,
+                shouldShowRemoveFromTabGroupButton = shouldShowRemoveFromTabGroupButton,
+                onShareSelectedTabs = onShareSelectedTabs,
+                onSaveToCollectionsClick = onSaveToCollectionsClick,
+                onMakeSelectedTabsInactive = onMakeSelectedTabsInactive,
+                onAddToTabGroup = onAddToTabGroup,
+                onRemoveFromTabGroup = onRemoveFromTabGroup,
+            )
 
     Box {
         TopAppBar(
-        title = {
-            Text(
-                text = if (selectedTabCount == 0) {
-                    stringResource(R.string.tab_tray_multi_select_title_empty)
-                } else {
-                    stringResource(R.string.tab_tray_multi_select_title, selectedTabCount)
-                },
-                modifier = Modifier.testTag(TabsTrayTestTag.SELECTION_COUNTER),
-                style = FirefoxTheme.typography.headline6,
-            )
-        },
-        navigationIcon = {
-            IconButton(
-                onClick = onExitSelectModeClick,
-                contentDescription = stringResource(id = R.string.tab_tray_close_multiselect_content_description),
-            ) {
-                Icon(
-                    painter = painterResource(id = iconsR.drawable.mozac_ic_back_24),
-                    contentDescription = null,
+            title = {
+                Text(
+                    text =
+                        if (selectedTabCount == 0) {
+                            stringResource(R.string.tab_tray_multi_select_title_empty)
+                        } else {
+                            stringResource(R.string.tab_tray_multi_select_title, selectedTabCount)
+                        },
+                    modifier = Modifier.testTag(TabsTrayTestTag.SELECTION_COUNTER),
+                    style = FirefoxTheme.typography.headline6,
                 )
-            }
-        },
-        actions = {
-            IconButton(
-                onClick = onBookmarkSelectedTabsClick,
-                contentDescription =
-                    stringResource(id = R.string.tab_manager_multiselect_menu_item_bookmark_content_description),
-                enabled = buttonsEnabled,
-            ) {
-                Icon(
-                    painter = painterResource(id = iconsR.drawable.mozac_ic_bookmark_24),
-                    contentDescription = null,
-                )
-            }
-
-            IconButton(
-                onClick = onCloseSelectedTabsClick,
-                contentDescription =
-                    stringResource(id = R.string.tab_manager_multiselect_menu_item_close_content_description),
-                enabled = buttonsEnabled,
-            ) {
-                Icon(
-                    painter = painterResource(id = iconsR.drawable.mozac_ic_delete_24),
-                    contentDescription = null,
-                )
-            }
-
-            IconButton(
-                onClick = { setMenuExpanded(true) },
-                contentDescription = stringResource(id = R.string.tab_tray_multiselect_menu_content_description),
-                modifier = Modifier.testTag(TabsTrayTestTag.THREE_DOT_BUTTON),
-                enabled = buttonsEnabled,
-            ) {
-                if (menuPlacement == MultiSelectMenuPlacement.Dropdown) {
-                    DropdownMenu(
-                        menuItems = resolvedMenuItems,
-                        expanded = showMenu,
-                        onDismissRequest = { setMenuExpanded(false) },
+            },
+            navigationIcon = {
+                IconButton(
+                    onClick = onExitSelectModeClick,
+                    contentDescription = stringResource(id = R.string.tab_tray_close_multiselect_content_description),
+                ) {
+                    Icon(
+                        painter = painterResource(id = iconsR.drawable.mozac_ic_back_24),
+                        contentDescription = null,
+                    )
+                }
+            },
+            actions = {
+                IconButton(
+                    onClick = onBookmarkSelectedTabsClick,
+                    contentDescription =
+                        stringResource(id = R.string.tab_manager_multiselect_menu_item_bookmark_content_description),
+                    enabled = buttonsEnabled,
+                ) {
+                    Icon(
+                        painter = painterResource(id = iconsR.drawable.mozac_ic_bookmark_24),
+                        contentDescription = null,
                     )
                 }
 
-                Icon(
-                    painter = painterResource(iconsR.drawable.mozac_ic_ellipsis_vertical_24),
-                    contentDescription = null,
-                )
-            }
+                IconButton(
+                    onClick = onCloseSelectedTabsClick,
+                    contentDescription =
+                        stringResource(id = R.string.tab_manager_multiselect_menu_item_close_content_description),
+                    enabled = buttonsEnabled,
+                ) {
+                    Icon(
+                        painter = painterResource(id = iconsR.drawable.mozac_ic_delete_24),
+                        contentDescription = null,
+                    )
+                }
+
+                IconButton(
+                    onClick = { setMenuExpanded(true) },
+                    contentDescription = stringResource(id = R.string.tab_tray_multiselect_menu_content_description),
+                    modifier = Modifier.testTag(TabsTrayTestTag.THREE_DOT_BUTTON),
+                    enabled = buttonsEnabled,
+                ) {
+                    if (menuPlacement == MultiSelectMenuPlacement.Dropdown) {
+                        DropdownMenu(
+                            menuItems = resolvedMenuItems,
+                            expanded = showMenu,
+                            onDismissRequest = { setMenuExpanded(false) },
+                        )
+                    }
+
+                    Icon(
+                        painter = painterResource(iconsR.drawable.mozac_ic_ellipsis_vertical_24),
+                        contentDescription = null,
+                    )
+                }
             },
             expandedHeight = RowHeight,
             windowInsets = windowInsets,
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                actionIconContentColor = buttonTint,
-            ),
+            colors =
+                TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    actionIconContentColor = buttonTint,
+                ),
         )
     }
 }
@@ -582,47 +589,49 @@ internal fun MultiSelectTabsTrayMenu(
         val endPadding = FirefoxTheme.layout.space.static100
         val bottomPadding = FirefoxTheme.layout.space.static50
         val navigationBarBottomInset = WindowInsets.navigationBars.getBottom(density)
-        val positionProvider = remember(density, endPadding, bottomPadding, navigationBarBottomInset) {
-            AboveToolbarMenuPositionProvider(
-                endPaddingPx = with(density) { endPadding.roundToPx() },
-                bottomPaddingPx = with(density) { bottomPadding.roundToPx() },
-                toolbarHeightPx = with(density) { RowHeight.roundToPx() },
-                navigationBarBottomInsetPx = navigationBarBottomInset,
-            )
-        }
+        val positionProvider =
+            remember(density, endPadding, bottomPadding, navigationBarBottomInset) {
+                AboveToolbarMenuPositionProvider(
+                    endPaddingPx = with(density) { endPadding.roundToPx() },
+                    bottomPaddingPx = with(density) { bottomPadding.roundToPx() },
+                    toolbarHeightPx = with(density) { RowHeight.roundToPx() },
+                    navigationBarBottomInsetPx = navigationBarBottomInset,
+                )
+            }
 
         Popup(
             popupPositionProvider = positionProvider,
             onDismissRequest = onDismissRequest,
-            properties = PopupProperties(
-                focusable = true,
-                dismissOnBackPress = true,
-                dismissOnClickOutside = true,
-                clippingEnabled = false,
-            ),
+            properties =
+                PopupProperties(
+                    focusable = true,
+                    dismissOnBackPress = true,
+                    dismissOnClickOutside = true,
+                    clippingEnabled = false,
+                ),
         ) {
             AnimatedVisibility(
                 visibleState = visibilityState,
-                enter = scaleIn(
-                    animationSpec = tween(
-                        durationMillis = MENU_ENTER_DURATION_MILLIS,
-                        easing = LinearOutSlowInEasing,
-                    ),
-                    transformOrigin = TransformOrigin(pivotFractionX = 1f, pivotFractionY = 1f),
-                    initialScale = 0.8f,
-                ) + fadeIn(
-                    animationSpec = tween(durationMillis = MENU_ENTER_FADE_DURATION_MILLIS),
-                ),
-                exit = scaleOut(
-                    animationSpec = tween(
-                        durationMillis = 1,
-                        delayMillis = MENU_EXIT_DURATION_MILLIS - 1,
-                    ),
-                    transformOrigin = TransformOrigin(pivotFractionX = 1f, pivotFractionY = 1f),
-                    targetScale = 0.8f,
-                ) + fadeOut(
-                    animationSpec = tween(durationMillis = MENU_EXIT_DURATION_MILLIS),
-                ),
+                enter =
+                    scaleIn(
+                        animationSpec =
+                            tween(
+                                durationMillis = MENU_ENTER_DURATION_MILLIS,
+                                easing = LinearOutSlowInEasing,
+                            ),
+                        transformOrigin = TransformOrigin(pivotFractionX = 1f, pivotFractionY = 1f),
+                        initialScale = 0.8f,
+                    ) + fadeIn(animationSpec = tween(durationMillis = MENU_ENTER_FADE_DURATION_MILLIS)),
+                exit =
+                    scaleOut(
+                        animationSpec =
+                            tween(
+                                durationMillis = 1,
+                                delayMillis = MENU_EXIT_DURATION_MILLIS - 1,
+                            ),
+                        transformOrigin = TransformOrigin(pivotFractionX = 1f, pivotFractionY = 1f),
+                        targetScale = 0.8f,
+                    ) + fadeOut(animationSpec = tween(durationMillis = MENU_EXIT_DURATION_MILLIS)),
             ) {
                 BottomToolbarMenu(
                     menuItems = menuItems,
@@ -644,20 +653,23 @@ internal data class AboveToolbarMenuPositionProvider(
         windowSize: IntSize,
         layoutDirection: LayoutDirection,
         popupContentSize: IntSize,
-    ): IntOffset = IntOffset(
-        x = if (layoutDirection == LayoutDirection.Ltr) {
-            windowSize.width - popupContentSize.width - endPaddingPx
-        } else {
-            endPaddingPx
-        }.coerceIn(0, (windowSize.width - popupContentSize.width).coerceAtLeast(0)),
-        y = (
-            windowSize.height -
-                navigationBarBottomInsetPx -
-                toolbarHeightPx -
-                bottomPaddingPx -
-                popupContentSize.height
-            ).coerceAtLeast(0),
-    )
+    ): IntOffset =
+        IntOffset(
+            x =
+                if (layoutDirection == LayoutDirection.Ltr) {
+                        windowSize.width - popupContentSize.width - endPaddingPx
+                    } else {
+                        endPaddingPx
+                    }
+                    .coerceIn(0, (windowSize.width - popupContentSize.width).coerceAtLeast(0)),
+            y =
+                (windowSize.height -
+                        navigationBarBottomInsetPx -
+                        toolbarHeightPx -
+                        bottomPaddingPx -
+                        popupContentSize.height)
+                    .coerceAtLeast(0),
+        )
 }
 
 @Composable
@@ -676,11 +688,12 @@ private fun BottomToolbarMenu(
             menuItems.forEach { item ->
                 when (item) {
                     is MenuItem.IconItem -> {
-                        val itemColor = if (item.level == MenuItem.FixedItem.Level.Critical) {
-                            MaterialTheme.colorScheme.error
-                        } else {
-                            MaterialTheme.colorScheme.onSurface
-                        }
+                        val itemColor =
+                            if (item.level == MenuItem.FixedItem.Level.Critical) {
+                                MaterialTheme.colorScheme.error
+                            } else {
+                                MaterialTheme.colorScheme.onSurface
+                            }
                         DropdownMenuItem(
                             text = {
                                 Text(
@@ -692,9 +705,7 @@ private fun BottomToolbarMenu(
                                 onDismissRequest()
                                 item.onClick()
                             },
-                            modifier = Modifier
-                                .height(RowHeight)
-                                .testTag(item.testTag),
+                            modifier = Modifier.height(RowHeight).testTag(item.testTag),
                             leadingIcon = {
                                 Icon(
                                     painter = painterResource(item.drawableRes),
@@ -702,10 +713,11 @@ private fun BottomToolbarMenu(
                                 )
                             },
                             enabled = item.enabled,
-                            colors = MenuDefaults.itemColors(
-                                textColor = itemColor,
-                                leadingIconColor = itemColor,
-                            ),
+                            colors =
+                                MenuDefaults.itemColors(
+                                    textColor = itemColor,
+                                    leadingIconColor = itemColor,
+                                ),
                             contentPadding = PaddingValues(horizontal = FirefoxTheme.layout.space.static150),
                         )
                     }
@@ -729,14 +741,15 @@ internal fun generateMultiSelectBannerMenuItems(
     onAddToTabGroup: () -> Unit,
     onRemoveFromTabGroup: () -> Unit,
 ): List<MenuItem> {
-    val menuItems = mutableListOf(
-        MenuItem.IconItem(
-            text = Text.Resource(R.string.tab_manager_multiselect_menu_item_share),
-            drawableRes = iconsR.drawable.mozac_ic_share_android_24,
-            testTag = TabsTrayTestTag.SHARE_BUTTON,
-            onClick = onShareSelectedTabs,
-        ),
-    )
+    val menuItems =
+        mutableListOf(
+            MenuItem.IconItem(
+                text = Text.Resource(R.string.tab_manager_multiselect_menu_item_share),
+                drawableRes = iconsR.drawable.mozac_ic_share_android_24,
+                testTag = TabsTrayTestTag.SHARE_BUTTON,
+                onClick = onShareSelectedTabs,
+            )
+        )
     if (shouldShowSaveToCollectionButton) {
         menuItems.add(
             MenuItem.IconItem(
@@ -762,7 +775,7 @@ internal fun generateMultiSelectBannerMenuItems(
                 text = Text.Resource(R.string.tab_manager_multiselect_menu_item_add_to_tab_group),
                 drawableRes = iconsR.drawable.mozac_ic_tab_group_24,
                 onClick = onAddToTabGroup,
-            ),
+            )
         )
     }
     if (shouldShowRemoveFromTabGroupButton) {
@@ -772,92 +785,91 @@ internal fun generateMultiSelectBannerMenuItems(
                 drawableRes = iconsR.drawable.mozac_ic_tab_ungroup_24,
                 testTag = TabsTrayTestTag.REMOVE_FROM_TAB_GROUP,
                 onClick = onRemoveFromTabGroup,
-            ),
+            )
         )
     }
     return menuItems
 }
 
-private val previewData = listOf(
-    Pair(
-        "Private page selected",
-        TabsTrayState(
-            selectedPage = Page.PrivateTabs,
+private val previewData =
+    listOf(
+        Pair(
+            "Private page selected",
+            TabsTrayState(selectedPage = Page.PrivateTabs),
         ),
-    ),
-    Pair(
-        "Normal page selected - 0 tabs",
-        TabsTrayState(
-            selectedPage = Page.NormalTabs,
-            normalTabsState = TabsTrayState.NormalTabsState(tabCount = 0),
-        ),
-    ),
-    Pair(
-        "Normal page selected - infinity tabs",
-        TabsTrayState(
-            selectedPage = Page.NormalTabs,
-            normalTabsState = TabsTrayState.NormalTabsState(tabCount = 100),
-        ),
-    ),
-    Pair(
-        "Tab groups page selected",
-        TabsTrayState(
-            selectedPage = Page.TabGroups,
-            config = TabsTrayState.TabsTrayConfig(tabGroupsEnabled = true),
-        ),
-    ),
-    Pair(
-        "Synced page selected",
-        TabsTrayState(
-            selectedPage = Page.SyncedTabs,
-        ),
-    ),
-    Pair(
-        "Normal tab page selected with badge on tab group page",
-        TabsTrayState(
-            selectedPage = Page.NormalTabs,
-            tabGroupState = TabsTrayState.TabGroupState(
-                groups = listOf(createTabGroup()),
-                hasViewedTabGroupsPage = false,
-            ),
-            config = TabsTrayState.TabsTrayConfig(tabGroupsEnabled = true),
-        ),
-    ),
-    Pair(
-        "Auto close banner is displayed",
-        TabsTrayState(
-            normalTabsState = TabsTrayState.NormalTabsState(tabCount = 10),
-            config = TabsTrayState.TabsTrayConfig(showTabAutoCloseBanner = true),
-        ),
-    ),
-    Pair(
-        "Multiselection mode with 2 tabs selected",
-        TabsTrayState(
-            mode = Mode.Select(
-                selectedTabs = setOf(
-                    createTab("www.mozilla.com"),
-                    createTab("www.mozilla.com"),
-                ),
+        Pair(
+            "Normal page selected - 0 tabs",
+            TabsTrayState(
+                selectedPage = Page.NormalTabs,
+                normalTabsState = TabsTrayState.NormalTabsState(tabCount = 0),
             ),
         ),
-    ),
-    Pair(
-        "Multiselection mode with 0 tabs selected",
-        TabsTrayState(
-            mode = Mode.Select(),
+        Pair(
+            "Normal page selected - infinity tabs",
+            TabsTrayState(
+                selectedPage = Page.NormalTabs,
+                normalTabsState = TabsTrayState.NormalTabsState(tabCount = 100),
+            ),
         ),
-    ),
-)
+        Pair(
+            "Tab groups page selected",
+            TabsTrayState(
+                selectedPage = Page.TabGroups,
+                config = TabsTrayState.TabsTrayConfig(tabGroupsEnabled = true),
+            ),
+        ),
+        Pair(
+            "Synced page selected",
+            TabsTrayState(selectedPage = Page.SyncedTabs),
+        ),
+        Pair(
+            "Normal tab page selected with badge on tab group page",
+            TabsTrayState(
+                selectedPage = Page.NormalTabs,
+                tabGroupState =
+                    TabsTrayState.TabGroupState(
+                        groups = listOf(createTabGroup()),
+                        hasViewedTabGroupsPage = false,
+                    ),
+                config = TabsTrayState.TabsTrayConfig(tabGroupsEnabled = true),
+            ),
+        ),
+        Pair(
+            "Auto close banner is displayed",
+            TabsTrayState(
+                normalTabsState = TabsTrayState.NormalTabsState(tabCount = 10),
+                config = TabsTrayState.TabsTrayConfig(showTabAutoCloseBanner = true),
+            ),
+        ),
+        Pair(
+            "Multiselection mode with 2 tabs selected",
+            TabsTrayState(
+                mode =
+                    Mode.Select(
+                        selectedTabs =
+                            setOf(
+                                createTab("www.mozilla.com"),
+                                createTab("www.mozilla.com"),
+                            )
+                    )
+            ),
+        ),
+        Pair(
+            "Multiselection mode with 0 tabs selected",
+            TabsTrayState(mode = Mode.Select()),
+        ),
+    )
 
-private class TabsTrayBannerParameterProvider : ThemedValueProvider<TabsTrayState>(
-    baseValues = previewData.map { it.second }.asSequence(),
-    getDisplayName = { index, _ -> previewData[index].first },
-)
+private class TabsTrayBannerParameterProvider :
+    ThemedValueProvider<TabsTrayState>(
+        baseValues = previewData.map { it.second }.asSequence(),
+        getDisplayName = { index, _ -> previewData[index].first },
+    )
 
 @Preview
 @Composable
 private fun TabsTrayBannerPreview(
-    @PreviewParameter(TabsTrayBannerParameterProvider::class) previewState: ThemedValue<TabsTrayState>,
+    @PreviewParameter(TabsTrayBannerParameterProvider::class) previewState: ThemedValue<TabsTrayState>
 ) {
     val tabsTrayStore = remember { TabsTrayStore(initialState = previewState.value) }
     val state by tabsTrayStore.stateFlow.collectAsState()

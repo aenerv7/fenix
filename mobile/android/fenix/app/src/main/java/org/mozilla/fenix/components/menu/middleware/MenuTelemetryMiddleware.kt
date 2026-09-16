@@ -33,84 +33,47 @@ class MenuTelemetryMiddleware(private val accessPoint: MenuAccessPoint) : Middle
         next(action)
 
         when (action) {
-            MenuAction.Navigate.CustomizeHomepage -> Events.browserMenuAction.record(
-                Events.BrowserMenuActionExtra(
-                    item = "customize_homepage",
-                ),
-            )
+            MenuAction.Navigate.CustomizeHomepage ->
+                Events.browserMenuAction.record(Events.BrowserMenuActionExtra(item = "customize_homepage"))
 
-            MenuAction.AddBookmark -> Events.browserMenuAction.record(
-                Events.BrowserMenuActionExtra(
-                    item = "add_bookmark",
-                ),
-            )
+            MenuAction.AddBookmark ->
+                Events.browserMenuAction.record(Events.BrowserMenuActionExtra(item = "add_bookmark"))
 
-            MenuAction.Navigate.EditBookmark -> Events.browserMenuAction.record(
-                Events.BrowserMenuActionExtra(
-                    item = "edit_bookmark",
-                ),
-            )
+            MenuAction.Navigate.EditBookmark ->
+                Events.browserMenuAction.record(Events.BrowserMenuActionExtra(item = "edit_bookmark"))
 
-            MenuAction.AddShortcut -> Events.browserMenuAction.record(
-                Events.BrowserMenuActionExtra(
-                    item = "add_to_top_sites",
-                ),
-            )
+            MenuAction.AddShortcut ->
+                Events.browserMenuAction.record(Events.BrowserMenuActionExtra(item = "add_to_top_sites"))
 
-            MenuAction.RemoveShortcut -> Events.browserMenuAction.record(
-                Events.BrowserMenuActionExtra(
-                    item = "remove_from_top_sites",
-                ),
-            )
+            MenuAction.RemoveShortcut ->
+                Events.browserMenuAction.record(Events.BrowserMenuActionExtra(item = "remove_from_top_sites"))
 
-            MenuAction.Navigate.AddToHomeScreen -> Events.browserMenuAction.record(
-                Events.BrowserMenuActionExtra(
-                    item = "add_to_homescreen",
-                ),
-            )
+            MenuAction.Navigate.AddToHomeScreen ->
+                Events.browserMenuAction.record(Events.BrowserMenuActionExtra(item = "add_to_homescreen"))
 
-            MenuAction.Navigate.Bookmarks -> Events.browserMenuAction.record(
-                Events.BrowserMenuActionExtra(
-                    item = "bookmarks",
-                ),
-            )
+            MenuAction.Navigate.Bookmarks ->
+                Events.browserMenuAction.record(Events.BrowserMenuActionExtra(item = "bookmarks"))
 
-            MenuAction.Navigate.Downloads -> Events.browserMenuAction.record(
-                Events.BrowserMenuActionExtra(
-                    item = "downloads",
-                ),
-            )
+            MenuAction.Navigate.Downloads ->
+                Events.browserMenuAction.record(Events.BrowserMenuActionExtra(item = "downloads"))
 
-            MenuAction.Navigate.History -> Events.browserMenuAction.record(
-                Events.BrowserMenuActionExtra(
-                    item = "history",
-                ),
-            )
+            MenuAction.Navigate.History ->
+                Events.browserMenuAction.record(Events.BrowserMenuActionExtra(item = "history"))
 
-            MenuAction.Navigate.ManageExtensions -> Events.browserMenuAction.record(
-                Events.BrowserMenuActionExtra(
-                    item = "addons_manager",
-                ),
-            )
+            MenuAction.Navigate.ManageExtensions ->
+                Events.browserMenuAction.record(Events.BrowserMenuActionExtra(item = "addons_manager"))
 
             is MenuAction.Navigate.MozillaAccount -> {
                 Events.browserMenuAction.record(Events.BrowserMenuActionExtra(item = "sync_account"))
                 AppMenu.signIntoSync.add()
             }
 
-            MenuAction.OpenInApp -> Events.browserMenuAction.record(
-                Events.BrowserMenuActionExtra(
-                    item = "open_in_app",
-                ),
-            )
+            MenuAction.OpenInApp -> Events.browserMenuAction.record(Events.BrowserMenuActionExtra(item = "open_in_app"))
 
             MenuAction.Navigate.Settings -> {
                 when (accessPoint) {
-                    MenuAccessPoint.Browser -> Events.browserMenuAction.record(
-                        Events.BrowserMenuActionExtra(
-                            item = "settings",
-                        ),
-                    )
+                    MenuAccessPoint.Browser ->
+                        Events.browserMenuAction.record(Events.BrowserMenuActionExtra(item = "settings"))
 
                     MenuAccessPoint.Home -> HomeMenu.settingsItemClicked.record(NoExtras())
 

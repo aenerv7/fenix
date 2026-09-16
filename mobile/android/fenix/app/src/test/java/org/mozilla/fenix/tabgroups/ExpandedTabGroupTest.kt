@@ -115,31 +115,33 @@ class ExpandedTabGroupTest {
             }
         }
 
-        composeTestRule.onNodeWithTag(TabsTrayTestTag.BOTTOM_SHEET_ADD_TAB_BUTTON)
-            .assertIsDisplayed()
+        composeTestRule.onNodeWithTag(TabsTrayTestTag.BOTTOM_SHEET_ADD_TAB_BUTTON).assertIsDisplayed()
     }
 
     @Test
     fun `GIVEN selected tab is outside the initial viewport WHEN group opens THEN selected tab is displayed`() {
-        val tabs = List(20) { index ->
+        val tabs =
+            List(20) { index ->
+                createTab(
+                    id = "tab-$index",
+                    title = "Tab $index",
+                    url = "https://www.mozilla.org/$index",
+                )
+            }
+        val selectedTab =
             createTab(
-                id = "tab-$index",
-                title = "Tab $index",
-                url = "https://www.mozilla.org/$index",
+                id = "selected-tab",
+                title = "Selected tab",
+                url = "https://www.mozilla.org/selected",
+                isFocused = true,
             )
-        }
-        val selectedTab = createTab(
-            id = "selected-tab",
-            title = "Selected tab",
-            url = "https://www.mozilla.org/selected",
-            isFocused = true,
-        )
-        val group = createTabGroup(
-            title = testGroupTitle,
-            tabs = tabs + selectedTab,
-            isFocused = true,
-            initialScrollIndex = tabs.size,
-        )
+        val group =
+            createTabGroup(
+                title = testGroupTitle,
+                tabs = tabs + selectedTab,
+                isFocused = true,
+                initialScrollIndex = tabs.size,
+            )
 
         composeTestRule.setContent {
             CompositionLocalProvider(LocalUnderTest provides true) {
@@ -279,8 +281,7 @@ class ExpandedTabGroupTest {
             }
         }
 
-        composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_ITEM_ROOT)
-            .performTouchInput { longClick() }
+        composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_ITEM_ROOT).performTouchInput { longClick() }
 
         assertTrue(longClicked)
     }
@@ -310,10 +311,7 @@ class ExpandedTabGroupTest {
                                 selectionMode = TabsTrayState.Mode.Select(selectedTabs = setOf(tab)),
                                 selectionBanner = { _, _ ->
                                     Surface(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .height(48.dp)
-                                            .testTag(selectionBannerTag),
+                                        modifier = Modifier.fillMaxWidth().height(48.dp).testTag(selectionBannerTag)
                                     ) {}
                                 },
                                 snackbarHostState = snackbarHostState,
@@ -326,14 +324,16 @@ class ExpandedTabGroupTest {
 
         composeTestRule.onNodeWithTag(selectionBannerTag).assertIsDisplayed()
         composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_GROUP_THREE_DOT_BUTTON).assertIsDisplayed()
-        val tabGridBounds = composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_GRID)
-            .fetchSemanticsNode().boundsInWindow
-        val groupBounds = composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_GROUP_BOTTOM_SHEET_ROOT)
-            .fetchSemanticsNode().boundsInWindow
-        val selectionBannerBounds = composeTestRule.onNodeWithTag(selectionBannerTag)
-            .fetchSemanticsNode().boundsInWindow
-        val overlayBounds = composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_GROUP_FIXED_OVERLAY)
-            .fetchSemanticsNode().boundsInWindow
+        val tabGridBounds = composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_GRID).fetchSemanticsNode().boundsInWindow
+        val groupBounds =
+            composeTestRule
+                .onNodeWithTag(TabsTrayTestTag.TAB_GROUP_BOTTOM_SHEET_ROOT)
+                .fetchSemanticsNode()
+                .boundsInWindow
+        val selectionBannerBounds =
+            composeTestRule.onNodeWithTag(selectionBannerTag).fetchSemanticsNode().boundsInWindow
+        val overlayBounds =
+            composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_GROUP_FIXED_OVERLAY).fetchSemanticsNode().boundsInWindow
         assertTrue(selectionBannerBounds.top < tabGridBounds.bottom)
         assertEquals(groupBounds.width, selectionBannerBounds.width)
         assertEquals(groupBounds.width, overlayBounds.width)
@@ -364,12 +364,7 @@ class ExpandedTabGroupTest {
                         tabInteractionHandler = NoOpTabInteractionHandler,
                         selectionMode = TabsTrayState.Mode.Select(selectedTabs = setOf(tab)),
                         selectionBanner = { _, _ ->
-                            Surface(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(48.dp)
-                                    .testTag(selectionBannerTag),
-                            ) {}
+                            Surface(modifier = Modifier.fillMaxWidth().height(48.dp).testTag(selectionBannerTag)) {}
                         },
                         snackbarHostState = snackbarHostState,
                     )
@@ -379,10 +374,9 @@ class ExpandedTabGroupTest {
 
         composeTestRule.onNodeWithText(snackbarMessage).assertIsDisplayed()
         composeTestRule.onNodeWithTag(selectionBannerTag).assertIsDisplayed()
-        val snackbarBounds = composeTestRule.onNodeWithText(snackbarMessage)
-            .fetchSemanticsNode().boundsInWindow
-        val selectionBannerBounds = composeTestRule.onNodeWithTag(selectionBannerTag)
-            .fetchSemanticsNode().boundsInWindow
+        val snackbarBounds = composeTestRule.onNodeWithText(snackbarMessage).fetchSemanticsNode().boundsInWindow
+        val selectionBannerBounds =
+            composeTestRule.onNodeWithTag(selectionBannerTag).fetchSemanticsNode().boundsInWindow
         assertTrue(snackbarBounds.bottom <= selectionBannerBounds.top)
     }
 
@@ -393,18 +387,20 @@ class ExpandedTabGroupTest {
         val expectedPosition = IntOffset(x = 0, y = 568)
         val positionProvider = FixedBottomPopupPositionProvider()
 
-        val positionForCompactSheet = positionProvider.calculatePosition(
-            anchorBounds = IntRect(left = 0, top = 400, right = 320, bottom = 640),
-            windowSize = windowSize,
-            layoutDirection = LayoutDirection.Ltr,
-            popupContentSize = toolbarAndNavigationBarSize,
-        )
-        val positionForExpandedSheet = positionProvider.calculatePosition(
-            anchorBounds = IntRect(left = 0, top = 40, right = 320, bottom = 640),
-            windowSize = windowSize,
-            layoutDirection = LayoutDirection.Ltr,
-            popupContentSize = toolbarAndNavigationBarSize,
-        )
+        val positionForCompactSheet =
+            positionProvider.calculatePosition(
+                anchorBounds = IntRect(left = 0, top = 400, right = 320, bottom = 640),
+                windowSize = windowSize,
+                layoutDirection = LayoutDirection.Ltr,
+                popupContentSize = toolbarAndNavigationBarSize,
+            )
+        val positionForExpandedSheet =
+            positionProvider.calculatePosition(
+                anchorBounds = IntRect(left = 0, top = 40, right = 320, bottom = 640),
+                windowSize = windowSize,
+                layoutDirection = LayoutDirection.Ltr,
+                popupContentSize = toolbarAndNavigationBarSize,
+            )
 
         assertEquals(expectedPosition, positionForCompactSheet)
         assertEquals(expectedPosition, positionForExpandedSheet)
@@ -414,9 +410,7 @@ class ExpandedTabGroupTest {
     fun verifySelectionBannerIsRemovedAfterSelectionModeEnds() {
         val tab = createTab(url = "test tab")
         val selectionBannerTag = "selectionBanner"
-        val selectionMode = mutableStateOf<TabsTrayState.Mode>(
-            TabsTrayState.Mode.Select(selectedTabs = setOf(tab)),
-        )
+        val selectionMode = mutableStateOf<TabsTrayState.Mode>(TabsTrayState.Mode.Select(selectedTabs = setOf(tab)))
 
         composeTestRule.setContent {
             CompositionLocalProvider(LocalUnderTest provides true) {
@@ -431,12 +425,7 @@ class ExpandedTabGroupTest {
                         tabInteractionHandler = NoOpTabInteractionHandler,
                         selectionMode = selectionMode.value,
                         selectionBanner = { _, _ ->
-                            Surface(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(48.dp)
-                                    .testTag(selectionBannerTag),
-                            ) {}
+                            Surface(modifier = Modifier.fillMaxWidth().height(48.dp).testTag(selectionBannerTag)) {}
                         },
                     )
                 }
@@ -454,16 +443,17 @@ class ExpandedTabGroupTest {
     fun verifyBottomToolbarMenuOpensAboveToolbar() {
         val tab = createTab(url = "test tab")
         composeTestRule.mainClock.autoAdvance = false
-        val menuItems = generateMultiSelectBannerMenuItems(
-            shouldShowInactiveButton = false,
-            shouldShowAddToTabGroupButton = true,
-            shouldShowRemoveFromTabGroupButton = true,
-            onShareSelectedTabs = {},
-            onSaveToCollectionsClick = {},
-            onMakeSelectedTabsInactive = {},
-            onAddToTabGroup = {},
-            onRemoveFromTabGroup = {},
-        )
+        val menuItems =
+            generateMultiSelectBannerMenuItems(
+                shouldShowInactiveButton = false,
+                shouldShowAddToTabGroupButton = true,
+                shouldShowRemoveFromTabGroupButton = true,
+                onShareSelectedTabs = {},
+                onSaveToCollectionsClick = {},
+                onMakeSelectedTabsInactive = {},
+                onAddToTabGroup = {},
+                onRemoveFromTabGroup = {},
+            )
 
         composeTestRule.setContent {
             CompositionLocalProvider(LocalUnderTest provides true) {
@@ -537,19 +527,21 @@ class ExpandedTabGroupTest {
         val toolbarHeight = 48
         val navigationBarInset = 24
         val bottomPadding = 4
-        val positionProvider = AboveToolbarMenuPositionProvider(
-            endPaddingPx = 8,
-            bottomPaddingPx = bottomPadding,
-            toolbarHeightPx = toolbarHeight,
-            navigationBarBottomInsetPx = navigationBarInset,
-        )
+        val positionProvider =
+            AboveToolbarMenuPositionProvider(
+                endPaddingPx = 8,
+                bottomPaddingPx = bottomPadding,
+                toolbarHeightPx = toolbarHeight,
+                navigationBarBottomInsetPx = navigationBarInset,
+            )
 
-        val menuPosition = positionProvider.calculatePosition(
-            anchorBounds = IntRect.Zero,
-            windowSize = windowSize,
-            layoutDirection = LayoutDirection.Ltr,
-            popupContentSize = menuSize,
-        )
+        val menuPosition =
+            positionProvider.calculatePosition(
+                anchorBounds = IntRect.Zero,
+                windowSize = windowSize,
+                layoutDirection = LayoutDirection.Ltr,
+                popupContentSize = menuSize,
+            )
         val toolbarTop = windowSize.height - navigationBarInset - toolbarHeight
 
         assertEquals(32, menuPosition.x)
@@ -696,13 +688,14 @@ class ExpandedTabGroupTest {
         onCloseTabGroupClick: () -> Unit = {},
         onAddNewTabClick: () -> Unit = {},
         onShareTabGroupClick: () -> Unit = {},
-    ) = ExpandedTabGroupActions(
-        onItemClick = onItemClick,
-        onTabClose = onTabClose,
-        onDeleteTabGroupClick = onDeleteTabGroupClick,
-        onEditTabGroupClick = onEditTabGroupClick,
-        onCloseTabGroupClick = onCloseTabGroupClick,
-        onAddNewTabClick = onAddNewTabClick,
-        onShareTabGroupClick = onShareTabGroupClick,
-    )
+    ) =
+        ExpandedTabGroupActions(
+            onItemClick = onItemClick,
+            onTabClose = onTabClose,
+            onDeleteTabGroupClick = onDeleteTabGroupClick,
+            onEditTabGroupClick = onEditTabGroupClick,
+            onCloseTabGroupClick = onCloseTabGroupClick,
+            onAddNewTabClick = onAddNewTabClick,
+            onShareTabGroupClick = onShareTabGroupClick,
+        )
 }

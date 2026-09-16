@@ -119,37 +119,34 @@ interface ListInteractionState {
 
     /**
      * Called when a drag event is updated.
+     *
      * @param offset the latest offset for the drag event
      * @param preserveSelectMode whether select mode should be preserved
      */
     fun onDrag(offset: Float, preserveSelectMode: Boolean)
 
-    /**
-     * Called when a drag event ends.
-     */
+    /** Called when a drag event ends. */
     fun onDragEnd()
 
-    /**
-     * Called when a drag is cancelled, for example, when a user lets go without performing an action.
-     */
+    /** Called when a drag is cancelled, for example, when a user lets go without performing an action. */
     fun onDragCancelled()
 
     /**
      * Computes the offset of an item at a given index.
+     *
      * @param index the item's index
      */
     fun computeItemOffset(index: Int): Float
 
-    /**
-     * Called to indicate to the list that the drop handling has been completed and the state can be reset.
-     */
+    /** Called to indicate to the list that the drop handling has been completed and the state can be reset. */
     fun reset()
 
     fun resetImmediately()
 
     fun resetIfItemMissing(itemKeys: Set<Any>) {
-        if (draggedItem.key?.let { it !in itemKeys } == true ||
-            previousKeyOfDraggedItem?.let { it !in itemKeys } == true
+        if (
+            draggedItem.key?.let { it !in itemKeys } == true ||
+                previousKeyOfDraggedItem?.let { it !in itemKeys } == true
         ) {
             resetImmediately()
         }

@@ -10,7 +10,6 @@ import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.os.storage.StorageManager
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +17,7 @@ import android.view.ViewGroup
 import android.view.accessibility.AccessibilityManager
 import androidx.annotation.CallSuper
 import androidx.annotation.VisibleForTesting
+import androidx.appcompat.R as appcompatR
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.HorizontalDivider
@@ -35,8 +35,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
+import com.google.android.material.R as materialR
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
+import java.lang.ref.WeakReference
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -73,6 +75,7 @@ import mozilla.components.feature.downloads.CurrentDownloadState
 import mozilla.components.feature.downloads.DownloadsFeature
 import mozilla.components.feature.downloads.NegativeActionCallback
 import mozilla.components.feature.downloads.PositiveActionCallback
+import mozilla.components.feature.downloads.R as downloadsR
 import mozilla.components.feature.downloads.manager.FetchDownloadManager
 import mozilla.components.feature.downloads.temporary.CopyDownloadFeature
 import mozilla.components.feature.downloads.temporary.ShareResourceFeature
@@ -122,6 +125,7 @@ import mozilla.components.support.ktx.kotlinx.coroutines.flow.ifAnyChanged
 import mozilla.components.support.locale.ActivityContextWrapper
 import mozilla.components.support.utils.DefaultDownloadFileUtils
 import mozilla.components.support.utils.ext.pixelSizeFor
+import mozilla.components.ui.widgets.R as widgetsR
 import mozilla.components.ui.widgets.behavior.EngineViewClippingBehavior
 import mozilla.telemetry.glean.private.NoExtras
 import org.mozilla.fenix.BuildConfig
@@ -202,16 +206,10 @@ import org.mozilla.fenix.theme.FirefoxTheme
 import org.mozilla.fenix.theme.ThemeManager
 import org.mozilla.fenix.utils.allowUndo
 import org.mozilla.fenix.wifi.SitePermissionsWifiIntegration
-import java.lang.ref.WeakReference
-import androidx.appcompat.R as appcompatR
-import com.google.android.material.R as materialR
-import mozilla.components.feature.downloads.R as downloadsR
-import mozilla.components.ui.widgets.R as widgetsR
 
 /**
- * Base fragment extended by [BrowserFragment].
- * This class only contains shared code focused on the main browsing content.
- * UI code specific to the app or to custom tabs can be found in the subclasses.
+ * Base fragment extended by [BrowserFragment]. This class only contains shared code focused on the main browsing
+ * content. UI code specific to the app or to custom tabs can be found in the subclasses.
  */
 @Suppress("TooManyFunctions", "LargeClass")
 abstract class BaseBrowserFragment :
@@ -222,14 +220,13 @@ abstract class BaseBrowserFragment :
     AccessibilityManager.AccessibilityStateChangeListener {
 
     private var _binding: FragmentBrowserBinding? = null
-    internal val binding get() = _binding!!
+    internal val binding
+        get() = _binding!!
 
     private var emailMaskBar: EmailMaskPromptView? = null
     internal var blackScreenOverlay: ComposeView? = null
 
-    @VisibleForTesting
-    @Suppress("VariableNaming")
-    internal var _browserToolbar: BrowserToolbarComposable? = null
+    @VisibleForTesting @Suppress("VariableNaming") internal var _browserToolbar: BrowserToolbarComposable? = null
     private var awesomeBarComposable: AwesomeBarComposable? = null
 
     @VisibleForTesting
@@ -878,12 +875,13 @@ abstract class BaseBrowserFragment :
             view = view,
         )
 
-        pipFeature = PictureInPictureFeature(
-            store = store,
-            activity = requireActivity(),
-            crashReporting = context.components.analytics.crashReporter,
-            tabId = customTabSessionId,
-        )
+        pipFeature =
+            PictureInPictureFeature(
+                store = store,
+                activity = requireActivity(),
+                crashReporting = context.components.analytics.crashReporter,
+                tabId = customTabSessionId,
+            )
 
         val colorsProvider = DialogColorsProvider {
             DialogColors(
@@ -892,229 +890,237 @@ abstract class BaseBrowserFragment :
             )
         }
 
-        emailMaskBar = FenixEmailMaskPrompt(
-            viewProvider = {
-                view.findViewById(R.id.emailMaskBar)
-                    ?: binding.emailMaskBarStub.inflate() as EmailMaskPromptBarView
-            },
-            toolbarPositionProvider = {
-                requireComponents.settings.toolbarPosition
-            },
-            onShow = {
-                onAutocompleteBarShow()
-                EmailMask.promptShown.record()
-            },
-        )
+        emailMaskBar =
+            FenixEmailMaskPrompt(
+                viewProvider = {
+                    view.findViewById(R.id.emailMaskBar) ?: binding.emailMaskBarStub.inflate() as EmailMaskPromptBarView
+                },
+                toolbarPositionProvider = {
+                    requireComponents.settings.toolbarPosition
+                },
+                onShow = {
+                    onAutocompleteBarShow()
+                    EmailMask.promptShown.record()
+                },
+            )
 
         promptsFeature.set(
-            feature = PromptFeature(
-                activity = activity,
-                store = store,
-                customTabId = customTabSessionId,
-                fragmentManager = parentFragmentManager,
-                identityCredentialColorsProvider = colorsProvider,
-                tabsUseCases = requireComponents.useCases.tabsUseCases,
-                fileUploadsDirCleaner = requireComponents.core.fileUploadsDirCleaner,
-                shareDelegate = object : ShareDelegate {
-                    override fun showShareSheet(
-                        context: Context,
-                        shareData: ShareData,
-                        onDismiss: () -> Unit,
-                        onSuccess: () -> Unit,
-                    ) {
-                        val currentTab = getCurrentTab()
+            feature =
+                PromptFeature(
+                    activity = activity,
+                    store = store,
+                    customTabId = customTabSessionId,
+                    fragmentManager = parentFragmentManager,
+                    identityCredentialColorsProvider = colorsProvider,
+                    tabsUseCases = requireComponents.useCases.tabsUseCases,
+                    fileUploadsDirCleaner = requireComponents.core.fileUploadsDirCleaner,
+                    shareDelegate =
+                        object : ShareDelegate {
+                            override fun showShareSheet(
+                                context: Context,
+                                shareData: ShareData,
+                                onDismiss: () -> Unit,
+                                onSuccess: () -> Unit,
+                            ) {
+                                val currentTab = getCurrentTab()
 
-                        context.components.useCases.shareUseCases.shareUrl(
-                            id = currentTab?.id,
-                            url = shareData.url,
-                            title = shareData.title,
-                            source = ShareSource.WEB_SHARE,
-                            isPrivate = currentTab?.content?.private ?: false,
-                            isCustomTab = currentTab is CustomTabSessionState,
-                            navigateToShareFragment = {
-                                findNavController().navigate(
-                                    NavGraphDirections.actionGlobalShareFragment(
-                                        data = arrayOf(shareData),
-                                        showPage = true,
-                                        sessionId = currentTab?.id,
-                                    ),
+                                context.components.useCases.shareUseCases.shareUrl(
+                                    id = currentTab?.id,
+                                    url = shareData.url,
+                                    title = shareData.title,
+                                    source = ShareSource.WEB_SHARE,
+                                    isPrivate = currentTab?.content?.private ?: false,
+                                    isCustomTab = currentTab is CustomTabSessionState,
+                                    navigateToShareFragment = {
+                                        findNavController()
+                                            .navigate(
+                                                NavGraphDirections.actionGlobalShareFragment(
+                                                    data = arrayOf(shareData),
+                                                    showPage = true,
+                                                    sessionId = currentTab?.id,
+                                                )
+                                            )
+                                    },
                                 )
-                            },
-                        )
-                    }
-                },
-                onNeedToRequestPermissions = { permissions ->
-                    requestPermissions(permissions, REQUEST_CODE_PROMPT_PERMISSIONS)
-                },
-                emailMaskDelegate = object : EmailMaskDelegate {
-                    override val emailMaskPromptViewListenerView
-                        get() = emailMaskBar
+                            }
+                        },
+                    onNeedToRequestPermissions = { permissions ->
+                        requestPermissions(permissions, REQUEST_CODE_PROMPT_PERMISSIONS)
+                    },
+                    emailMaskDelegate =
+                        object : EmailMaskDelegate {
+                            override val emailMaskPromptViewListenerView
+                                get() = emailMaskBar
 
-                    override fun shouldShowEmailMaskCfr() =
-                        requireComponents.emailMasksRepository.shouldShowCfr() &&
-                            context.components.settings.cfrPopupsEnabled
+                            override fun shouldShowEmailMaskCfr() =
+                                requireComponents.emailMasksRepository.shouldShowCfr() &&
+                                    context.components.settings.cfrPopupsEnabled
 
-                    override fun onEmailMaskCfrDismissed() {
-                        requireComponents.emailMasksRepository.dismissCfr()
-                    }
+                            override fun onEmailMaskCfrDismissed() {
+                                requireComponents.emailMasksRepository.dismissCfr()
+                            }
 
-                    override suspend fun onEmailMaskClick(generatedFor: String) = withContext(Dispatchers.IO) {
-                        EmailMask.promptClicked.record()
+                            override suspend fun onEmailMaskClick(generatedFor: String) =
+                                withContext(Dispatchers.IO) {
+                                    EmailMask.promptClicked.record()
 
-                        val relay = requireComponents.relayFeatureIntegration
-                        // For this phase, we'll also use the generatedFor value for the description.
-                        val created = relay.getOrCreateNewMask(generatedFor, generatedFor)
+                                    val relay = requireComponents.relayFeatureIntegration
+                                    // For this phase, we'll also use the generatedFor value for the description.
+                                    val created = relay.getOrCreateNewMask(generatedFor, generatedFor)
 
-                        if (created == null) {
-                            // Record failure telemetry
-                            EmailMask.getOrCreateFailed.record()
-                            // Log failure
-                            val errorMessage =
-                                getString(R.string.email_masks_error_retrieving_masks)
+                                    if (created == null) {
+                                        // Record failure telemetry
+                                        EmailMask.getOrCreateFailed.record()
+                                        // Log failure
+                                        val errorMessage = getString(R.string.email_masks_error_retrieving_masks)
 
-                            appStore.dispatch(AppAction.SnackbarAction.ShowSnackbar(errorMessage))
-                            return@withContext null
-                        }
+                                        appStore.dispatch(AppAction.SnackbarAction.ShowSnackbar(errorMessage))
+                                        return@withContext null
+                                    }
 
-                        EmailMask.autofillSuccess.record()
+                                    EmailMask.autofillSuccess.record()
 
-                        created.fullAddress
-                    }
-                },
-                isEmailMaskFeatureEnabled = { context.components.settings.isEmailMaskFeatureEnabled },
-                isSuggestEmailMaskEnabled = { requireComponents.emailMasksRepository.isSuggestionEnabled() },
-                androidPhotoPicker = AndroidPhotoPicker(
-                    requireContext(),
-                    singleMediaPicker,
-                    multipleMediaPicker,
+                                    created.fullAddress
+                                }
+                        },
+                    isEmailMaskFeatureEnabled = { context.components.settings.isEmailMaskFeatureEnabled },
+                    isSuggestEmailMaskEnabled = { requireComponents.emailMasksRepository.isSuggestionEnabled() },
+                    androidPhotoPicker =
+                        AndroidPhotoPicker(
+                            requireContext(),
+                            singleMediaPicker,
+                            multipleMediaPicker,
+                        ),
                 ),
-            ),
             owner = this,
             view = view,
         )
 
         sessionFeature.set(
-            feature = SessionFeature(
-                requireComponents.core.store,
-                requireComponents.useCases.sessionUseCases.goBack,
-                requireComponents.useCases.sessionUseCases.goForward,
-                binding.engineView,
-                customTabSessionId,
-            ),
+            feature =
+                SessionFeature(
+                    requireComponents.core.store,
+                    requireComponents.useCases.sessionUseCases.goBack,
+                    requireComponents.useCases.sessionUseCases.goForward,
+                    binding.engineView,
+                    customTabSessionId,
+                ),
             owner = this,
             view = view,
         )
 
         lastTabFeature.set(
-            feature = LastTabFeature(
-                requireComponents.core.store,
-                customTabSessionId,
-                requireComponents.useCases.tabsUseCases.removeTab,
-                requireActivity(),
-            ),
+            feature =
+                LastTabFeature(
+                    requireComponents.core.store,
+                    customTabSessionId,
+                    requireComponents.useCases.tabsUseCases.removeTab,
+                    requireActivity(),
+                ),
             owner = this,
             view = view,
         )
 
         crashContentIntegration.set(
-            feature = CrashContentIntegration(
-                browserStore = requireComponents.core.store,
-                appStore = requireComponents.appStore,
-                toolbar = browserToolbar,
-                components = requireComponents,
-                settings = context.components.settings,
-                navController = findNavController(),
-                customTabSessionId = customTabSessionId,
-                getTopToolbarHeightValue = { includeTabStrip ->
-                    this.getTopToolbarHeight(
-                        includeTabStrip,
+            feature =
+                CrashContentIntegration(
+                        browserStore = requireComponents.core.store,
+                        appStore = requireComponents.appStore,
+                        toolbar = browserToolbar,
+                        components = requireComponents,
+                        settings = context.components.settings,
+                        navController = findNavController(),
+                        customTabSessionId = customTabSessionId,
+                        getTopToolbarHeightValue = { includeTabStrip ->
+                            this.getTopToolbarHeight(includeTabStrip)
+                        },
+                        getBottomToolbarHeightValue = { includeNavBar ->
+                            this.getBottomToolbarHeight(includeNavBar)
+                        },
                     )
-                },
-                getBottomToolbarHeightValue = { includeNavBar ->
-                    this.getBottomToolbarHeight(
-                        includeNavBar,
-                    )
-                },
-            ).apply {
-                viewProvider = {
-                    view.findViewById(R.id.crash_reporter_view)
-                        ?: binding.crashReporterViewStub.inflate() as CrashContentView
-                }
-            },
+                    .apply {
+                        viewProvider = {
+                            view.findViewById(R.id.crash_reporter_view)
+                                ?: binding.crashReporterViewStub.inflate() as CrashContentView
+                        }
+                    },
             owner = this,
             view = view,
         )
 
         searchFeature.set(
-            feature = SearchFeature(store, customTabSessionId) { request, tabId ->
-                val parentSession = store.state.findTabOrCustomTab(tabId)
-                val useCase = if (request.isPrivate) {
-                    requireComponents.useCases.searchUseCases.newPrivateTabSearch
-                } else {
-                    requireComponents.useCases.searchUseCases.newTabSearch
-                }
+            feature =
+                SearchFeature(store, customTabSessionId) { request, tabId ->
+                    val parentSession = store.state.findTabOrCustomTab(tabId)
+                    val useCase =
+                        if (request.isPrivate) {
+                            requireComponents.useCases.searchUseCases.newPrivateTabSearch
+                        } else {
+                            requireComponents.useCases.searchUseCases.newTabSearch
+                        }
 
-                if (parentSession is CustomTabSessionState) {
-                    useCase.invoke(request.query)
-                    requireActivity().startActivity(openInFenixIntent)
-                } else {
-                    useCase.invoke(request.query, parentSessionId = parentSession?.id)
-                }
-            },
+                    if (parentSession is CustomTabSessionState) {
+                        useCase.invoke(request.query)
+                        requireActivity().startActivity(openInFenixIntent)
+                    } else {
+                        useCase.invoke(request.query, parentSessionId = parentSession?.id)
+                    }
+                },
             owner = this,
             view = view,
         )
 
         sitePermissionsFeature.set(
-            feature = SitePermissionsFeature(
-                context = context,
-                storage = context.components.core.geckoSitePermissionsStorage,
-                fragmentManager = parentFragmentManager,
-                promptsStyling = SitePermissionsFeature.PromptsStyling(
-                    gravity = getAppropriateLayoutGravity(),
-                    shouldWidthMatchParent = true,
-                    positiveButtonBackgroundColor =
-                        ThemeManager.resolveAttribute(appcompatR.attr.colorPrimary, context),
-                    positiveButtonTextColor =
-                        ThemeManager.resolveAttribute(materialR.attr.colorOnPrimary, context),
+            feature =
+                SitePermissionsFeature(
+                    context = context,
+                    storage = context.components.core.geckoSitePermissionsStorage,
+                    fragmentManager = parentFragmentManager,
+                    promptsStyling =
+                        SitePermissionsFeature.PromptsStyling(
+                            gravity = getAppropriateLayoutGravity(),
+                            shouldWidthMatchParent = true,
+                            positiveButtonBackgroundColor =
+                                ThemeManager.resolveAttribute(appcompatR.attr.colorPrimary, context),
+                            positiveButtonTextColor =
+                                ThemeManager.resolveAttribute(materialR.attr.colorOnPrimary, context),
+                        ),
+                    sessionId = customTabSessionId,
+                    onNeedToRequestPermissions = { permissions ->
+                        store.dispatch(SystemPermissionRequestAction.SystemPermissionStateRequestInProgress)
+
+                        if (shouldAddBlackScreen()) {
+                            addBlackScreen()
+                        }
+
+                        requestPermissions(permissions, REQUEST_CODE_APP_PERMISSIONS)
+                    },
+                    onShouldShowRequestPermissionRationale = {
+                        shouldShowRequestPermissionRationale(it)
+                    },
+                    shouldShowDoNotAskAgainCheckBox = context.components.appStore.state.mode != BrowsingMode.Private,
+                    store = store,
+                    shouldHide = {
+                        // if the fragment is detached,
+                        // returning true will hide the site permission prompt rather than crash
+                        if (this.context == null) {
+                            true
+                        } else {
+                            val state = requireComponents.appStore.state
+                            state.isPrivateScreenLocked && state.mode.isPrivate
+                        }
+                    },
                 ),
-                sessionId = customTabSessionId,
-                onNeedToRequestPermissions = { permissions ->
-                    store.dispatch(SystemPermissionRequestAction.SystemPermissionStateRequestInProgress)
-
-                    if (shouldAddBlackScreen()) {
-                        addBlackScreen()
-                    }
-
-                    requestPermissions(permissions, REQUEST_CODE_APP_PERMISSIONS)
-                },
-                onShouldShowRequestPermissionRationale = {
-                    shouldShowRequestPermissionRationale(
-                        it,
-                    )
-                },
-                shouldShowDoNotAskAgainCheckBox = context.components.appStore.state.mode != BrowsingMode.Private,
-                store = store,
-                shouldHide = {
-                    // if the fragment is detached,
-                    // returning true will hide the site permission prompt rather than crash
-                    if (this.context == null) {
-                        true
-                    } else {
-                        val state = requireComponents.appStore.state
-                        state.isPrivateScreenLocked && state.mode.isPrivate
-                    }
-                },
-            ),
             owner = this,
             view = view,
         )
 
         sitePermissionWifiIntegration.set(
-            feature = SitePermissionsWifiIntegration(
-                settings = context.components.settings,
-                wifiConnectionMonitor = context.components.wifiConnectionMonitor,
-            ),
+            feature =
+                SitePermissionsWifiIntegration(
+                    settings = context.components.settings,
+                    wifiConnectionMonitor = context.components.wifiConnectionMonitor,
+                ),
             owner = this,
             view = view,
         )
@@ -1404,18 +1410,19 @@ abstract class BaseBrowserFragment :
     }
 
     /**
-     * Show a [Snackbar] when data is set to the device clipboard. To avoid duplicate displays of
-     * information only show a [Snackbar] for Android 12 and lower.
+     * Show a [Snackbar] when data is set to the device clipboard. To avoid duplicate displays of information only show
+     * a [Snackbar] for Android 12 and lower.
      *
      * [See details](https://developer.android.com/develop/ui/views/touch-and-input/copy-paste#duplicate-notifications).
      */
     private fun showSnackbarForClipboardCopy() {
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
-            ContextMenuSnackbarDelegate().show(
-                snackBarParentView = binding.dynamicSnackbarContainer,
-                text = widgetsR.string.snackbar_copy_image_to_clipboard_confirmation,
-                duration = LENGTH_LONG,
-            )
+            ContextMenuSnackbarDelegate()
+                .show(
+                    snackBarParentView = binding.dynamicSnackbarContainer,
+                    text = widgetsR.string.snackbar_copy_image_to_clipboard_confirmation,
+                    duration = LENGTH_LONG,
+                )
         }
     }
 
@@ -1821,17 +1828,13 @@ abstract class BaseBrowserFragment :
         return true
     }
 
-    /**
-     * Saves the external app session ID to be restored later in [onViewStateRestored].
-     */
+    /** Saves the external app session ID to be restored later in [onViewStateRestored]. */
     final override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(KEY_CUSTOM_TAB_SESSION_ID, customTabSessionId)
     }
 
-    /**
-     * Retrieves the external app session ID saved by [onSaveInstanceState].
-     */
+    /** Retrieves the external app session ID saved by [onSaveInstanceState]. */
     final override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
         savedInstanceState?.getString(KEY_CUSTOM_TAB_SESSION_ID)?.let {
@@ -1841,21 +1844,20 @@ abstract class BaseBrowserFragment :
         }
     }
 
-    /**
-     * Forwards permission grant results to one of the features.
-     */
+    /** Forwards permission grant results to one of the features. */
     @Suppress("OVERRIDE_DEPRECATION")
     final override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
         grantResults: IntArray,
     ) {
-        val feature: PermissionsFeature? = when (requestCode) {
-            REQUEST_CODE_DOWNLOAD_PERMISSIONS -> downloadsFeature.get()
-            REQUEST_CODE_PROMPT_PERMISSIONS -> promptsFeature.get()
-            REQUEST_CODE_APP_PERMISSIONS -> sitePermissionsFeature.get()
-            else -> null
-        }
+        val feature: PermissionsFeature? =
+            when (requestCode) {
+                REQUEST_CODE_DOWNLOAD_PERMISSIONS -> downloadsFeature.get()
+                REQUEST_CODE_PROMPT_PERMISSIONS -> promptsFeature.get()
+                REQUEST_CODE_APP_PERMISSIONS -> sitePermissionsFeature.get()
+                else -> null
+            }
 
         feature?.onPermissionsResult(permissions, grantResults)
 
@@ -2120,10 +2122,11 @@ abstract class BaseBrowserFragment :
         private const val REQUEST_CODE_PROMPT_PERMISSIONS = 2
         private const val REQUEST_CODE_APP_PERMISSIONS = 3
 
-        val onboardingLinksList: List<String> = listOf(
-            SupportUtils.getMozillaPageUrl(SupportUtils.MozillaPage.PRIVACY_NOTICE),
-            SupportUtils.FXACCOUNT_SUMO_URL,
-        )
+        val onboardingLinksList: List<String> =
+            listOf(
+                SupportUtils.getMozillaPageUrl(SupportUtils.MozillaPage.PRIVACY_NOTICE),
+                SupportUtils.FXACCOUNT_SUMO_URL,
+            )
     }
 
     override fun onAccessibilityStateChanged(enabled: Boolean) {

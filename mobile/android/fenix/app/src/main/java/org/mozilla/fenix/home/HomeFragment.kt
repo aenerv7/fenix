@@ -1051,9 +1051,8 @@ class HomeFragment : Fragment() {
         requireComponents.core.tabCollectionStorage.unregister(collectionStorageObserver)
 
         if (requireComponents.termsOfUseManager.shouldShowTermsOfUsePromptOnHomepage()) {
-            findNavController().navigate(
-                BrowserFragmentDirections.actionGlobalTermsOfUseDialog(Surface.HOMEPAGE_NEW_TAB),
-            )
+            findNavController()
+                .navigate(BrowserFragmentDirections.actionGlobalTermsOfUseDialog(Surface.HOMEPAGE_NEW_TAB))
         }
     }
 

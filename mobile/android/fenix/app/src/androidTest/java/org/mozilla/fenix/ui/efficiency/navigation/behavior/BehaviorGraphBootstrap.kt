@@ -5,15 +5,15 @@
 package org.mozilla.fenix.ui.efficiency.navigation.behavior
 
 import android.util.Log
+import androidx.compose.ui.test.junit4.v2.AndroidComposeTestRule as AndroidComposeTestRuleV2
 import org.mozilla.fenix.helpers.HomeActivityIntentTestRule
 import org.mozilla.fenix.ui.efficiency.helpers.PageContext
 import org.mozilla.fenix.ui.efficiency.navigation.NavigationRegistry
 import org.mozilla.fenix.ui.efficiency.navigation.planning.PageCatalog
-import androidx.compose.ui.test.junit4.v2.AndroidComposeTestRule as AndroidComposeTestRuleV2
 
 /**
- * Initializes page objects once so their init blocks register navigation edges before
- * behavior planning runs from static JUnit parameter providers.
+ * Initializes page objects once so their init blocks register navigation edges before behavior planning runs from
+ * static JUnit parameter providers.
  */
 object BehaviorGraphBootstrap {
     private var initialized = false
@@ -21,12 +21,15 @@ object BehaviorGraphBootstrap {
     fun ensureInitialized() {
         if (initialized) return
 
-        val composeRule = AndroidComposeTestRuleV2(
-            HomeActivityIntentTestRule(
-                skipOnboarding = true,
-                isPageLoadTranslationsPromptEnabled = false,
-            ),
-        ) { it.activity }
+        val composeRule =
+            AndroidComposeTestRuleV2(
+                HomeActivityIntentTestRule(
+                    skipOnboarding = true,
+                    isPageLoadTranslationsPromptEnabled = false,
+                )
+            ) {
+                it.activity
+            }
 
         val pageContext = PageContext(composeRule)
 

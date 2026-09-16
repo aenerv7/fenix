@@ -20,6 +20,7 @@ import androidx.compose.ui.test.swipeDown
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import kotlin.test.assertEquals
 import mozilla.components.compose.base.utils.LocalUnderTest
 import org.junit.Rule
 import org.junit.Test
@@ -34,14 +35,12 @@ import org.mozilla.fenix.theme.FirefoxTheme
 import org.mozilla.fenix.theme.Theme
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowDialog
-import kotlin.test.assertEquals
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [28, 35])
 class TabGroupSheetBackTest {
-    @get:Rule
-    val compose = createComposeRule()
+    @get:Rule val compose = createComposeRule()
 
     private val tab = createTab("https://example.com")
     private val group = createTabGroup(tabs = listOf(tab))
@@ -161,30 +160,31 @@ class TabGroupSheetBackTest {
                             stack.removeAt(stack.lastIndex)
                         },
                         sceneStrategies = listOf(BottomSheetSceneStrategy()),
-                        entryProvider = entryProvider {
-                            entry("root") { Text("root") }
-                            entry(
-                                "group",
-                                metadata = BottomSheetSceneStrategy.bottomSheet(
-                                    skipPartiallyExpanded = true,
-                                    skipOpeningAnimation = skipOpeningAnimation,
-                                    handleContentDescription = "Dismiss group",
-                                    modalBottomSheetProperties = ModalBottomSheetProperties(
-                                        shouldDismissOnBackPress = false,
-                                    ),
-                                ),
-                            ) {
-                                ExpandedTabGroup(
-                                    group = group,
-                                    actions = ExpandedTabGroupActions({}, {}, {}, {}, {}, {}, {}),
-                                    displayTabsInGrid = true,
-                                    tabInteractionHandler = NoOpTabInteractionHandler,
-                                    selectionMode = mode.value,
-                                    onExitSelectMode = { mode.value = Mode.Normal },
-                                    onBack = { navigationCount++ },
-                                )
-                            }
-                        },
+                        entryProvider =
+                            entryProvider {
+                                entry("root") { Text("root") }
+                                entry(
+                                    "group",
+                                    metadata =
+                                        BottomSheetSceneStrategy.bottomSheet(
+                                            skipPartiallyExpanded = true,
+                                            skipOpeningAnimation = skipOpeningAnimation,
+                                            handleContentDescription = "Dismiss group",
+                                            modalBottomSheetProperties =
+                                                ModalBottomSheetProperties(shouldDismissOnBackPress = false),
+                                        ),
+                                ) {
+                                    ExpandedTabGroup(
+                                        group = group,
+                                        actions = ExpandedTabGroupActions({}, {}, {}, {}, {}, {}, {}),
+                                        displayTabsInGrid = true,
+                                        tabInteractionHandler = NoOpTabInteractionHandler,
+                                        selectionMode = mode.value,
+                                        onExitSelectMode = { mode.value = Mode.Normal },
+                                        onBack = { navigationCount++ },
+                                    )
+                                }
+                            },
                     )
                 }
             }

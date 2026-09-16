@@ -9,6 +9,5 @@ data class NavigationCase(
     val page: PageContext.() -> BasePage,
     val state: String = "",
 ) {
-    override fun toString(): String =
-        "$label ($testRailId)${if (state.isNotBlank()) " — $state" else ""}"
+    override fun toString(): String = "$label ($testRailId)${if (state.isNotBlank()) " — $state" else ""}"
 }

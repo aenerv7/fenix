@@ -46,10 +46,10 @@ data class WebCompatInfoDto(
      */
     @Serializable
     data class WebCompatObjectDto<T>(
-      val value: T,
-      val glean: String? = null,
-      val doNotPreview: Boolean? = null,
-      val isTabSpecific: Boolean? = null,
+        val value: T,
+        val glean: String? = null,
+        val doNotPreview: Boolean? = null,
+        val isTabSpecific: Boolean? = null,
     )
 
     /**
@@ -101,8 +101,8 @@ data class WebCompatInfoDto(
     )
 
     /**
-     * WebCompat browser data.
-     * Note: experiment info contained in this JSON is ignored; we must pull it in from elsewhere.
+     * WebCompat browser data. Note: experiment info contained in this JSON is ignored; we must pull it in from
+     * elsewhere.
      *
      * @property isTabSpecific Whether this group of data is specific to the tab's origin.
      * @property addons Info about active add-ons.
@@ -257,27 +257,31 @@ data class WebCompatInfoDto(
             // make it unlikely to be the URL for the tab we recorded.
             val webCompatJSON = Json.encodeToJsonElement(serializer(), webCompatInfoDto).jsonObject
 
-            val webCompatPreview = webCompatJSON.mapNotNull { (groupName, groupElement) ->
-                    val items = groupElement.jsonObject
-                    if (noTabSpecificData && items.isTabSpecific) {
-                        return@mapNotNull null
+            val webCompatPreview =
+                webCompatJSON
+                    .mapNotNull { (groupName, groupElement) ->
+                        val items = groupElement.jsonObject
+                        if (noTabSpecificData && items.isTabSpecific) {
+                            return@mapNotNull null
+                        }
+
+                        val values =
+                            items
+                                .filterKeys { it != TAB_SPECIFIC_KEY }
+                                .filterNot { (_, itemElement) ->
+                                    val item = itemElement.jsonObject
+                                    val doNotPreview = item.boolean("doNotPreview")
+                                    doNotPreview || (noTabSpecificData && item.isTabSpecific)
+                                }
+                                .mapValues { (_, itemElement) ->
+                                    itemElement.jsonObject["value"] ?: JsonNull
+                                }
+
+                        groupName to JsonObject(values)
                     }
-
-                    val values = items
-                        .filterKeys { it != TAB_SPECIFIC_KEY }
-                        .filterNot { (_, itemElement) ->
-                            val item = itemElement.jsonObject
-                            val doNotPreview = item.boolean("doNotPreview")
-                            doNotPreview || (noTabSpecificData && item.isTabSpecific)
-                        }
-                        .mapValues { (_, itemElement) ->
-                            itemElement.jsonObject["value"] ?: JsonNull
-                        }
-
-                    groupName to JsonObject(values)
-                }.toMap()
+                    .toMap()
 
             return JsonObject(this + webCompatPreview)
-         }
+        }
     }
 }

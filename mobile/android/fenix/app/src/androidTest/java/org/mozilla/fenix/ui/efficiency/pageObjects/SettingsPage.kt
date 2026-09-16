@@ -98,10 +98,11 @@ class SettingsPage(composeRule: AndroidComposeTestRule<HomeActivityIntentTestRul
         NavigationRegistry.register(
             from = pageName,
             to = "SettingsAboutPage",
-            steps = listOf(
-                NavigationStep.Swipe(SettingsSelectors.ABOUT_FIREFOX_BUTTON),
-                NavigationStep.Click(SettingsSelectors.ABOUT_FIREFOX_BUTTON),
-            ),
+            steps =
+                listOf(
+                    NavigationStep.Swipe(SettingsSelectors.ABOUT_FIREFOX_BUTTON),
+                    NavigationStep.Click(SettingsSelectors.ABOUT_FIREFOX_BUTTON),
+                ),
         )
     }
 

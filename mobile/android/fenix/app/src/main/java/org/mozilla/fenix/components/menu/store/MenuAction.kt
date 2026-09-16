@@ -168,39 +168,25 @@ sealed class MenuAction : Action {
             val accesspoint: MenuAccessPoint,
         ) : Navigate()
 
-        /**
-         * [Navigate] action dispatched when navigating to the settings.
-         */
+        /** [Navigate] action dispatched when navigating to the settings. */
         data object Settings : Navigate()
 
-        /**
-         * [Navigate] action dispatched when navigating to the homepage settings.
-         */
+        /** [Navigate] action dispatched when navigating to the homepage settings. */
         data object CustomizeHomepage : Navigate()
 
-        /**
-         * [Navigate] action dispatched when navigating to bookmarks.
-         */
+        /** [Navigate] action dispatched when navigating to bookmarks. */
         data object Bookmarks : Navigate()
 
-        /**
-         * [Navigate] action dispatched when navigating to history.
-         */
+        /** [Navigate] action dispatched when navigating to history. */
         data object History : Navigate()
 
-        /**
-         * [Navigate] action dispatched when navigating to downloads.
-         */
+        /** [Navigate] action dispatched when navigating to downloads. */
         data object Downloads : Navigate()
 
-        /**
-         * [Navigate] action dispatched when navigating to edit the existing bookmark.
-         */
+        /** [Navigate] action dispatched when navigating to edit the existing bookmark. */
         data object EditBookmark : Navigate()
 
-        /**
-         * [Navigate] action dispatched when navigating to add site to home screen.
-         */
+        /** [Navigate] action dispatched when navigating to add site to home screen. */
         data object AddToHomeScreen : Navigate()
 
         /**

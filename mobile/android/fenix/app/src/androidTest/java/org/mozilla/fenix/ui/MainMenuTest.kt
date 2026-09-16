@@ -713,13 +713,14 @@ class MainMenuTest {
     @SmokeTest
     @Test
     fun verifyTheHomePageSettingsMenuItemTest() {
-        homeScreen(composeTestRule) {
-        }.openThreeDotMenu {
-        }.clickSettingsButton {
-            verifySettingsToolbar()
-        }.goBack(composeTestRule) {
-            verifyHomeScreen()
-        }
+        homeScreen(composeTestRule) {}
+            .openThreeDotMenu {}
+            .clickSettingsButton {
+                verifySettingsToolbar()
+            }
+            .goBack(composeTestRule) {
+                verifyHomeScreen()
+            }
     }
 
     // TestRail link: https://mozilla.testrail.io/index.php?/cases/view/3080898
@@ -762,23 +763,24 @@ class MainMenuTest {
     fun verifyTheQuitFirefoxMenuItemTest() {
         val genericURL = mockWebServer.getGenericAsset(1)
 
-        homeScreen(composeTestRule) {
-        }.openThreeDotMenu {
-        }.clickSettingsButton {
-        }.openSettingsSubMenuDeleteBrowsingDataOnQuit {
-            verifyDeleteBrowsingOnQuitEnabled(false)
-            clickDeleteBrowsingOnQuitButtonSwitch()
-            verifyDeleteBrowsingOnQuitEnabled(true)
-        }.goBack {
-            verifySettingsOptionSummary("Delete browsing data on quit", "On")
-        }.goBack(composeTestRule) {
-        }
-        navigationToolbar(composeTestRule) {
-        }.enterURLAndEnterToBrowser(genericURL.url) {
-        }.openThreeDotMenu {
-            clickTheQuitFirefoxButton()
-            restartApp(composeTestRule.activityRule)
-        }
+        homeScreen(composeTestRule) {}
+            .openThreeDotMenu {}
+            .clickSettingsButton {}
+            .openSettingsSubMenuDeleteBrowsingDataOnQuit {
+                verifyDeleteBrowsingOnQuitEnabled(false)
+                clickDeleteBrowsingOnQuitButtonSwitch()
+                verifyDeleteBrowsingOnQuitEnabled(true)
+            }
+            .goBack {
+                verifySettingsOptionSummary("Delete browsing data on quit", "On")
+            }
+            .goBack(composeTestRule) {}
+        navigationToolbar(composeTestRule) {}
+            .enterURLAndEnterToBrowser(genericURL.url) {}
+            .openThreeDotMenu {
+                clickTheQuitFirefoxButton()
+                restartApp(composeTestRule.activityRule)
+            }
         homeScreen(composeTestRule) {
             verifyHomeScreen()
         }

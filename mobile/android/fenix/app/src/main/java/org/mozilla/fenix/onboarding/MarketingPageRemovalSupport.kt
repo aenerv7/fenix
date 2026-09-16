@@ -6,6 +6,7 @@ package org.mozilla.fenix.onboarding
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -13,7 +14,6 @@ import kotlinx.coroutines.launch
 import mozilla.components.support.base.feature.LifecycleAwareFeature
 import org.mozilla.fenix.onboarding.view.OnboardingPageUiData
 import org.mozilla.fenix.utils.Settings
-import kotlin.coroutines.CoroutineContext
 
 /**
  * Handles removing the marketing page from onboarding if certain conditions are met
@@ -39,20 +39,22 @@ class MarketingPageRemovalSupport(
     private var job: Job? = null
 
     override fun start() {
-        job = lifecycleOwner.lifecycleScope.launch(ioContext) {
-            settings.preferences.flowScopedBooleanPreference(
-                lifecycleOwner,
-                mainContext,
-                prefKey,
-                settings.shouldShowMarketingOnboarding,
-            )
-                .distinctUntilChanged()
-                .collect { shouldShowMarketingOnboarding ->
-                    if (!shouldShowMarketingOnboarding) {
-                        pagesToDisplay.removeIfPageNotReached(currentPageIndex)
+        job =
+            lifecycleOwner.lifecycleScope.launch(ioContext) {
+                settings.preferences
+                    .flowScopedBooleanPreference(
+                        lifecycleOwner,
+                        mainContext,
+                        prefKey,
+                        settings.shouldShowMarketingOnboarding,
+                    )
+                    .distinctUntilChanged()
+                    .collect { shouldShowMarketingOnboarding ->
+                        if (!shouldShowMarketingOnboarding) {
+                            pagesToDisplay.removeIfPageNotReached(currentPageIndex)
+                        }
                     }
-                }
-        }
+            }
     }
 
     override fun stop() {

@@ -24,12 +24,14 @@ class TabGroupLinkUseCasesTest {
     @Test
     fun `isTabInGroup returns true for a grouped tab`() = runTest {
         val group = createTabGroup()
-        val repository = FakeTabGroupRepository(
-            initialTabGroupData = TabGroupData(
-                tabGroups = listOf(group),
-                tabGroupAssignments = mapOf(PARENT_TAB_ID to group.id),
-            ),
-        )
+        val repository =
+            FakeTabGroupRepository(
+                initialTabGroupData =
+                    TabGroupData(
+                        tabGroups = listOf(group),
+                        tabGroupAssignments = mapOf(PARENT_TAB_ID to group.id),
+                    )
+            )
 
         assertTrue(TabGroupLinkUseCases(repository).isTabInGroup(PARENT_TAB_ID))
     }
@@ -42,12 +44,14 @@ class TabGroupLinkUseCasesTest {
     @Test
     fun `addTabToParentGroup adds the child tab to the parent's group`() = runTest {
         val group = createTabGroup()
-        val repository = FakeTabGroupRepository(
-            initialTabGroupData = TabGroupData(
-                tabGroups = listOf(group),
-                tabGroupAssignments = mapOf(PARENT_TAB_ID to group.id),
-            ),
-        )
+        val repository =
+            FakeTabGroupRepository(
+                initialTabGroupData =
+                    TabGroupData(
+                        tabGroups = listOf(group),
+                        tabGroupAssignments = mapOf(PARENT_TAB_ID to group.id),
+                    )
+            )
         val useCases = TabGroupLinkUseCases(repository)
 
         useCases.addTabToParentGroup(PARENT_TAB_ID, CHILD_TAB_ID)
@@ -68,12 +72,14 @@ class TabGroupLinkUseCasesTest {
     @Test
     fun `addTabToGroupOrCreateGroup adds the child tab to the parent's existing group`() = runTest {
         val group = createTabGroup()
-        val repository = FakeTabGroupRepository(
-            initialTabGroupData = TabGroupData(
-                tabGroups = listOf(group),
-                tabGroupAssignments = mapOf(PARENT_TAB_ID to group.id),
-            ),
-        )
+        val repository =
+            FakeTabGroupRepository(
+                initialTabGroupData =
+                    TabGroupData(
+                        tabGroups = listOf(group),
+                        tabGroupAssignments = mapOf(PARENT_TAB_ID to group.id),
+                    )
+            )
         val useCases = TabGroupLinkUseCases(repository)
 
         useCases.addTabToGroupOrCreateGroup(PARENT_TAB_ID, CHILD_TAB_ID) { "Group $it" }
@@ -85,18 +91,18 @@ class TabGroupLinkUseCasesTest {
 
     @Test
     fun `addTabToGroupOrCreateGroup creates a localized group for ungrouped tabs`() = runTest {
-        val existingGroup = createTabGroup(
-            id = "existing-group",
-            theme = TabGroupTheme.Green,
-            lastModified = 20L,
-        )
-        val repository = FakeTabGroupRepository(
-            initialTabGroupData = TabGroupData(tabGroups = listOf(existingGroup)),
-        )
-        val useCases = TabGroupLinkUseCases(
-            tabGroupRepository = repository,
-            dateTimeProvider = FakeDateTimeProvider(currentTime = 42L),
-        )
+        val existingGroup =
+            createTabGroup(
+                id = "existing-group",
+                theme = TabGroupTheme.Green,
+                lastModified = 20L,
+            )
+        val repository = FakeTabGroupRepository(initialTabGroupData = TabGroupData(tabGroups = listOf(existingGroup)))
+        val useCases =
+            TabGroupLinkUseCases(
+                tabGroupRepository = repository,
+                dateTimeProvider = FakeDateTimeProvider(currentTime = 42L),
+            )
 
         useCases.addTabToGroupOrCreateGroup(PARENT_TAB_ID, CHILD_TAB_ID) { "Localized group $it" }
 
@@ -113,12 +119,13 @@ class TabGroupLinkUseCasesTest {
         id: String = "group-id",
         theme: TabGroupTheme = TabGroupTheme.Yellow,
         lastModified: Long = 10L,
-    ) = TabGroup(
-        id = id,
-        title = "Group",
-        theme = theme.name,
-        lastModified = lastModified,
-    )
+    ) =
+        TabGroup(
+            id = id,
+            title = "Group",
+            theme = theme.name,
+            lastModified = lastModified,
+        )
 
     private companion object {
         const val PARENT_TAB_ID = "parent-tab"

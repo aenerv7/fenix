@@ -670,15 +670,17 @@ class TabGroupReducerTest {
     fun `WHEN selected tabs are removed from a group THEN exit selection and navigate to the root`() {
         val tab = createTab(url = "")
         val tabGroup = createTabGroup(tabs = mutableListOf(tab))
-        val initialState = TabsTrayState(
-            mode = Mode.Select(selectedTabs = setOf(tab)),
-            backStack = listOf(TabManagerNavDestination.Root, ExpandedTabGroup(group = tabGroup)),
-        )
+        val initialState =
+            TabsTrayState(
+                mode = Mode.Select(selectedTabs = setOf(tab)),
+                backStack = listOf(TabManagerNavDestination.Root, ExpandedTabGroup(group = tabGroup)),
+            )
 
-        val resultState = TabsTrayReducer.reduce(
-            state = initialState,
-            action = TabGroupAction.SelectedTabsRemovedFromGroup(groupId = tabGroup.id),
-        )
+        val resultState =
+            TabsTrayReducer.reduce(
+                state = initialState,
+                action = TabGroupAction.SelectedTabsRemovedFromGroup(groupId = tabGroup.id),
+            )
 
         assertEquals(
             initialState.copy(
@@ -693,15 +695,17 @@ class TabGroupReducerTest {
     fun `WHEN selected tabs close an entire group THEN exit selection and navigate to the root`() {
         val tab = createTab(url = "")
         val tabGroup = createTabGroup(tabs = mutableListOf(tab))
-        val initialState = TabsTrayState(
-            mode = Mode.Select(selectedTabs = setOf(tab)),
-            backStack = listOf(TabManagerNavDestination.Root, ExpandedTabGroup(group = tabGroup)),
-        )
+        val initialState =
+            TabsTrayState(
+                mode = Mode.Select(selectedTabs = setOf(tab)),
+                backStack = listOf(TabManagerNavDestination.Root, ExpandedTabGroup(group = tabGroup)),
+            )
 
-        val resultState = TabsTrayReducer.reduce(
-            state = initialState,
-            action = TabGroupAction.SelectedTabsClosedFromGroup(groupId = tabGroup.id),
-        )
+        val resultState =
+            TabsTrayReducer.reduce(
+                state = initialState,
+                action = TabGroupAction.SelectedTabsClosedFromGroup(groupId = tabGroup.id),
+            )
 
         assertEquals(
             initialState.copy(

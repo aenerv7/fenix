@@ -180,7 +180,7 @@ same wrapper.
 .\tools\fenix\mach-local.ps1 gradle fenix:testDebugUnitTest
 
 # Kotlin formatting and lint
-.\tools\fenix\mach-local.ps1 gradle fenix:ktlintFormat fenix:ktlint
+.\tools\fenix\mach-local.ps1 gradle fenix:spotlessApply fenix:spotlessKotlinCheck
 
 # Arm64 multi-locale release APK using the official upstream GeckoView package
 .\tools\fenix\build-release-local.ps1 -UseUpstreamGecko -Abi arm64-v8a

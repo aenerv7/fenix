@@ -152,10 +152,9 @@ class TabStorageMiddleware(
             InitAction -> {
                 // Set up the tab data observer and set the Flow collection to the lifetime of main scope
                 mainScope.launch {
-                    combinedDataFlow
-                        .filterNotNull()
-                        .collectLatest { data ->
-                            val transformedTabData = withContext(scope.coroutineContext.minusKey(Job)) {
+                    combinedDataFlow.filterNotNull().collectLatest { data ->
+                        val transformedTabData =
+                            withContext(scope.coroutineContext.minusKey(Job)) {
                                 transformTabData(
                                     tabs = data.tabs,
                                     selectedTabId = data.selectedTabId,
@@ -163,9 +162,9 @@ class TabStorageMiddleware(
                                     tabGroupAssignments = data.tabGroupAssignments,
                                 )
                             }
-                            currentCoroutineContext().ensureActive()
-                            store.dispatch(TabDataUpdateReceived(tabStorageUpdate = transformedTabData))
-                        }
+                        currentCoroutineContext().ensureActive()
+                        store.dispatch(TabDataUpdateReceived(tabStorageUpdate = transformedTabData))
+                    }
                 }
             }
 
@@ -193,10 +192,11 @@ class TabStorageMiddleware(
             is TabGroupAction.SelectedTabsRemovedFromGroup -> {
                 val selectedTabIds = store.state.mode.selectedTabs.map { it.id }
                 val selectedTabIdSet = selectedTabIds.toSet()
-                val groupWillBeEmpty = store.state.tabGroupState.groups
-                    .find { it.id == action.groupId }
-                    ?.tabs
-                    ?.all { it.id in selectedTabIdSet } == true
+                val groupWillBeEmpty =
+                    store.state.tabGroupState.groups
+                        .find { it.id == action.groupId }
+                        ?.tabs
+                        ?.all { it.id in selectedTabIdSet } == true
                 scope.launch {
                     tabGroupRepository.deleteTabGroupAssignmentsById(tabIds = selectedTabIds)
                     if (groupWillBeEmpty) {
@@ -220,7 +220,7 @@ class TabStorageMiddleware(
                             theme = action.group.theme.toStorageValue(),
                             closed = action.group.closed,
                             lastModified = action.group.lastModified,
-                        ),
+                        )
                     )
                     tabGroupRepository.addTabsToTabGroup(
                         tabGroupId = action.group.id,

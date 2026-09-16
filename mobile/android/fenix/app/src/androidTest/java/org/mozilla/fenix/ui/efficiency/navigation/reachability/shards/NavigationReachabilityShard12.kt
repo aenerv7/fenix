@@ -8,17 +8,16 @@ import org.mozilla.fenix.ui.efficiency.navigation.reachability.NavigationCase
 import org.mozilla.fenix.ui.efficiency.navigation.reachability.NavigationShardData
 
 @RunWith(Parameterized::class)
-class NavigationReachabilityShard12(
-    private val case: NavigationCase,
-) : BaseNavigationShardTest(case) {
+class NavigationReachabilityShard12(private val case: NavigationCase) : BaseNavigationShardTest(case) {
 
     companion object {
         @JvmStatic
         @Parameterized.Parameters(name = "{index}: {0}")
-        fun data(): List<Array<Any>> = NavigationShardData.loadShard(
-            shardIndex = 12,
-            shardCount = 20,
-        )
+        fun data(): List<Array<Any>> =
+            NavigationShardData.loadShard(
+                shardIndex = 12,
+                shardCount = 20,
+            )
     }
 
     @Test

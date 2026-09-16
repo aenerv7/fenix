@@ -28,8 +28,7 @@ object GeckoProvider {
         trackingProtectionPolicy: TrackingProtectionPolicy,
     ): GeckoRuntime {
         if (runtime == null) {
-            runtime =
-                createRuntime(context, trackingProtectionPolicy)
+            runtime = createRuntime(context, trackingProtectionPolicy)
         }
 
         return runtime!!
@@ -50,13 +49,14 @@ object GeckoProvider {
 
         val geckoRuntime = GeckoRuntime.create(context, runtimeSettings)
 
-        geckoRuntime.crashPullDelegate = GeckoCrashPullDelegate(
-            dispatcher = { crashIDs ->
-                context.components.appStore.dispatch(
-                    AppAction.CrashActionWrapper(CrashAction.CheckDeferred(crashIDs.toList())),
-                )
-            },
-        )
+        geckoRuntime.crashPullDelegate =
+            GeckoCrashPullDelegate(
+                dispatcher = { crashIDs ->
+                    context.components.appStore.dispatch(
+                        AppAction.CrashActionWrapper(CrashAction.CheckDeferred(crashIDs.toList()))
+                    )
+                }
+            )
 
         return geckoRuntime
     }

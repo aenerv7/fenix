@@ -283,83 +283,86 @@ class FenixSearchMiddleware(
             loadUrlUseCase = loadUrlUseCase(),
             searchUseCase = searchUseCase(store),
             selectTabUseCase = selectTabUseCase(),
-            suggestionsStringsProvider = DefaultSuggestionsStringsProvider(
-                uiContext,
-                DefaultSearchEngineProvider(uiContext.components.core.store),
-            ),
+            suggestionsStringsProvider =
+                DefaultSuggestionsStringsProvider(
+                    uiContext,
+                    DefaultSearchEngineProvider(uiContext.components.core.store),
+                ),
             suggestionIconProvider = DefaultSuggestionIconProvider(uiContext),
             onSearchEngineSuggestionSelected = ::handleSearchEngineSuggestionClicked,
         )
     }
 
     @VisibleForTesting
-    internal fun loadUrlUseCase() = object : LoadUrlUseCase {
-        override fun invoke(
-            url: String,
-            flags: LoadUrlFlags,
-            additionalHeaders: Map<String, String>?,
-            originalInput: String?,
-        ) {
-            openToBrowserAndLoad(
-                url = url,
-                createNewTab = shouldCreateNewTab(),
-                usePrivateMode = browsingModeManager.mode.isPrivate,
-                flags = flags,
-            )
-
-            Events.enteredUrl.record(Events.EnteredUrlExtra(autocomplete = false))
-
-            browserStore.dispatch(AwesomeBarAction.EngagementFinished(abandoned = false))
-        }
-    }
-
-    @VisibleForTesting
-    internal fun searchUseCase(
-        store: Store<SearchFragmentState, SearchFragmentAction>,
-    ) = object : SearchUseCase {
-        override fun invoke(
-            searchTerms: String,
-            searchEngine: SearchEngine?,
-            parentSessionId: String?,
-        ) {
-            val searchEngine = store.state.searchEngineSource.searchEngine
-
-            openToBrowserAndLoad(
-                url = searchTerms,
-                createNewTab = shouldCreateNewTab(),
-                usePrivateMode = browsingModeManager.mode.isPrivate,
-                forceSearch = true,
-                searchEngine = searchEngine,
-            )
-
-            val searchAccessPoint = when (store.state.searchAccessPoint) {
-                MetricsUtils.Source.NONE -> MetricsUtils.Source.SUGGESTION
-                else -> store.state.searchAccessPoint
-            }
-
-            if (searchEngine != null) {
-                MetricsUtils.recordSearchMetrics(
-                    searchEngine,
-                    searchEngine == store.state.defaultEngine,
-                    searchAccessPoint,
-                    nimbusComponents.events,
+    internal fun loadUrlUseCase() =
+        object : LoadUrlUseCase {
+            override fun invoke(
+                url: String,
+                flags: LoadUrlFlags,
+                additionalHeaders: Map<String, String>?,
+                originalInput: String?,
+            ) {
+                openToBrowserAndLoad(
+                    url = url,
+                    createNewTab = shouldCreateNewTab(),
+                    usePrivateMode = browsingModeManager.mode.isPrivate,
+                    flags = flags,
                 )
-            }
 
-            browserStore.dispatch(AwesomeBarAction.EngagementFinished(abandoned = false))
+                Events.enteredUrl.record(Events.EnteredUrlExtra(autocomplete = false))
+
+                browserStore.dispatch(AwesomeBarAction.EngagementFinished(abandoned = false))
+            }
         }
-    }
 
     @VisibleForTesting
-    internal fun selectTabUseCase() = object : SelectTabUseCase {
-        override fun invoke(tabId: String) {
-            useCases.tabsUseCases.selectTab(tabId)
+    internal fun searchUseCase(store: Store<SearchFragmentState, SearchFragmentAction>) =
+        object : SearchUseCase {
+            override fun invoke(
+                searchTerms: String,
+                searchEngine: SearchEngine?,
+                parentSessionId: String?,
+            ) {
+                val searchEngine = store.state.searchEngineSource.searchEngine
 
-            navController.navigate(R.id.browserFragment)
+                openToBrowserAndLoad(
+                    url = searchTerms,
+                    createNewTab = shouldCreateNewTab(),
+                    usePrivateMode = browsingModeManager.mode.isPrivate,
+                    forceSearch = true,
+                    searchEngine = searchEngine,
+                )
 
-            browserStore.dispatch(AwesomeBarAction.EngagementFinished(abandoned = false))
+                val searchAccessPoint =
+                    when (store.state.searchAccessPoint) {
+                        MetricsUtils.Source.NONE -> MetricsUtils.Source.SUGGESTION
+                        else -> store.state.searchAccessPoint
+                    }
+
+                if (searchEngine != null) {
+                    MetricsUtils.recordSearchMetrics(
+                        searchEngine,
+                        searchEngine == store.state.defaultEngine,
+                        searchAccessPoint,
+                        nimbusComponents.events,
+                    )
+                }
+
+                browserStore.dispatch(AwesomeBarAction.EngagementFinished(abandoned = false))
+            }
         }
-    }
+
+    @VisibleForTesting
+    internal fun selectTabUseCase() =
+        object : SelectTabUseCase {
+            override fun invoke(tabId: String) {
+                useCases.tabsUseCases.selectTab(tabId)
+
+                navController.navigate(R.id.browserFragment)
+
+                browserStore.dispatch(AwesomeBarAction.EngagementFinished(abandoned = false))
+            }
+        }
 
     private fun shouldCreateNewTab(): Boolean {
         if (settings.enableHomepageAsNewTab) return false

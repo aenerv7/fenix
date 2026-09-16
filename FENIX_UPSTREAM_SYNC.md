@@ -79,7 +79,7 @@ After manually completing a conflicted sync, update `FENIX_UPSTREAM_RELEASE` to 
 At minimum:
 
 ```powershell
-.\tools\fenix\mach-local.ps1 gradle fenix:ktlint
+.\tools\fenix\mach-local.ps1 gradle fenix:spotlessKotlinCheck
 .\tools\fenix\mach-local.ps1 gradle fenix:testDebugUnitTest
 .\tools\fenix\mach-local.ps1 gradle fenix:assembleDebug
 .\tools\fenix\build-release-local.ps1 -UseUpstreamGecko -Abi arm64-v8a

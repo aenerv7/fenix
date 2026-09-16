@@ -246,19 +246,24 @@ class DefaultTabManagerController(
     private val mainDispatcher: CoroutineContext = Dispatchers.Main,
     private val collectionStorage: TabCollectionStorage,
     private val showUndoSnackbarForTab: (Boolean) -> Unit,
-    private val showUndoSnackbarForTabGroup: (
-        isPrivate: Boolean,
-        group: TabsTrayItem.TabGroup,
-        tabIds: List<String>,
-    ) -> Unit = { isPrivate, _, _ -> showUndoSnackbarForTab(isPrivate) },
+    private val showUndoSnackbarForTabGroup:
+        (
+            isPrivate: Boolean,
+            group: TabsTrayItem.TabGroup,
+            tabIds: List<String>,
+        ) -> Unit =
+        { isPrivate, _, _ ->
+            showUndoSnackbarForTab(isPrivate)
+        },
     private val showUndoSnackbarForInactiveTab: (Int) -> Unit,
     private val showUndoSnackbarForSyncedTab: (CloseTabsUseCases.UndoableOperation) -> Unit,
     internal val showCancelledDownloadWarning: (downloadCount: Int, tabId: String?, source: String?) -> Unit,
     private val showBookmarkSnackbar: (tabSize: Int, parentFolder: BookmarkNode?) -> Unit,
-    private val showCollectionSnackbar: (
-        tabSize: Int,
-        isNewCollection: Boolean,
-    ) -> Unit,
+    private val showCollectionSnackbar:
+        (
+            tabSize: Int,
+            isNewCollection: Boolean,
+        ) -> Unit,
     private val currentTimeMillis: () -> Long = { System.currentTimeMillis() },
 ) : TabManagerController {
 
@@ -353,11 +358,12 @@ class DefaultTabManagerController(
 
         if (tabsRemaining || !isCurrentTab) {
             // Using isNormal here makes it read beautifully
-            val excludedTabIds = if (isNormal) {
-                getExcludedNormalTabIds(closingTabIds = setOf(tab.id))
-            } else {
-                emptySet()
-            }
+            val excludedTabIds =
+                if (isNormal) {
+                    getExcludedNormalTabIds(closingTabIds = setOf(tab.id))
+                } else {
+                    emptySet()
+                }
 
             tabsUseCases.removeTab(excludedTabIds = excludedTabIds, tabId = tab.id)
             showUndoSnackbarForTab(isPrivate)
@@ -386,36 +392,32 @@ class DefaultTabManagerController(
 
         val inactiveTabIds = state.inactiveTabs.tabs.map { it.id }
 
-        val openGroupTabIds = state.tabGroupState.groups
-            .filterNot { it.closed }
-            .toTabList()
-            .map { it.id }
+        val openGroupTabIds = state.tabGroupState.groups.filterNot { it.closed }.toTabList().map { it.id }
 
-        val hasRemainingUngroupedTab = state.normalTabsState.items
-            .toTabList()
-            .any { it.id !in openGroupTabIds && it.id !in closingTabIds }
+        val hasRemainingUngroupedTab =
+            state.normalTabsState.items.toTabList().any { it.id !in openGroupTabIds && it.id !in closingTabIds }
 
         return (inactiveTabIds + if (hasRemainingUngroupedTab) openGroupTabIds else emptyList()).toSet()
     }
 
     /**
-     * Determines if there will be any tabs left to display after a deletion.
-     * Shared between single and multiple tab deletions to ensure routing logic stays in sync.
-     * When closing all normal tabs and at least 1 tab group is open, this will always return true.
+     * Determines if there will be any tabs left to display after a deletion. Shared between single and multiple tab
+     * deletions to ensure routing logic stays in sync. When closing all normal tabs and at least 1 tab group is open,
+     * this will always return true.
      *
      * @param isPrivate Indicates whether the tabs being deleted is private.
      * @param closingTabIds The set of tab IDs of tabs that are to be deleted.
-     *
      */
     private fun willTabsRemainAfterDeletion(
         isPrivate: Boolean,
         closingTabIds: Set<String>,
     ): Boolean {
-        val activeTabs = if (isPrivate) {
-            tabsTrayStore.state.privateBrowsing.tabs
-        } else {
-            tabsTrayStore.state.normalTabsState.items.toTabList()
-        }
+        val activeTabs =
+            if (isPrivate) {
+                tabsTrayStore.state.privateBrowsing.tabs
+            } else {
+                tabsTrayStore.state.normalTabsState.items.toTabList()
+            }
 
         val closingAllActiveTabs = closingTabIds.containsAll(activeTabs.map { it.id })
 
@@ -430,11 +432,12 @@ class DefaultTabManagerController(
             state.tabGroupState.groups.find { it.id == destination.group.id } ?: destination.group
         }
         val selectedTabIds = tabs.mapTo(mutableSetOf()) { it.id }
-        val emptiedGroupId = expandedGroup
-            ?.takeIf { group ->
-                group.tabs.isNotEmpty() && group.tabs.all { it.id in selectedTabIds }
-            }
-            ?.id
+        val emptiedGroupId =
+            expandedGroup
+                ?.takeIf { group ->
+                    group.tabs.isNotEmpty() && group.tabs.all { it.id in selectedTabIds }
+                }
+                ?.id
 
         TabsTray.closeSelectedTabs.record(TabsTray.CloseSelectedTabsExtra(tabCount = tabs.size))
 
@@ -451,9 +454,7 @@ class DefaultTabManagerController(
         }
     }
 
-    /**
-     * Helper function to delete multiple tabs and offer an undo option.
-     */
+    /** Helper function to delete multiple tabs and offer an undo option. */
     @VisibleForTesting
     internal fun deleteMultipleTabs(tabs: Collection<TabsTrayItem.Tab>) {
         deleteMultipleTabs(tabs = tabs, showUndoSnackbar = showUndoSnackbarForTab)
@@ -481,11 +482,12 @@ class DefaultTabManagerController(
         val closingTabIds = tabs.map { it.id }.toSet()
 
         if (willTabsRemainAfterDeletion(isPrivate = isPrivate, closingTabIds = closingTabIds)) {
-            val excludedTabIds = if (isNormal) {
-                getExcludedNormalTabIds(closingTabIds = closingTabIds)
-            } else {
-                emptySet()
-            }
+            val excludedTabIds =
+                if (isNormal) {
+                    getExcludedNormalTabIds(closingTabIds = closingTabIds)
+                } else {
+                    emptySet()
+                }
 
             tabsUseCases.removeTabs(excludedTabIds = excludedTabIds, ids = tabs.map { it.id })
             showUndoSnackbar(isPrivate)
@@ -525,16 +527,17 @@ class DefaultTabManagerController(
         // tab manager closes before the job is done.
         CoroutineScope(ioDispatcher).launch {
             Result.runCatching {
-                val results = tabs.map { tab ->
-                    addBookmarkUseCase(url = tab.url, title = tab.title)
+                    val results = tabs.map { tab ->
+                        addBookmarkUseCase(url = tab.url, title = tab.title)
+                    }
+                    val parentNode = results.firstOrNull()?.parentNode
+                    withContext(mainDispatcher) {
+                        showBookmarkSnackbar(tabs.size, parentNode)
+                    }
                 }
-                val parentNode = results.firstOrNull()?.parentNode
-                withContext(mainDispatcher) {
-                    showBookmarkSnackbar(tabs.size, parentNode)
+                .getOrElse {
+                    // silently fail
                 }
-            }.getOrElse {
-                // silently fail
-            }
         }
 
         tabsTrayStore.dispatch(TabsTrayAction.ExitSelectMode)

@@ -35,11 +35,13 @@ class CrashPullDelegateTest {
         //
         // We cannot use runTestOnMain here because it looks not to be available.
         runBlocking {
-            scope.launch {
-                val runtime = GeckoProvider.getOrCreateRuntime(context, mockPolicy)
-                assertNotNull(runtime.crashPullDelegate)
-                runtime.crashPullDelegate?.onCrashPull(arrayOf("1", "2"))
-            }.join()
+            scope
+                .launch {
+                    val runtime = GeckoProvider.getOrCreateRuntime(context, mockPolicy)
+                    assertNotNull(runtime.crashPullDelegate)
+                    runtime.crashPullDelegate?.onCrashPull(arrayOf("1", "2"))
+                }
+                .join()
         }
     }
 }

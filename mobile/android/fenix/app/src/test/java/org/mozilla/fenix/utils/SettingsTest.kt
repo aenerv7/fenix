@@ -1218,13 +1218,15 @@ class SettingsTest {
     @Test
     fun `WHEN user has accepted the ToU THEN termsOfUseAcceptedTimeInMillis returns the app installed time`() {
         val installTime = 12345L
-        val settings = Settings(
-            appContext = testContext,
-            packageName = "test",
-            packageManagerCompatHelper = FakePackageManagerCompatHelper(
-                packageInfo = PackageInfo().apply { firstInstallTime = installTime },
-            ),
-        )
+        val settings =
+            Settings(
+                appContext = testContext,
+                packageName = "test",
+                packageManagerCompatHelper =
+                    FakePackageManagerCompatHelper(
+                        packageInfo = PackageInfo().apply { firstInstallTime = installTime }
+                    ),
+            )
         settings.hasAcceptedTermsOfService = true
 
         val result = settings.termsOfUseAcceptedTimeInMillis

@@ -253,55 +253,53 @@ fun LazyGridItemScope.ReorderableDragItemContainer(
     swipingActive: Boolean,
     content: @Composable (interactionState: TabItemInteractionState) -> Unit,
 ) {
-    val modifier = Modifier
-        .zIndex(
-            if (swipingActive) {
-                10f
-            } else if (key == state.draggingItemKey || key == state.previousKeyOfDraggedItem) {
-                1f
-            } else {
-                0f
-            },
-        )
-        .then(
-            when (key) {
-                state.draggingItemKey -> {
-                    Modifier.graphicsLayer {
-                        translationX = state.computeItemOffset(position).x
-                        translationY = state.computeItemOffset(position).y
+    val modifier =
+        Modifier.zIndex(
+                if (swipingActive) {
+                    10f
+                } else if (key == state.draggingItemKey || key == state.previousKeyOfDraggedItem) {
+                    1f
+                } else {
+                    0f
+                }
+            )
+            .then(
+                when (key) {
+                    state.draggingItemKey -> {
+                        Modifier.graphicsLayer {
+                            translationX = state.computeItemOffset(position).x
+                            translationY = state.computeItemOffset(position).y
+                        }
+                    }
+
+                    state.previousKeyOfDraggedItem -> {
+                        Modifier.graphicsLayer {
+                            translationX = state.previousItemOffset.value.x
+                            translationY = state.previousItemOffset.value.y
+                        }
+                    }
+
+                    else -> {
+                        Modifier.animateItem(
+                            fadeInSpec = tween(),
+                            placementSpec = tween(),
+                            fadeOutSpec = null,
+                        )
                     }
                 }
-
-                state.previousKeyOfDraggedItem -> {
-                    Modifier.graphicsLayer {
-                        translationX = state.previousItemOffset.value.x
-                        translationY = state.previousItemOffset.value.y
-                    }
-                }
-
-                else -> {
-                    Modifier.animateItem(
-                        fadeInSpec = tween(),
-                        placementSpec = tween(),
-                        fadeOutSpec = null,
-                    )
-                }
-            },
-        )
+            )
 
     Box(modifier = modifier, propagateMinConstraints = true) {
         content(
             TabItemInteractionState(
                 isHoveredByItem = key == state.hoveredItemKey,
                 isDragged = key == state.draggingItemKey,
-            ),
+            )
         )
     }
 }
 
-/**
- * Calculate the offset of an item taking its width and height into account.
- */
+/** Calculate the offset of an item taking its width and height into account. */
 private val LazyGridItemInfo.endOffset: IntOffset
     get() = IntOffset(offset.x + size.width, offset.y + size.height)
 

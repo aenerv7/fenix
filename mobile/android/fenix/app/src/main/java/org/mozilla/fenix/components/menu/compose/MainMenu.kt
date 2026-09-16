@@ -507,33 +507,31 @@ private fun LibraryMenuGroup(
 ) {
     val spacerWidth = 2.dp
 
-    val leftShape = MaterialTheme.shapes.extraLarge.copy(
-        topEnd = MaterialTheme.shapes.extraSmall.topEnd,
-        bottomEnd = MaterialTheme.shapes.extraSmall.bottomEnd,
-    )
+    val leftShape =
+        MaterialTheme.shapes.extraLarge.copy(
+            topEnd = MaterialTheme.shapes.extraSmall.topEnd,
+            bottomEnd = MaterialTheme.shapes.extraSmall.bottomEnd,
+        )
     val middleShape = MaterialTheme.shapes.extraSmall
-    val rightShape = MaterialTheme.shapes.extraLarge.copy(
-        topStart = MaterialTheme.shapes.extraSmall.topStart,
-        bottomStart = MaterialTheme.shapes.extraSmall.bottomStart,
-    )
+    val rightShape =
+        MaterialTheme.shapes.extraLarge.copy(
+            topStart = MaterialTheme.shapes.extraSmall.topStart,
+            bottomStart = MaterialTheme.shapes.extraSmall.bottomStart,
+        )
 
     Row(
-        Modifier
-            .fillMaxWidth()
-            .height(IntrinsicSize.Min)
-            .semantics {
-                this.collectionInfo = CollectionInfo(
+        Modifier.fillMaxWidth().height(IntrinsicSize.Min).semantics {
+            this.collectionInfo =
+                CollectionInfo(
                     rowCount = 1,
                     columnCount = 3,
                 )
-            },
+        },
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         LibraryMenuItem(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight(),
+            modifier = Modifier.weight(1f).fillMaxHeight(),
             iconRes = iconsR.drawable.mozac_ic_history_24,
             labelRes = R.string.library_history,
             shape = leftShape,

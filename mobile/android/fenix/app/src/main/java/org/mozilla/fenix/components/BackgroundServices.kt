@@ -118,8 +118,7 @@ class BackgroundServices(
             SyncEngine.Bookmarks,
             SyncEngine.Tabs,
         )
-    private val syncConfig =
-        SyncConfig(supportedEngines, PeriodicSyncConfig(periodMinutes = 240)) // four hours
+    private val syncConfig = SyncConfig(supportedEngines, PeriodicSyncConfig(periodMinutes = 240)) // four hours
 
     init {
         GlobalSyncableStoreProvider.configureStore(SyncEngine.History to historyStorage)
@@ -127,10 +126,11 @@ class BackgroundServices(
         GlobalSyncableStoreProvider.configureStore(SyncEngine.Tabs to remoteTabsStorage)
     }
 
-    private val telemetryAccountObserver = TelemetryAccountObserver(
-        context,
-        settings,
-    )
+    private val telemetryAccountObserver =
+        TelemetryAccountObserver(
+            context,
+            settings,
+        )
 
     val accountAbnormalities = AccountAbnormalities(context, crashReporter, strictMode)
 

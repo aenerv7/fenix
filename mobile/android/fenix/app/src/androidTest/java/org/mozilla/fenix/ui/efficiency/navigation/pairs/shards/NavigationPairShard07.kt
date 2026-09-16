@@ -8,17 +8,16 @@ import org.mozilla.fenix.ui.efficiency.navigation.pairs.NavigationPairCase
 import org.mozilla.fenix.ui.efficiency.navigation.pairs.NavigationPairShardData
 
 @RunWith(Parameterized::class)
-class NavigationPairShard07(
-    private val case: NavigationPairCase,
-) : BaseNavigationPairShardTest(case) {
+class NavigationPairShard07(private val case: NavigationPairCase) : BaseNavigationPairShardTest(case) {
 
     companion object {
         @JvmStatic
         @Parameterized.Parameters(name = "{index}: {0}")
-        fun data(): List<Array<Any>> = NavigationPairShardData.loadShard(
-            shardIndex = 7,
-            shardCount = 20,
-        )
+        fun data(): List<Array<Any>> =
+            NavigationPairShardData.loadShard(
+                shardIndex = 7,
+                shardCount = 20,
+            )
     }
 
     @Test

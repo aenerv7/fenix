@@ -1,8 +1,6 @@
 package org.mozilla.fenix.ui.efficiency.navigation.planning
 
-/**
- * Utilities for deterministically splitting generated test cases into manual shards.
- */
+/** Utilities for deterministically splitting generated test cases into manual shards. */
 object ShardUtils {
 
     /**

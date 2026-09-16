@@ -295,9 +295,8 @@ class BrowserToolbarMiddleware(
         appStore.dispatch(SearchStarted())
     }
 
-    private fun selectedHomepageTabId(): String? = browserStore.state.selectedTab
-        ?.takeIf { it.content.url == ABOUT_HOME_URL }
-        ?.id
+    private fun selectedHomepageTabId(): String? =
+        browserStore.state.selectedTab?.takeIf { it.content.url == ABOUT_HOME_URL }?.id
 
     private suspend fun openNewTabFromToolbarShortcut(
         store: Store<BrowserToolbarState, BrowserToolbarAction>,
@@ -627,8 +626,7 @@ class BrowserToolbarMiddleware(
                 )
 
             HomeToolbarAction.NewTab,
-            HomeToolbarAction.NewTabShortcut,
-            ->
+            HomeToolbarAction.NewTabShortcut ->
                 ActionButtonRes(
                     drawableResId = iconsR.drawable.mozac_ic_plus_24,
                     contentDescription =

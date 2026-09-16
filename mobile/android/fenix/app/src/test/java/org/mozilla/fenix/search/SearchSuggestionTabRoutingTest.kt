@@ -66,12 +66,22 @@ class SearchSuggestionTabRoutingTest {
 
     @Test
     fun `homepage as new tab reuses the current tab`() {
-        assertSuggestionTabRouting(sourceTabId = null, initialTabId = null, expectedNewTab = false, homepageAsNewTab = true)
+        assertSuggestionTabRouting(
+            sourceTabId = null,
+            initialTabId = null,
+            expectedNewTab = false,
+            homepageAsNewTab = true,
+        )
     }
 
     @Test
     fun `private search source reuses the private tab`() {
-        assertSuggestionTabRouting(sourceTabId = "group-tab", initialTabId = null, expectedNewTab = false, isPrivate = true)
+        assertSuggestionTabRouting(
+            sourceTabId = "group-tab",
+            initialTabId = null,
+            expectedNewTab = false,
+            isPrivate = true,
+        )
     }
 
     private fun assertSuggestionTabRouting(
@@ -81,29 +91,35 @@ class SearchSuggestionTabRoutingTest {
         homepageAsNewTab: Boolean = false,
         isPrivate: Boolean = false,
     ) {
-        val currentTab = TabSessionState(id = "group-tab", content = ContentState(url = "about:home", private = isPrivate))
+        val currentTab =
+            TabSessionState(id = "group-tab", content = ContentState(url = "about:home", private = isPrivate))
         val browserStore = BrowserStore(BrowserState(tabs = listOf(currentTab), selectedTabId = currentTab.id))
         val appStore = AppStore(AppState(searchState = SearchState.EMPTY.copy(sourceTabId = sourceTabId)))
         every { settings.enableHomepageAsNewTab } returns homepageAsNewTab
         every { browsingModeManager.mode } returns if (isPrivate) BrowsingMode.Private else BrowsingMode.Normal
-        val middleware = FenixSearchMiddleware(
-            fragment = mockk(),
-            engine = mockk(),
-            useCases = useCases,
-            nimbusComponents = mockk(),
-            settings = settings,
-            appStore = appStore,
-            browserStore = browserStore,
-            toolbarStore = mockk(relaxed = true),
-            navController = mockk(relaxed = true),
-            browsingModeManager = browsingModeManager,
-        )
+        val middleware =
+            FenixSearchMiddleware(
+                fragment = mockk(),
+                engine = mockk(),
+                useCases = useCases,
+                nimbusComponents = mockk(),
+                settings = settings,
+                appStore = appStore,
+                browserStore = browserStore,
+                toolbarStore = mockk(relaxed = true),
+                navController = mockk(relaxed = true),
+                browsingModeManager = browsingModeManager,
+            )
         val store = SearchFragmentStore(SearchFragmentState.EMPTY.copy(tabId = initialTabId))
         val url = "https://example.com/suggestion"
         val flags = LoadUrlFlags.external()
-        val urlSuggestion = Suggestion(provider = mockk(), onSuggestionClicked = {
-            middleware.loadUrlUseCase().invoke(url, flags, null, null)
-        })
+        val urlSuggestion =
+            Suggestion(
+                provider = mockk(),
+                onSuggestionClicked = {
+                    middleware.loadUrlUseCase().invoke(url, flags, null, null)
+                },
+            )
 
         middleware(store, {}, SuggestionClicked(urlSuggestion))
 
@@ -116,9 +132,13 @@ class SearchSuggestionTabRoutingTest {
             )
         }
 
-        val searchSuggestion = Suggestion(provider = mockk(), onSuggestionClicked = {
-            middleware.searchUseCase(store).invoke("suggested search", null, null)
-        })
+        val searchSuggestion =
+            Suggestion(
+                provider = mockk(),
+                onSuggestionClicked = {
+                    middleware.searchUseCase(store).invoke("suggested search", null, null)
+                },
+            )
         middleware(store, {}, SuggestionClicked(searchSuggestion))
 
         verify(exactly = 1) {

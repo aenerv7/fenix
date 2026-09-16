@@ -111,15 +111,15 @@ class TabGroupMiddlewareTest {
 
     @Test
     fun `WHEN a normal child tab is added THEN inherit the parent's tab group`() = runTest {
-        val repository = FakeTabGroupRepository(
-            initialTabGroupData = TabGroupData(
-                tabGroupAssignments = mapOf(PARENT_TAB_ID to GROUP_ID),
-            ),
-        )
-        val middleware = TabGroupMiddleware(
-            tabGroupRepository = repository,
-            scope = this,
-        )
+        val repository =
+            FakeTabGroupRepository(
+                initialTabGroupData = TabGroupData(tabGroupAssignments = mapOf(PARENT_TAB_ID to GROUP_ID))
+            )
+        val middleware =
+            TabGroupMiddleware(
+                tabGroupRepository = repository,
+                scope = this,
+            )
 
         middleware.processAction(
             TabListAction.AddTabAction(
@@ -127,8 +127,8 @@ class TabGroupMiddlewareTest {
                     url = "https://example.com",
                     id = CHILD_TAB_ID,
                     parentId = PARENT_TAB_ID,
-                ),
-            ),
+                )
+            )
         )
         advanceUntilIdle()
 
@@ -137,15 +137,15 @@ class TabGroupMiddlewareTest {
 
     @Test
     fun `WHEN a private child tab is added THEN do not inherit the parent's tab group`() = runTest {
-        val repository = FakeTabGroupRepository(
-            initialTabGroupData = TabGroupData(
-                tabGroupAssignments = mapOf(PARENT_TAB_ID to GROUP_ID),
-            ),
-        )
-        val middleware = TabGroupMiddleware(
-            tabGroupRepository = repository,
-            scope = this,
-        )
+        val repository =
+            FakeTabGroupRepository(
+                initialTabGroupData = TabGroupData(tabGroupAssignments = mapOf(PARENT_TAB_ID to GROUP_ID))
+            )
+        val middleware =
+            TabGroupMiddleware(
+                tabGroupRepository = repository,
+                scope = this,
+            )
 
         middleware.processAction(
             TabListAction.AddTabAction(
@@ -154,8 +154,8 @@ class TabGroupMiddlewareTest {
                     id = CHILD_TAB_ID,
                     parentId = PARENT_TAB_ID,
                     private = true,
-                ),
-            ),
+                )
+            )
         )
         advanceUntilIdle()
 
@@ -164,16 +164,16 @@ class TabGroupMiddlewareTest {
 
     @Test
     fun `WHEN tab grouping is disabled THEN do not inherit the parent's tab group`() = runTest {
-        val repository = FakeTabGroupRepository(
-            initialTabGroupData = TabGroupData(
-                tabGroupAssignments = mapOf(PARENT_TAB_ID to GROUP_ID),
-            ),
-        )
-        val middleware = TabGroupMiddleware(
-            tabGroupRepository = repository,
-            isTabGroupingEnabled = { false },
-            scope = this,
-        )
+        val repository =
+            FakeTabGroupRepository(
+                initialTabGroupData = TabGroupData(tabGroupAssignments = mapOf(PARENT_TAB_ID to GROUP_ID))
+            )
+        val middleware =
+            TabGroupMiddleware(
+                tabGroupRepository = repository,
+                isTabGroupingEnabled = { false },
+                scope = this,
+            )
 
         middleware.processAction(
             TabListAction.AddTabAction(
@@ -181,8 +181,8 @@ class TabGroupMiddlewareTest {
                     url = "https://example.com",
                     id = CHILD_TAB_ID,
                     parentId = PARENT_TAB_ID,
-                ),
-            ),
+                )
+            )
         )
         advanceUntilIdle()
 

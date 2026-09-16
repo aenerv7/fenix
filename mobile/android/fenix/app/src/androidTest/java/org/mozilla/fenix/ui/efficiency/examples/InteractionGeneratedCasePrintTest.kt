@@ -9,9 +9,7 @@ import org.mozilla.fenix.ui.efficiency.navigation.interaction.InteractionCase
 import org.mozilla.fenix.ui.efficiency.navigation.interaction.InteractionCaseFactory
 
 @RunWith(Parameterized::class)
-class InteractionGeneratedCasePrintTest(
-    private val case: InteractionCase,
-) : BaseTest() {
+class InteractionGeneratedCasePrintTest(private val case: InteractionCase) : BaseTest() {
 
     companion object {
         private const val TAG = "InteractionCasePrint"
@@ -19,13 +17,9 @@ class InteractionGeneratedCasePrintTest(
         @JvmStatic
         @Parameterized.Parameters(name = "{index}: {0}")
         fun data(): List<Array<Any>> {
-            val runState = System.getProperty("testRunState")
-                ?.takeIf { it.isNotBlank() }
-                ?: ""
+            val runState = System.getProperty("testRunState")?.takeIf { it.isNotBlank() } ?: ""
 
-            return InteractionCaseFactory
-                .buildInteractionCases(runState = runState)
-                .map { arrayOf(it as Any) }
+            return InteractionCaseFactory.buildInteractionCases(runState = runState).map { arrayOf(it as Any) }
         }
     }
 

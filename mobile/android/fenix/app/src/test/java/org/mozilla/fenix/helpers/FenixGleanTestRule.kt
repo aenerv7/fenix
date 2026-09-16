@@ -18,11 +18,9 @@ import org.mozilla.fenix.GleanMetrics.Pings
 /**
  * This implements a JUnit rule for writing tests for Glean SDK metrics.
  *
- * The rule takes care of resetting the Glean SDK between tests and
- * initializing all the required dependencies.
+ * The rule takes care of resetting the Glean SDK between tests and initializing all the required dependencies.
  *
  * Example usage:
- *
  * ```
  * // Add the following lines to you test class.
  * @get:Rule
@@ -45,15 +43,13 @@ class FenixGleanTestRule(
         return object : Statement() {
             override fun evaluate() {
                 throw AssumptionViolatedException(
-                    "FenixGleanTestRule requires host-native Application Services libraries",
+                    "FenixGleanTestRule requires host-native Application Services libraries"
                 )
             }
         }
     }
 
-    /**
-     * Invoked when a test is about to start.
-     */
+    /** Invoked when a test is about to start. */
     override fun starting(description: Description?) {
         // We're using the WorkManager in a bunch of places, and Glean will crash
         // in tests without this line. Let's simply put it here.

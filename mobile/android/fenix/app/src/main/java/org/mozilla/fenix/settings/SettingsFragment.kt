@@ -77,7 +77,6 @@ import org.mozilla.fenix.ext.components
 import org.mozilla.fenix.ext.getPreferenceKey
 import org.mozilla.fenix.ext.navigateToAppDetailsSettings
 import org.mozilla.fenix.ext.navigateToNotificationsSettings
-import org.mozilla.fenix.ext.openInNewTab
 import org.mozilla.fenix.ext.requireComponents
 import org.mozilla.fenix.ext.showToolbar
 import org.mozilla.fenix.ext.showToolbarWithIconButton
@@ -168,51 +167,48 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
             requireComponents.backgroundServices.accountManager.accountProfile(),
         )
 
-        val booleanPreferenceTelemetryAllowList = with(requireContext()) {
-            listOf(
-                getString(R.string.pref_key_show_search_suggestions),
-                getString(R.string.pref_key_remote_debugging),
-                getString(R.string.pref_key_telemetry),
-                getString(R.string.pref_key_marketing_telemetry),
-                getString(R.string.pref_key_learn_about_marketing_telemetry),
-                getString(R.string.pref_key_tracking_protection),
-                getString(R.string.pref_key_search_bookmarks),
-                getString(R.string.pref_key_search_browsing_history),
-                getString(R.string.pref_key_show_clipboard_suggestions),
-                getString(R.string.pref_key_open_links_in_a_private_tab),
-                getString(R.string.pref_key_sync_bookmarks),
-                getString(R.string.pref_key_sync_history),
-                getString(R.string.pref_key_show_voice_search),
-                getString(R.string.pref_key_show_search_suggestions_in_private),
-                getString(R.string.pref_key_show_trending_search_suggestions),
-                getString(R.string.pref_key_show_recent_search_suggestions),
-            )
-        }
-
-        preferenceManager?.sharedPreferences
-            ?.registerOnSharedPreferenceChangeListener(this) { sharedPreferences, key ->
-                try {
-                    if (key in booleanPreferenceTelemetryAllowList) {
-                        val enabled = sharedPreferences.getBoolean(key, false)
-                        Events.preferenceToggled.record(Events.PreferenceToggledExtra(enabled, key))
-                    }
-                } catch (e: ClassCastException) {
-                    // The setting is not a boolean, not tracked
-                }
+        val booleanPreferenceTelemetryAllowList =
+            with(requireContext()) {
+                listOf(
+                    getString(R.string.pref_key_show_search_suggestions),
+                    getString(R.string.pref_key_remote_debugging),
+                    getString(R.string.pref_key_telemetry),
+                    getString(R.string.pref_key_marketing_telemetry),
+                    getString(R.string.pref_key_learn_about_marketing_telemetry),
+                    getString(R.string.pref_key_tracking_protection),
+                    getString(R.string.pref_key_search_bookmarks),
+                    getString(R.string.pref_key_search_browsing_history),
+                    getString(R.string.pref_key_show_clipboard_suggestions),
+                    getString(R.string.pref_key_open_links_in_a_private_tab),
+                    getString(R.string.pref_key_sync_bookmarks),
+                    getString(R.string.pref_key_sync_history),
+                    getString(R.string.pref_key_show_voice_search),
+                    getString(R.string.pref_key_show_search_suggestions_in_private),
+                    getString(R.string.pref_key_show_trending_search_suggestions),
+                    getString(R.string.pref_key_show_recent_search_suggestions),
+                )
             }
 
-        findPreference<Preference>(
-            getPreferenceKey(R.string.pref_key_translation),
-        )?.isVisible = FxNimbus.features.translations.value().globalSettingsEnabled &&
-            components.core.store.state.translationEngine.isEngineSupported == true
+        preferenceManager?.sharedPreferences?.registerOnSharedPreferenceChangeListener(this) { sharedPreferences, key ->
+            try {
+                if (key in booleanPreferenceTelemetryAllowList) {
+                    val enabled = sharedPreferences.getBoolean(key, false)
+                    Events.preferenceToggled.record(Events.PreferenceToggledExtra(enabled, key))
+                }
+            } catch (e: ClassCastException) {
+                // The setting is not a boolean, not tracked
+            }
+        }
 
-        findPreference<Preference>(
-            getPreferenceKey(R.string.pref_key_page_summaries),
-        )?.isVisible = components.settings.shakeToSummarizeFeatureFlagEnabled
+        findPreference<Preference>(getPreferenceKey(R.string.pref_key_translation))?.isVisible =
+            FxNimbus.features.translations.value().globalSettingsEnabled &&
+                components.core.store.state.translationEngine.isEngineSupported == true
 
-        findPreference<Preference>(
-            getPreferenceKey(R.string.pref_key_ai_controls),
-        )?.isVisible = requireComponents.settings.aiControlsFeatureFlagEnabled
+        findPreference<Preference>(getPreferenceKey(R.string.pref_key_page_summaries))?.isVisible =
+            components.settings.shakeToSummarizeFeatureFlagEnabled
+
+        findPreference<Preference>(getPreferenceKey(R.string.pref_key_ai_controls))?.isVisible =
+            requireComponents.settings.aiControlsFeatureFlagEnabled
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -323,18 +319,17 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
 
         val deleteBrowsingDataPreference =
             requirePreference<Preference>(R.string.pref_key_delete_browsing_data_on_quit_preference)
-        deleteBrowsingDataPreference.summary = if (settings.shouldDeleteBrowsingDataOnQuit) {
-            getString(R.string.delete_browsing_data_quit_on)
-        } else {
-            getString(R.string.delete_browsing_data_quit_off)
-        }
+        deleteBrowsingDataPreference.summary =
+            if (settings.shouldDeleteBrowsingDataOnQuit) {
+                getString(R.string.delete_browsing_data_quit_on)
+            } else {
+                getString(R.string.delete_browsing_data_quit_off)
+            }
 
-        val tabSettingsPreference =
-            requirePreference<Preference>(R.string.pref_key_tabs)
+        val tabSettingsPreference = requirePreference<Preference>(R.string.pref_key_tabs)
         tabSettingsPreference.summary = settings.getTabTimeoutString()
 
-        val openLinksInAppsSettingsPreference =
-            requirePreference<Preference>(R.string.pref_key_open_links_in_apps)
+        val openLinksInAppsSettingsPreference = requirePreference<Preference>(R.string.pref_key_open_links_in_apps)
         openLinksInAppsSettingsPreference.summary = settings.getOpenLinksInAppsString()
 
         setupPreferences(settings)
@@ -353,225 +348,230 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
         val recyclerView = requireView().findViewById<RecyclerView>(R.id.recycler_view)
         recyclerView.isVerticalScrollBarEnabled = false
 
-        val directions: NavDirections? = when (preference.key) {
-            /* Top level account preferences.
-            Note: Only ONE of these preferences is visible at a time. */
-            resources.getString(R.string.pref_key_sign_in) -> {
-                SettingsMetrics.signIntoSync.add()
-                SettingsFragmentDirections.actionSettingsFragmentToTurnOnSyncFragment(
-                    entrypoint = FenixFxAEntryPoint.SettingsMenu,
-                )
-            }
-
-            resources.getString(R.string.pref_key_account) -> {
-                SettingsFragmentDirections.actionSettingsFragmentToAccountSettingsFragment()
-            }
-
-            resources.getString(R.string.pref_key_account_auth_error) -> {
-                SettingsFragmentDirections.actionSettingsFragmentToAccountProblemFragment(
-                    entrypoint = FenixFxAEntryPoint.SettingsMenu,
-                )
-            }
-
-            // General preferences
-            resources.getString(R.string.pref_key_search_settings) -> {
-                SettingsFragmentDirections.actionSettingsFragmentToSearchEngineFragment()
-            }
-
-            resources.getString(R.string.pref_key_tabs) -> {
-                SettingsFragmentDirections.actionSettingsFragmentToTabsSettingsFragment()
-            }
-
-            resources.getString(R.string.pref_key_home) -> {
-                SettingsFragmentDirections.actionSettingsFragmentToHomeSettingsFragment()
-            }
-
-            resources.getString(R.string.pref_key_customize) -> {
-                SettingsFragmentDirections.actionSettingsFragmentToCustomizationFragment()
-            }
-
-            resources.getString(R.string.pref_key_email_masks) -> {
-                SettingsFragmentDirections.actionSettingsFragmentToEmailMasksSettingsFragment()
-            }
-
-            resources.getString(R.string.pref_key_accessibility) -> {
-                SettingsFragmentDirections.actionSettingsFragmentToAccessibilityFragment()
-            }
-
-            resources.getString(R.string.pref_key_language) -> {
-                SettingsFragmentDirections.actionSettingsFragmentToLocaleSettingsFragment()
-            }
-
-            resources.getString(R.string.pref_key_translation) -> {
-                Translations.action.record(Translations.ActionExtra("global_settings_from_preferences"))
-                SettingsFragmentDirections.actionSettingsFragmentToTranslationsSettingsFragment()
-            }
-
-            resources.getString(R.string.pref_key_page_summaries) -> {
-                SettingsFragmentDirections.actionSettingsFragmentToPageSummariesSettingsFragment()
-            }
-
-            resources.getString(R.string.pref_key_ai_controls) -> {
-                SettingsFragmentDirections.actionSettingsFragmentToAiControlsFragment()
-            }
-
-            // Privacy and security preferences
-            resources.getString(R.string.pref_key_private_browsing) -> {
-                SettingsFragmentDirections.actionSettingsFragmentToPrivateBrowsingFragment()
-            }
-
-            resources.getString(R.string.pref_key_https_only_settings) -> {
-                SettingsFragmentDirections.actionSettingsFragmentToHttpsOnlyFragment()
-            }
-
-            resources.getString(R.string.pref_key_ip_protection_settings) -> {
-                Vpn.settingsPageTapped.record(Vpn.SettingsPageTappedExtra(entrypoint = "Settings"))
-                SettingsFragmentDirections.actionSettingsFragmentToIpProtectionFragment(
-                    entrypoint = FenixFxAEntryPoint.IPProtectionSettings,
-                )
-            }
-
-            resources.getString(R.string.pref_key_tracking_protection_settings) -> {
-                TrackingProtection.etpSettings.record(NoExtras())
-                SettingsFragmentDirections.actionSettingsFragmentToTrackingProtectionFragment()
-            }
-
-            resources.getString(R.string.pref_key_doh_settings) -> {
-                SettingsFragmentDirections.actionSettingsFragmentToDohSettingsFragment()
-            }
-
-            resources.getString(R.string.pref_key_site_permissions) -> {
-                SettingsFragmentDirections.actionSettingsFragmentToSitePermissionsFragment()
-            }
-
-            resources.getString(R.string.pref_key_delete_browsing_data) -> {
-                SettingsFragmentDirections.actionSettingsFragmentToDeleteBrowsingDataFragment()
-            }
-
-            resources.getString(R.string.pref_key_delete_browsing_data_on_quit_preference) -> {
-                SettingsFragmentDirections.actionSettingsFragmentToDeleteBrowsingDataOnQuitFragment()
-            }
-
-            resources.getString(R.string.pref_key_notifications) -> {
-                context?.navigateToNotificationsSettings {}
-                null
-            }
-
-            resources.getString(R.string.pref_key_local_network_access) -> {
-                handleLocalNetworkPermissionClick()
-                null
-            }
-
-            resources.getString(R.string.pref_key_data_choices) -> {
-                SettingsFragmentDirections.actionSettingsFragmentToDataChoicesFragment()
-            }
-
-            // Advanced preferences
-            resources.getString(R.string.pref_key_addons) -> {
-                Addons.openAddonsInSettings.record(NoExtras())
-                SettingsFragmentDirections.actionSettingsFragmentToAddonsFragment()
-            }
-
-            // Only displayed when secret settings are enabled
-            resources.getString(R.string.pref_key_install_local_addon) -> {
-                addonFilePicker.launch()
-                null
-            }
-
-            // Only displayed when secret settings are enabled
-            resources.getString(R.string.pref_key_override_amo_collection) -> {
-                val context = requireContext()
-                val dialogView = LayoutInflater.from(context)
-                    .inflate(R.layout.amo_collection_override_dialog, null)
-
-                val binding = AmoCollectionOverrideDialogBinding.bind(dialogView)
-                MaterialAlertDialogBuilder(context).apply {
-                    setTitle(context.getString(R.string.preferences_customize_extension_collection))
-                    setView(dialogView)
-                    setNegativeButton(R.string.customize_addon_collection_cancel) { dialog: DialogInterface, _ ->
-                        dialog.cancel()
-                    }
-
-                    setPositiveButton(R.string.customize_addon_collection_ok) { _, _ ->
-                        context.components.settings.overrideAmoUser = binding.customAmoUser.text.toString()
-                        context.components.settings.overrideAmoCollection =
-                            binding.customAmoCollection.text.toString()
-
-                        Toast.makeText(
-                            context,
-                            getString(R.string.toast_customize_extension_collection_done),
-                            Toast.LENGTH_LONG,
-                        ).show()
-
-                        Handler(Looper.getMainLooper()).postDelayed(
-                            {
-                                exitProcess(0)
-                            },
-                            AMO_COLLECTION_OVERRIDE_EXIT_DELAY,
-                        )
-                    }
-
-                    binding.customAmoCollection.setText(context.components.settings.overrideAmoCollection)
-                    binding.customAmoUser.setText(context.components.settings.overrideAmoUser)
-                    binding.customAmoUser.requestFocus()
-                    binding.customAmoUser.showKeyboard()
-                    create().withCenterAlignedButtons()
-                }.show()
-
-                null
-            }
-
-            resources.getString(R.string.pref_key_link_sharing) -> {
-                SettingsFragmentDirections.actionSettingsFragmentToLinkSharingFragment()
-            }
-
-            resources.getString(R.string.pref_key_remote_improvements) -> {
-                SettingsFragmentDirections.actionSettingsFragmentToRemoteImprovementsFragment()
-            }
-
-            resources.getString(R.string.pref_key_open_links_in_apps) -> {
-                SettingsFragmentDirections.actionSettingsFragmentToOpenLinksInAppsFragment()
-            }
-
-            resources.getString(R.string.pref_key_downloads) -> {
-                SettingsFragmentDirections.actionSettingsFragmentToOpenDownloadsSettingsFragment()
-            }
-
-            resources.getString(R.string.pref_key_firefox_labs) -> {
-                SettingsMetrics.firefoxLabs.record()
-                SettingsFragmentDirections.actionSettingsFragmentToFirefoxLabsFragment()
-            }
-
-            resources.getString(R.string.pref_key_sync_debug) -> {
-                SettingsFragmentDirections.actionSettingsFragmentToSyncDebugFragment()
-            }
-
-            // About preferences
-            resources.getString(R.string.pref_key_about) -> {
-                SettingsFragmentDirections.actionSettingsFragmentToAboutFragment()
-            }
-
-            // Only displayed when secret settings are enabled
-            resources.getString(R.string.pref_key_debug_settings) -> {
-                SettingsFragmentDirections.actionSettingsFragmentToSecretSettingsFragment()
-            }
-
-            // Only displayed when secret settings are enabled
-            resources.getString(R.string.pref_key_nimbus_experiments) -> {
-                SettingsFragmentDirections.actionSettingsFragmentToNimbusExperimentsFragment()
-            }
-
-            // Only displayed when secret settings are enabled
-            resources.getString(R.string.pref_key_start_profiler) -> {
-                if (profilerViewModel.isProfilerActive.value) {
-                    SettingsFragmentDirections.actionSettingsFragmentToStopProfilerDialog()
-                } else {
-                    SettingsFragmentDirections.actionSettingsFragmentToStartProfilerDialog()
+        val directions: NavDirections? =
+            when (preference.key) {
+                /* Top level account preferences.
+                Note: Only ONE of these preferences is visible at a time. */
+                resources.getString(R.string.pref_key_sign_in) -> {
+                    SettingsMetrics.signIntoSync.add()
+                    SettingsFragmentDirections.actionSettingsFragmentToTurnOnSyncFragment(
+                        entrypoint = FenixFxAEntryPoint.SettingsMenu
+                    )
                 }
-            }
 
-            else -> null
-        }
+                resources.getString(R.string.pref_key_account) -> {
+                    SettingsFragmentDirections.actionSettingsFragmentToAccountSettingsFragment()
+                }
+
+                resources.getString(R.string.pref_key_account_auth_error) -> {
+                    SettingsFragmentDirections.actionSettingsFragmentToAccountProblemFragment(
+                        entrypoint = FenixFxAEntryPoint.SettingsMenu
+                    )
+                }
+
+                // General preferences
+                resources.getString(R.string.pref_key_search_settings) -> {
+                    SettingsFragmentDirections.actionSettingsFragmentToSearchEngineFragment()
+                }
+
+                resources.getString(R.string.pref_key_tabs) -> {
+                    SettingsFragmentDirections.actionSettingsFragmentToTabsSettingsFragment()
+                }
+
+                resources.getString(R.string.pref_key_home) -> {
+                    SettingsFragmentDirections.actionSettingsFragmentToHomeSettingsFragment()
+                }
+
+                resources.getString(R.string.pref_key_customize) -> {
+                    SettingsFragmentDirections.actionSettingsFragmentToCustomizationFragment()
+                }
+
+                resources.getString(R.string.pref_key_email_masks) -> {
+                    SettingsFragmentDirections.actionSettingsFragmentToEmailMasksSettingsFragment()
+                }
+
+                resources.getString(R.string.pref_key_accessibility) -> {
+                    SettingsFragmentDirections.actionSettingsFragmentToAccessibilityFragment()
+                }
+
+                resources.getString(R.string.pref_key_language) -> {
+                    SettingsFragmentDirections.actionSettingsFragmentToLocaleSettingsFragment()
+                }
+
+                resources.getString(R.string.pref_key_translation) -> {
+                    Translations.action.record(Translations.ActionExtra("global_settings_from_preferences"))
+                    SettingsFragmentDirections.actionSettingsFragmentToTranslationsSettingsFragment()
+                }
+
+                resources.getString(R.string.pref_key_page_summaries) -> {
+                    SettingsFragmentDirections.actionSettingsFragmentToPageSummariesSettingsFragment()
+                }
+
+                resources.getString(R.string.pref_key_ai_controls) -> {
+                    SettingsFragmentDirections.actionSettingsFragmentToAiControlsFragment()
+                }
+
+                // Privacy and security preferences
+                resources.getString(R.string.pref_key_private_browsing) -> {
+                    SettingsFragmentDirections.actionSettingsFragmentToPrivateBrowsingFragment()
+                }
+
+                resources.getString(R.string.pref_key_https_only_settings) -> {
+                    SettingsFragmentDirections.actionSettingsFragmentToHttpsOnlyFragment()
+                }
+
+                resources.getString(R.string.pref_key_ip_protection_settings) -> {
+                    Vpn.settingsPageTapped.record(Vpn.SettingsPageTappedExtra(entrypoint = "Settings"))
+                    SettingsFragmentDirections.actionSettingsFragmentToIpProtectionFragment(
+                        entrypoint = FenixFxAEntryPoint.IPProtectionSettings
+                    )
+                }
+
+                resources.getString(R.string.pref_key_tracking_protection_settings) -> {
+                    TrackingProtection.etpSettings.record(NoExtras())
+                    SettingsFragmentDirections.actionSettingsFragmentToTrackingProtectionFragment()
+                }
+
+                resources.getString(R.string.pref_key_doh_settings) -> {
+                    SettingsFragmentDirections.actionSettingsFragmentToDohSettingsFragment()
+                }
+
+                resources.getString(R.string.pref_key_site_permissions) -> {
+                    SettingsFragmentDirections.actionSettingsFragmentToSitePermissionsFragment()
+                }
+
+                resources.getString(R.string.pref_key_delete_browsing_data) -> {
+                    SettingsFragmentDirections.actionSettingsFragmentToDeleteBrowsingDataFragment()
+                }
+
+                resources.getString(R.string.pref_key_delete_browsing_data_on_quit_preference) -> {
+                    SettingsFragmentDirections.actionSettingsFragmentToDeleteBrowsingDataOnQuitFragment()
+                }
+
+                resources.getString(R.string.pref_key_notifications) -> {
+                    context?.navigateToNotificationsSettings {}
+                    null
+                }
+
+                resources.getString(R.string.pref_key_local_network_access) -> {
+                    handleLocalNetworkPermissionClick()
+                    null
+                }
+
+                resources.getString(R.string.pref_key_data_choices) -> {
+                    SettingsFragmentDirections.actionSettingsFragmentToDataChoicesFragment()
+                }
+
+                // Advanced preferences
+                resources.getString(R.string.pref_key_addons) -> {
+                    Addons.openAddonsInSettings.record(NoExtras())
+                    SettingsFragmentDirections.actionSettingsFragmentToAddonsFragment()
+                }
+
+                // Only displayed when secret settings are enabled
+                resources.getString(R.string.pref_key_install_local_addon) -> {
+                    addonFilePicker.launch()
+                    null
+                }
+
+                // Only displayed when secret settings are enabled
+                resources.getString(R.string.pref_key_override_amo_collection) -> {
+                    val context = requireContext()
+                    val dialogView = LayoutInflater.from(context).inflate(R.layout.amo_collection_override_dialog, null)
+
+                    val binding = AmoCollectionOverrideDialogBinding.bind(dialogView)
+                    MaterialAlertDialogBuilder(context)
+                        .apply {
+                            setTitle(context.getString(R.string.preferences_customize_extension_collection))
+                            setView(dialogView)
+                            setNegativeButton(R.string.customize_addon_collection_cancel) { dialog: DialogInterface, _
+                                ->
+                                dialog.cancel()
+                            }
+
+                            setPositiveButton(R.string.customize_addon_collection_ok) { _, _ ->
+                                context.components.settings.overrideAmoUser = binding.customAmoUser.text.toString()
+                                context.components.settings.overrideAmoCollection =
+                                    binding.customAmoCollection.text.toString()
+
+                                Toast.makeText(
+                                        context,
+                                        getString(R.string.toast_customize_extension_collection_done),
+                                        Toast.LENGTH_LONG,
+                                    )
+                                    .show()
+
+                                Handler(Looper.getMainLooper())
+                                    .postDelayed(
+                                        {
+                                            exitProcess(0)
+                                        },
+                                        AMO_COLLECTION_OVERRIDE_EXIT_DELAY,
+                                    )
+                            }
+
+                            binding.customAmoCollection.setText(context.components.settings.overrideAmoCollection)
+                            binding.customAmoUser.setText(context.components.settings.overrideAmoUser)
+                            binding.customAmoUser.requestFocus()
+                            binding.customAmoUser.showKeyboard()
+                            create().withCenterAlignedButtons()
+                        }
+                        .show()
+
+                    null
+                }
+
+                resources.getString(R.string.pref_key_link_sharing) -> {
+                    SettingsFragmentDirections.actionSettingsFragmentToLinkSharingFragment()
+                }
+
+                resources.getString(R.string.pref_key_remote_improvements) -> {
+                    SettingsFragmentDirections.actionSettingsFragmentToRemoteImprovementsFragment()
+                }
+
+                resources.getString(R.string.pref_key_open_links_in_apps) -> {
+                    SettingsFragmentDirections.actionSettingsFragmentToOpenLinksInAppsFragment()
+                }
+
+                resources.getString(R.string.pref_key_downloads) -> {
+                    SettingsFragmentDirections.actionSettingsFragmentToOpenDownloadsSettingsFragment()
+                }
+
+                resources.getString(R.string.pref_key_firefox_labs) -> {
+                    SettingsMetrics.firefoxLabs.record()
+                    SettingsFragmentDirections.actionSettingsFragmentToFirefoxLabsFragment()
+                }
+
+                resources.getString(R.string.pref_key_sync_debug) -> {
+                    SettingsFragmentDirections.actionSettingsFragmentToSyncDebugFragment()
+                }
+
+                // About preferences
+                resources.getString(R.string.pref_key_about) -> {
+                    SettingsFragmentDirections.actionSettingsFragmentToAboutFragment()
+                }
+
+                // Only displayed when secret settings are enabled
+                resources.getString(R.string.pref_key_debug_settings) -> {
+                    SettingsFragmentDirections.actionSettingsFragmentToSecretSettingsFragment()
+                }
+
+                // Only displayed when secret settings are enabled
+                resources.getString(R.string.pref_key_nimbus_experiments) -> {
+                    SettingsFragmentDirections.actionSettingsFragmentToNimbusExperimentsFragment()
+                }
+
+                // Only displayed when secret settings are enabled
+                resources.getString(R.string.pref_key_start_profiler) -> {
+                    if (profilerViewModel.isProfilerActive.value) {
+                        SettingsFragmentDirections.actionSettingsFragmentToStopProfilerDialog()
+                    } else {
+                        SettingsFragmentDirections.actionSettingsFragmentToStartProfilerDialog()
+                    }
+                }
+
+                else -> null
+            }
         directions?.let { navigateFromSettings(directions) }
         return super.onPreferenceTreeClick(preference)
     }

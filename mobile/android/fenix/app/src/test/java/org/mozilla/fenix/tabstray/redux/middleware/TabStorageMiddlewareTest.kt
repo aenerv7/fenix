@@ -177,56 +177,65 @@ class TabStorageMiddlewareTest {
             val groupedTab = createTab(id = expectedTabId, url = "")
             val otherGroupedTabs = List(size = 10) { createTab("") }
             val tabs = listOf(initiallySelectedTab) + otherGroupedTabs + groupedTab
-            val transformedGroupTabs = otherGroupedTabs.map { TabsTrayItem.Tab(tab = it) } + TabsTrayItem.Tab(tab = groupedTab, isFocused = true)
-            val storedGroup = TabGroup(
-                title = "test group",
-                theme = "Red",
-                lastModified = 0L,
-            )
-            val expectedGroup = createTabGroup(
-                id = storedGroup.id,
-                title = storedGroup.title,
-                theme = TabGroupTheme.valueOf(storedGroup.theme),
-                tabs = transformedGroupTabs.toMutableList(),
-                isFocused = true,
-                initialScrollIndex = transformedGroupTabs.lastIndex,
-            )
-            val expectedTabList = listOf(
-                TabsTrayItem.Tab(initiallySelectedTab),
-                expectedGroup,
-            )
-            val initialState = TabData(
-                selectedTabId = initialTabId,
-                tabs = tabs,
-            )
-            val expectedState = TabsTrayState(
-                selectedTabId = expectedTabId,
-                normalTabsState = TabsTrayState.NormalTabsState(
-                    selectedItemIndex = 1,
-                    items = expectedTabList,
-                    tabCount = expectedGroup.tabs.size + 1,
-                ),
-                tabGroupState = TabsTrayState.TabGroupState(
-                    groups = listOf(expectedGroup),
-                ),
-                backStack = listOf(
-                    TabManagerNavDestination.Root,
-                    ExpandedTabGroup(
-                        group = expectedGroup,
-                        skipOpeningAnimation = true,
-                    ),
-                ),
-                hasTabDataLoaded = true,
-            )
+            val transformedGroupTabs =
+                otherGroupedTabs.map { TabsTrayItem.Tab(tab = it) } +
+                    TabsTrayItem.Tab(tab = groupedTab, isFocused = true)
+            val storedGroup =
+                TabGroup(
+                    title = "test group",
+                    theme = "Red",
+                    lastModified = 0L,
+                )
+            val expectedGroup =
+                createTabGroup(
+                    id = storedGroup.id,
+                    title = storedGroup.title,
+                    theme = TabGroupTheme.valueOf(storedGroup.theme),
+                    tabs = transformedGroupTabs.toMutableList(),
+                    isFocused = true,
+                    initialScrollIndex = transformedGroupTabs.lastIndex,
+                )
+            val expectedTabList =
+                listOf(
+                    TabsTrayItem.Tab(initiallySelectedTab),
+                    expectedGroup,
+                )
+            val initialState =
+                TabData(
+                    selectedTabId = initialTabId,
+                    tabs = tabs,
+                )
+            val expectedState =
+                TabsTrayState(
+                    selectedTabId = expectedTabId,
+                    normalTabsState =
+                        TabsTrayState.NormalTabsState(
+                            selectedItemIndex = 1,
+                            items = expectedTabList,
+                            tabCount = expectedGroup.tabs.size + 1,
+                        ),
+                    tabGroupState = TabsTrayState.TabGroupState(groups = listOf(expectedGroup)),
+                    backStack =
+                        listOf(
+                            TabManagerNavDestination.Root,
+                            ExpandedTabGroup(
+                                group = expectedGroup,
+                                skipOpeningAnimation = true,
+                            ),
+                        ),
+                    hasTabDataLoaded = true,
+                )
             val tabFlow = MutableStateFlow(initialState)
-            val store = createStore(
-                tabDataFlow = tabFlow,
-                tabGroupsEnabled = true,
-                tabGroupRepository = createRepository(
-                    initialTabGroups = listOf(storedGroup),
-                    initialTabGroupAssignments = transformedGroupTabs.map { it.id to storedGroup.id },
-                ),
-            )
+            val store =
+                createStore(
+                    tabDataFlow = tabFlow,
+                    tabGroupsEnabled = true,
+                    tabGroupRepository =
+                        createRepository(
+                            initialTabGroups = listOf(storedGroup),
+                            initialTabGroupAssignments = transformedGroupTabs.map { it.id to storedGroup.id },
+                        ),
+                )
 
             tabFlow.emit(initialState.copy(selectedTabId = expectedTabId))
 
@@ -241,20 +250,24 @@ class TabStorageMiddlewareTest {
         val ungroupedTab = createTab(id = "ungrouped", url = "")
         val groupedTab = createTab(id = "grouped", url = "")
         val storedGroup = fakeGroup()
-        val browserStore = BrowserStore(
-            initialState = BrowserState(
-                tabs = listOf(ungroupedTab, groupedTab),
-                selectedTabId = ungroupedTab.id,
-            ),
-        )
-        val store = createStore(
-            tabGroupsEnabled = true,
-            tabDataFlow = browserStore.stateFlow.map { TabData(it) },
-            tabGroupRepository = createRepository(
-                initialTabGroups = listOf(storedGroup),
-                initialTabGroupAssignments = listOf(groupedTab.id to storedGroup.id),
-            ),
-        )
+        val browserStore =
+            BrowserStore(
+                initialState =
+                    BrowserState(
+                        tabs = listOf(ungroupedTab, groupedTab),
+                        selectedTabId = ungroupedTab.id,
+                    )
+            )
+        val store =
+            createStore(
+                tabGroupsEnabled = true,
+                tabDataFlow = browserStore.stateFlow.map { TabData(it) },
+                tabGroupRepository =
+                    createRepository(
+                        initialTabGroups = listOf(storedGroup),
+                        initialTabGroupAssignments = listOf(groupedTab.id to storedGroup.id),
+                    ),
+            )
 
         runCurrent()
         advanceUntilIdle()
@@ -273,20 +286,24 @@ class TabStorageMiddlewareTest {
         val groupedTab = createTab(id = "grouped", url = "")
         val ungroupedTab = createTab(id = "ungrouped", url = "")
         val storedGroup = fakeGroup()
-        val browserStore = BrowserStore(
-            initialState = BrowserState(
-                tabs = listOf(groupedTab, ungroupedTab),
-                selectedTabId = ungroupedTab.id,
-            ),
-        )
-        val store = createStore(
-            tabGroupsEnabled = true,
-            tabDataFlow = browserStore.stateFlow.map { TabData(it) },
-            tabGroupRepository = createRepository(
-                initialTabGroups = listOf(storedGroup),
-                initialTabGroupAssignments = listOf(groupedTab.id to storedGroup.id),
-            ),
-        )
+        val browserStore =
+            BrowserStore(
+                initialState =
+                    BrowserState(
+                        tabs = listOf(groupedTab, ungroupedTab),
+                        selectedTabId = ungroupedTab.id,
+                    )
+            )
+        val store =
+            createStore(
+                tabGroupsEnabled = true,
+                tabDataFlow = browserStore.stateFlow.map { TabData(it) },
+                tabGroupRepository =
+                    createRepository(
+                        initialTabGroups = listOf(storedGroup),
+                        initialTabGroupAssignments = listOf(groupedTab.id to storedGroup.id),
+                    ),
+            )
 
         runCurrent()
         advanceUntilIdle()
@@ -306,39 +323,46 @@ class TabStorageMiddlewareTest {
         val selectedGroupedTab = createTab(id = "selected-grouped", url = "")
         val standaloneTabs = List(size = 10) { index -> createTab(id = "standalone-$index", url = "") }
         val tabs = listOf(groupedTab) + standaloneTabs + selectedGroupedTab
-        val storedGroup = TabGroup(
-            title = "test group",
-            theme = "Red",
-            lastModified = 0L,
-        )
-        val expectedGroupTabs = listOf(
-            TabsTrayItem.Tab(tab = groupedTab),
-            TabsTrayItem.Tab(tab = selectedGroupedTab, isFocused = true),
-        )
-        val expectedGroup = createTabGroup(
-            id = storedGroup.id,
-            title = storedGroup.title,
-            theme = TabGroupTheme.valueOf(storedGroup.theme),
-            tabs = expectedGroupTabs,
-            isFocused = true,
-            initialScrollIndex = expectedGroupTabs.lastIndex,
-        )
-        val store = createStore(
-            tabDataFlow = MutableStateFlow(
-                TabData(
-                    selectedTabId = selectedGroupedTab.id,
-                    tabs = tabs,
-                ),
-            ),
-            tabGroupsEnabled = true,
-            tabGroupRepository = createRepository(
-                initialTabGroups = listOf(storedGroup),
-                initialTabGroupAssignments = listOf(
-                    groupedTab.id to storedGroup.id,
-                    selectedGroupedTab.id to storedGroup.id,
-                ),
-            ),
-        )
+        val storedGroup =
+            TabGroup(
+                title = "test group",
+                theme = "Red",
+                lastModified = 0L,
+            )
+        val expectedGroupTabs =
+            listOf(
+                TabsTrayItem.Tab(tab = groupedTab),
+                TabsTrayItem.Tab(tab = selectedGroupedTab, isFocused = true),
+            )
+        val expectedGroup =
+            createTabGroup(
+                id = storedGroup.id,
+                title = storedGroup.title,
+                theme = TabGroupTheme.valueOf(storedGroup.theme),
+                tabs = expectedGroupTabs,
+                isFocused = true,
+                initialScrollIndex = expectedGroupTabs.lastIndex,
+            )
+        val store =
+            createStore(
+                tabDataFlow =
+                    MutableStateFlow(
+                        TabData(
+                            selectedTabId = selectedGroupedTab.id,
+                            tabs = tabs,
+                        )
+                    ),
+                tabGroupsEnabled = true,
+                tabGroupRepository =
+                    createRepository(
+                        initialTabGroups = listOf(storedGroup),
+                        initialTabGroupAssignments =
+                            listOf(
+                                groupedTab.id to storedGroup.id,
+                                selectedGroupedTab.id to storedGroup.id,
+                            ),
+                    ),
+            )
 
         runCurrent()
         advanceUntilIdle()
@@ -2888,331 +2912,395 @@ class TabStorageMiddlewareTest {
     }
 
     @Test
-    fun `WHEN save is clicked from group creation with valid drag and drop data THEN entering group is updated`() = runTest {
-        val repository = createRepository()
-        val sourceTab = createTab(url = "https://mozilla.org")
-        val destinationTab = createTab(url = "https://example.com")
-        val expectedTitle = "Group 1"
-        val expectedTheme = TabGroupTheme.Red
-        val store = createStore(
-            initialState = TabsTrayState(
-                mode = Mode.DragAndDrop(sourceId = sourceTab.id, destinationId = destinationTab.id),
-                tabGroupState = TabsTrayState.TabGroupState(
-                    formState = TabGroupFormState(
-                        name = expectedTitle,
-                        tabGroupId = null,
-                        theme = expectedTheme,
-                    ),
-                ),
-            ),
-            tabDataFlow = flowOf(TabData(tabs = listOf(sourceTab, destinationTab))),
-            tabGroupsEnabled = true,
-            tabGroupRepository = repository,
-            dateTimeProvider = fakeDateTimeProvider,
-        )
+    fun `WHEN save is clicked from group creation with valid drag and drop data THEN entering group is updated`() =
+        runTest {
+            val repository = createRepository()
+            val sourceTab = createTab(url = "https://mozilla.org")
+            val destinationTab = createTab(url = "https://example.com")
+            val expectedTitle = "Group 1"
+            val expectedTheme = TabGroupTheme.Red
+            val store =
+                createStore(
+                    initialState =
+                        TabsTrayState(
+                            mode = Mode.DragAndDrop(sourceId = sourceTab.id, destinationId = destinationTab.id),
+                            tabGroupState =
+                                TabsTrayState.TabGroupState(
+                                    formState =
+                                        TabGroupFormState(
+                                            name = expectedTitle,
+                                            tabGroupId = null,
+                                            theme = expectedTheme,
+                                        )
+                                ),
+                        ),
+                    tabDataFlow = flowOf(TabData(tabs = listOf(sourceTab, destinationTab))),
+                    tabGroupsEnabled = true,
+                    tabGroupRepository = repository,
+                    dateTimeProvider = fakeDateTimeProvider,
+                )
 
-        runCurrent()
-        advanceUntilIdle()
+            runCurrent()
+            advanceUntilIdle()
 
-        store.dispatch(TabGroupAction.SaveClicked)
+            store.dispatch(TabGroupAction.SaveClicked)
 
-        runCurrent()
-        advanceUntilIdle()
+            runCurrent()
+            advanceUntilIdle()
 
-        assertNotNull(actual = store.state.tabGroupState.enteringGroupId)
-    }
-
-    @Test
-    fun `WHEN save is clicked from group creation with valid multi-select data THEN entering group is updated`() = runTest {
-        val repository = createRepository()
-        val sourceTab = createTab(url = "https://mozilla.org")
-        val destinationTab = createTab(url = "https://example.com")
-        val expectedTitle = "Group 1"
-        val expectedTheme = TabGroupTheme.Red
-        val store = createStore(
-            initialState = TabsTrayState(
-                mode = Mode.Select(selectedTabs = setOf(TabsTrayItem.Tab(tab = sourceTab), TabsTrayItem.Tab(tab = destinationTab))),
-                tabGroupState = TabsTrayState.TabGroupState(
-                    formState = TabGroupFormState(
-                        name = expectedTitle,
-                        tabGroupId = null,
-                        theme = expectedTheme,
-                    ),
-                ),
-            ),
-            tabDataFlow = flowOf(TabData(tabs = listOf(sourceTab, destinationTab))),
-            tabGroupsEnabled = true,
-            tabGroupRepository = repository,
-            dateTimeProvider = fakeDateTimeProvider,
-        )
-
-        runCurrent()
-        advanceUntilIdle()
-
-        store.dispatch(TabGroupAction.SaveClicked)
-
-        runCurrent()
-        advanceUntilIdle()
-
-        assertNotNull(actual = store.state.tabGroupState.enteringGroupId)
-    }
+            assertNotNull(actual = store.state.tabGroupState.enteringGroupId)
+        }
 
     @Test
-    fun `WHEN save is clicked from group creation with invalid data THEN it is handled gracefully AND entering group is not updated`() = runTest {
-        val repository = createRepository()
-        val sourceTab = createTab(url = "https://mozilla.org")
-        val destinationTab = createTab(url = "https://example.com")
-        val expectedTitle = "Group 1"
-        val expectedTheme = TabGroupTheme.Red
-        val store = createStore(
-            initialState = TabsTrayState(
-                mode = Mode.DragAndDrop(sourceId = sourceTab.id, destinationId = null),
-                tabGroupState = TabsTrayState.TabGroupState(
-                    formState = TabGroupFormState(
-                        name = expectedTitle,
-                        tabGroupId = null,
-                        theme = expectedTheme,
-                    ),
-                ),
-            ),
-            tabDataFlow = flowOf(TabData(tabs = listOf(sourceTab, destinationTab))),
-            tabGroupsEnabled = true,
-            tabGroupRepository = repository,
-            dateTimeProvider = fakeDateTimeProvider,
-        )
+    fun `WHEN save is clicked from group creation with valid multi-select data THEN entering group is updated`() =
+        runTest {
+            val repository = createRepository()
+            val sourceTab = createTab(url = "https://mozilla.org")
+            val destinationTab = createTab(url = "https://example.com")
+            val expectedTitle = "Group 1"
+            val expectedTheme = TabGroupTheme.Red
+            val store =
+                createStore(
+                    initialState =
+                        TabsTrayState(
+                            mode =
+                                Mode.Select(
+                                    selectedTabs =
+                                        setOf(TabsTrayItem.Tab(tab = sourceTab), TabsTrayItem.Tab(tab = destinationTab))
+                                ),
+                            tabGroupState =
+                                TabsTrayState.TabGroupState(
+                                    formState =
+                                        TabGroupFormState(
+                                            name = expectedTitle,
+                                            tabGroupId = null,
+                                            theme = expectedTheme,
+                                        )
+                                ),
+                        ),
+                    tabDataFlow = flowOf(TabData(tabs = listOf(sourceTab, destinationTab))),
+                    tabGroupsEnabled = true,
+                    tabGroupRepository = repository,
+                    dateTimeProvider = fakeDateTimeProvider,
+                )
 
-        runCurrent()
-        advanceUntilIdle()
+            runCurrent()
+            advanceUntilIdle()
 
-        store.dispatch(TabGroupAction.SaveClicked)
+            store.dispatch(TabGroupAction.SaveClicked)
 
-        runCurrent()
-        advanceUntilIdle()
+            runCurrent()
+            advanceUntilIdle()
 
-        assertNull(actual = store.state.tabGroupState.enteringGroupId)
-    }
-
-    @Test
-    fun `GIVEN tab dragged onto tab, WHEN DragAndDropInitiated is called, THEN drag state is EDIT_IN_PROGRESS`() = runTest {
-        val tab = createTab(url = "")
-        val otherTab = createTab(url = "")
-        val groupedTab = createTab(url = "")
-        val tabData = TabData(tabs = listOf(tab, otherTab, groupedTab))
-        val storedGroup = TabGroup(
-            title = "Name",
-            theme = TabGroupTheme.Red.name,
-            lastModified = 0L,
-        )
-        val store = createStore(
-            tabGroupsEnabled = true,
-            tabDataFlow = flowOf(tabData),
-            tabGroupRepository = createRepository(
-                initialTabGroups = listOf(storedGroup),
-                initialTabGroupAssignments = listOf(groupedTab.id to storedGroup.id),
-            ),
-        )
-
-        runCurrent()
-        advanceUntilIdle()
-
-        store.dispatch(TabGroupAction.DragAndDropInitiated(sourceId = tab.id, destinationId = otherTab.id))
-
-        runCurrent()
-        advanceUntilIdle()
-
-        assertEquals(expected = TabsTrayState.DragProcessingState.EDIT_IN_PROGRESS, store.state.tabGroupState.dragProcessingState)
-    }
+            assertNotNull(actual = store.state.tabGroupState.enteringGroupId)
+        }
 
     @Test
-    fun `GIVEN tab dragged onto group, WHEN DragAndDropInitiated is called, THEN drag handling state is COMPLETED`() = runTest {
-        val tab = createTab(url = "")
-        val otherTab = createTab(url = "")
-        val groupedTab = createTab(url = "")
-        val tabData = TabData(tabs = listOf(tab, otherTab, groupedTab))
-        val storedGroup = TabGroup(
-            title = "Name",
-            theme = TabGroupTheme.Red.name,
-            lastModified = 0L,
-        )
-        val store = createStore(
-            tabGroupsEnabled = true,
-            tabDataFlow = flowOf(tabData),
-            tabGroupRepository = createRepository(
-                initialTabGroups = listOf(storedGroup),
-                initialTabGroupAssignments = listOf(groupedTab.id to storedGroup.id),
-            ),
-        )
+    fun `WHEN save is clicked from group creation with invalid data THEN it is handled gracefully AND entering group is not updated`() =
+        runTest {
+            val repository = createRepository()
+            val sourceTab = createTab(url = "https://mozilla.org")
+            val destinationTab = createTab(url = "https://example.com")
+            val expectedTitle = "Group 1"
+            val expectedTheme = TabGroupTheme.Red
+            val store =
+                createStore(
+                    initialState =
+                        TabsTrayState(
+                            mode = Mode.DragAndDrop(sourceId = sourceTab.id, destinationId = null),
+                            tabGroupState =
+                                TabsTrayState.TabGroupState(
+                                    formState =
+                                        TabGroupFormState(
+                                            name = expectedTitle,
+                                            tabGroupId = null,
+                                            theme = expectedTheme,
+                                        )
+                                ),
+                        ),
+                    tabDataFlow = flowOf(TabData(tabs = listOf(sourceTab, destinationTab))),
+                    tabGroupsEnabled = true,
+                    tabGroupRepository = repository,
+                    dateTimeProvider = fakeDateTimeProvider,
+                )
 
-        runCurrent()
-        advanceUntilIdle()
+            runCurrent()
+            advanceUntilIdle()
 
-        store.dispatch(TabGroupAction.DragAndDropInitiated(sourceId = tab.id, destinationId = storedGroup.id))
+            store.dispatch(TabGroupAction.SaveClicked)
 
-        runCurrent()
-        advanceUntilIdle()
+            runCurrent()
+            advanceUntilIdle()
 
-        assertEquals(expected = TabsTrayState.DragProcessingState.COMPLETED, store.state.tabGroupState.dragProcessingState)
-    }
-
-    @Test
-    fun `GIVEN group dragged onto tab, WHEN DragAndDropInitiated is called, THEN drag handling state is COMPLETED`() = runTest {
-        val tab = createTab(url = "")
-        val otherTab = createTab(url = "")
-        val groupedTab = createTab(url = "")
-        val tabData = TabData(tabs = listOf(tab, otherTab, groupedTab))
-        val storedGroup = TabGroup(
-            title = "Name",
-            theme = TabGroupTheme.Red.name,
-            lastModified = 0L,
-        )
-        val store = createStore(
-            tabGroupsEnabled = true,
-            tabDataFlow = flowOf(tabData),
-            tabGroupRepository = createRepository(
-                initialTabGroups = listOf(storedGroup),
-                initialTabGroupAssignments = listOf(groupedTab.id to storedGroup.id),
-            ),
-        )
-
-        runCurrent()
-        advanceUntilIdle()
-
-        store.dispatch(TabGroupAction.DragAndDropInitiated(sourceId = storedGroup.id, destinationId = tab.id))
-
-        runCurrent()
-        advanceUntilIdle()
-
-        assertEquals(expected = TabsTrayState.DragProcessingState.COMPLETED, store.state.tabGroupState.dragProcessingState)
-    }
+            assertNull(actual = store.state.tabGroupState.enteringGroupId)
+        }
 
     @Test
-    fun `GIVEN group dragged onto group, WHEN  DragAndDropInitiated is called, THEN drag handling state is COMPLETED`() = runTest {
-        val tab = createTab(url = "")
-        val groupedTab = createTab(url = "")
-        val otherGroupedTab = createTab(url = "")
-        val tabData = TabData(tabs = listOf(tab, groupedTab, otherGroupedTab))
-        val storedGroup = TabGroup(
-            title = "Group 1",
-            theme = TabGroupTheme.Red.name,
-            lastModified = 0L,
-        )
-        val otherStoredGroup = TabGroup(
-            title = "Group 2",
-            theme = TabGroupTheme.Blue.name,
-            lastModified = 0L,
-        )
-        val store = createStore(
-            tabGroupsEnabled = true,
-            tabDataFlow = flowOf(tabData),
-            tabGroupRepository = createRepository(
-                initialTabGroups = listOf(storedGroup, otherStoredGroup),
-                initialTabGroupAssignments = listOf(groupedTab.id to storedGroup.id),
-            ),
-        )
+    fun `GIVEN tab dragged onto tab, WHEN DragAndDropInitiated is called, THEN drag state is EDIT_IN_PROGRESS`() =
+        runTest {
+            val tab = createTab(url = "")
+            val otherTab = createTab(url = "")
+            val groupedTab = createTab(url = "")
+            val tabData = TabData(tabs = listOf(tab, otherTab, groupedTab))
+            val storedGroup =
+                TabGroup(
+                    title = "Name",
+                    theme = TabGroupTheme.Red.name,
+                    lastModified = 0L,
+                )
+            val store =
+                createStore(
+                    tabGroupsEnabled = true,
+                    tabDataFlow = flowOf(tabData),
+                    tabGroupRepository =
+                        createRepository(
+                            initialTabGroups = listOf(storedGroup),
+                            initialTabGroupAssignments = listOf(groupedTab.id to storedGroup.id),
+                        ),
+                )
 
-        runCurrent()
-        advanceUntilIdle()
+            runCurrent()
+            advanceUntilIdle()
 
-        store.dispatch(TabGroupAction.DragAndDropInitiated(sourceId = storedGroup.id, destinationId = otherStoredGroup.id))
+            store.dispatch(TabGroupAction.DragAndDropInitiated(sourceId = tab.id, destinationId = otherTab.id))
 
-        runCurrent()
-        advanceUntilIdle()
+            runCurrent()
+            advanceUntilIdle()
 
-        assertEquals(expected = TabsTrayState.DragProcessingState.COMPLETED, store.state.tabGroupState.dragProcessingState)
-    }
-
-    @Test
-    fun `GIVEN invalid drop state, WHEN  DragAndDropInitiated is called, THEN drag handling state is COMPLETED`() = runTest {
-        val tab = createTab(url = "")
-        val groupedTab = createTab(url = "")
-        val tabData = TabData(tabs = listOf(tab, groupedTab))
-        val storedGroup = TabGroup(
-            title = "Group 1",
-            theme = TabGroupTheme.Red.name,
-            lastModified = 0L,
-        )
-        val store = createStore(
-            tabGroupsEnabled = true,
-            tabDataFlow = flowOf(tabData),
-            tabGroupRepository = createRepository(
-                initialTabGroups = listOf(storedGroup),
-                initialTabGroupAssignments = listOf(groupedTab.id to storedGroup.id),
-            ),
-        )
-
-        runCurrent()
-        advanceUntilIdle()
-
-        store.dispatch(
-            TabGroupAction.DragAndDropInitiated(
-                sourceId = "notATab1",
-                destinationId = "notATab2",
-            ),
-        )
-
-        runCurrent()
-        advanceUntilIdle()
-
-        assertEquals(expected = TabsTrayState.DragProcessingState.COMPLETED, store.state.tabGroupState.dragProcessingState)
-    }
+            assertEquals(
+                expected = TabsTrayState.DragProcessingState.EDIT_IN_PROGRESS,
+                store.state.tabGroupState.dragProcessingState,
+            )
+        }
 
     @Test
-    fun `WHEN  DragAndDropInitiated is called, if an exception is thrown by the storage layer, THEN drag handling state is still COMPLETED`() = runTest {
-        val tab = createTab(url = "")
-        val groupedTab = createTab(url = "")
-        val tabData = TabData(tabs = listOf(tab, groupedTab))
-        val storedGroup = TabGroup(
-            title = "Group 1",
-            theme = TabGroupTheme.Red.name,
-            lastModified = 0L,
-        )
-        val store = createStore(
-            tabGroupsEnabled = true,
-            tabDataFlow = flowOf(tabData),
-            tabGroupRepository = object : TabGroupRepository by FakeTabGroupRepository(
-                initialTabGroupData = TabGroupData(
-                    tabGroups = listOf(storedGroup),
-                    tabGroupAssignments = mapOf(groupedTab.id to storedGroup.id),
-                ),
-            ) {
-                override suspend fun addTabGroupAssignment(tabId: String, tabGroupId: String) {
-                    throw Exception("Storage layer exception")
-                }
-            },
-        )
+    fun `GIVEN tab dragged onto group, WHEN DragAndDropInitiated is called, THEN drag handling state is COMPLETED`() =
+        runTest {
+            val tab = createTab(url = "")
+            val otherTab = createTab(url = "")
+            val groupedTab = createTab(url = "")
+            val tabData = TabData(tabs = listOf(tab, otherTab, groupedTab))
+            val storedGroup =
+                TabGroup(
+                    title = "Name",
+                    theme = TabGroupTheme.Red.name,
+                    lastModified = 0L,
+                )
+            val store =
+                createStore(
+                    tabGroupsEnabled = true,
+                    tabDataFlow = flowOf(tabData),
+                    tabGroupRepository =
+                        createRepository(
+                            initialTabGroups = listOf(storedGroup),
+                            initialTabGroupAssignments = listOf(groupedTab.id to storedGroup.id),
+                        ),
+                )
 
-        runCurrent()
-        advanceUntilIdle()
+            runCurrent()
+            advanceUntilIdle()
 
-        store.dispatch(
-            TabGroupAction.DragAndDropInitiated(
-                sourceId = tab.id,
-                destinationId = storedGroup.id,
-            ),
-        )
+            store.dispatch(TabGroupAction.DragAndDropInitiated(sourceId = tab.id, destinationId = storedGroup.id))
 
-        runCurrent()
-        advanceUntilIdle()
+            runCurrent()
+            advanceUntilIdle()
 
-        assertEquals(expected = TabsTrayState.DragProcessingState.COMPLETED, store.state.tabGroupState.dragProcessingState)
-    }
+            assertEquals(
+                expected = TabsTrayState.DragProcessingState.COMPLETED,
+                store.state.tabGroupState.dragProcessingState,
+            )
+        }
+
+    @Test
+    fun `GIVEN group dragged onto tab, WHEN DragAndDropInitiated is called, THEN drag handling state is COMPLETED`() =
+        runTest {
+            val tab = createTab(url = "")
+            val otherTab = createTab(url = "")
+            val groupedTab = createTab(url = "")
+            val tabData = TabData(tabs = listOf(tab, otherTab, groupedTab))
+            val storedGroup =
+                TabGroup(
+                    title = "Name",
+                    theme = TabGroupTheme.Red.name,
+                    lastModified = 0L,
+                )
+            val store =
+                createStore(
+                    tabGroupsEnabled = true,
+                    tabDataFlow = flowOf(tabData),
+                    tabGroupRepository =
+                        createRepository(
+                            initialTabGroups = listOf(storedGroup),
+                            initialTabGroupAssignments = listOf(groupedTab.id to storedGroup.id),
+                        ),
+                )
+
+            runCurrent()
+            advanceUntilIdle()
+
+            store.dispatch(TabGroupAction.DragAndDropInitiated(sourceId = storedGroup.id, destinationId = tab.id))
+
+            runCurrent()
+            advanceUntilIdle()
+
+            assertEquals(
+                expected = TabsTrayState.DragProcessingState.COMPLETED,
+                store.state.tabGroupState.dragProcessingState,
+            )
+        }
+
+    @Test
+    fun `GIVEN group dragged onto group, WHEN  DragAndDropInitiated is called, THEN drag handling state is COMPLETED`() =
+        runTest {
+            val tab = createTab(url = "")
+            val groupedTab = createTab(url = "")
+            val otherGroupedTab = createTab(url = "")
+            val tabData = TabData(tabs = listOf(tab, groupedTab, otherGroupedTab))
+            val storedGroup =
+                TabGroup(
+                    title = "Group 1",
+                    theme = TabGroupTheme.Red.name,
+                    lastModified = 0L,
+                )
+            val otherStoredGroup =
+                TabGroup(
+                    title = "Group 2",
+                    theme = TabGroupTheme.Blue.name,
+                    lastModified = 0L,
+                )
+            val store =
+                createStore(
+                    tabGroupsEnabled = true,
+                    tabDataFlow = flowOf(tabData),
+                    tabGroupRepository =
+                        createRepository(
+                            initialTabGroups = listOf(storedGroup, otherStoredGroup),
+                            initialTabGroupAssignments = listOf(groupedTab.id to storedGroup.id),
+                        ),
+                )
+
+            runCurrent()
+            advanceUntilIdle()
+
+            store.dispatch(
+                TabGroupAction.DragAndDropInitiated(sourceId = storedGroup.id, destinationId = otherStoredGroup.id)
+            )
+
+            runCurrent()
+            advanceUntilIdle()
+
+            assertEquals(
+                expected = TabsTrayState.DragProcessingState.COMPLETED,
+                store.state.tabGroupState.dragProcessingState,
+            )
+        }
+
+    @Test
+    fun `GIVEN invalid drop state, WHEN  DragAndDropInitiated is called, THEN drag handling state is COMPLETED`() =
+        runTest {
+            val tab = createTab(url = "")
+            val groupedTab = createTab(url = "")
+            val tabData = TabData(tabs = listOf(tab, groupedTab))
+            val storedGroup =
+                TabGroup(
+                    title = "Group 1",
+                    theme = TabGroupTheme.Red.name,
+                    lastModified = 0L,
+                )
+            val store =
+                createStore(
+                    tabGroupsEnabled = true,
+                    tabDataFlow = flowOf(tabData),
+                    tabGroupRepository =
+                        createRepository(
+                            initialTabGroups = listOf(storedGroup),
+                            initialTabGroupAssignments = listOf(groupedTab.id to storedGroup.id),
+                        ),
+                )
+
+            runCurrent()
+            advanceUntilIdle()
+
+            store.dispatch(
+                TabGroupAction.DragAndDropInitiated(
+                    sourceId = "notATab1",
+                    destinationId = "notATab2",
+                )
+            )
+
+            runCurrent()
+            advanceUntilIdle()
+
+            assertEquals(
+                expected = TabsTrayState.DragProcessingState.COMPLETED,
+                store.state.tabGroupState.dragProcessingState,
+            )
+        }
+
+    @Test
+    fun `WHEN  DragAndDropInitiated is called, if an exception is thrown by the storage layer, THEN drag handling state is still COMPLETED`() =
+        runTest {
+            val tab = createTab(url = "")
+            val groupedTab = createTab(url = "")
+            val tabData = TabData(tabs = listOf(tab, groupedTab))
+            val storedGroup =
+                TabGroup(
+                    title = "Group 1",
+                    theme = TabGroupTheme.Red.name,
+                    lastModified = 0L,
+                )
+            val store =
+                createStore(
+                    tabGroupsEnabled = true,
+                    tabDataFlow = flowOf(tabData),
+                    tabGroupRepository =
+                        object :
+                            TabGroupRepository by FakeTabGroupRepository(
+                                initialTabGroupData =
+                                    TabGroupData(
+                                        tabGroups = listOf(storedGroup),
+                                        tabGroupAssignments = mapOf(groupedTab.id to storedGroup.id),
+                                    )
+                            ) {
+                            override suspend fun addTabGroupAssignment(tabId: String, tabGroupId: String) {
+                                throw Exception("Storage layer exception")
+                            }
+                        },
+                )
+
+            runCurrent()
+            advanceUntilIdle()
+
+            store.dispatch(
+                TabGroupAction.DragAndDropInitiated(
+                    sourceId = tab.id,
+                    destinationId = storedGroup.id,
+                )
+            )
+
+            runCurrent()
+            advanceUntilIdle()
+
+            assertEquals(
+                expected = TabsTrayState.DragProcessingState.COMPLETED,
+                store.state.tabGroupState.dragProcessingState,
+            )
+        }
 
     @Test
     fun `WHEN selected tabs are removed from a group THEN their group assignments are deleted`() = runTest {
-        val selectedTabs = List(size = 3) { index ->
-            TabsTrayItem.Tab(tab = createTab(id = "tab-$index", url = ""))
-        }
+        val selectedTabs =
+            List(size = 3) { index ->
+                TabsTrayItem.Tab(tab = createTab(id = "tab-$index", url = ""))
+            }
         var deletedTabIds = emptyList<String>()
-        val tabGroupRepository = FakeTabGroupRepository(
-            deleteTabGroupAssignmentsById = { deletedTabIds = it },
-        )
-        val store = createStore(
-            initialState = TabsTrayState(
-                mode = Mode.Select(selectedTabs = selectedTabs.toSet()),
-            ),
-            tabGroupsEnabled = true,
-            tabGroupRepository = tabGroupRepository,
-        )
+        val tabGroupRepository = FakeTabGroupRepository(deleteTabGroupAssignmentsById = { deletedTabIds = it })
+        val store =
+            createStore(
+                initialState = TabsTrayState(mode = Mode.Select(selectedTabs = selectedTabs.toSet())),
+                tabGroupsEnabled = true,
+                tabGroupRepository = tabGroupRepository,
+            )
 
         store.dispatch(TabGroupAction.SelectedTabsRemovedFromGroup(groupId = "group-id"))
         runCurrent()
@@ -3223,26 +3311,31 @@ class TabStorageMiddlewareTest {
 
     @Test
     fun `WHEN all tabs are removed from a group THEN the empty group is deleted`() = runTest {
-        val selectedTabs = List(size = 3) { index ->
-            TabsTrayItem.Tab(tab = createTab(id = "tab-$index", url = ""))
-        }
+        val selectedTabs =
+            List(size = 3) { index ->
+                TabsTrayItem.Tab(tab = createTab(id = "tab-$index", url = ""))
+            }
         val storedGroup = fakeGroup()
-        val displayGroup = createTabGroup(
-            id = storedGroup.id,
-            tabs = selectedTabs.toMutableList(),
-        )
-        val tabGroupRepository = createRepository(
-            initialTabGroups = listOf(storedGroup),
-            initialTabGroupAssignments = selectedTabs.map { it.id to storedGroup.id },
-        )
-        val store = createStore(
-            initialState = TabsTrayState(
-                mode = Mode.Select(selectedTabs = selectedTabs.toSet()),
-                tabGroupState = TabsTrayState.TabGroupState(groups = listOf(displayGroup)),
-            ),
-            tabGroupsEnabled = true,
-            tabGroupRepository = tabGroupRepository,
-        )
+        val displayGroup =
+            createTabGroup(
+                id = storedGroup.id,
+                tabs = selectedTabs.toMutableList(),
+            )
+        val tabGroupRepository =
+            createRepository(
+                initialTabGroups = listOf(storedGroup),
+                initialTabGroupAssignments = selectedTabs.map { it.id to storedGroup.id },
+            )
+        val store =
+            createStore(
+                initialState =
+                    TabsTrayState(
+                        mode = Mode.Select(selectedTabs = selectedTabs.toSet()),
+                        tabGroupState = TabsTrayState.TabGroupState(groups = listOf(displayGroup)),
+                    ),
+                tabGroupsEnabled = true,
+                tabGroupRepository = tabGroupRepository,
+            )
 
         store.dispatch(TabGroupAction.SelectedTabsRemovedFromGroup(groupId = storedGroup.id))
         runCurrent()
@@ -3255,10 +3348,11 @@ class TabStorageMiddlewareTest {
     fun `WHEN selected tabs close an entire group THEN the empty group is deleted`() = runTest {
         val storedGroup = fakeGroup()
         val tabGroupRepository = createRepository(initialTabGroups = listOf(storedGroup))
-        val store = createStore(
-            tabGroupsEnabled = true,
-            tabGroupRepository = tabGroupRepository,
-        )
+        val store =
+            createStore(
+                tabGroupsEnabled = true,
+                tabGroupRepository = tabGroupRepository,
+            )
 
         store.dispatch(TabGroupAction.SelectedTabsClosedFromGroup(groupId = storedGroup.id))
         runCurrent()
@@ -3269,28 +3363,31 @@ class TabStorageMiddlewareTest {
 
     @Test
     fun `WHEN closed group tabs are restored THEN the group and assignments are restored`() = runTest {
-        val tabs = List(size = 3) { index ->
-            TabsTrayItem.Tab(tab = createTab(id = "tab-$index", url = ""))
-        }
-        val displayGroup = createTabGroup(
-            id = "group-id",
-            title = "Restored group",
-            theme = TabGroupTheme.Blue,
-            tabs = tabs.toMutableList(),
-            closed = false,
-            lastModified = 42L,
-        )
+        val tabs =
+            List(size = 3) { index ->
+                TabsTrayItem.Tab(tab = createTab(id = "tab-$index", url = ""))
+            }
+        val displayGroup =
+            createTabGroup(
+                id = "group-id",
+                title = "Restored group",
+                theme = TabGroupTheme.Blue,
+                tabs = tabs.toMutableList(),
+                closed = false,
+                lastModified = 42L,
+            )
         val tabGroupRepository = createRepository()
-        val store = createStore(
-            tabGroupsEnabled = true,
-            tabGroupRepository = tabGroupRepository,
-        )
+        val store =
+            createStore(
+                tabGroupsEnabled = true,
+                tabGroupRepository = tabGroupRepository,
+            )
 
         store.dispatch(
             TabGroupAction.RestoreTabsToGroup(
                 group = displayGroup,
                 tabIds = tabs.map { it.id },
-            ),
+            )
         )
         runCurrent()
         advanceUntilIdle()
@@ -3304,7 +3401,7 @@ class TabStorageMiddlewareTest {
                     theme = displayGroup.theme.name,
                     closed = false,
                     lastModified = displayGroup.lastModified,
-                ),
+                )
             ),
             restoredData.tabGroups,
         )
@@ -3316,23 +3413,27 @@ class TabStorageMiddlewareTest {
 
     @Test
     fun `WHEN some tabs are removed from a group THEN the group is retained`() = runTest {
-        val groupTabs = List(size = 3) { index ->
-            TabsTrayItem.Tab(tab = createTab(id = "tab-$index", url = ""))
-        }
+        val groupTabs =
+            List(size = 3) { index ->
+                TabsTrayItem.Tab(tab = createTab(id = "tab-$index", url = ""))
+            }
         val storedGroup = fakeGroup()
-        val displayGroup = createTabGroup(
-            id = storedGroup.id,
-            tabs = groupTabs.toMutableList(),
-        )
+        val displayGroup =
+            createTabGroup(
+                id = storedGroup.id,
+                tabs = groupTabs.toMutableList(),
+            )
         val tabGroupRepository = createRepository(initialTabGroups = listOf(storedGroup))
-        val store = createStore(
-            initialState = TabsTrayState(
-                mode = Mode.Select(selectedTabs = setOf(groupTabs.first())),
-                tabGroupState = TabsTrayState.TabGroupState(groups = listOf(displayGroup)),
-            ),
-            tabGroupsEnabled = true,
-            tabGroupRepository = tabGroupRepository,
-        )
+        val store =
+            createStore(
+                initialState =
+                    TabsTrayState(
+                        mode = Mode.Select(selectedTabs = setOf(groupTabs.first())),
+                        tabGroupState = TabsTrayState.TabGroupState(groups = listOf(displayGroup)),
+                    ),
+                tabGroupsEnabled = true,
+                tabGroupRepository = tabGroupRepository,
+            )
 
         store.dispatch(TabGroupAction.SelectedTabsRemovedFromGroup(groupId = storedGroup.id))
         runCurrent()

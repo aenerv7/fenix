@@ -53,11 +53,12 @@ class NavigationToolbarExpandedTest {
                 isMicrosurveyEnabled = false,
                 isTermsOfServiceAccepted = true,
                 shouldUseExpandedToolbar = true,
-            ),
-        ) { it.activity }
+            )
+        ) {
+            it.activity
+        }
 
-    @get:Rule(order = 2)
-    val memoryLeaksRule = DetectMemoryLeaksRule(composeTestRule = { composeTestRule })
+    @get:Rule(order = 2) val memoryLeaksRule = DetectMemoryLeaksRule(composeTestRule = { composeTestRule })
 
     // TestRail link: https://mozilla.testrail.io/index.php?/cases/view/3333205
     @Test
@@ -81,12 +82,12 @@ class NavigationToolbarExpandedTest {
     fun verifyTheExpandedToolbarItemsWebsiteViewTest() {
         val website = mockWebServer.getGenericAsset(1)
 
-        navigationToolbar(composeTestRule) {
-        }.enterURLAndEnterToBrowser(website.url) {
-            verifyPageContent(website.content)
-            verifyUrl(website.url.toString())
-            verifyETPShieldIconIsDisplayed(composeTestRule)
-        }
+        navigationToolbar(composeTestRule) {}
+            .enterURLAndEnterToBrowser(website.url) {
+                verifyPageContent(website.content)
+                verifyUrl(website.url.toString())
+                verifyETPShieldIconIsDisplayed(composeTestRule)
+            }
         homeScreen(composeTestRule) {
             verifyToolbarPosition(bottomPosition = false)
         }

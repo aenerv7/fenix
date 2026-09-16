@@ -355,53 +355,50 @@ class SettingsCustomizeTest {
         // Disable the back gesture from the edge of the screen on the device.
         enableOrDisableBackGestureNavigationOnDevice(backGestureNavigationEnabled = false)
 
-        homeScreen(composeTestRule) {
-        }.openThreeDotMenu {
-        }.clickSettingsButton {
-        }.openCustomizeSubMenu {
-            clickTopToolbarToggle()
-            verifyToolbarLayoutPreference("Simple")
-            scrollToTheScrollToHideToolbarOption()
-            clickTheHomepageToolbarShortcut()
-            verifyTheHomepageToolbarShortcutIsSelected()
-            exitMenu()
-        }
-        navigationToolbar(composeTestRule) {
-        }.enterURLAndEnterToBrowser(firstPage.url) {
-        }
-        navigationToolbar(composeTestRule) {
-            verifyTheNavigationBarHomepageButton()
-        }.clickTheNavigationBarHomepageButton {
-            verifyHomeScreen()
-            navigationToolbar(composeTestRule) {
-            }.enterURLAndEnterToBrowser(secondPage.url) {
+        homeScreen(composeTestRule) {}
+            .openThreeDotMenu {}
+            .clickSettingsButton {}
+            .openCustomizeSubMenu {
+                clickTopToolbarToggle()
+                verifyToolbarLayoutPreference("Simple")
+                scrollToTheScrollToHideToolbarOption()
+                clickTheHomepageToolbarShortcut()
+                verifyTheHomepageToolbarShortcutIsSelected()
+                exitMenu()
             }
-            navigationToolbar(composeTestRule) {
+        navigationToolbar(composeTestRule) {}.enterURLAndEnterToBrowser(firstPage.url) {}
+        navigationToolbar(composeTestRule) {
                 verifyTheNavigationBarHomepageButton()
             }
-        }
+            .clickTheNavigationBarHomepageButton {
+                verifyHomeScreen()
+                navigationToolbar(composeTestRule) {}.enterURLAndEnterToBrowser(secondPage.url) {}
+                navigationToolbar(composeTestRule) {
+                    verifyTheNavigationBarHomepageButton()
+                }
+            }
     }
 
     // TestRail link: https://mozilla.testrail.io/index.php?/cases/view/3908992
     @Test
     fun verifyTheExpandedToolbarShortcutUI() {
-        homeScreen(composeTestRule) {
-        }.openThreeDotMenu {
-        }.clickSettingsButton {
-        }.openCustomizeSubMenu {
-            clickTopToolbarToggle()
-            verifyToolbarLayout()
-            scrollToExpandedToolbarOption()
-            selectExpandedToolbarLayout()
-            verifyToolbarLayoutPreference("Expanded")
-            scrollToTheScrollToHideToolbarOption()
-            verifyTheExpandedToolbarShortcutOptions()
-            scrollToAddressBarLocation()
-            clickBottomToolbarToggle()
-            selectDarkMode()
-            verifyDarkThemeApplied(getUiTheme())
-            scrollToTheScrollToHideToolbarOption()
-            verifyTheExpandedToolbarShortcutOptions()
-        }
+        homeScreen(composeTestRule) {}
+            .openThreeDotMenu {}
+            .clickSettingsButton {}
+            .openCustomizeSubMenu {
+                clickTopToolbarToggle()
+                verifyToolbarLayout()
+                scrollToExpandedToolbarOption()
+                selectExpandedToolbarLayout()
+                verifyToolbarLayoutPreference("Expanded")
+                scrollToTheScrollToHideToolbarOption()
+                verifyTheExpandedToolbarShortcutOptions()
+                scrollToAddressBarLocation()
+                clickBottomToolbarToggle()
+                selectDarkMode()
+                verifyDarkThemeApplied(getUiTheme())
+                scrollToTheScrollToHideToolbarOption()
+                verifyTheExpandedToolbarShortcutOptions()
+            }
     }
 }

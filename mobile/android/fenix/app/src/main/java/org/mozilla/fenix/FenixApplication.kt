@@ -583,19 +583,21 @@ open class FenixApplication : Application(), Provider, ThemeProvider {
         }
 
     @OptIn(DelicateCoroutinesApi::class) // GlobalScope usage
-    private fun queueRestoreLocale(queue: RunWhenReadyQueue) = runOnVisualCompleteness(queue) {
-        GlobalScope.launch(IO) {
-            components.useCases.localeUseCases.restore()
+    private fun queueRestoreLocale(queue: RunWhenReadyQueue) =
+        runOnVisualCompleteness(queue) {
+            GlobalScope.launch(IO) {
+                components.useCases.localeUseCases.restore()
+            }
         }
-    }
 
-    private fun queueStorageMaintenance(queue: RunWhenReadyQueue) = runOnVisualCompleteness(queue) {
-        // Make sure GlobalPlacesDependencyProvider.initialize(components.core.historyStorage)
-        // is called before this call. When app is not running and WorkManager wakes up
-        // the app for the periodic task, it will require a globally provided places storage
-        // to run the maintenance on.
-        components.core.historyStorage.registerStorageMaintenanceWorker()
-    }
+    private fun queueStorageMaintenance(queue: RunWhenReadyQueue) =
+        runOnVisualCompleteness(queue) {
+            // Make sure GlobalPlacesDependencyProvider.initialize(components.core.historyStorage)
+            // is called before this call. When app is not running and WorkManager wakes up
+            // the app for the periodic task, it will require a globally provided places storage
+            // to run the maintenance on.
+            components.core.historyStorage.registerStorageMaintenanceWorker()
+        }
 
     @OptIn(DelicateCoroutinesApi::class) // GlobalScope usage
     private fun queueIntegrityClientWarmUp(queue: RunWhenReadyQueue) {
@@ -997,8 +999,7 @@ open class FenixApplication : Application(), Provider, ThemeProvider {
 
         browserStore.waitForSelectedOrDefaultSearchEngine { searchEngine ->
             searchEngine?.let {
-                val sendSearchUrl =
-                    !searchEngine.isCustomEngine() || searchEngine.isKnownSearchDomain()
+                val sendSearchUrl = !searchEngine.isCustomEngine() || searchEngine.isKnownSearchDomain()
                 if (sendSearchUrl) {
                     SearchDefaultEngine.apply {
                         code.set(

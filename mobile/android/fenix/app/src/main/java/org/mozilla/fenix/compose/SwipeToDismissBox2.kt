@@ -50,47 +50,35 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import kotlin.math.abs
+import kotlin.math.roundToInt
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import mozilla.components.compose.base.snackbar.Snackbar
 import mozilla.components.compose.base.snackbar.displaySnackbar
 import org.mozilla.fenix.theme.FirefoxTheme
-import kotlin.math.abs
-import kotlin.math.roundToInt
 
-/**
- * The distance an item has to be swiped before it is considered dismissed.
- */
+/** The distance an item has to be swiped before it is considered dismissed. */
 private val DISMISS_THRESHOLD_DP = 90.dp
 
 /**
- * The velocity (in DP per second) the item has to exceed in order to animate to the next state,
- * even if the [AnchoredDraggableState.positionalThreshold] has not been reached.
+ * The velocity (in DP per second) the item has to exceed in order to animate to the next state, even if the
+ * [AnchoredDraggableState.positionalThreshold] has not been reached.
  */
 private val VELOCITY_THRESHOLD_DP = 125.dp
 
-/**
- * The length of time the swipe gesture will animate for after being initiated by the user.
- */
+/** The length of time the swipe gesture will animate for after being initiated by the user. */
 private const val SWIPE_ANIMATION_DURATION_MS = 230
 
-/**
- * The swipe gesture directions.
- */
+/** The swipe gesture directions. */
 enum class SwipeToDismissDirections {
-    /**
-     * Can be dismissed by swiping in the reading direction.
-     */
+    /** Can be dismissed by swiping in the reading direction. */
     StartToEnd,
 
-    /**
-     * Can be dismissed by swiping in the reverse of the reading direction.
-     */
+    /** Can be dismissed by swiping in the reverse of the reading direction. */
     EndToStart,
 
-    /**
-     *  Cannot currently be dismissed.
-     */
+    /** Cannot currently be dismissed. */
     Settled,
 }
 
@@ -109,52 +97,43 @@ class SwipeToDismissState2(
     val enabled: Boolean = true,
 ) {
 
-    /**
-     * [AnchoredDraggableState] for the underlying [Modifier.anchoredHorizontalDraggable].
-     */
+    /** [AnchoredDraggableState] for the underlying [Modifier.anchoredHorizontalDraggable]. */
     // https://bugzilla.mozilla.org/show_bug.cgi?id=1957790
     @Suppress("DEPRECATION")
-    val anchoredDraggableState: AnchoredDraggableState<SwipeToDismissDirections> = AnchoredDraggableState(
-        initialValue = SwipeToDismissDirections.Settled,
-        positionalThreshold = with(density) { { DISMISS_THRESHOLD_DP.toPx() } },
-        velocityThreshold = { with(density) { VELOCITY_THRESHOLD_DP.toPx() } },
-        snapAnimationSpec = tween(
-            durationMillis = SWIPE_ANIMATION_DURATION_MS,
-        ),
-        decayAnimationSpec = decayAnimationSpec,
-    )
+    val anchoredDraggableState: AnchoredDraggableState<SwipeToDismissDirections> =
+        AnchoredDraggableState(
+            initialValue = SwipeToDismissDirections.Settled,
+            positionalThreshold = with(density) { { DISMISS_THRESHOLD_DP.toPx() } },
+            velocityThreshold = { with(density) { VELOCITY_THRESHOLD_DP.toPx() } },
+            snapAnimationSpec = tween(durationMillis = SWIPE_ANIMATION_DURATION_MS),
+            decayAnimationSpec = decayAnimationSpec,
+        )
 
-    /**
-     * Whether there is a swipe gesture in-progress.
-     */
+    /** Whether there is a swipe gesture in-progress. */
     val swipingActive: Boolean
         get() = !anchoredDraggableState.offset.isNaN() && anchoredDraggableState.offset != 0f
 
-    /**
-     * The [SwipeToDismissAnchor] the swipe gesture is targeting.
-     */
+    /** The [SwipeToDismissAnchor] the swipe gesture is targeting. */
     private val swipeDestination: SwipeToDismissDirections
-        get() = anchoredDraggableState.anchors.closestAnchor(
-            position = anchoredDraggableState.offset,
-            searchUpwards = anchoredDraggableState.offset > 0,
-        ) ?: SwipeToDismissDirections.Settled
+        get() =
+            anchoredDraggableState.anchors.closestAnchor(
+                position = anchoredDraggableState.offset,
+                searchUpwards = anchoredDraggableState.offset > 0,
+            ) ?: SwipeToDismissDirections.Settled
 
-    /**
-     * Whether the swipe gesture is in the start direction.
-     */
+    /** Whether the swipe gesture is in the start direction. */
     val isSwipingToStart: Boolean
         get() = swipeDestination == SwipeToDismissDirections.EndToStart
 
-    /**
-     * The current [IntOffset] of the swipe. If the X-offset is currently [Float.NaN], it will return 0.
-     */
+    /** The current [IntOffset] of the swipe. If the X-offset is currently [Float.NaN], it will return 0. */
     val safeSwipeOffset: IntOffset
         get() {
-            val xOffset = if (anchoredDraggableState.offset.isNaN()) {
-                0
-            } else {
-                anchoredDraggableState.offset.roundToInt()
-            }
+            val xOffset =
+                if (anchoredDraggableState.offset.isNaN()) {
+                    0
+                } else {
+                    anchoredDraggableState.offset.roundToInt()
+                }
 
             return IntOffset(x = xOffset, y = 0)
         }
@@ -165,44 +144,44 @@ class SwipeToDismissState2(
 private fun Modifier.anchoredHorizontalDraggable(
     state: SwipeToDismissState2,
     scope: CoroutineScope,
-) = pointerInput(key1 = state) {
-    if (state.enabled) {
-        awaitEachGesture {
-            val down = awaitFirstDown(requireUnconsumed = false)
-            var overSlop = 0f
-            var validDrag = false
-            val drag =
-                awaitHorizontalTouchSlopOrCancellation(down.id) { change, over ->
-                    val posChange = change.positionChangeIgnoreConsumed()
-                    validDrag = isReallyHorizontal(posChange.x, posChange.y)
-                    if (validDrag) {
-                        change.consume()
-                        overSlop = over
+) =
+    pointerInput(key1 = state) {
+        if (state.enabled) {
+            awaitEachGesture {
+                val down = awaitFirstDown(requireUnconsumed = false)
+                var overSlop = 0f
+                var validDrag = false
+                val drag =
+                    awaitHorizontalTouchSlopOrCancellation(down.id) { change, over ->
+                        val posChange = change.positionChangeIgnoreConsumed()
+                        validDrag = isReallyHorizontal(posChange.x, posChange.y)
+                        if (validDrag) {
+                            change.consume()
+                            overSlop = over
+                        }
                     }
-                }
-            if (drag != null && validDrag) {
-                state.anchoredDraggableState.dispatchRawDelta(overSlop)
-                horizontalDrag(drag.id) {
-                    state.anchoredDraggableState.dispatchRawDelta(
-                        if (state.isRtl) {
-                            -it.positionChange().x
-                        } else {
-                            it.positionChange().x
-                        },
-                    )
-                    it.consume()
-                }
-                scope.launch {
-                    state.anchoredDraggableState.settle(state.anchoredDraggableState.lastVelocity)
+                if (drag != null && validDrag) {
+                    state.anchoredDraggableState.dispatchRawDelta(overSlop)
+                    horizontalDrag(drag.id) {
+                        state.anchoredDraggableState.dispatchRawDelta(
+                            if (state.isRtl) {
+                                -it.positionChange().x
+                            } else {
+                                it.positionChange().x
+                            }
+                        )
+                        it.consume()
+                    }
+                    scope.launch {
+                        state.anchoredDraggableState.settle(state.anchoredDraggableState.lastVelocity)
+                    }
                 }
             }
         }
     }
-}
 
 @Suppress("MagicNumber")
-private fun isReallyHorizontal(x: Float, y: Float) =
-    abs(x) > 3 * abs(y) // max ~18 degrees from horizontal axis
+private fun isReallyHorizontal(x: Float, y: Float) = abs(x) > 3 * abs(y) // max ~18 degrees from horizontal axis
 
 /**
  * A container that can be dismissed by swiping left or right.
@@ -212,8 +191,8 @@ private fun isReallyHorizontal(x: Float, y: Float) =
  * @param enableDismissFromStartToEnd Whether SwipeToDismissBox can be dismissed from start to end.
  * @param enableDismissFromEndToStart Whether SwipeToDismissBox can be dismissed from end to start.
  * @param onItemDismiss Invoked when the item is dismissed.
- * @param backgroundContent A composable that is stacked behind the primary content and is exposed
- * when the content is swiped. You can/should use the [state] to have different backgrounds on each side.
+ * @param backgroundContent A composable that is stacked behind the primary content and is exposed when the content is
+ *   swiped. You can/should use the [state] to have different backgrounds on each side.
  * @param dismissContent The content that can be dismissed.
  */
 @Composable
@@ -229,22 +208,24 @@ fun SwipeToDismissBox2(
 ) {
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     var width by remember { mutableFloatStateOf(0f) }
-    val anchors = remember(width) {
-        DraggableAnchors {
-            if (enableDismissFromEndToStart) {
-                SwipeToDismissDirections.EndToStart at (if (isRtl) width else -width)
+    val anchors =
+        remember(width) {
+            DraggableAnchors {
+                if (enableDismissFromEndToStart) {
+                    SwipeToDismissDirections.EndToStart at (if (isRtl) width else -width)
+                }
+                if (enableDismissFromStartToEnd) {
+                    SwipeToDismissDirections.StartToEnd at (if (isRtl) -width else width)
+                }
+                SwipeToDismissDirections.Settled at 0f
             }
-            if (enableDismissFromStartToEnd) {
-                SwipeToDismissDirections.StartToEnd at (if (isRtl) -width else width)
-            }
-            SwipeToDismissDirections.Settled at 0f
         }
-    }
 
     LaunchedEffect(state.anchoredDraggableState.settledValue) {
         val value = state.anchoredDraggableState.settledValue
         when (value) {
-            SwipeToDismissDirections.StartToEnd, SwipeToDismissDirections.EndToStart -> {
+            SwipeToDismissDirections.StartToEnd,
+            SwipeToDismissDirections.EndToStart -> {
                 onItemDismiss()
             }
             SwipeToDismissDirections.Settled -> {} // no-op
@@ -256,15 +237,15 @@ fun SwipeToDismissBox2(
     }
 
     Box(
-        modifier = Modifier
-            .anchoredHorizontalDraggable(
-                state = state,
-                scope = rememberCoroutineScope(),
-            )
-            .onSizeChanged { size ->
-                width = size.width.toFloat()
-            }
-            .then(modifier),
+        modifier =
+            Modifier.anchoredHorizontalDraggable(
+                    state = state,
+                    scope = rememberCoroutineScope(),
+                )
+                .onSizeChanged { size ->
+                    width = size.width.toFloat()
+                }
+                .then(modifier)
     ) {
         Box(
             modifier = Modifier.matchParentSize(),
@@ -287,9 +268,7 @@ private fun SwipeToDismissBoxPreview() {
 
     FirefoxTheme {
         Surface {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-            ) {
+            Box(modifier = Modifier.fillMaxSize()) {
                 Column {
                     SwipeableItem(
                         text = "Swipe to right ->",
@@ -363,9 +342,7 @@ private fun SwipeableItem(
 
     SwipeToDismissBox2(
         state = swipeState,
-        modifier = Modifier
-            .height(30.dp)
-            .fillMaxWidth(),
+        modifier = Modifier.height(30.dp).fillMaxWidth(),
         enableDismissFromStartToEnd = enableDismissFromStartToEnd,
         enableDismissFromEndToStart = enableDismissFromEndToStart,
         onItemDismiss = {
@@ -376,11 +353,7 @@ private fun SwipeableItem(
             }
         },
         backgroundContent = {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.surfaceContainerHigh),
-            )
+            Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceContainerHigh))
         },
     ) {
         Row(

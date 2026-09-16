@@ -67,7 +67,7 @@ object NavigationTestPlanner {
                             firstPage = firstCase.page,
                             secondPage = secondCase.page,
                             distinctPathCount = paths.size,
-                        ),
+                        )
                     )
                 }
             }

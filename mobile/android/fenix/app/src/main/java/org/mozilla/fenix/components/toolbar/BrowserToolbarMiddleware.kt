@@ -162,19 +162,33 @@ import org.mozilla.fenix.utils.Stories.hasUrlOfAStoriesScreenStory
 @VisibleForTesting
 internal sealed class DisplayActions(override val source: Source) : BrowserToolbarEvent {
     data class MenuClicked(override val source: Source) : DisplayActions(source)
+
     data class NavigateBackClicked(override val source: Source) : DisplayActions(source)
+
     data class NavigateBackLongClicked(override val source: Source) : DisplayActions(source)
+
     data object NavigateForwardClicked : DisplayActions(Source.AddressBar.BrowserStart)
+
     data object NavigateForwardLongClicked : DisplayActions(Source.AddressBar.BrowserStart)
+
     data class RefreshClicked(val bypassCache: Boolean) : DisplayActions(Source.AddressBar.BrowserStart)
+
     data object StopRefreshClicked : DisplayActions(Source.AddressBar.BrowserStart)
+
     data class AddBookmarkClicked(override val source: Source) : DisplayActions(source)
+
     data class EditBookmarkClicked(override val source: Source) : DisplayActions(source)
+
     data class ShareClicked(override val source: Source) : DisplayActions(source)
+
     data class TranslateClicked(override val source: Source) : DisplayActions(source)
+
     data class HomepageClicked(override val source: Source) : DisplayActions(source)
+
     data class SummarizeClicked(override val source: Source) : DisplayActions(source)
+
     data class ShortcutLongClicked(override val source: Source) : DisplayActions(source)
+
     data class EditShortcutClicked(override val source: Source) : DisplayActions(source)
 }
 
@@ -188,10 +202,15 @@ internal sealed class StartPageActions(override val source: Source) : BrowserToo
 @VisibleForTesting
 internal sealed class TabCounterInteractions : BrowserToolbarEvent {
     data class TabCounterClicked(override val source: Source) : TabCounterInteractions()
+
     data class TabCounterLongClicked(override val source: Source) : TabCounterInteractions()
+
     data class AddNewTab(override val source: Source) : TabCounterInteractions()
+
     data class AddNewTabFromToolbarShortcut(override val source: Source) : TabCounterInteractions()
+
     data class AddNewPrivateTab(override val source: Source) : TabCounterInteractions()
+
     data object CloseCurrentTab : TabCounterInteractions()
 }
 
@@ -918,25 +937,18 @@ class BrowserToolbarMiddleware(
                     list.reversed()
                 }
             }
-    }
+        }
 
     private fun buildProgressBar(progress: Int = 0) = ProgressBarConfig(progress)
 
-    private fun openNewTab(
-        browsingMode: BrowsingMode,
-    ) {
+    private fun openNewTab(browsingMode: BrowsingMode) {
         if (settings.enableHomepageAsNewTab) {
-            useCases.fenixBrowserUseCases.addNewHomepageTab(
-                private = browsingMode.isPrivate,
-            )
+            useCases.fenixBrowserUseCases.addNewHomepageTab(private = browsingMode.isPrivate)
         } else {
-            val focusOnAddressBar =
-                !settings.enableHomepageSearchBar && !settings.enableHomepageTrendingRecentSearch
+            val focusOnAddressBar = !settings.enableHomepageSearchBar && !settings.enableHomepageTrendingRecentSearch
 
             browsingModeManager.mode = browsingMode
-            navController.navigate(
-                BrowserFragmentDirections.actionGlobalHome(focusOnAddressBar = focusOnAddressBar),
-            )
+            navController.navigate(BrowserFragmentDirections.actionGlobalHome(focusOnAddressBar = focusOnAddressBar))
         }
     }
 
@@ -954,56 +966,52 @@ class BrowserToolbarMiddleware(
     private fun observeProgressBarUpdates(store: Store<BrowserToolbarState, BrowserToolbarAction>) {
         browserStore.observeWhileActive {
             distinctUntilChangedBy { it.selectedTab?.content?.progress }
-            .collect {
-                store.dispatch(
-                    UpdateProgressBarConfig(
-                        buildProgressBar(it.selectedTab?.content?.progress ?: 0),
-                    ),
-                )
-            }
+                .collect {
+                    store.dispatch(UpdateProgressBarConfig(buildProgressBar(it.selectedTab?.content?.progress ?: 0)))
+                }
         }
     }
 
     private fun observeOrientationChanges(store: Store<BrowserToolbarState, BrowserToolbarAction>) {
         appStore.observeWhileActive {
             distinctUntilChangedBy { it.orientation }
-            .collect {
-                updateStartBrowserActions(store)
-                updateEndBrowserActions(store)
-                updateEndPageActions(store)
-                updateNavigationActions(store)
-            }
+                .collect {
+                    updateStartBrowserActions(store)
+                    updateEndBrowserActions(store)
+                    updateEndPageActions(store)
+                    updateNavigationActions(store)
+                }
         }
     }
 
     private fun observeTabsCountUpdates(store: Store<BrowserToolbarState, BrowserToolbarAction>) {
         browserStore.observeWhileActive {
             distinctUntilChangedBy { it.tabs.size }
-            .collect {
-                updateEndBrowserActions(store)
-                updateNavigationActions(store)
-            }
+                .collect {
+                    updateEndBrowserActions(store)
+                    updateNavigationActions(store)
+                }
         }
     }
 
     private fun observeMenuHighlightChanges(store: Store<BrowserToolbarState, BrowserToolbarAction>) {
         appStore.observeWhileActive {
             distinctUntilChangedBy { it.supportedMenuNotifications.isNotEmpty() }
-            .collect {
-                updateEndBrowserActions(store)
-                updateNavigationActions(store)
-            }
+                .collect {
+                    updateEndBrowserActions(store)
+                    updateNavigationActions(store)
+                }
         }
     }
 
     private fun observePageOriginUpdates(store: Store<BrowserToolbarState, BrowserToolbarAction>) {
         browserStore.observeWhileActive {
             distinctUntilChangedBy { it.selectedTab?.content?.url }
-            .collect {
-                updateCurrentPageOrigin(store)
-                updateEndBrowserActions(store)
-                updateNavigationActions(store)
-            }
+                .collect {
+                    updateCurrentPageOrigin(store)
+                    updateEndBrowserActions(store)
+                    updateNavigationActions(store)
+                }
         }
     }
 
@@ -1206,231 +1214,241 @@ class BrowserToolbarMiddleware(
         toolbarAction: ToolbarAction,
         source: Source = Source.Unknown,
         isShortcut: Boolean = false,
-    ): Action = when (toolbarAction) {
-        ToolbarAction.NewTab,
-        ToolbarAction.NewTabShortcut,
-            -> ActionButtonRes(
-            drawableResId = iconsR.drawable.mozac_ic_plus_24,
-            contentDescription = if (browsingModeManager.mode == Private) {
-                R.string.home_screen_shortcut_open_new_private_tab_2
-            } else {
-                R.string.home_screen_shortcut_open_new_tab_2
-            },
-            onClick = if (browsingModeManager.mode == Private) {
-                AddNewPrivateTab(source)
-            } else if (toolbarAction == ToolbarAction.NewTabShortcut) {
-                AddNewTabFromToolbarShortcut(source)
-            } else {
-                AddNewTab(source)
-            },
-        )
-
-        ToolbarAction.Back -> ActionButtonRes(
-            drawableResId = iconsR.drawable.mozac_ic_back_24,
-            contentDescription = R.string.browser_menu_back,
-            state = if (browserStore.state.canGoBackInHistoryOrToStories()) {
-                ActionButton.State.DEFAULT
-            } else {
-                ActionButton.State.DISABLED
-            },
-            onClick = NavigateBackClicked(source),
-            onLongClick = NavigateBackLongClicked(source),
-        )
-
-        ToolbarAction.Forward -> ActionButtonRes(
-            drawableResId = iconsR.drawable.mozac_ic_forward_24,
-            contentDescription = R.string.browser_menu_forward,
-            state = if (browserStore.state.selectedTab?.content?.canGoForward == true) {
-                ActionButton.State.DEFAULT
-            } else {
-                ActionButton.State.DISABLED
-            },
-            onClick = NavigateForwardClicked,
-            onLongClick = NavigateForwardLongClicked,
-        )
-
-        ToolbarAction.RefreshOrStop -> {
-            if (browserStore.state.selectedTab?.content?.loading != true) {
+    ): Action =
+        when (toolbarAction) {
+            ToolbarAction.NewTab,
+            ToolbarAction.NewTabShortcut ->
                 ActionButtonRes(
-                    drawableResId = iconsR.drawable.mozac_ic_arrow_clockwise_24,
-                    contentDescription = R.string.browser_menu_refresh,
-                    onClick = RefreshClicked(bypassCache = false),
-                    onLongClick = RefreshClicked(bypassCache = true),
+                    drawableResId = iconsR.drawable.mozac_ic_plus_24,
+                    contentDescription =
+                        if (browsingModeManager.mode == Private) {
+                            R.string.home_screen_shortcut_open_new_private_tab_2
+                        } else {
+                            R.string.home_screen_shortcut_open_new_tab_2
+                        },
+                    onClick =
+                        if (browsingModeManager.mode == Private) {
+                            AddNewPrivateTab(source)
+                        } else if (toolbarAction == ToolbarAction.NewTabShortcut) {
+                            AddNewTabFromToolbarShortcut(source)
+                        } else {
+                            AddNewTab(source)
+                        },
                 )
-            } else {
+
+            ToolbarAction.Back ->
                 ActionButtonRes(
-                    drawableResId = iconsR.drawable.mozac_ic_cross_24,
-                    contentDescription = R.string.browser_menu_stop,
-                    onClick = StopRefreshClicked,
+                    drawableResId = iconsR.drawable.mozac_ic_back_24,
+                    contentDescription = R.string.browser_menu_back,
+                    state =
+                        if (browserStore.state.canGoBackInHistoryOrToStories()) {
+                            ActionButton.State.DEFAULT
+                        } else {
+                            ActionButton.State.DISABLED
+                        },
+                    onClick = NavigateBackClicked(source),
+                    onLongClick = NavigateBackLongClicked(source),
                 )
-            }
-        }
 
-        ToolbarAction.Menu -> ActionButtonRes(
-            drawableResId = iconsR.drawable.mozac_ic_ellipsis_vertical_24,
-            contentDescription = R.string.content_description_menu,
-            highlighted = appStore.state.supportedMenuNotifications
-                .filterNot { it == NotDefaultBrowser }.isNotEmpty(),
-            onClick = MenuClicked(source),
-        )
+            ToolbarAction.Forward ->
+                ActionButtonRes(
+                    drawableResId = iconsR.drawable.mozac_ic_forward_24,
+                    contentDescription = R.string.browser_menu_forward,
+                    state =
+                        if (browserStore.state.selectedTab?.content?.canGoForward == true) {
+                            ActionButton.State.DEFAULT
+                        } else {
+                            ActionButton.State.DISABLED
+                        },
+                    onClick = NavigateForwardClicked,
+                    onLongClick = NavigateForwardLongClicked,
+                )
 
-        ToolbarAction.ReaderMode -> ActionButtonRes(
-            drawableResId = if (browserScreenStore.state.readerModeStatus.isActive) {
-                iconsR.drawable.mozac_ic_reader_view_fill_24
-            } else {
-                iconsR.drawable.mozac_ic_reader_view_24
-            },
-            contentDescription = if (browserScreenStore.state.readerModeStatus.isActive) {
-                R.string.browser_menu_read_close
-            } else {
-                R.string.browser_menu_read
-            },
-            state = if (browserScreenStore.state.readerModeStatus.isActive) {
-                ActionButton.State.ACTIVE
-            } else {
-                ActionButton.State.DEFAULT
-            },
-            onClick = ReaderModeClicked(browserScreenStore.state.readerModeStatus.isActive),
-        )
-
-        ToolbarAction.Translate -> ActionButtonRes(
-            drawableResId = iconsR.drawable.mozac_ic_translate_24,
-            contentDescription = R.string.browser_toolbar_translate,
-            state = if (browserScreenStore.state.pageTranslationStatus.isTranslated) {
-                ActionButton.State.ACTIVE
-            } else {
-                ActionButton.State.DEFAULT
-            },
-            onClick = TranslateClicked(source),
-        )
-
-        ToolbarAction.TabCounter -> {
-            val isInPrivateMode = browsingModeManager.mode.isPrivate
-            val tabsCount = browserStore.state.getNormalOrPrivateTabs(isInPrivateMode).size
-
-            val tabCounterDescription = if (isInPrivateMode) {
-                uiContext.getString(tabcounterR.string.mozac_tab_counter_private, tabsCount.toString())
-            } else {
-                uiContext.getString(tabcounterR.string.mozac_tab_counter_open_tab_tray, tabsCount.toString())
-            }
-
-            TabCounterAction(
-                count = tabsCount,
-                contentDescription = tabCounterDescription,
-                showPrivacyMask = isInPrivateMode,
-                onClick = TabCounterClicked(source),
-                onLongClick = buildTabCounterMenu(source, settings.toolbarPosition),
-            )
-        }
-
-        ToolbarAction.SiteInfo -> {
-            val highlight = (
-                    browserStore.state.selectedTab
-                        ?.content
-                        ?.permissionHighlights
-                        ?.permissionsChanged == true
-                    ) || (
-                    browserStore.state.selectedTab
-                        ?.trackingProtection
-                        ?.ignoredOnTrackingProtection == true
+            ToolbarAction.RefreshOrStop -> {
+                if (browserStore.state.selectedTab?.content?.loading != true) {
+                    ActionButtonRes(
+                        drawableResId = iconsR.drawable.mozac_ic_arrow_clockwise_24,
+                        contentDescription = R.string.browser_menu_refresh,
+                        onClick = RefreshClicked(bypassCache = false),
+                        onLongClick = RefreshClicked(bypassCache = true),
                     )
-            val selectedTab = browserStore.state.selectedTab
-            if (selectedTab?.content?.url?.isContentUrl() == true) {
+                } else {
+                    ActionButtonRes(
+                        drawableResId = iconsR.drawable.mozac_ic_cross_24,
+                        contentDescription = R.string.browser_menu_stop,
+                        onClick = StopRefreshClicked,
+                    )
+                }
+            }
+
+            ToolbarAction.Menu ->
                 ActionButtonRes(
-                    drawableResId = iconsR.drawable.mozac_ic_page_portrait_24,
-                    contentDescription = toolbarR.string.mozac_browser_toolbar_content_description_site_info,
-                    highlighted = highlight,
-                    onClick = StartPageActions.SiteInfoClicked,
-                    testTag = SITE_INFO_LOCAL_FILE,
+                    drawableResId = iconsR.drawable.mozac_ic_ellipsis_vertical_24,
+                    contentDescription = R.string.content_description_menu,
+                    highlighted =
+                        appStore.state.supportedMenuNotifications.filterNot { it == NotDefaultBrowser }.isNotEmpty(),
+                    onClick = MenuClicked(source),
                 )
-            } else if (selectedTab?.content?.securityInfo == null ||
-                selectedTab.content.securityInfo == SecurityInfo.Unknown
-            ) {
-                buildSiteInfoAction(
-                    drawableResId = iconsR.drawable.mozac_ic_globe_24,
-                    contentDescription = toolbarR.string.mozac_browser_toolbar_content_description_site_info,
-                    highlighted = highlight,
-                    onClick = object : BrowserToolbarEvent {},
-                    testTag = SITE_INFO_UNKNOWN,
+
+            ToolbarAction.ReaderMode ->
+                ActionButtonRes(
+                    drawableResId =
+                        if (browserScreenStore.state.readerModeStatus.isActive) {
+                            iconsR.drawable.mozac_ic_reader_view_fill_24
+                        } else {
+                            iconsR.drawable.mozac_ic_reader_view_24
+                        },
+                    contentDescription =
+                        if (browserScreenStore.state.readerModeStatus.isActive) {
+                            R.string.browser_menu_read_close
+                        } else {
+                            R.string.browser_menu_read
+                        },
+                    state =
+                        if (browserScreenStore.state.readerModeStatus.isActive) {
+                            ActionButton.State.ACTIVE
+                        } else {
+                            ActionButton.State.DEFAULT
+                        },
+                    onClick = ReaderModeClicked(browserScreenStore.state.readerModeStatus.isActive),
                 )
-            } else if (!selectedTab.content.securityInfo.isSecure) {
-                buildSiteInfoAction(
-                    drawableResId = iconsR.drawable.mozac_ic_shield_slash_24,
-                    contentDescription = toolbarR.string.mozac_browser_toolbar_content_description_site_info,
-                    highlighted = highlight,
-                    onClick = StartPageActions.SiteInfoClicked,
-                    testTag = SITE_INFO_INSECURE_CONNECTION,
+
+            ToolbarAction.Translate ->
+                ActionButtonRes(
+                    drawableResId = iconsR.drawable.mozac_ic_translate_24,
+                    contentDescription = R.string.browser_toolbar_translate,
+                    state =
+                        if (browserScreenStore.state.pageTranslationStatus.isTranslated) {
+                            ActionButton.State.ACTIVE
+                        } else {
+                            ActionButton.State.DEFAULT
+                        },
+                    onClick = TranslateClicked(source),
                 )
-            } else if (selectedTab.trackingProtection.enabled &&
-                !selectedTab.trackingProtection.ignoredOnTrackingProtection
-            ) {
-                buildSiteInfoAction(
-                    drawableResId = iconsR.drawable.mozac_ic_shield_checkmark_24,
-                    contentDescription = toolbarR.string.mozac_browser_toolbar_content_description_site_info,
-                    highlighted = highlight,
-                    onClick = StartPageActions.SiteInfoClicked,
-                    testTag = SITE_INFO_SECURE,
-                )
-            } else {
-                buildSiteInfoAction(
-                    drawableResId = iconsR.drawable.mozac_ic_shield_cross_24,
-                    contentDescription = toolbarR.string.mozac_browser_toolbar_content_description_site_info,
-                    highlighted = highlight,
-                    onClick = StartPageActions.SiteInfoClicked,
-                    testTag = SITE_INFO_TRACKING_PROTECTION_OFF,
+
+            ToolbarAction.TabCounter -> {
+                val isInPrivateMode = browsingModeManager.mode.isPrivate
+                val tabsCount = browserStore.state.getNormalOrPrivateTabs(isInPrivateMode).size
+
+                val tabCounterDescription =
+                    if (isInPrivateMode) {
+                        uiContext.getString(tabcounterR.string.mozac_tab_counter_private, tabsCount.toString())
+                    } else {
+                        uiContext.getString(tabcounterR.string.mozac_tab_counter_open_tab_tray, tabsCount.toString())
+                    }
+
+                TabCounterAction(
+                    count = tabsCount,
+                    contentDescription = tabCounterDescription,
+                    showPrivacyMask = isInPrivateMode,
+                    onClick = TabCounterClicked(source),
+                    onLongClick = buildTabCounterMenu(source, settings.toolbarPosition),
                 )
             }
+
+            ToolbarAction.SiteInfo -> {
+                val highlight =
+                    (browserStore.state.selectedTab?.content?.permissionHighlights?.permissionsChanged == true) ||
+                        (browserStore.state.selectedTab?.trackingProtection?.ignoredOnTrackingProtection == true)
+                val selectedTab = browserStore.state.selectedTab
+                if (selectedTab?.content?.url?.isContentUrl() == true) {
+                    ActionButtonRes(
+                        drawableResId = iconsR.drawable.mozac_ic_page_portrait_24,
+                        contentDescription = toolbarR.string.mozac_browser_toolbar_content_description_site_info,
+                        highlighted = highlight,
+                        onClick = StartPageActions.SiteInfoClicked,
+                        testTag = SITE_INFO_LOCAL_FILE,
+                    )
+                } else if (
+                    selectedTab?.content?.securityInfo == null ||
+                        selectedTab.content.securityInfo == SecurityInfo.Unknown
+                ) {
+                    buildSiteInfoAction(
+                        drawableResId = iconsR.drawable.mozac_ic_globe_24,
+                        contentDescription = toolbarR.string.mozac_browser_toolbar_content_description_site_info,
+                        highlighted = highlight,
+                        onClick = object : BrowserToolbarEvent {},
+                        testTag = SITE_INFO_UNKNOWN,
+                    )
+                } else if (!selectedTab.content.securityInfo.isSecure) {
+                    buildSiteInfoAction(
+                        drawableResId = iconsR.drawable.mozac_ic_shield_slash_24,
+                        contentDescription = toolbarR.string.mozac_browser_toolbar_content_description_site_info,
+                        highlighted = highlight,
+                        onClick = StartPageActions.SiteInfoClicked,
+                        testTag = SITE_INFO_INSECURE_CONNECTION,
+                    )
+                } else if (
+                    selectedTab.trackingProtection.enabled &&
+                        !selectedTab.trackingProtection.ignoredOnTrackingProtection
+                ) {
+                    buildSiteInfoAction(
+                        drawableResId = iconsR.drawable.mozac_ic_shield_checkmark_24,
+                        contentDescription = toolbarR.string.mozac_browser_toolbar_content_description_site_info,
+                        highlighted = highlight,
+                        onClick = StartPageActions.SiteInfoClicked,
+                        testTag = SITE_INFO_SECURE,
+                    )
+                } else {
+                    buildSiteInfoAction(
+                        drawableResId = iconsR.drawable.mozac_ic_shield_cross_24,
+                        contentDescription = toolbarR.string.mozac_browser_toolbar_content_description_site_info,
+                        highlighted = highlight,
+                        onClick = StartPageActions.SiteInfoClicked,
+                        testTag = SITE_INFO_TRACKING_PROTECTION_OFF,
+                    )
+                }
+            }
+
+            ToolbarAction.Bookmark -> {
+                ActionButtonRes(
+                    drawableResId = iconsR.drawable.mozac_ic_bookmark_24,
+                    contentDescription = R.string.browser_menu_bookmark_this_page_2,
+                    onClick = AddBookmarkClicked(source),
+                )
+            }
+
+            ToolbarAction.EditBookmark -> {
+                ActionButtonRes(
+                    drawableResId = iconsR.drawable.mozac_ic_bookmark_fill_24,
+                    contentDescription = R.string.browser_menu_edit_bookmark,
+                    onClick = EditBookmarkClicked(source),
+                    state = ActionButton.State.ACTIVE,
+                )
+            }
+
+            ToolbarAction.Share ->
+                ActionButtonRes(
+                    drawableResId = iconsR.drawable.mozac_ic_share_android_24,
+                    contentDescription = R.string.browser_menu_share,
+                    onClick = ShareClicked(source),
+                )
+
+            ToolbarAction.Homepage ->
+                ActionButtonRes(
+                    drawableResId = iconsR.drawable.mozac_ic_home_24,
+                    contentDescription = R.string.browser_menu_homepage,
+                    onClick = HomepageClicked(source),
+                )
+
+            ToolbarAction.Summarize ->
+                ActionButtonRes(
+                    drawableResId = iconsR.drawable.mozac_ic_lightning_24,
+                    contentDescription = summariesR.string.mozac_summarize_settings_summarize_pages,
+                    state =
+                        when (browsingModeManager.mode) {
+                            Normal -> DEFAULT
+                            Private -> DISABLED
+                        },
+                    onClick = SummarizeClicked(source),
+                )
+        }.run {
+            when {
+                isShortcut && this is ActionButtonRes -> copy(onLongClick = buildShortcutLongPressMenu(source))
+                isShortcut && this is ActionButton -> copy(onLongClick = buildShortcutLongPressMenu(source))
+                else -> this
+            }
         }
-
-        ToolbarAction.Bookmark -> {
-            ActionButtonRes(
-                drawableResId = iconsR.drawable.mozac_ic_bookmark_24,
-                contentDescription = R.string.browser_menu_bookmark_this_page_2,
-                onClick = AddBookmarkClicked(source),
-            )
-        }
-
-        ToolbarAction.EditBookmark -> {
-            ActionButtonRes(
-                drawableResId = iconsR.drawable.mozac_ic_bookmark_fill_24,
-                contentDescription = R.string.browser_menu_edit_bookmark,
-                onClick = EditBookmarkClicked(source),
-                state = ActionButton.State.ACTIVE,
-            )
-        }
-
-        ToolbarAction.Share -> ActionButtonRes(
-            drawableResId = iconsR.drawable.mozac_ic_share_android_24,
-            contentDescription = R.string.browser_menu_share,
-            onClick = ShareClicked(source),
-        )
-
-        ToolbarAction.Homepage -> ActionButtonRes(
-            drawableResId = iconsR.drawable.mozac_ic_home_24,
-            contentDescription = R.string.browser_menu_homepage,
-            onClick = HomepageClicked(source),
-        )
-
-        ToolbarAction.Summarize -> ActionButtonRes(
-            drawableResId = iconsR.drawable.mozac_ic_lightning_24,
-            contentDescription = summariesR.string.mozac_summarize_settings_summarize_pages,
-            state = when (browsingModeManager.mode) {
-                Normal -> DEFAULT
-                Private -> DISABLED
-            },
-            onClick = SummarizeClicked(source),
-        )
-    }.run {
-        when {
-            isShortcut && this is ActionButtonRes -> copy(
-                onLongClick = buildShortcutLongPressMenu(source),
-            )
-            isShortcut && this is ActionButton -> copy(
-                onLongClick = buildShortcutLongPressMenu(source),
-            )
-            else -> this
-        }
-    }
 
     private fun buildSiteInfoAction(
         drawableResId: Int,
@@ -1478,61 +1496,67 @@ class BrowserToolbarMiddleware(
         }
     }
 
-    private fun buildShortcutLongPressMenu(source: Source) = CombinedEventAndMenu(ShortcutLongClicked(source)) {
-        listOf(
-            BrowserToolbarMenuButton(
-                icon = null,
-                text = StringResText(R.string.toolbar_shortcut_menu_edit_option),
-                contentDescription = StringResContentDescription(R.string.toolbar_shortcut_menu_edit_option),
-                onClick = EditShortcutClicked(source),
-            ),
-        )
-    }
+    private fun buildShortcutLongPressMenu(source: Source) =
+        CombinedEventAndMenu(ShortcutLongClicked(source)) {
+            listOf(
+                BrowserToolbarMenuButton(
+                    icon = null,
+                    text = StringResText(R.string.toolbar_shortcut_menu_edit_option),
+                    contentDescription = StringResContentDescription(R.string.toolbar_shortcut_menu_edit_option),
+                    onClick = EditShortcutClicked(source),
+                )
+            )
+        }
 
-    private fun Source.toMetricSource() = when (this) {
-        is Source.AddressBar, Source.Unknown -> MetricsUtils.BookmarkAction.Source.BROWSER_TOOLBAR
-        Source.NavigationBar -> MetricsUtils.BookmarkAction.Source.BROWSER_NAVBAR
-    }
+    private fun Source.toMetricSource() =
+        when (this) {
+            is Source.AddressBar,
+            Source.Unknown -> MetricsUtils.BookmarkAction.Source.BROWSER_TOOLBAR
+            Source.NavigationBar -> MetricsUtils.BookmarkAction.Source.BROWSER_NAVBAR
+        }
 
     private suspend fun getBookmarkAction(): ToolbarAction {
         val url = browserStore.state.selectedTab?.content?.url ?: return ToolbarAction.Bookmark
-        val isBookmarked = withContext(ioDispatcher) {
-            bookmarksStorage.getBookmarksWithUrl(url).getOrDefault(emptyList()).isNotEmpty()
-        }
+        val isBookmarked =
+            withContext(ioDispatcher) {
+                bookmarksStorage.getBookmarksWithUrl(url).getOrDefault(emptyList()).isNotEmpty()
+            }
         return if (isBookmarked) ToolbarAction.EditBookmark else ToolbarAction.Bookmark
     }
 
     /**
      * Map the shortcut option to a button to show in the toolbar or the navigation bar.
      *
-     * @param forToolbar `true` if the button will be used for the toolbar
-     * and `false` if it will be used for the navigation bar.
+     * @param forToolbar `true` if the button will be used for the toolbar and `false` if it will be used for the
+     *   navigation bar.
      */
     @VisibleForTesting
-    internal suspend fun ShortcutType.toToolbarAction(
-        forToolbar: Boolean = true,
-    ) = when (this) {
-        ShortcutType.NEW_TAB -> ToolbarAction.NewTabShortcut
-        ShortcutType.SHARE -> ToolbarAction.Share
-        ShortcutType.BOOKMARK -> getBookmarkAction()
-        ShortcutType.TRANSLATE -> when (isTranslationsFeatureAvailable()) {
-            true -> ToolbarAction.Translate
-            else -> when (forToolbar) {
-                // The first available options in settings.
-                true -> ToolbarAction.NewTabShortcut
-                else -> getBookmarkAction()
-            }
+    internal suspend fun ShortcutType.toToolbarAction(forToolbar: Boolean = true) =
+        when (this) {
+            ShortcutType.NEW_TAB -> ToolbarAction.NewTabShortcut
+            ShortcutType.SHARE -> ToolbarAction.Share
+            ShortcutType.BOOKMARK -> getBookmarkAction()
+            ShortcutType.TRANSLATE ->
+                when (isTranslationsFeatureAvailable()) {
+                    true -> ToolbarAction.Translate
+                    else ->
+                        when (forToolbar) {
+                            // The first available options in settings.
+                            true -> ToolbarAction.NewTabShortcut
+                            else -> getBookmarkAction()
+                        }
+                }
+            ShortcutType.HOMEPAGE -> ToolbarAction.Homepage
+            ShortcutType.BACK -> ToolbarAction.Back
+            ShortcutType.SUMMARIZE ->
+                when {
+                    summarizationFeatureSettings.canShowFeature -> ToolbarAction.Summarize
+                    // The tab strip already provides a new tab button, so fall back to the default tab strip shortcut.
+                    settings.isTabStripEnabled -> ToolbarAction.Share
+                    else -> ToolbarAction.NewTabShortcut
+                }
+            ShortcutType.NONE -> null
         }
-        ShortcutType.HOMEPAGE -> ToolbarAction.Homepage
-        ShortcutType.BACK -> ToolbarAction.Back
-        ShortcutType.SUMMARIZE -> when {
-            summarizationFeatureSettings.canShowFeature -> ToolbarAction.Summarize
-            // The tab strip already provides a new tab button, so fall back to the default tab strip shortcut.
-            settings.isTabStripEnabled -> ToolbarAction.Share
-            else -> ToolbarAction.NewTabShortcut
-        }
-        ShortcutType.NONE -> null
-    }
 
     private suspend fun isTranslationsFeatureAvailable(): Boolean {
         val isTranslationEngineSupported = browserStore.state.translationEngine.isEngineSupported ?: false

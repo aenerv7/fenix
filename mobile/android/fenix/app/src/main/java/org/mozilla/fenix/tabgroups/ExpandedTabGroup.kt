@@ -22,12 +22,10 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -62,6 +60,7 @@ import androidx.compose.ui.window.PopupProperties
 import mozilla.components.compose.base.annotation.FlexibleWindowLightDarkPreview
 import mozilla.components.compose.base.button.IconButton
 import mozilla.components.compose.base.snackbar.Snackbar
+import mozilla.components.ui.icons.R as iconsR
 import org.mozilla.fenix.R
 import org.mozilla.fenix.tabstray.TabsTrayTestTag
 import org.mozilla.fenix.tabstray.controller.NoOpTabInteractionHandler
@@ -75,10 +74,10 @@ import org.mozilla.fenix.tabstray.ui.tabitems.LOREM_IPSUM
 import org.mozilla.fenix.tabstray.ui.tabitems.TabGroupMenuButton
 import org.mozilla.fenix.tabstray.ui.tabpage.TabLayout
 import org.mozilla.fenix.theme.FirefoxTheme
-import mozilla.components.ui.icons.R as iconsR
 
 /**
  * Renders an expanded view of a user's tab group.
+ *
  * @param group: [TabsTrayItem.TabGroup] item rendered by the card.
  * @param onItemClick Invoked when the user clicks on a [TabsTrayItem] in the group.
  * @param onTabClose Invoked when the user clicks to close a [TabsTrayItem.Tab] in the group.
@@ -129,14 +128,14 @@ fun ExpandedTabGroup(
     }
 
     Box(
-        modifier = Modifier
-            .onGloballyPositioned { coordinates ->
-                val bounds = coordinates.boundsInWindow()
-                groupLeft = bounds.left.toInt()
-                groupWidth = bounds.width.toInt()
-            }
-            .fillMaxSize()
-            .testTag(TabsTrayTestTag.TAB_GROUP_BOTTOM_SHEET_ROOT),
+        modifier =
+            Modifier.onGloballyPositioned { coordinates ->
+                    val bounds = coordinates.boundsInWindow()
+                    groupLeft = bounds.left.toInt()
+                    groupWidth = bounds.width.toInt()
+                }
+                .fillMaxSize()
+                .testTag(TabsTrayTestTag.TAB_GROUP_BOTTOM_SHEET_ROOT)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             ViewTabGroupHeader(
@@ -144,10 +143,11 @@ fun ExpandedTabGroup(
                 groupTheme = group.theme,
                 groupTabsSize = group.tabs.size,
                 actions = actions,
-                modifier = Modifier.padding(
-                    start = FirefoxTheme.layout.space.dynamic200,
-                    end = FirefoxTheme.layout.space.dynamic200,
-                ),
+                modifier =
+                    Modifier.padding(
+                        start = FirefoxTheme.layout.space.dynamic200,
+                        end = FirefoxTheme.layout.space.dynamic200,
+                    ),
             )
 
             TabLayout(
@@ -160,20 +160,24 @@ fun ExpandedTabGroup(
                 selectedItemIndex = group.initialScrollIndex,
                 selectionMode = selectionMode,
                 tabInteractionHandler = tabInteractionHandler,
-                modifier = Modifier.padding(
-                    start = FirefoxTheme.layout.space.dynamic200,
-                    end = FirefoxTheme.layout.space.dynamic200,
-                ),
+                modifier =
+                    Modifier.padding(
+                        start = FirefoxTheme.layout.space.dynamic200,
+                        end = FirefoxTheme.layout.space.dynamic200,
+                    ),
                 onTabClose = actions.onTabClose,
                 onItemClick = actions.onItemClick,
                 onItemLongClick = onItemLongClick,
-                onDeleteTabGroupClick = { }, // Ignore tab group deletes
-                onEditTabGroupClick = { }, // Ignore tab group edits
-                onCloseTabGroupClick = { }, // Ignore tab group closes
-                onShareTabGroupClick = { }, // Ignore tab group shares
-                onTabGroupOnboardingDismiss = { }, // Ignore onboarding dismissals - onboarding is not shown in this layout
-                contentPadding = PaddingValues(0.dp), // TabLayout should not have its own content padding inside this view
-                listHorizontalPadding = 0.dp, // The list layout should not add its own horizontal padding inside this view
+                onDeleteTabGroupClick = {}, // Ignore tab group deletes
+                onEditTabGroupClick = {}, // Ignore tab group edits
+                onCloseTabGroupClick = {}, // Ignore tab group closes
+                onShareTabGroupClick = {}, // Ignore tab group shares
+                onTabGroupOnboardingDismiss = {}, // Ignore onboarding dismissals - onboarding is not shown in this
+                // layout
+                contentPadding =
+                    PaddingValues(0.dp), // TabLayout should not have its own content padding inside this view
+                listHorizontalPadding =
+                    0.dp, // The list layout should not add its own horizontal padding inside this view
                 focusEnabled = true, // Drag and drop is not possible in this view, so focus should never be suppressed
             )
         }
@@ -183,29 +187,29 @@ fun ExpandedTabGroup(
         val snackbarData = snackbarHostState?.currentSnackbarData
         val density = LocalDensity.current
         val navigationBarBottomInset = WindowInsets.navigationBars.getBottom(density)
-        val overlayModifier = if (groupWidth > 0) {
-            Modifier.width(with(density) { groupWidth.toDp() })
-        } else {
-            Modifier.fillMaxWidth()
-        }
+        val overlayModifier =
+            if (groupWidth > 0) {
+                Modifier.width(with(density) { groupWidth.toDp() })
+            } else {
+                Modifier.fillMaxWidth()
+            }
 
         Popup(
             onDismissRequest = { selectionMenuExpanded = false },
-            popupPositionProvider = FixedBottomPopupPositionProvider(
-                groupLeft = groupLeft,
-                groupWidth = groupWidth,
-            ),
-            properties = PopupProperties(
-                focusable = selectionMenuExpanded,
-                dismissOnBackPress = selectionMenuExpanded,
-                dismissOnClickOutside = selectionMenuExpanded,
-                clippingEnabled = false,
-            ),
+            popupPositionProvider =
+                FixedBottomPopupPositionProvider(
+                    groupLeft = groupLeft,
+                    groupWidth = groupWidth,
+                ),
+            properties =
+                PopupProperties(
+                    focusable = selectionMenuExpanded,
+                    dismissOnBackPress = selectionMenuExpanded,
+                    dismissOnClickOutside = selectionMenuExpanded,
+                    clippingEnabled = false,
+                ),
         ) {
-            Column(
-                modifier = overlayModifier
-                    .testTag(TabsTrayTestTag.TAB_GROUP_FIXED_OVERLAY),
-            ) {
+            Column(modifier = overlayModifier.testTag(TabsTrayTestTag.TAB_GROUP_FIXED_OVERLAY)) {
                 snackbarHostState?.let { hostState ->
                     if (snackbarData != null) {
                         SnackbarHost(hostState = hostState) { snackbarData ->
@@ -221,18 +225,16 @@ fun ExpandedTabGroup(
                 }
 
                 Spacer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(with(density) { navigationBarBottomInset.toDp() })
-                        .background(MaterialTheme.colorScheme.surface),
+                    modifier =
+                        Modifier.fillMaxWidth()
+                            .height(with(density) { navigationBarBottomInset.toDp() })
+                            .background(MaterialTheme.colorScheme.surface)
                 )
             }
         }
     }
 
-    selectionMenu(
-        selectionMode is TabsTrayState.Mode.Select && selectionMenuExpanded,
-    ) { expanded ->
+    selectionMenu(selectionMode is TabsTrayState.Mode.Select && selectionMenuExpanded) { expanded ->
         selectionMenuExpanded = expanded
     }
 }
@@ -256,15 +258,16 @@ fun ExpandedTabGroup(
 ) {
     ExpandedTabGroup(
         group = group,
-        actions = ExpandedTabGroupActions(
-            onItemClick = onItemClick,
-            onTabClose = onTabClose,
-            onDeleteTabGroupClick = onDeleteTabGroupClick,
-            onEditTabGroupClick = onEditTabGroupClick,
-            onCloseTabGroupClick = onCloseTabGroupClick,
-            onAddNewTabClick = {},
-            onShareTabGroupClick = {},
-        ),
+        actions =
+            ExpandedTabGroupActions(
+                onItemClick = onItemClick,
+                onTabClose = onTabClose,
+                onDeleteTabGroupClick = onDeleteTabGroupClick,
+                onEditTabGroupClick = onEditTabGroupClick,
+                onCloseTabGroupClick = onCloseTabGroupClick,
+                onAddNewTabClick = {},
+                onShareTabGroupClick = {},
+            ),
         displayTabsInGrid = true,
         tabInteractionHandler = tabInteractionHandler,
         selectionMode = selectionMode,
@@ -290,10 +293,11 @@ internal class FixedBottomPopupPositionProvider(
         val containerWidth = if (groupWidth > 0) groupWidth else anchorBounds.width
 
         return IntOffset(
-            x = (
-                containerLeft +
-                    ((containerWidth - popupContentSize.width) / 2).coerceAtLeast(0)
-                ).coerceIn(0, (windowSize.width - popupContentSize.width).coerceAtLeast(0)),
+            x =
+                (containerLeft + ((containerWidth - popupContentSize.width) / 2).coerceAtLeast(0)).coerceIn(
+                    0,
+                    (windowSize.width - popupContentSize.width).coerceAtLeast(0),
+                ),
             y = (windowSize.height - popupContentSize.height).coerceAtLeast(0),
         )
     }
@@ -308,27 +312,28 @@ private fun ViewTabGroupHeader(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(
-                top = FirefoxTheme.layout.space.static150,
-                bottom = FirefoxTheme.layout.space.static200,
-            )
-            .wrapContentHeight(),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(
+                    top = FirefoxTheme.layout.space.static150,
+                    bottom = FirefoxTheme.layout.space.static200,
+                )
+                .wrapContentHeight(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        val headerContentDescription = pluralStringResource(
-            id = R.plurals.expanded_tab_group_header_description,
-            count = groupTabsSize,
-            title,
-            groupTabsSize,
-            groupTheme.contentLabel,
-        )
+        val headerContentDescription =
+            pluralStringResource(
+                id = R.plurals.expanded_tab_group_header_description,
+                count = groupTabsSize,
+                title,
+                groupTabsSize,
+                groupTheme.contentLabel,
+            )
 
         Row(
-            modifier = Modifier
-                .weight(1f)
-                .semantics(mergeDescendants = true) {
+            modifier =
+                Modifier.weight(1f).semantics(mergeDescendants = true) {
                     heading()
                     contentDescription = headerContentDescription
                 },
@@ -348,12 +353,7 @@ private fun ViewTabGroupHeader(
             )
         }
 
-        Spacer(
-            modifier = Modifier.width(
-                FirefoxTheme.layout.space.static200 +
-                    FirefoxTheme.layout.space.static25,
-            ),
-        )
+        Spacer(modifier = Modifier.width(FirefoxTheme.layout.space.static200 + FirefoxTheme.layout.space.static25))
 
         AddTabToGroupButton(onClick = actions.onAddNewTabClick)
         Spacer(modifier = Modifier.width(FirefoxTheme.layout.space.static100))

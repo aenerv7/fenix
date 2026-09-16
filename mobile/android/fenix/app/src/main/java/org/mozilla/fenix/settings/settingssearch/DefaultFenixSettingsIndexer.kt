@@ -347,35 +347,37 @@ class DefaultFenixSettingsIndexer(
         private const val IS_ENABLED_ATTRIBUTE_NAME = "enabled"
 
         /**
-         * All the preference xml files to load with information for the indexer.
-         * In a [List] of [PreferenceFileInformation]s.
+         * All the preference xml files to load with information for the indexer. In a [List] of
+         * [PreferenceFileInformation]s.
          */
-        val defaultPreferenceFileInformationList = listOf(
-            PreferenceFileInformation.GeneralPreferences,
-            PreferenceFileInformation.AccessibilityPreferences,
-            PreferenceFileInformation.CustomizationPreferences,
-            PreferenceFileInformation.DefaultSearchEnginePreferences,
-            PreferenceFileInformation.DownloadsSettingsPreferences,
-            PreferenceFileInformation.HomePreferences,
-            PreferenceFileInformation.OpenLinksInAppsPreferences,
-            PreferenceFileInformation.PrivateBrowsingPreferences,
-            PreferenceFileInformation.SearchSettingsPreferences,
-            PreferenceFileInformation.SiteSettingsPreferences,
-            PreferenceFileInformation.TabsPreferences,
-            PreferenceFileInformation.TrackingProtectionPreferences,
-            PreferenceFileInformation.DataChoicesPreferences,
-            PreferenceFileInformation.AIControlsPreferences,
-            PreferenceFileInformation.FirefoxLabsPreferences,
-        )
+        val defaultPreferenceFileInformationList =
+            listOf(
+                PreferenceFileInformation.GeneralPreferences,
+                PreferenceFileInformation.AccessibilityPreferences,
+                PreferenceFileInformation.CustomizationPreferences,
+                PreferenceFileInformation.DefaultSearchEnginePreferences,
+                PreferenceFileInformation.DownloadsSettingsPreferences,
+                PreferenceFileInformation.HomePreferences,
+                PreferenceFileInformation.OpenLinksInAppsPreferences,
+                PreferenceFileInformation.PrivateBrowsingPreferences,
+                PreferenceFileInformation.SearchSettingsPreferences,
+                PreferenceFileInformation.SiteSettingsPreferences,
+                PreferenceFileInformation.TabsPreferences,
+                PreferenceFileInformation.TrackingProtectionPreferences,
+                PreferenceFileInformation.DataChoicesPreferences,
+                PreferenceFileInformation.AIControlsPreferences,
+                PreferenceFileInformation.FirefoxLabsPreferences,
+            )
 
         /**
          * List of strings that require format args.
          *
          * All of them require the app name.
          */
-        val stringsWithRequiredFormatting = listOf(
-            R.string.preferences_show_nonsponsored_suggestions,
-            R.string.preferences_about,
-        )
+        val stringsWithRequiredFormatting =
+            listOf(
+                R.string.preferences_show_nonsponsored_suggestions,
+                R.string.preferences_about,
+            )
     }
 }

@@ -4,6 +4,7 @@
 
 package org.mozilla.fenix.ui
 
+import androidx.compose.ui.test.junit4.v2.AndroidComposeTestRule as AndroidComposeTestRuleV2
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
@@ -15,35 +16,28 @@ import org.mozilla.fenix.helpers.HomeActivityIntentTestRule
 import org.mozilla.fenix.helpers.TestHelper.appContext
 import org.mozilla.fenix.helpers.perf.DetectMemoryLeaksRule
 import org.mozilla.fenix.ui.robots.homeScreen
-import androidx.compose.ui.test.junit4.v2.AndroidComposeTestRule as AndroidComposeTestRuleV2
 
-/**
- *  Tests for verifying the new Cookie banner blocker option and functionality.
- */
+/** Tests for verifying the new Cookie banner blocker option and functionality. */
 @Ignore("Disabled feature in: https://bugzilla.mozilla.org/show_bug.cgi?id=1940418")
 class CookieBannerBlockerTest {
-    @get:Rule(order = 0)
-    val fenixTestRule: FenixTestRule = FenixTestRule()
+    @get:Rule(order = 0) val fenixTestRule: FenixTestRule = FenixTestRule()
 
     @get:Rule(order = 1)
     val composeTestRule =
-        AndroidComposeTestRuleV2(
-            HomeActivityIntentTestRule.withDefaultSettingsOverrides(),
-        ) { it.activity }
+        AndroidComposeTestRuleV2(HomeActivityIntentTestRule.withDefaultSettingsOverrides()) { it.activity }
 
-    @get:Rule(order = 2)
-    val memoryLeaksRule = DetectMemoryLeaksRule(composeTestRule = { composeTestRule })
+    @get:Rule(order = 2) val memoryLeaksRule = DetectMemoryLeaksRule(composeTestRule = { composeTestRule })
 
     // TestRail link: https://mozilla.testrail.io/index.php?/cases/view/2419260
     @SmokeTest
     @Test
     fun verifyCookieBannerBlockerSettingsOptionTest() {
         runWithCondition(appContext.components.settings.shouldUseCookieBannerPrivateMode) {
-            homeScreen(composeTestRule) {
-            }.openThreeDotMenu {
-            }.clickSettingsButton {
-                verifyCookieBannerBlockerButton(enabled = true)
-            }
+            homeScreen(composeTestRule) {}
+                .openThreeDotMenu {}
+                .clickSettingsButton {
+                    verifyCookieBannerBlockerButton(enabled = true)
+                }
         }
     }
 }

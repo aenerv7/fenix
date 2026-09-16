@@ -449,129 +449,138 @@ class BrowserFragment : BaseBrowserFragment(), UserInteractionHandler, SystemIns
         }
     }
 
-    private val collectionStorageObserver = object : TabCollectionStorage.Observer {
-        override fun onCollectionCreated(
-            title: String,
-            sessions: List<TabSessionState>,
-            id: Long?,
-        ) {
-            showTabSavedToCollectionSnackbar(sessions.size, true)
-        }
-
-        override fun onTabsAdded(tabCollection: TabCollection, sessions: List<TabSessionState>) {
-            showTabSavedToCollectionSnackbar(sessions.size)
-        }
-
-        private fun showTabSavedToCollectionSnackbar(
-            tabSize: Int,
-            isNewCollection: Boolean = false,
-        ) {
-            val messageResId = when {
-                isNewCollection -> R.string.create_collection_tabs_saved_new_collection_2
-                tabSize == 1 -> R.string.create_collection_tab_saved_2
-                else -> return // Don't show snackbar for multiple tabs
+    private val collectionStorageObserver =
+        object : TabCollectionStorage.Observer {
+            override fun onCollectionCreated(
+                title: String,
+                sessions: List<TabSessionState>,
+                id: Long?,
+            ) {
+                showTabSavedToCollectionSnackbar(sessions.size, true)
             }
 
-            view?.let {
-                Snackbar.make(
-                    snackBarParentView = binding.dynamicSnackbarContainer,
-                    snackbarState = SnackbarState(
-                        message = getString(messageResId),
-                    ),
-                ).show()
+            override fun onTabsAdded(tabCollection: TabCollection, sessions: List<TabSessionState>) {
+                showTabSavedToCollectionSnackbar(sessions.size)
+            }
+
+            private fun showTabSavedToCollectionSnackbar(
+                tabSize: Int,
+                isNewCollection: Boolean = false,
+            ) {
+                val messageResId =
+                    when {
+                        isNewCollection -> R.string.create_collection_tabs_saved_new_collection_2
+                        tabSize == 1 -> R.string.create_collection_tab_saved_2
+                        else -> return // Don't show snackbar for multiple tabs
+                    }
+
+                view?.let {
+                    Snackbar.make(
+                            snackBarParentView = binding.dynamicSnackbarContainer,
+                            snackbarState = SnackbarState(message = getString(messageResId)),
+                        )
+                        .show()
+                }
             }
         }
-    }
 
     override fun getContextMenuCandidates(
         context: Context,
         view: View,
     ): List<ContextMenuCandidate> {
-        val contextMenuCandidateAppLinksUseCases = AppLinksUseCases(
-            requireContext(),
-            { true },
-        )
+        val contextMenuCandidateAppLinksUseCases =
+            AppLinksUseCases(
+                requireContext(),
+                { true },
+            )
         val tabsUseCases = context.components.useCases.tabsUseCases
         val tabGroupLinkUseCases = context.components.core.tabGroupLinkUseCases
         val snackbarDelegate = ContextMenuSnackbarDelegate()
-        val defaultCandidates = if (requireComponents.settings.nativeShareSheetEnabled && isSystemShareSheetSupported) {
-            NativeShareSheetContextMenuCandidate.defaultCandidates(
+        val defaultCandidates =
+            if (requireComponents.settings.nativeShareSheetEnabled && isSystemShareSheetSupported) {
+                NativeShareSheetContextMenuCandidate.defaultCandidates(
+                    context = context,
+                    tabsUseCases = tabsUseCases,
+                    contextMenuUseCases = context.components.useCases.contextMenuUseCases,
+                    shareUseCases = context.components.useCases.shareUseCases,
+                    getShareItems = {
+                        listOf(
+                            ShareData(
+                                title = context.getString(contextMenuR.string.mozac_feature_contextmenu_share_link),
+                                text = it,
+                                url = it,
+                                private = getCurrentTab()?.content?.private == true,
+                            )
+                        )
+                    },
+                    snackBarParentView = view,
+                    snackbarDelegate = snackbarDelegate,
+                    downloadsLocation = {
+                        DownloadLocationManager(
+                                requireComponents.settings,
+                                requireContext().contentResolver,
+                            )
+                            .defaultLocation
+                    },
+                    navigateToShareFragment = ::navigateToShareFragment,
+                )
+            } else {
+                ContextMenuCandidate.defaultCandidates(
+                    context = context,
+                    tabsUseCases = tabsUseCases,
+                    contextMenuUseCases = context.components.useCases.contextMenuUseCases,
+                    snackBarParentView = view,
+                    snackbarDelegate = snackbarDelegate,
+                    downloadsLocation = {
+                        DownloadLocationManager(
+                                requireComponents.settings,
+                                requireContext().contentResolver,
+                            )
+                            .defaultLocation
+                    },
+                )
+            }
+        val openInNewTabCandidate =
+            ContextMenuCandidate.createOpenInNewTabCandidate(
                 context = context,
                 tabsUseCases = tabsUseCases,
-                contextMenuUseCases = context.components.useCases.contextMenuUseCases,
-                shareUseCases = context.components.useCases.shareUseCases,
-                getShareItems = {
-                    listOf(
-                        ShareData(
-                            title = context.getString(contextMenuR.string.mozac_feature_contextmenu_share_link),
-                            text = it,
-                            url = it,
-                            private = getCurrentTab()?.content?.private == true,
-                        ),
-                    )
-                },
                 snackBarParentView = view,
                 snackbarDelegate = snackbarDelegate,
-                downloadsLocation = {
-                    DownloadLocationManager(
-                        requireComponents.settings,
-                        requireContext().contentResolver,
-                    ).defaultLocation
-                },
-                navigateToShareFragment = ::navigateToShareFragment,
+                parentId = { null },
             )
-        } else {
-            ContextMenuCandidate.defaultCandidates(
-                context = context,
-                tabsUseCases = tabsUseCases,
-                contextMenuUseCases = context.components.useCases.contextMenuUseCases,
-                snackBarParentView = view,
-                snackbarDelegate = snackbarDelegate,
-                downloadsLocation = {
-                    DownloadLocationManager(
-                        requireComponents.settings,
-                        requireContext().contentResolver,
-                    ).defaultLocation
-                },
-            )
-        }
-        val openInNewTabCandidate = ContextMenuCandidate.createOpenInNewTabCandidate(
-            context = context,
-            tabsUseCases = tabsUseCases,
-            snackBarParentView = view,
-            snackbarDelegate = snackbarDelegate,
-            parentId = { null },
-        )
-        val openInTabGroupCandidate = ContextMenuCandidate.createOpenInNewTabCandidate(
-            context = context,
-            tabsUseCases = tabsUseCases,
-            snackBarParentView = view,
-            snackbarDelegate = snackbarDelegate,
-            additionalValidation = { _, _ -> context.components.settings.tabGroupsEnabled },
-            parentId = { null },
-            onTabCreated = { parent, tabId ->
-                viewLifecycleOwner.lifecycleScope.launch {
-                    tabGroupLinkUseCases.addTabToGroupOrCreateGroup(
-                        parentTabId = parent.id,
-                        tabId = tabId,
-                        newGroupTitle = { groupNumber ->
-                            context.getString(R.string.create_tab_group_form_default_name, groupNumber)
-                        },
-                    )
-                }
-            },
-        ).copy(
-            id = "fenix.contextmenu.open_in_tab_group",
-            label = context.getString(R.string.context_menu_open_link_in_tab_group),
-            labelProvider = { parent, _ ->
-                val label = if (tabGroupLinkUseCases.isTabInGroup(parent.id)) {
-                    R.string.context_menu_open_link_in_tab_group
-                } else {
-                    R.string.context_menu_open_link_in_new_tab_group
-                }
-                context.getString(label)
-            },
-        )
+        val openInTabGroupCandidate =
+            ContextMenuCandidate.createOpenInNewTabCandidate(
+                    context = context,
+                    tabsUseCases = tabsUseCases,
+                    snackBarParentView = view,
+                    snackbarDelegate = snackbarDelegate,
+                    additionalValidation = { _, _ -> context.components.settings.tabGroupsEnabled },
+                    parentId = { null },
+                    onTabCreated = { parent, tabId ->
+                        viewLifecycleOwner.lifecycleScope.launch {
+                            tabGroupLinkUseCases.addTabToGroupOrCreateGroup(
+                                parentTabId = parent.id,
+                                tabId = tabId,
+                                newGroupTitle = { groupNumber ->
+                                    context.getString(R.string.create_tab_group_form_default_name, groupNumber)
+                                },
+                            )
+                        }
+                    },
+                )
+                .copy(
+                    id = "fenix.contextmenu.open_in_tab_group",
+                    label = context.getString(R.string.context_menu_open_link_in_tab_group),
+                    labelProvider = { parent, _ ->
+                        val label =
+                            if (tabGroupLinkUseCases.isTabInGroup(parent.id)) {
+                                R.string.context_menu_open_link_in_tab_group
+                            } else {
+                                R.string.context_menu_open_link_in_new_tab_group
+                            }
+                        context.getString(label)
+                    },
+                )
 
         val candidatesWithTabGroup = defaultCandidates.flatMap { candidate ->
             if (candidate.id == openInNewTabCandidate.id) {
@@ -585,66 +594,67 @@ class BrowserFragment : BaseBrowserFragment(), UserInteractionHandler, SystemIns
             ContextMenuCandidate.createOpenInExternalAppCandidate(
                 requireContext(),
                 contextMenuCandidateAppLinksUseCases,
-            ) + createOpenWithGoogleLensCandidate(context)
+            ) +
+            createOpenWithGoogleLensCandidate(context)
     }
 
     private fun navigateToShareFragment(
         currentTab: SessionState,
         hitTabUrl: String,
     ) {
-        val shareData = arrayOf(
-            ShareData(
-                title = hitTabUrl,
-                url = hitTabUrl,
-                private = currentTab.content.private,
-            ),
-        )
-        val popUpToId = if (currentTab is CustomTabSessionState) {
-            R.id.externalAppBrowserFragment
-        } else {
-            R.id.browserFragment
-        }
+        val shareData =
+            arrayOf(
+                ShareData(
+                    title = hitTabUrl,
+                    url = hitTabUrl,
+                    private = currentTab.content.private,
+                )
+            )
+        val popUpToId =
+            if (currentTab is CustomTabSessionState) {
+                R.id.externalAppBrowserFragment
+            } else {
+                R.id.browserFragment
+            }
 
-        findNavController().nav(
-            id = R.id.browserFragment,
-            directions = BrowserFragmentDirections.actionGlobalShareFragment(
-                sessionId = currentTab.id,
-                data = shareData,
-                showPage = true,
-            ),
-            navOptions = NavOptions.Builder()
-                .setPopUpTo(popUpToId, false)
-                .build(),
-        )
+        findNavController()
+            .nav(
+                id = R.id.browserFragment,
+                directions =
+                    BrowserFragmentDirections.actionGlobalShareFragment(
+                        sessionId = currentTab.id,
+                        data = shareData,
+                        showPage = true,
+                    ),
+                navOptions = NavOptions.Builder().setPopUpTo(popUpToId, false).build(),
+            )
     }
 
-    private fun createOpenWithGoogleLensCandidate(context: Context) = ContextMenuCandidate(
-        id = "fenix.contextmenu.open_with_google_lens",
-        label = context.getString(R.string.context_menu_open_image_with_google_lens),
-        showFor = { _, hitResult ->
-            val isImage = hitResult is HitResult.IMAGE || hitResult is HitResult.IMAGE_SRC
-            val selectedEngine = context.components.core.store.state.search.selectedOrDefaultSearchEngine
-            val settings = context.components.settings
-            isImage &&
-                hitResult.src.isHttpUrl() &&
-                settings.googleLensIntegrationEnabled &&
-                settings.googleLensIntegrationUserEnabled &&
-                selectedEngine.isGoogleSearchEngine()
-        },
-        action = { _, hitResult ->
-            context.components.appStore.dispatch(
-                AppAction.LensAction.LensRequestedWithImageUrl(hitResult.src),
-            )
-        },
-    )
+    private fun createOpenWithGoogleLensCandidate(context: Context) =
+        ContextMenuCandidate(
+            id = "fenix.contextmenu.open_with_google_lens",
+            label = context.getString(R.string.context_menu_open_image_with_google_lens),
+            showFor = { _, hitResult ->
+                val isImage = hitResult is HitResult.IMAGE || hitResult is HitResult.IMAGE_SRC
+                val selectedEngine = context.components.core.store.state.search.selectedOrDefaultSearchEngine
+                val settings = context.components.settings
+                isImage &&
+                    hitResult.src.isHttpUrl() &&
+                    settings.googleLensIntegrationEnabled &&
+                    settings.googleLensIntegrationUserEnabled &&
+                    selectedEngine.isGoogleSearchEngine()
+            },
+            action = { _, hitResult ->
+                context.components.appStore.dispatch(AppAction.LensAction.LensRequestedWithImageUrl(hitResult.src))
+            },
+        )
 
     private fun String.isHttpUrl(): Boolean =
         startsWith("https://", ignoreCase = true) || startsWith("http://", ignoreCase = true)
 
     /**
-     * Updates the last time the user was active on the [BrowserFragment].
-     * This is useful to determine if the user has to start on the [HomeFragment]
-     * or it should go directly to the [BrowserFragment].
+     * Updates the last time the user was active on the [BrowserFragment]. This is useful to determine if the user has
+     * to start on the [HomeFragment] or it should go directly to the [BrowserFragment].
      */
     @VisibleForTesting
     internal fun updateLastBrowseActivity() {

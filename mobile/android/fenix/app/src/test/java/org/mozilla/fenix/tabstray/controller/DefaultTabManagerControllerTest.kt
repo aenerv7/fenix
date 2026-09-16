@@ -59,7 +59,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mozilla.fenix.GleanMetrics.Events
 import org.mozilla.fenix.GleanMetrics.TabsTray
-import org.mozilla.fenix.GleanMetrics.TrackingProtection
 import org.mozilla.fenix.R
 import org.mozilla.fenix.browser.browsingmode.BrowsingMode
 import org.mozilla.fenix.browser.browsingmode.BrowsingModeManager
@@ -936,26 +935,30 @@ class DefaultTabManagerControllerTest {
     fun `GIVEN one ungrouped tab and an open group WHEN the ungrouped tab is closed THEN the group tab remains selected`() {
         val ungroupedTab = createTab(id = "ungrouped", url = "https://mozilla.org")
         val groupedTab = createTab(id = "grouped", url = "https://example.com")
-        val group = createTabGroup(
-            id = "group",
-            tabs = listOf(TabsTrayItem.Tab(groupedTab)),
-        )
-        browserStore = BrowserStore(
-            initialState = BrowserState(
-                tabs = listOf(groupedTab, ungroupedTab),
-                selectedTabId = ungroupedTab.id,
-            ),
-        )
+        val group =
+            createTabGroup(
+                id = "group",
+                tabs = listOf(TabsTrayItem.Tab(groupedTab)),
+            )
+        browserStore =
+            BrowserStore(
+                initialState =
+                    BrowserState(
+                        tabs = listOf(groupedTab, ungroupedTab),
+                        selectedTabId = ungroupedTab.id,
+                    )
+            )
         tabsUseCases = TabsUseCases(browserStore)
-        trayStore = TabsTrayStore(
-            initialState = TabsTrayState(
-                selectedTabId = ungroupedTab.id,
-                normalTabsState = TabsTrayState.NormalTabsState(
-                    items = listOf(group, TabsTrayItem.Tab(ungroupedTab)),
-                ),
-                tabGroupState = TabsTrayState.TabGroupState(groups = listOf(group)),
-            ),
-        )
+        trayStore =
+            TabsTrayStore(
+                initialState =
+                    TabsTrayState(
+                        selectedTabId = ungroupedTab.id,
+                        normalTabsState =
+                            TabsTrayState.NormalTabsState(items = listOf(group, TabsTrayItem.Tab(ungroupedTab))),
+                        tabGroupState = TabsTrayState.TabGroupState(groups = listOf(group)),
+                    )
+            )
 
         createController().handleTabDeletion(TabsTrayItem.Tab(ungroupedTab))
 
@@ -1421,18 +1424,21 @@ class DefaultTabManagerControllerTest {
 
     @Test
     fun `GIVEN all tabs in an expanded group are selected WHEN deleted THEN delete the empty group`() {
-        val tabs = List(size = 2) { index ->
-            TabsTrayItem.Tab(tab = createTab(id = "tab-$index", url = "url"))
-        }
+        val tabs =
+            List(size = 2) { index ->
+                TabsTrayItem.Tab(tab = createTab(id = "tab-$index", url = "url"))
+            }
         val group = createTabGroup(tabs = tabs.toMutableList())
-        every { trayStore.state } returns TabsTrayState(
-            mode = TabsTrayState.Mode.Select(selectedTabs = tabs.toSet()),
-            tabGroupState = TabsTrayState.TabGroupState(groups = listOf(group)),
-            backStack = listOf(
-                TabManagerNavDestination.Root,
-                TabManagerNavDestination.ExpandedTabGroup(group),
-            ),
-        )
+        every { trayStore.state } returns
+            TabsTrayState(
+                mode = TabsTrayState.Mode.Select(selectedTabs = tabs.toSet()),
+                tabGroupState = TabsTrayState.TabGroupState(groups = listOf(group)),
+                backStack =
+                    listOf(
+                        TabManagerNavDestination.Root,
+                        TabManagerNavDestination.ExpandedTabGroup(group),
+                    ),
+            )
         val controller = spyk(createController())
         every { controller.deleteMultipleTabsFromGroup(any(), any()) } just runs
 
@@ -1451,22 +1457,25 @@ class DefaultTabManagerControllerTest {
         val tabToDelete = TabsTrayItem.Tab(tabToDeleteState)
         val tabToKeep = TabsTrayItem.Tab(tabToKeepState)
         val group = createTabGroup(id = "group-1", tabs = mutableListOf(tabToDelete, tabToKeep))
-        every { browserStore.state } returns BrowserState(
-            tabs = listOf(tabToDeleteState, tabToKeepState),
-            selectedTabId = tabToDelete.id,
-        )
-        every { trayStore.state } returns TabsTrayState(
-            normalTabsState = TabsTrayState.NormalTabsState(items = listOf(group)),
-            tabGroupState = TabsTrayState.TabGroupState(groups = listOf(group)),
-        )
+        every { browserStore.state } returns
+            BrowserState(
+                tabs = listOf(tabToDeleteState, tabToKeepState),
+                selectedTabId = tabToDelete.id,
+            )
+        every { trayStore.state } returns
+            TabsTrayState(
+                normalTabsState = TabsTrayState.NormalTabsState(items = listOf(group)),
+                tabGroupState = TabsTrayState.TabGroupState(groups = listOf(group)),
+            )
         var undoGroup: TabsTrayItem.TabGroup? = null
         var undoTabIds = emptyList<String>()
-        val controller = createController(
-            showUndoSnackbarForTabGroup = { _, originalGroup, tabIds ->
-                undoGroup = originalGroup
-                undoTabIds = tabIds
-            },
-        )
+        val controller =
+            createController(
+                showUndoSnackbarForTabGroup = { _, originalGroup, tabIds ->
+                    undoGroup = originalGroup
+                    undoTabIds = tabIds
+                }
+            )
 
         controller.deleteMultipleTabsFromGroup(tabs = listOf(tabToDelete), group = group)
 
@@ -2132,14 +2141,16 @@ class DefaultTabManagerControllerTest {
             var snackbarParentNode: BookmarkNode? = null
             coEvery { addBookmarkUseCase.invoke(any(), any(), any(), any()) } returns
                 BookmarksUseCase.AddBookmarksUseCase.Result(guidToEdit = "guid", parentNode = parentNode)
-            every { trayStore.state.mode.selectedTabs } returns setOf(TabsTrayItem.Tab(tab = createTab(url = "https://mozilla.org")))
+            every { trayStore.state.mode.selectedTabs } returns
+                setOf(TabsTrayItem.Tab(tab = createTab(url = "https://mozilla.org")))
 
             createController(
-                showBookmarkSnackbar = { _, folder ->
-                    showBookmarkSnackbarInvoked = true
-                    snackbarParentNode = folder
-                },
-            ).handleBookmarkSelectedTabsClicked()
+                    showBookmarkSnackbar = { _, folder ->
+                        showBookmarkSnackbarInvoked = true
+                        snackbarParentNode = folder
+                    }
+                )
+                .handleBookmarkSelectedTabsClicked()
             testDispatcher.scheduler.advanceUntilIdle()
 
             verify { trayStore.dispatch(TabsTrayAction.BookmarkSelectedTabs(1)) }
@@ -2156,17 +2167,19 @@ class DefaultTabManagerControllerTest {
             var snackbarParentNode: BookmarkNode? = null
             coEvery { addBookmarkUseCase.invoke(any(), any(), any(), any()) } returns
                 BookmarksUseCase.AddBookmarksUseCase.Result(guidToEdit = "guid", parentNode = parentNode)
-            every { trayStore.state.mode.selectedTabs } returns setOf(
-                TabsTrayItem.Tab(tab = createTab(url = "https://mozilla.org")),
-                TabsTrayItem.Tab(tab = createTab(url = "https://mozilla2.org")),
-            )
+            every { trayStore.state.mode.selectedTabs } returns
+                setOf(
+                    TabsTrayItem.Tab(tab = createTab(url = "https://mozilla.org")),
+                    TabsTrayItem.Tab(tab = createTab(url = "https://mozilla2.org")),
+                )
 
             createController(
-                showBookmarkSnackbar = { _, folder ->
-                    showBookmarkSnackbarInvoked = true
-                    snackbarParentNode = folder
-                },
-            ).handleBookmarkSelectedTabsClicked()
+                    showBookmarkSnackbar = { _, folder ->
+                        showBookmarkSnackbarInvoked = true
+                        snackbarParentNode = folder
+                    }
+                )
+                .handleBookmarkSelectedTabsClicked()
             testDispatcher.scheduler.advanceUntilIdle()
 
             verify { trayStore.dispatch(TabsTrayAction.BookmarkSelectedTabs(2)) }
@@ -2470,41 +2483,45 @@ class DefaultTabManagerControllerTest {
 
     @Test
     fun `WHEN the privacy report pill is tapped THEN navigate to the protections dashboard with the tabs_tray source`() {
-        every { navController.currentDestination } returns mockk<NavDestination> {
-            every { id } returns R.id.tabManagementFragment
-        }
+        every { navController.currentDestination } returns
+            mockk<NavDestination> {
+                every { id } returns R.id.tabManagementFragment
+            }
         val currentSessionId = "test"
-        every { browserStore.state } returns mockk {
-            every { selectedTabId } returns currentSessionId
-        }
+        every { browserStore.state } returns
+            mockk {
+                every { selectedTabId } returns currentSessionId
+            }
 
         createController().onPrivacyReportTapped()
 
         verify {
             navController.navigate(
-                directions = TabManagementFragmentDirections.actionTabManagementFragmentToGlobalProtectionsDashboard(
-                    currentSessionId,
-                    source = ProtectionsDashboardFragment.SOURCE_TABS_TRAY,
-                ),
+                directions =
+                    TabManagementFragmentDirections.actionTabManagementFragmentToGlobalProtectionsDashboard(
+                        currentSessionId,
+                        source = ProtectionsDashboardFragment.SOURCE_TABS_TRAY,
+                    ),
                 navOptions = null,
             )
         }
     }
 
-    private fun makeBookmarkFolder(guid: String) = BookmarkNode(
-        type = BookmarkNodeType.FOLDER,
-        parentGuid = BookmarkRoot.Mobile.id,
-        guid = guid,
-        position = 42U,
-        title = "title",
-        url = "url",
-        dateAdded = 0L,
-        lastModified = 0L,
-        children = null,
-    )
+    private fun makeBookmarkFolder(guid: String) =
+        BookmarkNode(
+            type = BookmarkNodeType.FOLDER,
+            parentGuid = BookmarkRoot.Mobile.id,
+            guid = guid,
+            position = 42U,
+            title = "title",
+            url = "url",
+            dateAdded = 0L,
+            lastModified = 0L,
+            children = null,
+        )
 
     private fun createController(
-        navigateToHomeAndDeleteSession: (String) -> Unit = { },
+        navigateToHomeAndDeleteSession: (String) -> Unit = {},
         showUndoSnackbarForTab: (Boolean) -> Unit = { _ -> },
         showUndoSnackbarForTabGroup: (Boolean, TabsTrayItem.TabGroup, List<String>) -> Unit = { _, _, _ -> },
         showUndoSnackbarForInactiveTab: (Int) -> Unit = { _ -> },

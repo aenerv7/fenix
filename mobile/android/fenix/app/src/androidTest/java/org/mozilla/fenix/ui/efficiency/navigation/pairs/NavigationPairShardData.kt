@@ -9,12 +9,9 @@ object NavigationPairShardData {
     ): List<Array<Any>> {
         NavigationPairGraphBootstrap.ensureInitialized()
 
-        val runState = runStateOverride
-            ?: System.getProperty("testRunState")?.takeIf { it.isNotBlank() }
-            ?: ""
+        val runState = runStateOverride ?: System.getProperty("testRunState")?.takeIf { it.isNotBlank() } ?: ""
 
-        return NavigationPairCaseFactory
-            .buildPairCasesForShard(
+        return NavigationPairCaseFactory.buildPairCasesForShard(
                 runState = runState,
                 shardIndex = shardIndex,
                 shardCount = shardCount,

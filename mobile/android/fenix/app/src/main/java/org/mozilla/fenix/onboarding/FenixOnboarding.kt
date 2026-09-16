@@ -17,17 +17,19 @@ class FenixOnboarding(context: Context) : PreferencesHolder {
 
     private val strictMode = context.components.strictMode
 
-    override val preferences: SharedPreferences = strictMode.allowViolation(StrictMode::allowThreadDiskReads) {
-        context.getSharedPreferences(
-            PREF_NAME_ONBOARDING_KEY,
-            Context.MODE_PRIVATE,
-        )
-    }
+    override val preferences: SharedPreferences =
+        strictMode.allowViolation(StrictMode::allowThreadDiskReads) {
+            context.getSharedPreferences(
+                PREF_NAME_ONBOARDING_KEY,
+                Context.MODE_PRIVATE,
+            )
+        }
 
-    private var onboardedVersion by intPreference(
-        LAST_VERSION_ONBOARDING_KEY,
-        default = CURRENT_ONBOARDING_VERSION,
-    )
+    private var onboardedVersion by
+        intPreference(
+            LAST_VERSION_ONBOARDING_KEY,
+            default = CURRENT_ONBOARDING_VERSION,
+        )
 
     // The onboarding configuration is retrieved lazily because:
     // - We do not want to record exposure if a user is not encountering onboarding
