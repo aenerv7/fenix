@@ -219,6 +219,13 @@ points. The release uses the pinned official 156.0 arm64-v8a GeckoView package r
 `FENIX_UPSTREAM_GECKOVIEW.json`; local GeckoView compilation is prohibited because no Fenix-authored
 Gecko or native source changed. The exact official arm64-v8a versionCode is `2016183650`.
 
+The 156.0 baseline replaces ktlint with Spotless/ktfmt, so `fenix:ktlint` and `fenix:ktlintFormat` no
+longer exist. Use `fenix:spotlessKotlinCheck` to verify formatting and `fenix:spotlessApply` to fix
+it. Upstream also made `PreferenceFileInformation.xmlResourceId` nullable for Compose-based settings
+screens, renamed `Core.summarizationSettings` to `summarizationSettingsBinding` and added its
+`aiFeatureBlockStorage` argument, and renamed the IP Protection pill state from `proxyActiveShown` to
+`proxyActivation == ProxyActivation.TurningOn`.
+
 ### Silent no-op merge hazard
 
 `tools/fenix/sync-official-release.ps1` applies the upstream delta with a single `git apply --3way`

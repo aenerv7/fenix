@@ -2499,8 +2499,7 @@ class DefaultTabManagerControllerTest {
             navController.navigate(
                 directions =
                     TabManagementFragmentDirections.actionTabManagementFragmentToGlobalProtectionsDashboard(
-                        currentSessionId,
-                        source = ProtectionsDashboardFragment.SOURCE_TABS_TRAY,
+                        customTabSessionId = currentSessionId
                     ),
                 navOptions = null,
             )
