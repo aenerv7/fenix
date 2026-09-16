@@ -64,17 +64,9 @@ fun ExperimentalHomepageHeader(
     onStoriesTapped: () -> Unit,
     onNewsAnimationShown: () -> Unit,
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(bottom = 16.dp),
-    ) {
+    Box(modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(bottom = 16.dp)) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .padding(all = 16.dp),
+            modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(all = 16.dp),
             verticalAlignment = Alignment.Top,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
@@ -99,10 +91,7 @@ fun ExperimentalHomepageHeader(
 @Composable
 fun ExperimentalPrivateHomepageHeader(onHomeTapped: () -> Unit) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(all = 16.dp),
+        modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(all = 16.dp),
         verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.End,
     ) {
@@ -114,10 +103,11 @@ fun ExperimentalPrivateHomepageHeader(onHomeTapped: () -> Unit) {
 private fun PrivateModeButton(onClick: () -> Unit) {
     LeftChevronPillButton(
         onClick = onClick,
-        modifier = Modifier.semantics {
-            testTagsAsResourceId = true
-            testTag = PRIVATE_BROWSING_HOMEPAGE_BUTTON
-        },
+        modifier =
+            Modifier.semantics {
+                testTagsAsResourceId = true
+                testTag = PRIVATE_BROWSING_HOMEPAGE_BUTTON
+            },
     ) {
         Icon(
             painter = painterResource(iconsR.drawable.mozac_ic_private_mode_24),
@@ -181,9 +171,7 @@ private fun HomeButton(onClick: () -> Unit) {
 
 @Preview
 @Composable
-private fun HomepageHeaderPreview(
-    @PreviewParameter(PreviewThemeProvider::class) theme: Theme,
-) {
+private fun HomepageHeaderPreview(@PreviewParameter(PreviewThemeProvider::class) theme: Theme) {
     FirefoxTheme(theme) {
         Surface {
             ExperimentalHomepageHeader(
@@ -199,9 +187,7 @@ private fun HomepageHeaderPreview(
 
 @Preview
 @Composable
-private fun PrivateHomepageHeaderPreview(
-    @PreviewParameter(PreviewThemeProvider::class) theme: Theme,
-) {
+private fun PrivateHomepageHeaderPreview(@PreviewParameter(PreviewThemeProvider::class) theme: Theme) {
     FirefoxTheme(theme) {
         Surface {
             ExperimentalPrivateHomepageHeader {}

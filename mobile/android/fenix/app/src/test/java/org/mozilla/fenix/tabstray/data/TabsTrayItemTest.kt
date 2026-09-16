@@ -15,11 +15,12 @@ import org.junit.runner.RunWith
 class TabsTrayItemTest {
     @Test
     fun `WHEN the group is empty, THEN an empty list of thumbnails is returned`() {
-        val group = TabsTrayItem.TabGroup(
-            title = "Title",
-            theme = TabGroupTheme.Yellow,
-            tabs = mutableListOf(),
-        )
+        val group =
+            TabsTrayItem.TabGroup(
+                title = "Title",
+                theme = TabGroupTheme.Yellow,
+                tabs = mutableListOf(),
+            )
 
         val thumbnails = group.thumbnails
 
@@ -28,13 +29,12 @@ class TabsTrayItemTest {
 
     @Test
     fun `WHEN the group has one tab item, THEN one thumbnail is returned`() {
-        val group = TabsTrayItem.TabGroup(
-            title = "Title",
-            theme = TabGroupTheme.Yellow,
-            tabs = mutableListOf(
-                createTab(url = "www.mozilla.org"),
-            ),
-        )
+        val group =
+            TabsTrayItem.TabGroup(
+                title = "Title",
+                theme = TabGroupTheme.Yellow,
+                tabs = mutableListOf(createTab(url = "www.mozilla.org")),
+            )
 
         val thumbnails = group.thumbnails
 
@@ -43,14 +43,16 @@ class TabsTrayItemTest {
 
     @Test
     fun `WHEN the group has two tab items, THEN two thumbnails are returned`() {
-        val group = TabsTrayItem.TabGroup(
-            title = "Title",
-            theme = TabGroupTheme.Yellow,
-            tabs = mutableListOf(
-                createTab(url = "www.mozilla.org"),
-                createTab(url = "www.wikipedia.org"),
-            ),
-        )
+        val group =
+            TabsTrayItem.TabGroup(
+                title = "Title",
+                theme = TabGroupTheme.Yellow,
+                tabs =
+                    mutableListOf(
+                        createTab(url = "www.mozilla.org"),
+                        createTab(url = "www.wikipedia.org"),
+                    ),
+            )
 
         val thumbnails = group.thumbnails
 
@@ -59,15 +61,17 @@ class TabsTrayItemTest {
 
     @Test
     fun `WHEN the group has three tab items, THEN three thumbnails are returned`() {
-        val group = TabsTrayItem.TabGroup(
-            title = "Title",
-            theme = TabGroupTheme.Yellow,
-            tabs = mutableListOf(
-                createTab(url = "www.mozilla.org"),
-                createTab(url = "www.wikipedia.org"),
-                createTab(url = "www.website.com"),
-            ),
-        )
+        val group =
+            TabsTrayItem.TabGroup(
+                title = "Title",
+                theme = TabGroupTheme.Yellow,
+                tabs =
+                    mutableListOf(
+                        createTab(url = "www.mozilla.org"),
+                        createTab(url = "www.wikipedia.org"),
+                        createTab(url = "www.website.com"),
+                    ),
+            )
 
         val thumbnails = group.thumbnails
 
@@ -76,16 +80,18 @@ class TabsTrayItemTest {
 
     @Test
     fun `WHEN the group has four tab items, THEN four thumbnails are returned`() {
-        val group = TabsTrayItem.TabGroup(
-            title = "Title",
-            theme = TabGroupTheme.Yellow,
-            tabs = mutableListOf(
-                createTab(url = "www.mozilla.org"),
-                createTab(url = "www.wikipedia.org"),
-                createTab(url = "www.website.com"),
-                createTab(url = "www.website.org"),
-            ),
-        )
+        val group =
+            TabsTrayItem.TabGroup(
+                title = "Title",
+                theme = TabGroupTheme.Yellow,
+                tabs =
+                    mutableListOf(
+                        createTab(url = "www.mozilla.org"),
+                        createTab(url = "www.wikipedia.org"),
+                        createTab(url = "www.website.com"),
+                        createTab(url = "www.website.org"),
+                    ),
+            )
 
         val thumbnails = group.thumbnails
 
@@ -94,11 +100,12 @@ class TabsTrayItemTest {
 
     @Test
     fun `WHEN the group has 100 tab items, THEN four thumbnails are returned`() {
-        val group = TabsTrayItem.TabGroup(
-            title = "Title",
-            theme = TabGroupTheme.Yellow,
-            tabs = MutableList(100) { createTab(url = "www.mozilla.org") },
-        )
+        val group =
+            TabsTrayItem.TabGroup(
+                title = "Title",
+                theme = TabGroupTheme.Yellow,
+                tabs = MutableList(100) { createTab(url = "www.mozilla.org") },
+            )
 
         val thumbnails = group.thumbnails
 
@@ -107,11 +114,12 @@ class TabsTrayItemTest {
 
     @Test
     fun `WHEN multiple requests for thumbnails occur, THEN the list of thumbnails does not change`() {
-        val group = TabsTrayItem.TabGroup(
-            title = "Title",
-            theme = TabGroupTheme.Yellow,
-            tabs = MutableList(100) { createTab(url = "www.mozilla.org") },
-        )
+        val group =
+            TabsTrayItem.TabGroup(
+                title = "Title",
+                theme = TabGroupTheme.Yellow,
+                tabs = MutableList(100) { createTab(url = "www.mozilla.org") },
+            )
 
         val thumbnails = group.thumbnails
         val thumbnails2 = group.thumbnails
@@ -122,11 +130,12 @@ class TabsTrayItemTest {
     @Test
     fun `WHEN a tab's thumbnail data is requested THEN it is a faithful conversion of the tab's data`() {
         val tab = createTab(url = "www.mozilla.org")
-        val group = TabsTrayItem.TabGroup(
-            title = "Title",
-            theme = TabGroupTheme.Yellow,
-            tabs = mutableListOf(tab),
-        )
+        val group =
+            TabsTrayItem.TabGroup(
+                title = "Title",
+                theme = TabGroupTheme.Yellow,
+                tabs = mutableListOf(tab),
+            )
 
         val thumbnails = group.thumbnails
         val thumbnailImageData = thumbnails.first()

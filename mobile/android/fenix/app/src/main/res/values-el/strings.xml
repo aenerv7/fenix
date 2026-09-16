@@ -150,6 +150,12 @@
   <!--
     Recent Tabs
 
+    Header text on the homescreen for continuing to browse the most recent browser tab
+  -->
+  <string name="recent_tabs_header_2">Συνέχεια</string>
+  <!--
+    Recent Tabs
+
     Header text for jumping back into the recent tab in the home screen
   -->
   <string name="recent_tabs_header">Άμεση επιστροφή</string>
@@ -778,8 +784,6 @@
   <string name="preferences_pbm_lock_screen_title">Χρήση κλειδώματος οθόνης για την απόκρυψη καρτελών στην ιδιωτική περιήγηση</string>
   <!-- Informs the user how to access the tabs when "Use screen lock to hide tabs in private browsing" is enabled -->
   <string name="preferences_pbm_lock_screen_summary_3">Δείτε τις καρτέλες σας με το δακτυλικό σας αποτύπωμα, ένα PIN ή με αναγνώριση προσώπου. Η ενεργοποίηση αυτής της λειτουργίας εμποδίζει επίσης την καταγραφή και τον διαμοιρασμό οθόνης.</string>
-  <!-- Preference for removing cookie/consent banners from sites automatically in private mode. See reduce_cookie_banner_summary for additional context. -->
-  <string name="preferences_cookie_banner_reduction_private_mode">Αποκλεισμός μηνυμάτων για cookie σε ιδιωτική περιήγηση</string>
   <!-- Description of the preference to enable "HTTPS-Only" mode. -->
   <string name="preferences_https_only_summary">Προσπαθεί αυτόματα να συνδεθεί σε ιστοτόπους με το πρωτόκολλο κρυπτογράφησης HTTPS για αυξημένη ασφάλεια.</string>
   <!-- Summary of https only preference if https only is set to off -->
@@ -984,6 +988,8 @@
     Title for the customize home screen section with privacy report.
   -->
   <string name="customize_toggle_privacy_report">Αναφορά απορρήτου</string>
+  <!-- Title for a customize home screen section. Continue is a section that displays the most recent browser tab, so users can continue browsing where they left off. -->
+  <string name="customize_toggle_continue">Συνέχεια</string>
   <!-- Header text for jumping back into the recent tab in customize the home screen -->
   <string name="customize_toggle_jump_back_in">Άμεση επιστροφή</string>
   <!-- Title for the customize home screen section with bookmarks. -->
@@ -1637,15 +1643,6 @@
     <item quantity="one">Προσθήκη στην ομάδα καρτελών «%1$s», %2$d καρτέλα, %3$s χρώμα</item>
     <item quantity="other">Προσθήκη στην ομάδα καρτελών «%1$s», %2$d καρτέλες, %3$s χρώμα</item>
   </plurals>
-  <plurals name="share_tab_group_button_content_description">
-    <!--
-      Content Description for share tab group button.
-      %1$s is the name of the tab group.
-      %2$d is the number of tabs in a tab group.
-    -->
-    <item quantity="one">Κοινή χρήση της ομάδας καρτελών «%1$s» με %2$d καρτέλα.</item>
-    <item quantity="other">Κοινή χρήση της ομάδας καρτελών «%1$s» με %2$d καρτέλες.</item>
-  </plurals>
   <!-- Content description for the grabber/handle of the tab group bottom sheet. -->
   <string name="tab_group_sheet_dismiss_description">Προβολή ομάδας καρτελών, σύμπτυξη λαβής μεταφοράς</string>
   <plurals name="expanded_tab_group_header_description">
@@ -1983,8 +1980,6 @@
   <string name="webcompat_reporter_preview_report">Προεπισκόπηση αναφοράς</string>
   <!-- The title shown at the top of the WebCompat Report preview panel. This appears after the user taps the “Preview” button before sending a report. -->
   <string name="webcompat_reporter_preview_bottom_sheet_header">Προεπισκόπηση αναφοράς</string>
-  <!-- Label for the “Send” button shown in the WebCompat Report preview panel, which the user taps to submit the report. -->
-  <string name="webcompat_reporter_preview_bottom_sheet_send">Αποστολή</string>
   <!-- Title for the Edit URL confirmation dialog in the WebCompatReporter -->
   <string name="webcompat_reporter_edit_url_dialog_title">Επεξεργασία URL ιστοτόπου</string>
   <!-- Text shown on the save button for the Edit URL confirmation dialog in the WebCompatReporter. -->
@@ -2401,6 +2396,20 @@
   <string name="sent_from_firefox_template" tools:ignore="UnusedResources">%1$s\n\nΑπεστάλη από το %2$s 🦊 Δοκιμάστε το: %3$s</string>
   <!-- A short message template for the shared link with a footer. %1$s is the shared link, %2$s is the app name (e.g. Firefox) and %3$s is a download link for the app. -->
   <string name="sent_from_firefox_template_short" tools:ignore="UnusedResources">%1$s\n\nΑπεστάλη από το %2$s 🦊 %3$s</string>
+  <!-- Send tab to synced devices: Authentication error title - Message asking the user to re-authenticate -->
+  <string name="sync_send_tab_error_auth_title">Συνδεθείτε ξανά για να στείλετε καρτέλες μεταξύ των συσκευών σας</string>
+  <!-- Send tab to synced devices: Authentication error button - Allows user to re-authenticate -->
+  <string name="sync_send_tab_error_auth_button">Σύνδεση</string>
+  <!-- Send tab to synced devices: Authentication error button - Allows user to remove the currently connected account -->
+  <string name="sync_send_tab_error_auth_remove_account">Αφαίρεση λογαριασμού</string>
+  <!-- Send tab to synced devices: Empty state title - Displayed when the user has no synced devices -->
+  <string name="sync_send_tab_empty_state_title">Καμία συνδεδεμένη συσκευή</string>
+  <!-- Send tab to synced devices: Empty state message - Displayed when the user has no synced devices -->
+  <string name="sync_send_tab_empty_state_description" tools:ignore="BrandUsage">Για να στείλετε μια καρτέλα, συνδεθείτε στο Firefox σε τουλάχιστον άλλη μία συσκευή.</string>
+  <!-- Send tab to synced devices: Connectivity Error title -->
+  <string name="sync_send_tab_error_connection_title">Ελέγξτε τη σύνδεσή σας στο διαδίκτυο</string>
+  <!-- Send tab to synced devices: Connectivity Error message - Suggested user action after internet connection has been established -->
+  <string name="sync_send_tab_error_connection_text">Έπειτα, δοκιμάστε να στείλετε ξανά την καρτέλα σας.</string>
   <!--
     Notifications
 
@@ -2847,12 +2856,8 @@
   <string name="add_to_homescreen_cancel">Ακύρωση</string>
   <!-- Add button text for the Add to Homescreen dialog -->
   <string name="add_to_homescreen_add">Προσθήκη</string>
-  <!-- Continue to website button text for the first-time Add to Homescreen dialog -->
-  <string name="add_to_homescreen_continue">Συνέχεια στον ιστότοπο</string>
   <!-- Placeholder text for the TextView in the Add to Homescreen dialog -->
   <string name="add_to_homescreen_text_placeholder">Όνομα συντόμευσης</string>
-  <!-- Describes the add to homescreen functionality -->
-  <string name="add_to_homescreen_description_2">Μπορείτε εύκολα να προσθέσετε αυτόν τον ιστότοπο στην αρχική οθόνη για άμεση πρόσβαση και ταχύτερη περιήγηση, σαν να ήταν εφαρμογή.</string>
   <!-- Preference for managing the settings for logins and passwords in Fenix -->
   <string name="preferences_passwords_logins_and_passwords_2">Κωδικοί πρόσβασης</string>
   <!-- Preference for managing the saving of logins and passwords in Fenix -->
@@ -3022,8 +3027,6 @@
   <string name="ip_protection_location_section">Τοποθεσία</string>
   <!-- Label for the recommended automatic location option on the browser VPN settings screen -->
   <string name="ip_protection_location_recommended_label">Προτείνεται</string>
-  <!-- Description for the recommended automatic location option on the browser VPN settings screen -->
-  <string name="ip_protection_location_recommended_description">Επιλέγει την πιο γρήγορη τοποθεσία VPN για εσάς.</string>
   <!-- Badge label shown in the menu item when the browser VPN is active -->
   <string name="preferences_ip_protection_on">Ενεργό</string>
   <!-- Badge label shown in the menu item when the browser VPN is off -->
@@ -3113,10 +3116,6 @@
   <string name="ip_protection_locations_title">Επιλογή τοποθεσίας VPN</string>
   <!-- Content description for the browser VPN location selection screen top bar back button -->
   <string name="ip_protection_locations_navigate_back_button_content_description">Πλοήγηση προς τα πίσω</string>
-  <!-- Title for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_title" tools:ignore="UnusedResources">Η προηγούμενη τοποθεσία δεν είναι διαθέσιμη</string>
-  <!-- Description for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_recommended_description" tools:ignore="UnusedResources">Έγινε σύνδεση στην προτεινόμενη τοποθεσία.</string>
   <!--
     Autofill
 

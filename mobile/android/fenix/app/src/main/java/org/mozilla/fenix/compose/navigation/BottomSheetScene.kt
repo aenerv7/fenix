@@ -80,26 +80,22 @@ internal class BottomSheetScene<T : Any>(
             containerColor = MaterialTheme.colorScheme.surface,
             scrimColor = MaterialTheme.colorScheme.scrim,
         ) {
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-            ) {
+            Box(modifier = Modifier.fillMaxWidth()) {
                 if (showBetaLabel) {
                     BetaLabel(
-                        modifier = Modifier
-                            .align(Alignment.TopStart)
-                            .padding(
-                                start = FirefoxTheme.layout.space.static200,
-                                top = FirefoxTheme.layout.space.static200,
-                            ),
+                        modifier =
+                            Modifier.align(Alignment.TopStart)
+                                .padding(
+                                    start = FirefoxTheme.layout.space.static200,
+                                    top = FirefoxTheme.layout.space.static200,
+                                )
                     )
                 }
 
                 BottomSheetHandle(
                     onRequestDismiss = onBack,
                     contentDescription = handleContentDescription,
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .padding(all = 16.dp),
+                    modifier = Modifier.align(Alignment.Center).padding(all = 16.dp),
                 )
             }
 
@@ -138,8 +134,8 @@ internal class BottomSheetScene<T : Any>(
 }
 
 /**
- * A [SceneStrategy] that displays entries that have added [bottomSheet] to their [NavEntry.metadata]
- * within a [ModalBottomSheet] instance.
+ * A [SceneStrategy] that displays entries that have added [bottomSheet] to their [NavEntry.metadata] within a
+ * [ModalBottomSheet] instance.
  *
  * This strategy should always be added before any non-overlay scene strategies.
  */

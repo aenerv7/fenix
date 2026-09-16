@@ -49,22 +49,20 @@ import org.mozilla.fenix.webcompat.WEB_COMPAT_REPORTER_URL
 import org.mozilla.fenix.webcompat.WebCompatReporterMoreInfoSender
 
 /**
- * [Middleware] implementation for handling navigating events based on [MenuAction]s that are
- * dispatched to the [MenuStore].
+ * [Middleware] implementation for handling navigating events based on [MenuAction]s that are dispatched to the
+ * [MenuStore].
  *
- * @param browserStore [BrowserStore] used to dispatch actions related to the menu state and access
- * the selected tab.
+ * @param browserStore [BrowserStore] used to dispatch actions related to the menu state and access the selected tab.
  * @param navController [NavController] used for navigation.
- * @param openToBrowser Callback to open the provided [BrowserNavigationParams]
- * in a new browser tab.
+ * @param openToBrowser Callback to open the provided [BrowserNavigationParams] in a new browser tab.
  * @param sessionUseCases [SessionUseCases] used to reload the page and navigate back/forward.
  * @param webAppUseCases [WebAppUseCases] used for adding items to the home screen.
  * @param shareUseCases [ShareUseCases] for sharing content via the system share sheet or the in-app [ShareFragment].
  * @param settings Used to check [Settings] when adding items to the home screen.
  * @param onDismiss Callback invoked to dismiss the menu dialog.
  * @param scope [CoroutineScope] used to launch coroutines.
- * @param webCompatReporterMoreInfoSender [WebCompatReporterMoreInfoSender] used
- * to send WebCompat info to webcompat.com.
+ * @param webCompatReporterMoreInfoSender [WebCompatReporterMoreInfoSender] used to send WebCompat info to
+ *   webcompat.com.
  */
 @Suppress("LongParameterList")
 class MenuNavigationMiddleware(
@@ -172,9 +170,7 @@ class MenuNavigationMiddleware(
                         navController.nav(
                             R.id.menuDialogFragment,
                             MenuDialogFragmentDirections.actionMenuDialogFragmentToCreateShortcutFragment(),
-                            navOptions = NavOptions.Builder()
-                                .setPopUpTo(R.id.browserFragment, false)
-                                .build(),
+                            navOptions = NavOptions.Builder().setPopUpTo(R.id.browserFragment, false).build(),
                         )
                     }
                 }
@@ -186,60 +182,70 @@ class MenuNavigationMiddleware(
                             MenuDialogFragmentDirections.actionGlobalCollectionCreationFragment(
                                 tabIds = arrayOf(currentSession.id),
                                 selectedTabIds = arrayOf(currentSession.id),
-                                saveCollectionStep = if (action.hasCollection) {
-                                    SaveCollectionStep.SelectCollection
-                                } else {
-                                    SaveCollectionStep.NameCollection
-                                },
+                                saveCollectionStep =
+                                    if (action.hasCollection) {
+                                        SaveCollectionStep.SelectCollection
+                                    } else {
+                                        SaveCollectionStep.NameCollection
+                                    },
                             ),
-                            navOptions = NavOptions.Builder()
-                                .setPopUpTo(R.id.browserFragment, false)
-                                .build(),
+                            navOptions = NavOptions.Builder().setPopUpTo(R.id.browserFragment, false).build(),
                         )
                     }
                 }
 
-                is MenuAction.Navigate.Translate -> navController.nav(
-                    R.id.menuDialogFragment,
-                    MenuDialogFragmentDirections.actionMenuDialogFragmentToTranslationsDialogFragment(),
-                    navOptions = NavOptions.Builder()
-                        .setPopUpTo(R.id.browserFragment, false)
-                        .build(),
-                )
+                is MenuAction.Navigate.Translate ->
+                    navController.nav(
+                        R.id.menuDialogFragment,
+                        MenuDialogFragmentDirections.actionMenuDialogFragmentToTranslationsDialogFragment(
+                            sessionId = currentState.browserMenuState?.selectedTab?.id
+                        ),
+                        navOptions =
+                            NavOptions.Builder().setPopUpTo(currentState.browserDestinationId(), false).build(),
+                    )
 
                 is MenuAction.Navigate.Share -> {
                     val session: SessionState? = currentState.browserMenuState?.selectedTab
                     val url = session?.getTabUrl()
+                    val isPrivate = session?.content?.private ?: false
 
                     shareUseCases.shareUrl(
                         id = session?.id,
                         url = url,
                         title = session?.content?.title,
-                        source = if (session.isCustomTab()) {
-                            ShareSource.CUSTOM_TAB_MENU
-                        } else {
-                            ShareSource.BROWSER_MENU
-                        },
-                        isPrivate = session?.content?.private ?: false,
+                        source =
+                            if (session.isCustomTab()) {
+                                ShareSource.CUSTOM_TAB_MENU
+                            } else {
+                                ShareSource.BROWSER_MENU
+                            },
+                        isPrivate = isPrivate,
                         isCustomTab = session.isCustomTab(),
                         navigateToShareFragment = {
-                            val shareData = arrayOf(ShareData(title = session?.content?.title, url = url))
-                            val popUpToId = if (session.isCustomTab()) {
-                                R.id.externalAppBrowserFragment
-                            } else {
-                                R.id.browserFragment
-                            }
+                            val shareData =
+                                arrayOf(
+                                    ShareData(
+                                        title = session?.content?.title,
+                                        url = url,
+                                        private = isPrivate,
+                                    )
+                                )
+                            val popUpToId =
+                                if (session.isCustomTab()) {
+                                    R.id.externalAppBrowserFragment
+                                } else {
+                                    R.id.browserFragment
+                                }
 
                             navController.nav(
                                 id = R.id.menuDialogFragment,
-                                directions = MenuDialogFragmentDirections.actionGlobalShareFragment(
-                                    sessionId = session?.id,
-                                    data = shareData,
-                                    showPage = true,
-                                ),
-                                navOptions = NavOptions.Builder()
-                                    .setPopUpTo(popUpToId, false)
-                                    .build(),
+                                directions =
+                                    MenuDialogFragmentDirections.actionGlobalShareFragment(
+                                        sessionId = session?.id,
+                                        data = shareData,
+                                        showPage = true,
+                                    ),
+                                navOptions = NavOptions.Builder().setPopUpTo(popUpToId, false).build(),
                             )
                         },
                     )
@@ -247,21 +253,22 @@ class MenuNavigationMiddleware(
                     onDismiss()
                 }
 
-                is MenuAction.Navigate.ManageExtensions -> navController.nav(
-                    R.id.menuDialogFragment,
-                    MenuDialogFragmentDirections.actionGlobalAddonsManagementFragment(),
-                )
+                is MenuAction.Navigate.ManageExtensions ->
+                    navController.nav(
+                        R.id.menuDialogFragment,
+                        MenuDialogFragmentDirections.actionGlobalAddonsManagementFragment(),
+                    )
 
-                is MenuAction.Navigate.DiscoverMoreExtensions -> openToBrowser(
-                    BrowserNavigationParams(url = AMO_HOMEPAGE_FOR_ANDROID),
-                )
+                is MenuAction.Navigate.DiscoverMoreExtensions ->
+                    openToBrowser(BrowserNavigationParams(url = AMO_HOMEPAGE_FOR_ANDROID))
 
-                is MenuAction.Navigate.AddonDetails -> navController.nav(
-                    R.id.menuDialogFragment,
-                    MenuDialogFragmentDirections.actionMenuDialogFragmenToAddonDetailsFragment(
-                        addon = action.addon,
-                    ),
-                )
+                is MenuAction.Navigate.AddonDetails ->
+                    navController.nav(
+                        R.id.menuDialogFragment,
+                        MenuDialogFragmentDirections.actionMenuDialogFragmenToAddonDetailsFragment(
+                            addon = action.addon
+                        ),
+                    )
 
                 is MenuAction.Navigate.WebCompatReporter -> {
                     val session = currentState.browserMenuState?.selectedTab
@@ -269,9 +276,9 @@ class MenuNavigationMiddleware(
                         if (settings.isTelemetryEnabled) {
                             navController.nav(
                                 id = R.id.menuDialogFragment,
-                                directions = MenuDialogFragmentDirections
-                                    .actionMenuDialogFragmentToWebCompatReporterFragment(
-                                        tabUrl = tabUrl,
+                                directions =
+                                    MenuDialogFragmentDirections.actionMenuDialogFragmentToWebCompatReporterFragment(
+                                        tabUrl = tabUrl
                                     ),
                             )
                         } else {
@@ -285,9 +292,7 @@ class MenuNavigationMiddleware(
                                 engineSession = selectedTab?.engineState?.engineSession,
                             )
 
-                            openToBrowser(
-                                BrowserNavigationParams(url = "$WEB_COMPAT_REPORTER_URL$tabUrl"),
-                            )
+                            openToBrowser(BrowserNavigationParams(url = "$WEB_COMPAT_REPORTER_URL$tabUrl"))
                         }
                     }
                 }
@@ -295,11 +300,12 @@ class MenuNavigationMiddleware(
                 is MenuAction.Navigate.Summarizer -> {
                     navController.nav(
                         id = R.id.menuDialogFragment,
-                        directions = MenuDialogFragmentDirections
-                            .actionMenuDialogFragmentToSummarizationFragment(),
-                        navOptions = NavOptions.Builder()
-                            .setPopUpTo(R.id.browserFragment, false)
-                            .build(),
+                        directions =
+                            MenuDialogFragmentDirections.actionMenuDialogFragmentToSummarizationFragment(
+                                sessionId = currentState.browserMenuState?.selectedTab?.id
+                            ),
+                        navOptions =
+                            NavOptions.Builder().setPopUpTo(currentState.browserDestinationId(), false).build(),
                     )
                 }
 
@@ -307,15 +313,14 @@ class MenuNavigationMiddleware(
                     if (action.viewHistory) {
                         navController.nav(
                             id = R.id.menuDialogFragment,
-                            directions = MenuDialogFragmentDirections.actionGlobalTabHistoryDialogFragment(
-                                // active session here implies a custom tab. so we only set this if it's a custom tab
-                                activeSessionId = currentState.browserMenuState?.selectedTab
-                                    ?.takeIf { it.isCustomTab() }
-                                    ?.id,
-                            ),
-                            navOptions = NavOptions.Builder()
-                                .setPopUpTo(R.id.browserFragment, false)
-                                .build(),
+                            directions =
+                                MenuDialogFragmentDirections.actionGlobalTabHistoryDialogFragment(
+                                    // active session here implies a custom tab. so we only set this if it's a custom
+                                    // tab
+                                    activeSessionId =
+                                        currentState.browserMenuState?.selectedTab?.takeIf { it.isCustomTab() }?.id
+                                ),
+                            navOptions = NavOptions.Builder().setPopUpTo(R.id.browserFragment, false).build(),
                         )
                     } else {
                         val session = currentState.browserMenuState?.selectedTab ?: return@launch
@@ -326,8 +331,7 @@ class MenuNavigationMiddleware(
                             !session.isCustomTab() && session.hasUrlOfAHomeScreenStory() -> {
                                 // First attempting to go back to the existing home fragment
                                 // to preserve its scroll position.
-                                val popToExistingHomeFragment =
-                                    navController.popBackStack(R.id.homeFragment, false)
+                                val popToExistingHomeFragment = navController.popBackStack(R.id.homeFragment, false)
                                 if (!popToExistingHomeFragment) {
                                     navController.nav(
                                         id = R.id.menuDialogFragment,
@@ -343,8 +347,8 @@ class MenuNavigationMiddleware(
                                 if (!popToExistingStoriesFragment) {
                                     navController.nav(
                                         id = R.id.menuDialogFragment,
-                                        directions = MenuDialogFragmentDirections
-                                            .actionMenuDialogFragmentToStoriesFragment(),
+                                        directions =
+                                            MenuDialogFragmentDirections.actionMenuDialogFragmentToStoriesFragment(),
                                     )
                                 }
                             }
@@ -360,15 +364,14 @@ class MenuNavigationMiddleware(
                     if (action.viewHistory) {
                         navController.nav(
                             id = R.id.menuDialogFragment,
-                            directions = MenuDialogFragmentDirections.actionGlobalTabHistoryDialogFragment(
-                                // active session here implies a custom tab. so we only set this if it's a custom tab
-                                activeSessionId = currentState.browserMenuState?.selectedTab
-                                    ?.takeIf { it.isCustomTab() }
-                                    ?.id,
-                            ),
-                            navOptions = NavOptions.Builder()
-                                .setPopUpTo(R.id.browserFragment, false)
-                                .build(),
+                            directions =
+                                MenuDialogFragmentDirections.actionGlobalTabHistoryDialogFragment(
+                                    // active session here implies a custom tab. so we only set this if it's a custom
+                                    // tab
+                                    activeSessionId =
+                                        currentState.browserMenuState?.selectedTab?.takeIf { it.isCustomTab() }?.id
+                                ),
+                            navOptions = NavOptions.Builder().setPopUpTo(R.id.browserFragment, false).build(),
                         )
                     } else {
                         session?.let {
@@ -384,11 +387,12 @@ class MenuNavigationMiddleware(
                     session?.let {
                         sessionUseCases.reload.invoke(
                             tabId = it.id,
-                            flags = if (action.bypassCache) {
-                                LoadUrlFlags.select(LoadUrlFlags.BYPASS_CACHE)
-                            } else {
-                                LoadUrlFlags.none()
-                            },
+                            flags =
+                                if (action.bypassCache) {
+                                    LoadUrlFlags.select(LoadUrlFlags.BYPASS_CACHE)
+                                } else {
+                                    LoadUrlFlags.none()
+                                },
                         )
                         onDismiss()
                     }
@@ -406,9 +410,10 @@ class MenuNavigationMiddleware(
                 is MenuAction.Navigate.IPProtectionSettings -> {
                     navController.nav(
                         id = R.id.menuDialogFragment,
-                        directions = MenuDialogFragmentDirections.actionMenuDialogFragmentToIpProtectionFragment(
-                            entrypoint = FenixFxAEntryPoint.IPProtectionMainMenu,
-                        ),
+                        directions =
+                            MenuDialogFragmentDirections.actionMenuDialogFragmentToIpProtectionFragment(
+                                entrypoint = FenixFxAEntryPoint.IPProtectionMainMenu
+                            ),
                     )
                 }
 
@@ -416,4 +421,10 @@ class MenuNavigationMiddleware(
             }
         }
     }
+
+    private fun MenuState.browserDestinationId(): Int =
+        when (browserMenuState?.selectedTab.isCustomTab()) {
+            true -> R.id.externalAppBrowserFragment
+            else -> R.id.browserFragment
+        }
 }

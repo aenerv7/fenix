@@ -150,6 +150,12 @@
   <!--
     Recent Tabs
 
+    Header text on the homescreen for continuing to browse the most recent browser tab
+  -->
+  <string name="recent_tabs_header_2">Doorgaan</string>
+  <!--
+    Recent Tabs
+
     Header text for jumping back into the recent tab in the home screen
   -->
   <string name="recent_tabs_header">Terugspringen</string>
@@ -778,8 +784,6 @@
   <string name="preferences_pbm_lock_screen_title">Schermvergrendeling gebruiken om tabbladen in privénavigatie te verbergen</string>
   <!-- Informs the user how to access the tabs when "Use screen lock to hide tabs in private browsing" is enabled -->
   <string name="preferences_pbm_lock_screen_summary_3">Bekijk tabbladen met uw vingerafdruk, pincode of gezichtsontgrendeling. Door dit in te schakelen, wordt ook het vastleggen en delen van uw scherm voorkomen.</string>
-  <!-- Preference for removing cookie/consent banners from sites automatically in private mode. See reduce_cookie_banner_summary for additional context. -->
-  <string name="preferences_cookie_banner_reduction_private_mode">Blokkering van cookiebanners tijdens privénavigatie</string>
   <!-- Description of the preference to enable "HTTPS-Only" mode. -->
   <string name="preferences_https_only_summary">Probeert voor een betere beveiliging automatisch middels het HTTPS-versleutelingsprotocol verbinding te maken met websites.</string>
   <!-- Summary of https only preference if https only is set to off -->
@@ -984,6 +988,8 @@
     Title for the customize home screen section with privacy report.
   -->
   <string name="customize_toggle_privacy_report">Privacyrapport</string>
+  <!-- Title for a customize home screen section. Continue is a section that displays the most recent browser tab, so users can continue browsing where they left off. -->
+  <string name="customize_toggle_continue">Doorgaan</string>
   <!-- Header text for jumping back into the recent tab in customize the home screen -->
   <string name="customize_toggle_jump_back_in">Terugspringen</string>
   <!-- Title for the customize home screen section with bookmarks. -->
@@ -1644,15 +1650,6 @@
     <item quantity="one">%2$d tabblad aan tabbladgroep %1$s toevoegen, kleur %3$s</item>
     <item quantity="other">%2$d tabbladen aan tabbladgroep %1$s toevoegen, kleur %3$s</item>
   </plurals>
-  <plurals name="share_tab_group_button_content_description">
-    <!--
-      Content Description for share tab group button.
-      %1$s is the name of the tab group.
-      %2$d is the number of tabs in a tab group.
-    -->
-    <item quantity="one">Tabbladgroep %1$s met %2$d tabblad delen.</item>
-    <item quantity="other">Tabbladgroep %1$s met %2$d tabbladen delen.</item>
-  </plurals>
   <!-- Content description for the grabber/handle of the tab group bottom sheet. -->
   <string name="tab_group_sheet_dismiss_description">Tabbladgroep bekijken, sleepgreep samenvouwen</string>
   <plurals name="expanded_tab_group_header_description">
@@ -1998,8 +1995,6 @@
   <string name="webcompat_reporter_preview_report">Voorbeeld van rapport</string>
   <!-- The title shown at the top of the WebCompat Report preview panel. This appears after the user taps the “Preview” button before sending a report. -->
   <string name="webcompat_reporter_preview_bottom_sheet_header">Rapportvoorbeeld</string>
-  <!-- Label for the “Send” button shown in the WebCompat Report preview panel, which the user taps to submit the report. -->
-  <string name="webcompat_reporter_preview_bottom_sheet_send">Verzenden</string>
   <!-- Title for the Edit URL confirmation dialog in the WebCompatReporter -->
   <string name="webcompat_reporter_edit_url_dialog_title">Website-URL bewerken</string>
   <!-- Text shown on the save button for the Edit URL confirmation dialog in the WebCompatReporter. -->
@@ -2862,12 +2857,8 @@
   <string name="add_to_homescreen_cancel">Annuleren</string>
   <!-- Add button text for the Add to Homescreen dialog -->
   <string name="add_to_homescreen_add">Toevoegen</string>
-  <!-- Continue to website button text for the first-time Add to Homescreen dialog -->
-  <string name="add_to_homescreen_continue">Doorgaan naar website</string>
   <!-- Placeholder text for the TextView in the Add to Homescreen dialog -->
   <string name="add_to_homescreen_text_placeholder">Naam snelkoppeling</string>
-  <!-- Describes the add to homescreen functionality -->
-  <string name="add_to_homescreen_description_2">U kunt deze website eenvoudig aan het startscherm van uw apparaat toevoegen, om zo direct toegang te hebben en sneller te navigeren met een app-achtige ervaring.</string>
   <!-- Preference for managing the settings for logins and passwords in Fenix -->
   <string name="preferences_passwords_logins_and_passwords_2">Wachtwoorden</string>
   <!-- Preference for managing the saving of logins and passwords in Fenix -->
@@ -3037,8 +3028,6 @@
   <string name="ip_protection_location_section">Locatie</string>
   <!-- Label for the recommended automatic location option on the browser VPN settings screen -->
   <string name="ip_protection_location_recommended_label">Aanbevolen</string>
-  <!-- Description for the recommended automatic location option on the browser VPN settings screen -->
-  <string name="ip_protection_location_recommended_description">Selecteert de snelste VPN-locatie voor u.</string>
   <!-- Badge label shown in the menu item when the browser VPN is active -->
   <string name="preferences_ip_protection_on">Aan</string>
   <!-- Badge label shown in the menu item when the browser VPN is off -->
@@ -3049,6 +3038,8 @@
   <string name="ip_protection_menu_paused">Gepauzeerd</string>
   <!-- Badge label shown in the menu item when the browser VPN has an error -->
   <string name="ip_protection_menu_error">Fout</string>
+  <!-- Badge label shown in the VPN menu item when the user is eligible for the feature but needs to authenticate / authorize to enable it -->
+  <string name="ip_protection_menu_try_vpn_cta">Gratis proberen</string>
   <!-- Badge label shown in the menu item when the user is eligible to use the browser VPN but should authenticate or authorize it first. -->
   <string name="ip_protection_menu_auth_required">Uitproberen</string>
   <!-- Content description for the chevron button that opens the browser VPN settings screen -->
@@ -3097,6 +3088,8 @@
   <string name="ip_protection_onboarding_not_now_button">Niet nu</string>
   <!-- Snackbar (in-app pop-up notification) text to signal the browser VPN connection error -->
   <string name="ip_protection_connection_error_snackbar">Kon niet verbinden met VPN. Probeer het over een paar minuten opnieuw.</string>
+  <!-- Snackbar (in-app pop-up notification) text to signal the VPN location has been reset due to the previously selected VPN location being no longer available. -->
+  <string name="ip_protection_location_selection_reset_snackbar">Geselecteerde VPN-locatie niet beschikbaar. Omgeschakeld naar de aanbevolen locatie.</string>
   <!--
     Snackbar (in-app pop-up notification) text to signal the browser VPN has reached the monthly data limit.
     %1$d is the total monthly allowance in GB (for example "50").
@@ -3134,10 +3127,6 @@
   <string name="ip_protection_locations_title">VPN-locatie kiezen</string>
   <!-- Content description for the browser VPN location selection screen top bar back button -->
   <string name="ip_protection_locations_navigate_back_button_content_description">Terug bladeren</string>
-  <!-- Title for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_title" tools:ignore="UnusedResources">Vorige locatie is niet beschikbaar</string>
-  <!-- Description for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_recommended_description" tools:ignore="UnusedResources">Verbonden met de aanbevolen locatie.</string>
   <!--
     Autofill
 
@@ -4532,7 +4521,7 @@
   <!-- The title used in a confirmation dialog on the Firefox Labs screen when restoring the application to its defaults by turning "off" any experimental features. -->
   <string name="firefox_labs_restore_defaults_dialog_title">Herstart vereist</string>
   <!-- The description used in a confirmation dialog on the Firefox Labs screen when restoring the application to its defaults by turning "off" any experimental features. %s is the name of the app (for example "Firefox Nightly") -->
-  <string name="firefox_labs_restore_defaults_dialog_message">Herstart %s om de standaardinstellingen te herstellen.</string>
+  <string name="firefox_labs_restore_defaults_dialog_message">Herstart %s om de standaardwaarden te herstellen.</string>
   <!-- The description text that is displayed in the confirmation dialog on the Firefox Labs screen for toggling "on" experimental features. %s is the name of the app (for example "Firefox Nightly") -->
   <string name="firefox_labs_feature_enable_dialog_message">Herstart %s om deze functie in te schakelen.</string>
   <!-- The description text that is displayed in the confirmation dialog on the Firefox Labs screen for toggling "off" experimental features. %s is the name of the app (for example "Firefox Nightly") -->
@@ -4557,4 +4546,18 @@
   <string name="pdf_tools_print_content_description">PDF afdrukken</string>
   <!-- Content description for accessibility (used by screen readers): Description for the button that opens the sharing options for the PDF being displayed on the screen. -->
   <string name="pdf_tools_share_content_description">PDF delen</string>
+  <!--
+    PDF viewer add a signature dialog
+
+    The title of the dialog for adding a signature to a PDF.
+  -->
+  <string name="pdf_tools_signature_title">Een handtekening toevoegen</string>
+  <!-- Content description for accessibility (used by screen readers): Description for the button that closes the dialog for adding a signature to a PDF. -->
+  <string name="pdf_tools_signature_close_content_description">Paneel voor PDF-ondertekening sluiten</string>
+  <!-- The placeholder text shown in the empty text input field where users can enter the signature they wish to add to a PDF. -->
+  <string name="pdf_tools_signature_placeholder">Typ uw handtekening</string>
+  <!-- The text for the button that erases the text the user entered in the "add a signature" field. -->
+  <string name="pdf_tools_signature_clear_button">Wissen</string>
+  <!-- The text for the button that adds the signature the user has typed to the PDF. -->
+  <string name="pdf_tools_signature_add_button">Toevoegen</string>
 </resources>

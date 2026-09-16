@@ -112,16 +112,14 @@ fun MenuBanner(
 
 @Preview
 @Composable
-private fun MenuBannerPreview(
-    @PreviewParameter(PreviewThemeProvider::class) theme: Theme,
-) {
+private fun MenuBannerPreview(@PreviewParameter(PreviewThemeProvider::class) theme: Theme) {
     FirefoxTheme(theme) {
         MenuBanner(
             onDismiss = {},
             onClick = {},
-            modifier = Modifier
-                .background(color = MaterialTheme.colorScheme.surface)
-                .padding(all = FirefoxTheme.layout.space.static200),
+            modifier =
+                Modifier.background(color = MaterialTheme.colorScheme.surface)
+                    .padding(all = FirefoxTheme.layout.space.static200),
         )
     }
 }

@@ -150,6 +150,12 @@
   <!--
     Recent Tabs
 
+    Header text on the homescreen for continuing to browse the most recent browser tab
+  -->
+  <string name="recent_tabs_header_2">رئڌن وا پؽش</string>
+  <!--
+    Recent Tabs
+
     Header text for jumping back into the recent tab in the home screen
   -->
   <string name="recent_tabs_header">وورگرتین و من</string>
@@ -778,8 +784,6 @@
   <string name="preferences_pbm_lock_screen_title">و کار گرؽڌن چفت بلگه سی بؽڌار کردن بلگه یل من گشتن سیخومی</string>
   <!-- Informs the user how to access the tabs when "Use screen lock to hide tabs in private browsing" is enabled -->
   <string name="preferences_pbm_lock_screen_summary_3">وا جا کلک، پین یا تشخیس ری، بلگه یل ن بنیرین. رۊشن کردن ای گۊزینه، ز زفت کردن وو یک رسۊوی بلگه گۊشی هم جلاوگری اکونه.</string>
-  <!-- Preference for removing cookie/consent banners from sites automatically in private mode. See reduce_cookie_banner_summary for additional context. -->
-  <string name="preferences_cookie_banner_reduction_private_mode">مسدۊد کوݩ بنر کۊکی من گشتن سیخومی</string>
   <!-- Description of the preference to enable "HTTPS-Only" mode. -->
   <string name="preferences_https_only_summary">و جۊر خوتکار سی قلوه کردن ٱمنیت قپ ریت اکونه تا وا و کار گرؽڌن بارت رزم ناهاڌن HTTPS و وبگه یل منپیز بۊ.</string>
   <!-- Summary of https only preference if https only is set to off -->
@@ -984,6 +988,8 @@
     Title for the customize home screen section with privacy report.
   -->
   <string name="customize_toggle_privacy_report">گوزارش هریم سیخومی</string>
+  <!-- Title for a customize home screen section. Continue is a section that displays the most recent browser tab, so users can continue browsing where they left off. -->
+  <string name="customize_toggle_continue">رئڌن وا پؽش</string>
   <!-- Header text for jumping back into the recent tab in customize the home screen -->
   <string name="customize_toggle_jump_back_in">وورگرتین و من</string>
   <!-- Title for the customize home screen section with bookmarks. -->
@@ -1644,15 +1650,6 @@
     <item quantity="one">ٱووردن و بونکۊ بلگه %1$s، بلگه %2$d، رنگ %3$s</item>
     <item quantity="other">ٱووردن و بونکۊ بلگه %1$s، بلگه %2$d، رنگ %3$s</item>
   </plurals>
-  <plurals name="share_tab_group_button_content_description">
-    <!--
-      Content Description for share tab group button.
-      %1$s is the name of the tab group.
-      %2$d is the number of tabs in a tab group.
-    -->
-    <item quantity="one">بونکۊ بلگه %1$s ن وا %2$d بلگه یک رسوۊی کۊنین.</item>
-    <item quantity="other">بونکۊ بلگه %1$s ن وا %2$d بلگه یک رسوۊی کۊنین.</item>
-  </plurals>
   <!-- Content description for the grabber/handle of the tab group bottom sheet. -->
   <string name="tab_group_sheet_dismiss_description">نیشتن بونکۊ بلگه، جم کردن دسته کشیڌن</string>
   <plurals name="expanded_tab_group_header_description">
@@ -1830,7 +1827,7 @@
   <string name="download_resume_action">ز سر گرؽڌن</string>
   <!-- Content description for retry download action button on the downloads screen -->
   <string name="download_retry_action">قپ ریت دووارته</string>
-  <string name="download_clear_search_description">پاک کردن</string>
+  <string name="download_clear_search_description">روفتن</string>
   <!-- Text for the button to share the download URL -->
   <string name="download_share_url">یک رسۊوی نشۊوی اینترنتی</string>
   <!-- Text for the button to share the download file -->
@@ -1998,8 +1995,6 @@
   <string name="webcompat_reporter_preview_report">پؽش نشووݩ گوزارش</string>
   <!-- The title shown at the top of the WebCompat Report preview panel. This appears after the user taps the “Preview” button before sending a report. -->
   <string name="webcompat_reporter_preview_bottom_sheet_header">پؽش نشووݩ گوزارش</string>
-  <!-- Label for the “Send” button shown in the WebCompat Report preview panel, which the user taps to submit the report. -->
-  <string name="webcompat_reporter_preview_bottom_sheet_send">فشناڌن</string>
   <!-- Title for the Edit URL confirmation dialog in the WebCompatReporter -->
   <string name="webcompat_reporter_edit_url_dialog_title">آلشت نشۊوی وبگه</string>
   <!-- Text shown on the save button for the Edit URL confirmation dialog in the WebCompatReporter. -->
@@ -2202,19 +2197,19 @@
   <!-- Label that indicates that this option it the recommended one -->
   <string name="phone_feature_recommended">پؽشنهاڌ وابیڌه</string>
   <!-- Button label for clearing all the information of site permissions -->
-  <string name="clear_permissions">پاک کردن موجوزا</string>
+  <string name="clear_permissions">روفتن موجوزا</string>
   <!-- Text for the OK button on Clear permissions dialog -->
   <string name="clear_permissions_positive">خا</string>
   <!-- Text for the cancel button on Clear permissions dialog -->
   <string name="clear_permissions_negative">لقو</string>
   <!-- Button label for clearing a site permission -->
-  <string name="clear_permission">پاک کردن موجوز</string>
+  <string name="clear_permission">روفتن موجوز</string>
   <!-- Text for the OK button on Clear permission dialog -->
   <string name="clear_permission_positive">خا</string>
   <!-- Text for the cancel button on Clear permission dialog -->
   <string name="clear_permission_negative">لقو</string>
   <!-- Button label for clearing all the information on all sites -->
-  <string name="clear_permissions_on_all_sites">پاک کردن هشتنا من پوی وبگه یل</string>
+  <string name="clear_permissions_on_all_sites">روفتن هشتنا من پوی وبگه یل</string>
   <!-- Preference for altering video and audio autoplay for all websites -->
   <string name="preference_browser_feature_autoplay">پشک خوتکار</string>
   <!-- Preference for local device access for all websites -->
@@ -2416,6 +2411,20 @@
   <string name="sent_from_firefox_template" tools:ignore="UnusedResources">%1$s\n\nز %2$s فشناڌه وابیڌه 🦊 گشت گر هومره ن امتهووݩ کۊنین: %3$s</string>
   <!-- A short message template for the shared link with a footer. %1$s is the shared link, %2$s is the app name (e.g. Firefox) and %3$s is a download link for the app. -->
   <string name="sent_from_firefox_template_short" tools:ignore="UnusedResources">%1$s\n\nز %2$s فشناڌه وابیڌه 🦊 %3$s</string>
+  <!-- Send tab to synced devices: Authentication error title - Message asking the user to re-authenticate -->
+  <string name="sync_send_tab_error_auth_title">سی فشناڌن بلگه یل منجا دسگایل، دووارته و من سیستوم بیاین</string>
+  <!-- Send tab to synced devices: Authentication error button - Allows user to re-authenticate -->
+  <string name="sync_send_tab_error_auth_button">و من ٱووڌن</string>
+  <!-- Send tab to synced devices: Authentication error button - Allows user to remove the currently connected account -->
+  <string name="sync_send_tab_error_auth_remove_account">پاک کردن هساو</string>
+  <!-- Send tab to synced devices: Empty state title - Displayed when the user has no synced devices -->
+  <string name="sync_send_tab_empty_state_title">هیچ دسگایی منپیز نؽ</string>
+  <!-- Send tab to synced devices: Empty state message - Displayed when the user has no synced devices -->
+  <string name="sync_send_tab_empty_state_description" tools:ignore="BrandUsage">سی فشناڌن ی بلگه، ٱقلن وا ز من ی دسگا دیر و من Firefox بیاین.</string>
+  <!-- Send tab to synced devices: Connectivity Error title -->
+  <string name="sync_send_tab_error_connection_title">منپیز اینترنت خوتووݩ ن واجۊری کۊنین</string>
+  <!-- Send tab to synced devices: Connectivity Error message - Suggested user action after internet connection has been established -->
+  <string name="sync_send_tab_error_connection_text">دیندا قپ ریت کۊنین بلگه خوتووݩ ن دووارته بفشنین.</string>
   <!--
     Notifications
 
@@ -2726,7 +2735,7 @@
   <!-- Category of trackers (redirect trackers) that can be blocked by Enhanced Tracking Protection -->
   <string name="etp_redirect_trackers_title">رڌجۊرا آلشت تور</string>
   <!-- Description of redirect tracker cookies that can be blocked by Enhanced Tracking Protection -->
-  <string name="etp_redirect_trackers_description">کۊکیا سامووݩ وابیڌه و دست آلشت تور و وبگه یل رڌجۊری اشناخته بیڌه ن پاک اکونه.</string>
+  <string name="etp_redirect_trackers_description">کۊکیا سامووݩ وابیڌه و دست آلشت تور و وبگه یل رڌجۊری اشناخته بیڌه ن ارۊفنه.</string>
   <!-- Preference for fingerprinting protection for the custom protection settings -->
   <string name="etp_suspected_fingerprinters_title">جا کلکا مشکۊک</string>
   <!-- Description of fingerprinters that can be blocked by fingerprinting protection -->
@@ -2862,12 +2871,8 @@
   <string name="add_to_homescreen_cancel">لقو</string>
   <!-- Add button text for the Add to Homescreen dialog -->
   <string name="add_to_homescreen_add">ٱووردن</string>
-  <!-- Continue to website button text for the first-time Add to Homescreen dialog -->
-  <string name="add_to_homescreen_continue">رئڌن وا پؽش و ای وبگه اینترنتی</string>
   <!-- Placeholder text for the TextView in the Add to Homescreen dialog -->
   <string name="add_to_homescreen_text_placeholder">نوم ره نهنگ</string>
-  <!-- Describes the add to homescreen functionality -->
-  <string name="add_to_homescreen_description_2">و آسۊوی ترین ای وبگه ن و بلگه هووه تیلیفووݩ خوتووݩ یارین تا هر سا دلتووݩ خاست وس دسرسی داشته بۊین وو کار وا ی برنومه گشت گر زیتری ن سیتووݩ داره.</string>
   <!-- Preference for managing the settings for logins and passwords in Fenix -->
   <string name="preferences_passwords_logins_and_passwords_2">رزما</string>
   <!-- Preference for managing the saving of logins and passwords in Fenix -->
@@ -3037,8 +3042,6 @@
   <string name="ip_protection_location_section">جاگه</string>
   <!-- Label for the recommended automatic location option on the browser VPN settings screen -->
   <string name="ip_protection_location_recommended_label">پؽشنهاڌ وابیڌه</string>
-  <!-- Description for the recommended automatic location option on the browser VPN settings screen -->
-  <string name="ip_protection_location_recommended_description">زل ترین جاگه VPN ن سی ایسا پسند اکونه.</string>
   <!-- Badge label shown in the menu item when the browser VPN is active -->
   <string name="preferences_ip_protection_on">رۊشن</string>
   <!-- Badge label shown in the menu item when the browser VPN is off -->
@@ -3134,10 +3137,6 @@
   <string name="ip_protection_locations_title">پسند جاگه VPN</string>
   <!-- Content description for the browser VPN location selection screen top bar back button -->
   <string name="ip_protection_locations_navigate_back_button_content_description">وورگشتن و عقب</string>
-  <!-- Title for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_title" tools:ignore="UnusedResources">جاگه پؽشی من دسرس نؽ</string>
-  <!-- Description for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_recommended_description" tools:ignore="UnusedResources">و جاگه پؽشنهاڌ وابیڌه منپیز وابی.</string>
   <!--
     Autofill
 
@@ -3345,7 +3344,7 @@
   <!-- Third step for the allowing a permission (%1$s is the permission name, for example "Camera"). -->
   <string name="phone_feature_blocked_step_feature"><![CDATA[3. آلشت <b>%1$s</b> ن و ON آلشت بڌین]]></string>
   <!-- Label to clear site data -->
-  <string name="clear_site_data">پاک کردن کۊکیا وو داده یل وبگه</string>
+  <string name="clear_site_data">روفتن کۊکیا وو داده یل وبگه</string>
   <!-- Confirmation message for a dialog confirming if the user wants to delete all the permissions for all sites -->
   <string name="confirm_clear_permissions_on_all_sites">اخۊین ک پوی دسرسیا ن من پوی وبگه یل پاک کۊنین؟</string>
   <!-- Confirmation message for a dialog confirming if the user wants to delete all the permissions for a site -->
@@ -3922,9 +3921,9 @@
     Description text for a dialog confirming whether the user wants to delete all data for current site.
     %s is a placeholder for the base domain of website.
   -->
-  <string name="clear_site_data_dialog_description"><![CDATA[پاک کردن کۊکیا وو داده یل وبگه سی <b>%s</b> گاشڌ ایسا ن ز وبگه یل و در کونه یا سبدا استیڌنا ایسا ن پتی کونه.]]></string>
+  <string name="clear_site_data_dialog_description"><![CDATA[روفتن کۊکیا وو داده یل وبگه سی <b>%s</b> گاشڌ ایسا ن ز وبگه یل و در کونه یا سبدا استیڌنا ایسا ن پتی کونه.]]></string>
   <!-- Button text on the clear site data dialog to allow users to confirm they wish to clear the site data. -->
-  <string name="clear_site_data_dialog_positive_button_text">پاک کردن</string>
+  <string name="clear_site_data_dialog_positive_button_text">روفتن</string>
   <!-- Button text on the clear site data dialog to allow users to cancel the action and not clear the site data. -->
   <string name="clear_site_data_dialog_negative_button_text">لقو</string>
   <!-- Text for the connection security panel when the site is secure. -->
@@ -4557,4 +4556,18 @@
   <string name="pdf_tools_print_content_description">چاپ PDF</string>
   <!-- Content description for accessibility (used by screen readers): Description for the button that opens the sharing options for the PDF being displayed on the screen. -->
   <string name="pdf_tools_share_content_description">یک رسۊوی PDF</string>
+  <!--
+    PDF viewer add a signature dialog
+
+    The title of the dialog for adding a signature to a PDF.
+  -->
+  <string name="pdf_tools_signature_title">ی امزا ازاف کۊنین</string>
+  <!-- Content description for accessibility (used by screen readers): Description for the button that closes the dialog for adding a signature to a PDF. -->
+  <string name="pdf_tools_signature_close_content_description">بستن پنل امزای PDF</string>
+  <!-- The placeholder text shown in the empty text input field where users can enter the signature they wish to add to a PDF. -->
+  <string name="pdf_tools_signature_placeholder">نوع امزا</string>
+  <!-- The text for the button that erases the text the user entered in the "add a signature" field. -->
+  <string name="pdf_tools_signature_clear_button">روفتن</string>
+  <!-- The text for the button that adds the signature the user has typed to the PDF. -->
+  <string name="pdf_tools_signature_add_button">ٱووردن</string>
 </resources>

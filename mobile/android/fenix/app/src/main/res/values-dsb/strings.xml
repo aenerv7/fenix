@@ -150,6 +150,12 @@
   <!--
     Recent Tabs
 
+    Header text on the homescreen for continuing to browse the most recent browser tab
+  -->
+  <string name="recent_tabs_header_2">Dalej</string>
+  <!--
+    Recent Tabs
+
     Header text for jumping back into the recent tab in the home screen
   -->
   <string name="recent_tabs_header">Slědk skócyś</string>
@@ -780,8 +786,6 @@
   <string name="preferences_pbm_lock_screen_title">Wužywajśo zawěru wobrazowki, aby rejtariki w priwatnem modusu schował</string>
   <!-- Informs the user how to access the tabs when "Use screen lock to hide tabs in private browsing" is enabled -->
   <string name="preferences_pbm_lock_screen_summary_3">Woglědajśo se rejtariki ze swójim palcowym wótśišćom, PIN abo wótwórjanim pśez woblico. Gaž to zmóžnjaśo, se fotam wobrazowki a źělenjeju zajźujo.</string>
-  <!-- Preference for removing cookie/consent banners from sites automatically in private mode. See reduce_cookie_banner_summary for additional context. -->
-  <string name="preferences_cookie_banner_reduction_private_mode">Blokěrowak cookiejowych chórgojow w priwatnem modusu</string>
   <!-- Description of the preference to enable "HTTPS-Only" mode. -->
   <string name="preferences_https_only_summary">Wopytujo z pomocu koděrowańskego protokola HTTPS za pówušonu wěstotu awtomatiski ze sedłami zwězaś.</string>
   <!-- Summary of https only preference if https only is set to off -->
@@ -986,6 +990,8 @@
     Title for the customize home screen section with privacy report.
   -->
   <string name="customize_toggle_privacy_report">Rozpšawa priwatnosći</string>
+  <!-- Title for a customize home screen section. Continue is a section that displays the most recent browser tab, so users can continue browsing where they left off. -->
+  <string name="customize_toggle_continue">Dalej</string>
   <!-- Header text for jumping back into the recent tab in customize the home screen -->
   <string name="customize_toggle_jump_back_in">Slědk skócyś</string>
   <!-- Title for the customize home screen section with bookmarks. -->
@@ -1652,17 +1658,6 @@
     <item quantity="few">Kupce rejtarikow %1$s pśidaś, %2$d rejtariki, barwa %3$s</item>
     <item quantity="other">Kupce rejtarikow %1$s pśidaś, %2$d rejtarikow, barwa %3$s</item>
   </plurals>
-  <plurals name="share_tab_group_button_content_description">
-    <!--
-      Content Description for share tab group button.
-      %1$s is the name of the tab group.
-      %2$d is the number of tabs in a tab group.
-    -->
-    <item quantity="one">Kupku rejtarikow %1$s z %2$d rejtarikom źěliś.</item>
-    <item quantity="two">Kupku rejtarikow %1$s z %2$d rejtarikoma źěliś.</item>
-    <item quantity="few">Kupku rejtarikow %1$s z %2$d rejtarikami źěliś.</item>
-    <item quantity="other">Kupku rejtarikow %1$s z %2$d rejtarikami źěliś.</item>
-  </plurals>
   <!-- Content description for the grabber/handle of the tab group bottom sheet. -->
   <string name="tab_group_sheet_dismiss_description">Kupku rejtarikow pokazaś, śěgaty pśimk schowaś</string>
   <plurals name="expanded_tab_group_header_description">
@@ -2012,8 +2007,6 @@
   <string name="webcompat_reporter_preview_report">Pśeglěd rozpšawy pokazaś</string>
   <!-- The title shown at the top of the WebCompat Report preview panel. This appears after the user taps the “Preview” button before sending a report. -->
   <string name="webcompat_reporter_preview_bottom_sheet_header">Pśeglěd rozpšawy</string>
-  <!-- Label for the “Send” button shown in the WebCompat Report preview panel, which the user taps to submit the report. -->
-  <string name="webcompat_reporter_preview_bottom_sheet_send">Pósłaś</string>
   <!-- Title for the Edit URL confirmation dialog in the WebCompatReporter -->
   <string name="webcompat_reporter_edit_url_dialog_title">URL websedła wobźěłaś</string>
   <!-- Text shown on the save button for the Edit URL confirmation dialog in the WebCompatReporter. -->
@@ -2430,6 +2423,20 @@
   <string name="sent_from_firefox_template" tools:ignore="UnusedResources">%1$s\n\nPśez %2$s pósłany 🦊 Wopytajśo mobilny wobglědowak: %3$s</string>
   <!-- A short message template for the shared link with a footer. %1$s is the shared link, %2$s is the app name (e.g. Firefox) and %3$s is a download link for the app. -->
   <string name="sent_from_firefox_template_short" tools:ignore="UnusedResources">%1$s\n\nPśez %2$s pósłany 🦊 %3$s</string>
+  <!-- Send tab to synced devices: Authentication error title - Message asking the user to re-authenticate -->
+  <string name="sync_send_tab_error_auth_title">Pśizjawśo se zasej, aby rejtariki mjazy rědami pósłał</string>
+  <!-- Send tab to synced devices: Authentication error button - Allows user to re-authenticate -->
+  <string name="sync_send_tab_error_auth_button">Pśizjawiś</string>
+  <!-- Send tab to synced devices: Authentication error button - Allows user to remove the currently connected account -->
+  <string name="sync_send_tab_error_auth_remove_account">Konto wótwónoźeś</string>
+  <!-- Send tab to synced devices: Empty state title - Displayed when the user has no synced devices -->
+  <string name="sync_send_tab_empty_state_title">Žedne rědy zwězane</string>
+  <!-- Send tab to synced devices: Empty state message - Displayed when the user has no synced devices -->
+  <string name="sync_send_tab_empty_state_description" tools:ignore="BrandUsage">Aby rejtarik pósłał, pśizjawśo se pla Firefox na nanejmjenjej jadnom dalšnem rěźe.</string>
+  <!-- Send tab to synced devices: Connectivity Error title -->
+  <string name="sync_send_tab_error_connection_title">Pśeglědujśo swój internetny zwisk</string>
+  <!-- Send tab to synced devices: Connectivity Error message - Suggested user action after internet connection has been established -->
+  <string name="sync_send_tab_error_connection_text">Wopytajśo pón swój rejtarik znowego słaś.</string>
   <!--
     Notifications
 
@@ -2878,12 +2885,8 @@
   <string name="add_to_homescreen_cancel">Pśetergnuś</string>
   <!-- Add button text for the Add to Homescreen dialog -->
   <string name="add_to_homescreen_add">Pśidaś</string>
-  <!-- Continue to website button text for the first-time Add to Homescreen dialog -->
-  <string name="add_to_homescreen_continue">Dalej k websedłoju</string>
   <!-- Placeholder text for the TextView in the Add to Homescreen dialog -->
   <string name="add_to_homescreen_text_placeholder">Mě skrotconki</string>
-  <!-- Describes the add to homescreen functionality -->
-  <string name="add_to_homescreen_description_2">Móžośo startowej wobrazowce swójogo rěda toś to websedło lažko pśidaś, aby direktny pśistup měł a malsnjej z dožywjenim nałoženja pśeglědował.</string>
   <!-- Preference for managing the settings for logins and passwords in Fenix -->
   <string name="preferences_passwords_logins_and_passwords_2">Gronidła</string>
   <!-- Preference for managing the saving of logins and passwords in Fenix -->
@@ -3053,8 +3056,6 @@
   <string name="ip_protection_location_section">Stojnišćo</string>
   <!-- Label for the recommended automatic location option on the browser VPN settings screen -->
   <string name="ip_protection_location_recommended_label">Dopórucony</string>
-  <!-- Description for the recommended automatic location option on the browser VPN settings screen -->
-  <string name="ip_protection_location_recommended_description">Wuběra nejmalsnjejše stojnišćo VPN za was.</string>
   <!-- Badge label shown in the menu item when the browser VPN is active -->
   <string name="preferences_ip_protection_on">Zašaltowany</string>
   <!-- Badge label shown in the menu item when the browser VPN is off -->
@@ -3150,10 +3151,6 @@
   <string name="ip_protection_locations_title">Stojnišćo VPN wubraś</string>
   <!-- Content description for the browser VPN location selection screen top bar back button -->
   <string name="ip_protection_locations_navigate_back_button_content_description">Slědk nawigěrowaś</string>
-  <!-- Title for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_title" tools:ignore="UnusedResources">Pjerwjejšne stojnišćo njejo k dispoziciji</string>
-  <!-- Description for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_recommended_description" tools:ignore="UnusedResources">Zwězany z dopóruconym stojnišćom.</string>
   <!--
     Autofill
 
@@ -4589,4 +4586,18 @@
   <string name="pdf_tools_print_content_description">PDF śišćaś</string>
   <!-- Content description for accessibility (used by screen readers): Description for the button that opens the sharing options for the PDF being displayed on the screen. -->
   <string name="pdf_tools_share_content_description">PDF źěliś</string>
+  <!--
+    PDF viewer add a signature dialog
+
+    The title of the dialog for adding a signature to a PDF.
+  -->
+  <string name="pdf_tools_signature_title">Signaturu pśidaś</string>
+  <!-- Content description for accessibility (used by screen readers): Description for the button that closes the dialog for adding a signature to a PDF. -->
+  <string name="pdf_tools_signature_close_content_description">Zacyńśo wobceŕk signatury PDF</string>
+  <!-- The placeholder text shown in the empty text input field where users can enter the signature they wish to add to a PDF. -->
+  <string name="pdf_tools_signature_placeholder">Zapódajśo signaturu</string>
+  <!-- The text for the button that erases the text the user entered in the "add a signature" field. -->
+  <string name="pdf_tools_signature_clear_button">Lašowaś</string>
+  <!-- The text for the button that adds the signature the user has typed to the PDF. -->
+  <string name="pdf_tools_signature_add_button">Pśidaś</string>
 </resources>

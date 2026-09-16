@@ -125,8 +125,8 @@ internal fun TabsTrayState.shouldShowMultiSelectBanner(): Boolean =
  * @param onForceSelectedTabsAsInactiveClick Invoked when the user clicks the "Mark Tabs as Inactive" menu item.
  * @param onTabAutoCloseBannerViewOptionsClick Invoked when the user clicks to view auto-close settings from the banner.
  * @param onTabsTrayPbmLockedClick Invoked when the user interacts with the lock private browsing mode banner.
- * @param onTabsTrayPbmLockedDismiss Invoked when the user clicks on either button in the
- * lock private browsing mode banner.
+ * @param onTabsTrayPbmLockedDismiss Invoked when the user clicks on either button in the lock private browsing mode
+ *   banner.
  * @param onTabAutoCloseBannerDismiss Invoked when the user dismisses the auto-close banner.
  * @param onTabAutoCloseBannerShown Invoked when the auto-close banner is shown to the user.
  */
@@ -258,8 +258,8 @@ fun TabsTrayBanner(
  * @param shouldShowTabGroupBadge Whether to show the new-content badge on the tab groups page button.
  * @param syncedTabCount The amount of synced tabs.
  * @param hasTabDataLoaded Whether the tab data has loaded.
- * @param onTabPageIndicatorClicked Invoked when the user clicks on a tab page button. Passes along the
- * [Page] that was clicked.
+ * @param onTabPageIndicatorClicked Invoked when the user clicks on a tab page button. Passes along the [Page] that was
+ *   clicked.
  */
 @Suppress("LongParameterList")
 @Composable
@@ -274,30 +274,31 @@ private fun TabPageBanner(
     hasTabDataLoaded: Boolean,
     onTabPageIndicatorClicked: (Page) -> Unit,
 ) {
-    val selectedTabIndex = Page.pageToPosition(
-        page = selectedPage,
-        shouldShowTabGroupsPage = shouldShowTabGroupsPage,
-    )
+    val selectedTabIndex =
+        Page.pageToPosition(
+            page = selectedPage,
+            shouldShowTabGroupsPage = shouldShowTabGroupsPage,
+        )
 
     Surface(color = MaterialTheme.colorScheme.surfaceContainerHigh) {
         PrimaryTabRow(
             selectedTabIndex = selectedTabIndex,
-            modifier = Modifier
-                .fillMaxWidth()
-                .windowInsetsPadding(insets = TopAppBarDefaults.windowInsets),
+            modifier = Modifier.fillMaxWidth().windowInsetsPadding(insets = TopAppBarDefaults.windowInsets),
             contentColor = MaterialTheme.colorScheme.primary,
             containerColor = Color.Transparent,
             indicator = {
                 TabRowDefaults.PrimaryIndicator(
-                    modifier = Modifier.tabIndicatorOffset(
-                        selectedTabIndex = selectedTabIndex,
-                        matchContentSize = true,
-                    ),
+                    modifier =
+                        Modifier.tabIndicatorOffset(
+                            selectedTabIndex = selectedTabIndex,
+                            matchContentSize = true,
+                        ),
                     width = Dp.Unspecified,
-                    shape = RoundedCornerShape(
-                        topStartPercent = 50,
-                        topEndPercent = 50,
-                    ),
+                    shape =
+                        RoundedCornerShape(
+                            topStartPercent = 50,
+                            topEndPercent = 50,
+                        ),
                     color = MaterialTheme.colorScheme.onSurface,
                 )
             },
@@ -331,23 +332,27 @@ private fun TabPageBannerTabs(
     hasTabDataLoaded: Boolean,
     onTabPageIndicatorClicked: (Page) -> Unit,
 ) {
-    val privateTabDescription = stringResource(
-        id = R.string.tabs_header_private_tabs_counter_title,
-        privateTabCount.toString(),
-    )
-    val normalTabDescription = stringResource(
-        id = R.string.tabs_header_normal_tabs_counter_title,
-        normalTabCount.toString(),
-    )
-    val tabGroupsDescription = pluralStringResource(
-        id = R.plurals.tabs_header_tab_group_counter_title,
-        count = tabGroupCount,
-        tabGroupCount,
-    )
-    val syncedTabDescription = stringResource(
-        id = R.string.tabs_header_synced_tabs_counter_title,
-        syncedTabCount.toString(),
-    )
+    val privateTabDescription =
+        stringResource(
+            id = R.string.tabs_header_private_tabs_counter_title,
+            privateTabCount.toString(),
+        )
+    val normalTabDescription =
+        stringResource(
+            id = R.string.tabs_header_normal_tabs_counter_title,
+            normalTabCount.toString(),
+        )
+    val tabGroupsDescription =
+        pluralStringResource(
+            id = R.plurals.tabs_header_tab_group_counter_title,
+            count = tabGroupCount,
+            tabGroupCount,
+        )
+    val syncedTabDescription =
+        stringResource(
+            id = R.string.tabs_header_synced_tabs_counter_title,
+            syncedTabCount.toString(),
+        )
 
     BannerTab(
         selected = selectedPage == Page.PrivateTabs,
@@ -406,10 +411,8 @@ private fun BannerTab(
     Tab(
         selected = selected,
         onClick = onClick,
-        modifier = Modifier
-            .testTag(testTag)
-            .semantics { this.contentDescription = contentDescription }
-            .height(RowHeight),
+        modifier =
+            Modifier.testTag(testTag).semantics { this.contentDescription = contentDescription }.height(RowHeight),
         selectedContentColor = MaterialTheme.colorScheme.onSurface,
         unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
     ) {
@@ -513,9 +516,8 @@ internal fun MultiSelectTabsTrayBanner(
         actions = {
             IconButton(
                 onClick = onBookmarkSelectedTabsClick,
-                contentDescription = stringResource(
-                    id = R.string.tab_manager_multiselect_menu_item_bookmark_content_description,
-                ),
+                contentDescription =
+                    stringResource(id = R.string.tab_manager_multiselect_menu_item_bookmark_content_description),
                 enabled = buttonsEnabled,
             ) {
                 Icon(
@@ -526,9 +528,8 @@ internal fun MultiSelectTabsTrayBanner(
 
             IconButton(
                 onClick = onCloseSelectedTabsClick,
-                contentDescription = stringResource(
-                    id = R.string.tab_manager_multiselect_menu_item_close_content_description,
-                ),
+                contentDescription =
+                    stringResource(id = R.string.tab_manager_multiselect_menu_item_close_content_description),
                 enabled = buttonsEnabled,
             ) {
                 Icon(
@@ -743,7 +744,7 @@ internal fun generateMultiSelectBannerMenuItems(
                 drawableRes = iconsR.drawable.mozac_ic_collection_24,
                 testTag = TabsTrayTestTag.COLLECTIONS_BUTTON,
                 onClick = onSaveToCollectionsClick,
-            ),
+            )
         )
     }
     if (shouldShowInactiveButton) {
@@ -752,7 +753,7 @@ internal fun generateMultiSelectBannerMenuItems(
                 text = Text.Resource(R.string.inactive_tabs_menu_item_2),
                 drawableRes = iconsR.drawable.mozac_ic_cross_circle_24,
                 onClick = onMakeSelectedTabsInactive,
-            ),
+            )
         )
     }
     if (shouldShowAddToTabGroupButton) {

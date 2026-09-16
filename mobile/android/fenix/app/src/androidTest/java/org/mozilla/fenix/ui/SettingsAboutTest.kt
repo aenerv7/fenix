@@ -52,13 +52,13 @@ class SettingsAboutTest {
     @Test
     fun verifyLibrariesListInReleaseBuildsTest() {
         runWithCondition(Config.channel.isReleased) {
-            homeScreen(composeTestRule) {
-            }.openThreeDotMenu {
-            }.clickSettingsButton {
-            }.openAboutFirefoxPreview {
-                verifyLibrariesUsedLink()
-                verifyTheLibrariesListNotEmpty()
-            }
+            homeScreen(composeTestRule) {}
+                .openThreeDotMenu {}
+                .clickSettingsButton {}
+                .openAboutFirefoxPreview {
+                    verifyLibrariesUsedLink()
+                    verifyTheLibrariesListNotEmpty()
+                }
         }
     }
 

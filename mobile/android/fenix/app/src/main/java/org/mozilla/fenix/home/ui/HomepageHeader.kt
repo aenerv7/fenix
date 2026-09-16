@@ -41,11 +41,8 @@ import org.mozilla.fenix.theme.FirefoxTheme
 import org.mozilla.fenix.theme.PreviewThemeProvider
 import org.mozilla.fenix.theme.Theme
 import org.mozilla.fenix.wallpapers.WallpaperTheme
-import mozilla.components.ui.icons.R as iconsR
 
-/**
- * Header for the homepage.
- */
+/** Header for the homepage. */
 @Composable
 fun HomepageHeader(
     browsingMode: BrowsingMode,
@@ -92,17 +89,17 @@ private fun PrivateBrowsingButton(
     browsingModeChanged: (BrowsingMode) -> Unit,
 ) {
     IconToggleButton(
-        modifier = Modifier
-            .background(
-                color = colorResource(getAttr(iconsR.attr.mozac_ic_private_mode_circle_fill_background_color)),
-                shape = CircleShape,
-            )
-            .size(40.dp)
-            .semantics {
-                role = Role.Switch
-                testTagsAsResourceId = true
-                testTag = PRIVATE_BROWSING_HOMEPAGE_BUTTON
-            },
+        modifier =
+            Modifier.background(
+                    color = colorResource(getAttr(iconsR.attr.mozac_ic_private_mode_circle_fill_background_color)),
+                    shape = CircleShape,
+                )
+                .size(40.dp)
+                .semantics {
+                    role = Role.Switch
+                    testTagsAsResourceId = true
+                    testTag = PRIVATE_BROWSING_HOMEPAGE_BUTTON
+                },
         checked = browsingMode.isPrivate,
         onCheckedChange = {
             browsingModeChanged(BrowsingMode.fromBoolean(!browsingMode.isPrivate))
@@ -127,9 +124,7 @@ internal fun getAttr(resId: Int): Int {
 
 @Preview
 @Composable
-private fun HomepageHeaderPreview(
-    @PreviewParameter(PreviewThemeProvider::class) theme: Theme,
-) {
+private fun HomepageHeaderPreview(@PreviewParameter(PreviewThemeProvider::class) theme: Theme) {
     FirefoxTheme(theme) {
         Surface {
             HomepageHeader(

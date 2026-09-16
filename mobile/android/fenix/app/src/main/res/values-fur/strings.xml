@@ -776,8 +776,6 @@
   <string name="preferences_pbm_lock_screen_title">Dopre il bloc dal schermi par platâ lis schedis te navigazion privade</string>
   <!-- Informs the user how to access the tabs when "Use screen lock to hide tabs in private browsing" is enabled -->
   <string name="preferences_pbm_lock_screen_summary_3">Viôt lis schedis cul sbloc cul impront, cul PIN o cu la muse. Ativant cheste funzion nol sarà pussibil nancje caturâ o condividi il schermi.</string>
-  <!-- Preference for removing cookie/consent banners from sites automatically in private mode. See reduce_cookie_banner_summary for additional context. -->
-  <string name="preferences_cookie_banner_reduction_private_mode">Bloc strissons pai cookies te navigazion privade</string>
   <!-- Description of the preference to enable "HTTPS-Only" mode. -->
   <string name="preferences_https_only_summary">Al cîr di conetisi in automatic ai sîts doprant il protocol di cifradure HTTPS par vê une sigurece miorade.</string>
   <!-- Summary of https only preference if https only is set to off -->
@@ -1615,15 +1613,6 @@
     <item quantity="one">Zonte al grup di schedis %1$s, %2$d schede, colôr %3$s</item>
     <item quantity="other">Zonte al grup di schedis %1$s, %2$d schedis, colôr %3$s</item>
   </plurals>
-  <plurals name="share_tab_group_button_content_description">
-    <!--
-      Content Description for share tab group button.
-      %1$s is the name of the tab group.
-      %2$d is the number of tabs in a tab group.
-    -->
-    <item quantity="one">Condivît grup di schedis %1$s cun %2$d schede.</item>
-    <item quantity="other">Condivît grup di schedis %1$s cun %2$d schedis.</item>
-  </plurals>
   <!-- Content description for the grabber/handle of the tab group bottom sheet. -->
   <string name="tab_group_sheet_dismiss_description">Visualize grup di schedis, mantie di strissinament par platâ o viodi</string>
   <plurals name="expanded_tab_group_header_description">
@@ -1937,8 +1926,6 @@
   <string name="webcompat_reporter_preview_report">Anteprime segnalazion</string>
   <!-- The title shown at the top of the WebCompat Report preview panel. This appears after the user taps the “Preview” button before sending a report. -->
   <string name="webcompat_reporter_preview_bottom_sheet_header">Anteprime segnalazion</string>
-  <!-- Label for the “Send” button shown in the WebCompat Report preview panel, which the user taps to submit the report. -->
-  <string name="webcompat_reporter_preview_bottom_sheet_send">Invie</string>
   <!-- Title for the Edit URL confirmation dialog in the WebCompatReporter -->
   <string name="webcompat_reporter_edit_url_dialog_title">Modifiche URL dal sît web</string>
   <!-- Text shown on the save button for the Edit URL confirmation dialog in the WebCompatReporter. -->
@@ -2793,12 +2780,8 @@
   <string name="add_to_homescreen_cancel">Anule</string>
   <!-- Add button text for the Add to Homescreen dialog -->
   <string name="add_to_homescreen_add">Zonte</string>
-  <!-- Continue to website button text for the first-time Add to Homescreen dialog -->
-  <string name="add_to_homescreen_continue">Va al sît web</string>
   <!-- Placeholder text for the TextView in the Add to Homescreen dialog -->
   <string name="add_to_homescreen_text_placeholder">Non de scurte</string>
-  <!-- Describes the add to homescreen functionality -->
-  <string name="add_to_homescreen_description_2">Al è pussibil zontâ chest sît web ae schermade principâl dal dispositîf par doprâle cun plui sveltece, tant che e fos une aplicazion.</string>
   <!-- Preference for managing the settings for logins and passwords in Fenix -->
   <string name="preferences_passwords_logins_and_passwords_2">Passwords</string>
   <!-- Preference for managing the saving of logins and passwords in Fenix -->
@@ -2968,8 +2951,6 @@
   <string name="ip_protection_location_section">Posizion</string>
   <!-- Label for the recommended automatic location option on the browser VPN settings screen -->
   <string name="ip_protection_location_recommended_label">Conseade</string>
-  <!-- Description for the recommended automatic location option on the browser VPN settings screen -->
-  <string name="ip_protection_location_recommended_description">Selezione la posizion VPN plui svelte par te.</string>
   <!-- Badge label shown in the menu item when the browser VPN is active -->
   <string name="preferences_ip_protection_on">Ative</string>
   <!-- Badge label shown in the menu item when the browser VPN is off -->

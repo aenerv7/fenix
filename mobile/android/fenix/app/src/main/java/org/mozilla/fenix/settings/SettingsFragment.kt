@@ -33,6 +33,8 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.lang.ref.WeakReference
+import kotlin.system.exitProcess
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -52,12 +54,14 @@ import mozilla.components.support.utils.BuildManufacturerChecker
 import mozilla.components.support.utils.DateTimeProvider
 import mozilla.components.support.utils.DefaultDateTimeProvider
 import mozilla.components.support.utils.ext.navigateToDefaultBrowserAppsSettings
+import mozilla.components.ui.icons.R as iconsR
 import mozilla.components.ui.widgets.withCenterAlignedButtons
 import mozilla.telemetry.glean.private.NoExtras
 import org.mozilla.fenix.Config
 import org.mozilla.fenix.FeatureFlags
 import org.mozilla.fenix.GleanMetrics.Addons
 import org.mozilla.fenix.GleanMetrics.Events
+import org.mozilla.fenix.GleanMetrics.Settings as SettingsMetrics
 import org.mozilla.fenix.GleanMetrics.SettingsSearch
 import org.mozilla.fenix.GleanMetrics.TrackingProtection
 import org.mozilla.fenix.GleanMetrics.Translations
@@ -86,14 +90,8 @@ import org.mozilla.fenix.settings.account.AccountUiView
 import org.mozilla.fenix.snackbar.FenixSnackbarDelegate
 import org.mozilla.fenix.snackbar.SnackbarBinding
 import org.mozilla.fenix.utils.Settings
-import java.lang.ref.WeakReference
-import kotlin.system.exitProcess
-import mozilla.components.ui.icons.R as iconsR
-import org.mozilla.fenix.GleanMetrics.Settings as SettingsMetrics
 
-/**
- * Main settings screen.
- */
+/** Main settings screen. */
 @Suppress("LargeClass", "TooManyFunctions")
 class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment {
 
@@ -106,35 +104,37 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
     }
     private val snackbarBinding = ViewBoundFeatureWrapper<SnackbarBinding>()
 
-    private val requestLocalNetworkPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission(),
-    ) { isGranted ->
-        localNetworkPermissionRequestAttempted = true
-        setupLocalNetworkPreference(isGranted)
-    }
+    private val requestLocalNetworkPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            localNetworkPermissionRequestAttempted = true
+            setupLocalNetworkPreference(isGranted)
+        }
 
     private var localNetworkPermissionRequestAttempted = false
 
     private val dateTimeProvider: DateTimeProvider by lazy { DefaultDateTimeProvider() }
 
     @VisibleForTesting
-    internal val accountObserver = object : AccountObserver {
-        private fun updateAccountUi(profile: Profile? = null) {
-            val context = context ?: return
-            lifecycleScope.launch {
-                accountUiView.updateAccountUIState(
-                    context = context,
-                    profile = profile
-                        ?: context.components.backgroundServices.accountManager.accountProfile(),
-                )
+    internal val accountObserver =
+        object : AccountObserver {
+            private fun updateAccountUi(profile: Profile? = null) {
+                val context = context ?: return
+                lifecycleScope.launch {
+                    accountUiView.updateAccountUIState(
+                        context = context,
+                        profile = profile ?: context.components.backgroundServices.accountManager.accountProfile(),
+                    )
+                }
             }
-        }
 
-        override fun onAuthenticated(account: OAuthAccount, authType: AuthType) = updateAccountUi()
-        override fun onLoggedOut() = updateAccountUi()
-        override fun onProfileUpdated(profile: Profile) = updateAccountUi(profile)
-        override fun onAuthenticationProblems() = updateAccountUi()
-    }
+            override fun onAuthenticated(account: OAuthAccount, authType: AuthType) = updateAccountUi()
+
+            override fun onLoggedOut() = updateAccountUi()
+
+            override fun onProfileUpdated(profile: Profile) = updateAccountUi(profile)
+
+            override fun onAuthenticationProblems() = updateAccountUi()
+        }
 
     // A flag used to track if we're going through the onCreate->onStart->onResume lifecycle chain.
     // If it's set to `true`, code in `onResume` can assume that `onCreate` executed a moment prior.
@@ -146,12 +146,13 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
 
         components = requireContext().components
 
-        accountUiView = AccountUiView(
-            fragment = this,
-            scope = lifecycleScope,
-            accountManager = requireComponents.backgroundServices.accountManager,
-            httpClient = requireComponents.core.client,
-        )
+        accountUiView =
+            AccountUiView(
+                fragment = this,
+                scope = lifecycleScope,
+                accountManager = requireComponents.backgroundServices.accountManager,
+                httpClient = requireComponents.core.client,
+            )
 
         addonFilePicker = AddonFilePicker(requireContext(), requireComponents.addonManager)
         addonFilePicker.registerForResults(this)
@@ -230,16 +231,17 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
         }
 
         snackbarBinding.set(
-            feature = SnackbarBinding(
-                context = requireContext(),
-                browserStore = components.core.store,
-                appStore = components.appStore,
-                snackbarDelegate = FenixSnackbarDelegate(view),
-                navController = findNavController(),
-                tabsUseCases = components.useCases.tabsUseCases,
-                sendTabUseCases = null,
-                customTabSessionId = null,
-            ),
+            feature =
+                SnackbarBinding(
+                    context = requireContext(),
+                    browserStore = components.core.store,
+                    appStore = components.appStore,
+                    snackbarDelegate = FenixSnackbarDelegate(view),
+                    navController = findNavController(),
+                    tabsUseCases = components.useCases.tabsUseCases,
+                    sendTabUseCases = null,
+                    customTabSessionId = null,
+                ),
             owner = this,
             view = view,
         )
@@ -278,7 +280,8 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
             settings = requireComponents.settings,
         )
 
-        requireView().findViewById<RecyclerView>(R.id.recycler_view)
+        requireView()
+            .findViewById<RecyclerView>(R.id.recycler_view)
             ?.hideInitialScrollBar(viewLifecycleOwner.lifecycleScope)
 
         args.preferenceToScrollTo?.let {
@@ -598,28 +601,20 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
 
         preferenceMakeDefaultBrowser.apply {
             updateSwitch()
-            onPreferenceClickListener =
-                getClickListenerForMakeDefaultBrowser()
+            onPreferenceClickListener = getClickListenerForMakeDefaultBrowser()
         }
 
-        val preferenceStartProfiler =
-            findPreference<Preference>(getPreferenceKey(R.string.pref_key_start_profiler))
+        val preferenceStartProfiler = findPreference<Preference>(getPreferenceKey(R.string.pref_key_start_profiler))
 
         with(settings) {
-            findPreference<Preference>(
-                getPreferenceKey(R.string.pref_key_nimbus_experiments),
-            )?.isVisible = showSecretDebugMenuThisSession
-            findPreference<Preference>(
-                getPreferenceKey(R.string.pref_key_debug_settings),
-            )?.isVisible = showSecretDebugMenuThisSession
-            findPreference<Preference>(
-                getPreferenceKey(R.string.pref_key_sync_debug),
-            )?.isVisible = showSecretDebugMenuThisSession
-            findPreference<Preference>(
-                getPreferenceKey(R.string.pref_key_firefox_labs),
-            )?.isVisible = enableFirefoxLabs
-            preferenceStartProfiler?.isVisible = showSecretDebugMenuThisSession &&
-                (components.core.engine.profiler?.isProfilerActive() != null)
+            findPreference<Preference>(getPreferenceKey(R.string.pref_key_nimbus_experiments))?.isVisible =
+                showSecretDebugMenuThisSession
+            findPreference<Preference>(getPreferenceKey(R.string.pref_key_debug_settings))?.isVisible =
+                showSecretDebugMenuThisSession
+            findPreference<Preference>(getPreferenceKey(R.string.pref_key_sync_debug))?.isVisible =
+                showSecretDebugMenuThisSession
+            preferenceStartProfiler?.isVisible =
+                showSecretDebugMenuThisSession && (components.core.engine.profiler?.isProfilerActive() != null)
         }
         setupInstallAddonFromFilePreference(settings)
         setLinkSharingPreference()
@@ -630,23 +625,19 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
         setupGeckoLogsPreference(settings)
         setupHttpsOnlyPreferences(settings)
         setupIPProtectionPreferences(components.ipProtection.store)
-        setupNotificationPreference(
-            NotificationManagerCompat.from(requireContext()).areNotificationsEnabled(),
-        )
+        setupNotificationPreference(NotificationManagerCompat.from(requireContext()).areNotificationsEnabled())
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN) {
             setupLocalNetworkPreference(
                 ContextCompat.checkSelfPermission(
                     requireContext(),
                     ACCESS_LOCAL_NETWORK,
-                ) == PackageManager.PERMISSION_GRANTED,
+                ) == PackageManager.PERMISSION_GRANTED
             )
         } else {
             requirePreference<Preference>(R.string.pref_key_local_network_access).isVisible = false
         }
-        setupSearchPreference(
-            components.core.store.state.search.selectedOrDefaultSearchEngine?.name,
-        )
+        setupSearchPreference(components.core.store.state.search.selectedOrDefaultSearchEngine?.name)
         setupHomepagePreference(settings)
         setupTrackingProtectionPreference(settings)
         setupDnsOverHttpsPreference(settings)
@@ -663,9 +654,8 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
         }
 
     /**
-     * For >=Q -> Use new RoleManager API to show in-app browser switching dialog.
-     * For <Q && >=N -> Navigate user to Android Default Apps Settings.
-     * For <N -> Open sumo page to show user how to change default app.
+     * For >=Q -> Use new RoleManager API to show in-app browser switching dialog. For <Q && >=N -> Navigate user to
+     * Android Default Apps Settings. For <N -> Open sumo page to show user how to change default app.
      */
     private fun getClickListenerForMakeDefaultBrowser(): Preference.OnPreferenceClickListener {
         return Preference.OnPreferenceClickListener {
@@ -705,11 +695,9 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
         val preferenceAmoCollectionOverride =
             findPreference<Preference>(getPreferenceKey(R.string.pref_key_override_amo_collection))
 
-        val show = (
-            customExtensionCollectionFeature && (
-                settings.amoCollectionOverrideConfigured() || settings.showSecretDebugMenuThisSession
-                )
-            )
+        val show =
+            (customExtensionCollectionFeature &&
+                (settings.amoCollectionOverrideConfigured() || settings.showSecretDebugMenuThisSession))
         preferenceAmoCollectionOverride?.apply {
             isVisible = show
             summary = settings.overrideAmoCollection.ifEmpty { null }
@@ -724,41 +712,44 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
         val show = settings.showSecretDebugMenuThisSession
         preferenceEnabledGeckoLogs?.isVisible = show
 
-        preferenceEnabledGeckoLogs?.onPreferenceChangeListener =
-            Preference.OnPreferenceChangeListener { _, newValue ->
-                settings.enableGeckoLogs = newValue as Boolean
-                Toast.makeText(
+        preferenceEnabledGeckoLogs?.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
+            settings.enableGeckoLogs = newValue as Boolean
+            Toast.makeText(
                     context,
                     getString(R.string.quit_application),
                     Toast.LENGTH_LONG,
-                ).show()
-                Handler(Looper.getMainLooper()).postDelayed(
+                )
+                .show()
+            Handler(Looper.getMainLooper())
+                .postDelayed(
                     {
                         exitProcess(0)
                     },
                     FXA_SYNC_OVERRIDE_EXIT_DELAY,
                 )
-                true
-            }
+            true
+        }
     }
 
     @VisibleForTesting
     internal fun setupNotificationPreference(areNotificationsEnabled: Boolean) {
         with(requirePreference<Preference>(R.string.pref_key_notifications)) {
-            summary = if (areNotificationsEnabled) {
-                getString(R.string.notifications_allowed_summary)
-            } else {
-                getString(R.string.notifications_not_allowed_summary)
-            }
+            summary =
+                if (areNotificationsEnabled) {
+                    getString(R.string.notifications_allowed_summary)
+                } else {
+                    getString(R.string.notifications_not_allowed_summary)
+                }
         }
     }
 
     private fun handleLocalNetworkPermissionClick() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN) {
-            val isGranted = ContextCompat.checkSelfPermission(
-                requireContext(),
-                ACCESS_LOCAL_NETWORK,
-            ) == PackageManager.PERMISSION_GRANTED
+            val isGranted =
+                ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    ACCESS_LOCAL_NETWORK,
+                ) == PackageManager.PERMISSION_GRANTED
 
             if (isGranted) {
                 context?.navigateToAppDetailsSettings {}
@@ -777,29 +768,31 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
 
     internal fun setupLocalNetworkPreference(isLocalNetworkAccessAllowed: Boolean) {
         with(requirePreference<Preference>(R.string.pref_key_local_network_access)) {
-            summary = if (isLocalNetworkAccessAllowed) {
-                getString(R.string.local_network_access_allowed_summary)
-            } else {
-                getString(R.string.local_network_access_not_allowed_summary)
-            }
+            summary =
+                if (isLocalNetworkAccessAllowed) {
+                    getString(R.string.local_network_access_allowed_summary)
+                } else {
+                    getString(R.string.local_network_access_not_allowed_summary)
+                }
         }
     }
 
     @VisibleForTesting
     internal fun setupHomepagePreference(settings: Settings) {
         with(requirePreference<Preference>(R.string.pref_key_home)) {
-            summary = when {
-                settings.alwaysOpenTheHomepageWhenOpeningTheApp ->
-                    getString(R.string.opening_screen_homepage_summary)
+            summary =
+                when {
+                    settings.alwaysOpenTheHomepageWhenOpeningTheApp ->
+                        getString(R.string.opening_screen_homepage_summary)
 
-                settings.openHomepageAfterFourHoursOfInactivity ->
-                    getString(R.string.opening_screen_after_four_hours_of_inactivity_summary)
+                    settings.openHomepageAfterFourHoursOfInactivity ->
+                        getString(R.string.opening_screen_after_four_hours_of_inactivity_summary)
 
-                settings.alwaysOpenTheLastTabWhenOpeningTheApp ->
-                    getString(R.string.opening_screen_last_tab_summary)
+                    settings.alwaysOpenTheLastTabWhenOpeningTheApp ->
+                        getString(R.string.opening_screen_last_tab_summary)
 
-                else -> null
-            }
+                    else -> null
+                }
         }
     }
 
@@ -813,32 +806,35 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
     @VisibleForTesting
     internal fun setupTrackingProtectionPreference(settings: Settings) {
         with(requirePreference<Preference>(R.string.pref_key_tracking_protection_settings)) {
-            summary = when {
-                !settings.shouldUseTrackingProtection -> getString(R.string.tracking_protection_off)
-                settings.useStandardTrackingProtection -> getString(R.string.tracking_protection_standard)
-                settings.useStrictTrackingProtection -> getString(R.string.tracking_protection_strict)
-                settings.useCustomTrackingProtection -> getString(R.string.tracking_protection_custom)
-                else -> null
-            }
+            summary =
+                when {
+                    !settings.shouldUseTrackingProtection -> getString(R.string.tracking_protection_off)
+                    settings.useStandardTrackingProtection -> getString(R.string.tracking_protection_standard)
+                    settings.useStrictTrackingProtection -> getString(R.string.tracking_protection_strict)
+                    settings.useCustomTrackingProtection -> getString(R.string.tracking_protection_custom)
+                    else -> null
+                }
         }
     }
 
     private fun setupDnsOverHttpsPreference(settings: Settings) {
         with(requirePreference<Preference>(R.string.pref_key_doh_settings)) {
             isVisible = settings.showDohEntryPoint
-            summary = when (settings.getDohSettingsMode()) {
-                Engine.DohSettingsMode.DEFAULT -> getString(R.string.preference_doh_default_protection)
-                Engine.DohSettingsMode.OFF -> getString(R.string.preference_doh_off)
-                Engine.DohSettingsMode.INCREASED -> getString(R.string.preference_doh_increased_protection)
-                Engine.DohSettingsMode.MAX -> getString(R.string.preference_doh_max_protection)
-            }
+            summary =
+                when (settings.getDohSettingsMode()) {
+                    Engine.DohSettingsMode.DEFAULT -> getString(R.string.preference_doh_default_protection)
+                    Engine.DohSettingsMode.OFF -> getString(R.string.preference_doh_off)
+                    Engine.DohSettingsMode.INCREASED -> getString(R.string.preference_doh_increased_protection)
+                    Engine.DohSettingsMode.MAX -> getString(R.string.preference_doh_max_protection)
+                }
         }
     }
 
     @VisibleForTesting
     internal fun setupEmailMaskPreference(settings: Settings, components: Components) {
         findPreference<Preference>(getPreferenceKey(R.string.pref_key_email_masks))?.let {
-            it.isVisible = settings.isEmailMaskFeatureEnabled &&
+            it.isVisible =
+                settings.isEmailMaskFeatureEnabled &&
                     components.relayEligibilityStore.state.eligibilityState is Eligible
         }
     }
@@ -859,23 +855,19 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
 
     @VisibleForTesting
     internal fun setupHttpsOnlyPreferences(settings: Settings) {
-        val httpsOnlyPreference =
-            requirePreference<Preference>(R.string.pref_key_https_only_settings)
+        val httpsOnlyPreference = requirePreference<Preference>(R.string.pref_key_https_only_settings)
         httpsOnlyPreference.summary =
             when {
                 !settings.shouldUseHttpsOnly -> getString(R.string.preferences_https_only_off)
                 settings.shouldUseHttpsOnlyInAllTabs -> getString(R.string.preferences_https_only_on_all)
-                settings.shouldUseHttpsOnlyInPrivateTabsOnly ->
-                    getString(R.string.preferences_https_only_on_private)
+                settings.shouldUseHttpsOnlyInPrivateTabsOnly -> getString(R.string.preferences_https_only_on_private)
                 else -> null
             }
     }
 
     @VisibleForTesting
     internal fun setupIPProtectionPreferences(ipProtectionStore: IPProtectionStore) {
-        findPreference<IPProtectionPreference>(
-            getPreferenceKey(R.string.pref_key_ip_protection_settings),
-        )?.apply {
+        findPreference<IPProtectionPreference>(getPreferenceKey(R.string.pref_key_ip_protection_settings))?.apply {
             isVisible = ipProtectionStore.state.isEligible
             showBetaBadge = FxNimbus.features.ipProtection.value().showBetaBadge
         }

@@ -99,25 +99,19 @@ internal object TabsTrayReducer {
         return when (action) {
             is TabsTrayAction.TabDragStart ->
                 state.copy(
-                    normalTabsState = state.normalTabsState.copy(
-                        itemFocusIndicatorEnabled = false,
-                    ),
-                    mode = if (state.mode is TabsTrayState.Mode.Select && !action.preserveSelectMode) {
-                        TabsTrayState.Mode.Normal
-                    } else {
-                        state.mode
-                    },
-                    tabGroupState = state.tabGroupState.copy(
-                        dragProcessingState = DragProcessingState.DRAG_IN_PROGRESS,
-                    ),
+                    normalTabsState = state.normalTabsState.copy(itemFocusIndicatorEnabled = false),
+                    mode =
+                        if (state.mode is TabsTrayState.Mode.Select && !action.preserveSelectMode) {
+                            TabsTrayState.Mode.Normal
+                        } else {
+                            state.mode
+                        },
+                    tabGroupState =
+                        state.tabGroupState.copy(dragProcessingState = DragProcessingState.DRAG_IN_PROGRESS),
                 )
 
             is TabsTrayAction.TabDragCancel ->
-                state.copy(
-                    normalTabsState = state.normalTabsState.copy(
-                        itemFocusIndicatorEnabled = true,
-                    ),
-                )
+                state.copy(normalTabsState = state.normalTabsState.copy(itemFocusIndicatorEnabled = true))
 
             else -> state
         }
@@ -127,10 +121,11 @@ internal object TabsTrayReducer {
         return when (action) {
             is TabsTrayAction.EnterSelectMode ->
                 state.copy(
-                    mode = TabsTrayState.Mode.Select(
-                        selectedTabs = emptySet(),
-                        selectedTabGroups = emptySet(),
-                    ),
+                    mode =
+                        TabsTrayState.Mode.Select(
+                            selectedTabs = emptySet(),
+                            selectedTabGroups = emptySet(),
+                        )
                 )
 
             is TabsTrayAction.SelectAllNormalTabs -> {
@@ -148,20 +143,21 @@ internal object TabsTrayReducer {
                 }
 
                 state.copy(
-                    mode = TabsTrayState.Mode.Select(
-                        selectedTabs = selectedTabs,
-                        selectedTabGroups = selectedTabGroups,
-                    ),
+                    mode =
+                        TabsTrayState.Mode.Select(
+                            selectedTabs = selectedTabs,
+                            selectedTabGroups = selectedTabGroups,
+                        )
                 )
             }
 
-            is TabsTrayAction.ExitSelectMode ->
-                state.copy(mode = TabsTrayState.Mode.Normal)
+            is TabsTrayAction.ExitSelectMode -> state.copy(mode = TabsTrayState.Mode.Normal)
 
-            is TabsTrayAction.AddSelectTab -> addTabSelection(
-                state = state,
-                tab = action.tab,
-            )
+            is TabsTrayAction.AddSelectTab ->
+                addTabSelection(
+                    state = state,
+                    tab = action.tab,
+                )
 
             is TabsTrayAction.TabItemLongClicked -> {
                 handleTabItemLongClicked(
@@ -385,34 +381,41 @@ internal object TabsTrayReducer {
         return when {
             syncStateExists(state, action) && syncedDevicesUnchanged(state, action) -> {
                 state.copy(
-                    sync = currentSync.copy(
-                        syncedTabs = tabs,
-                        expandedSyncedTabs = tabs.mapIndexed { index, item ->
-                            if (currentSync.syncedTabs[index] == item && index < currentSync.expandedSyncedTabs.size) {
-                                currentSync.expandedSyncedTabs[index]
-                            } else {
-                                DEFAULT_SYNCED_TABS_EXPANDED_STATE
-                            }
-                        },
-                    ),
+                    sync =
+                        currentSync.copy(
+                            syncedTabs = tabs,
+                            expandedSyncedTabs =
+                                tabs.mapIndexed { index, item ->
+                                    if (
+                                        currentSync.syncedTabs[index] == item &&
+                                            index < currentSync.expandedSyncedTabs.size
+                                    ) {
+                                        currentSync.expandedSyncedTabs[index]
+                                    } else {
+                                        DEFAULT_SYNCED_TABS_EXPANDED_STATE
+                                    }
+                                },
+                        )
                 )
             }
 
             tabs.isNotEmpty() -> {
                 state.copy(
-                    sync = currentSync.copy(
-                        syncedTabs = tabs,
-                        expandedSyncedTabs = tabs.map { DEFAULT_SYNCED_TABS_EXPANDED_STATE },
-                    ),
+                    sync =
+                        currentSync.copy(
+                            syncedTabs = tabs,
+                            expandedSyncedTabs = tabs.map { DEFAULT_SYNCED_TABS_EXPANDED_STATE },
+                        )
                 )
             }
 
             else -> {
                 state.copy(
-                    sync = currentSync.copy(
-                        syncedTabs = tabs,
-                        expandedSyncedTabs = emptyList(),
-                    ),
+                    sync =
+                        currentSync.copy(
+                            syncedTabs = tabs,
+                            expandedSyncedTabs = emptyList(),
+                        )
                 )
             }
         }
@@ -427,8 +430,8 @@ internal object TabsTrayReducer {
         state.sync.syncedTabs.size == action.tabs.size
 
     /**
-     * When a synced tab header's expansion is toggled, that item should be expanded or collapsed.
-     * The rest of the list should be unchanged.
+     * When a synced tab header's expansion is toggled, that item should be expanded or collapsed. The rest of the list
+     * should be unchanged.
      *
      * @param state the existing state object
      * @param action the action containing the index of the toggled header.
@@ -438,11 +441,13 @@ internal object TabsTrayReducer {
         action: TabsTrayAction.SyncedTabsHeaderToggled,
     ): TabsTrayState {
         return state.copy(
-            sync = state.sync.copy(
-                expandedSyncedTabs = state.sync.expandedSyncedTabs.mapIndexed { index, isExpanded ->
-                    if (index == action.index) !isExpanded else isExpanded
-                },
-            ),
+            sync =
+                state.sync.copy(
+                    expandedSyncedTabs =
+                        state.sync.expandedSyncedTabs.mapIndexed { index, isExpanded ->
+                            if (index == action.index) !isExpanded else isExpanded
+                        }
+                )
         )
     }
 }

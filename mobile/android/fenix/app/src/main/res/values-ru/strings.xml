@@ -150,6 +150,12 @@
   <!--
     Recent Tabs
 
+    Header text on the homescreen for continuing to browse the most recent browser tab
+  -->
+  <string name="recent_tabs_header_2">Продолжить</string>
+  <!--
+    Recent Tabs
+
     Header text for jumping back into the recent tab in the home screen
   -->
   <string name="recent_tabs_header">Перейти обратно в</string>
@@ -779,8 +785,6 @@
   <string name="preferences_pbm_lock_screen_title">Использовать блокировку экрана, чтобы скрывать вкладки в приватном просмотре</string>
   <!-- Informs the user how to access the tabs when "Use screen lock to hide tabs in private browsing" is enabled -->
   <string name="preferences_pbm_lock_screen_summary_3">Просматривайте вкладки с помощью отпечатка пальца, PIN-кода или распознавания лица. Включение этой функции также предотвращает захват экрана и передачу.</string>
-  <!-- Preference for removing cookie/consent banners from sites automatically in private mode. See reduce_cookie_banner_summary for additional context. -->
-  <string name="preferences_cookie_banner_reduction_private_mode">Блокировщик уведомления о куки в приватном просмотре</string>
   <!-- Description of the preference to enable "HTTPS-Only" mode. -->
   <string name="preferences_https_only_summary">Автоматически пытаться подключиться к сайтам через протокол шифрования HTTPS для повышения безопасности.</string>
   <!-- Summary of https only preference if https only is set to off -->
@@ -985,6 +989,8 @@
     Title for the customize home screen section with privacy report.
   -->
   <string name="customize_toggle_privacy_report">Отчёт о конфиденциальности</string>
+  <!-- Title for a customize home screen section. Continue is a section that displays the most recent browser tab, so users can continue browsing where they left off. -->
+  <string name="customize_toggle_continue">Продолжить</string>
   <!-- Header text for jumping back into the recent tab in customize the home screen -->
   <string name="customize_toggle_jump_back_in">Перейти обратно в</string>
   <!-- Title for the customize home screen section with bookmarks. -->
@@ -1646,16 +1652,6 @@
     <item quantity="few">Добавить в группу вкладок %1$s, %2$d вкладки, цвет %3$s</item>
     <item quantity="other">Добавить в группу вкладок %1$s, %2$d вкладок, цвет %3$s</item>
   </plurals>
-  <plurals name="share_tab_group_button_content_description">
-    <!--
-      Content Description for share tab group button.
-      %1$s is the name of the tab group.
-      %2$d is the number of tabs in a tab group.
-    -->
-    <item quantity="one">Поделиться группой вкладок %1$s с %2$d вкладкой.</item>
-    <item quantity="few">Поделиться группой вкладок %1$s с %2$d вкладками.</item>
-    <item quantity="other">Поделиться группой вкладок %1$s с %2$d вкладок.</item>
-  </plurals>
   <!-- Content description for the grabber/handle of the tab group bottom sheet. -->
   <string name="tab_group_sheet_dismiss_description">Просмотреть группу вкладок, свернуть маркер перетаскивания</string>
   <plurals name="expanded_tab_group_header_description">
@@ -2003,8 +1999,6 @@
   <string name="webcompat_reporter_preview_report">Предпросмотр отчёта</string>
   <!-- The title shown at the top of the WebCompat Report preview panel. This appears after the user taps the “Preview” button before sending a report. -->
   <string name="webcompat_reporter_preview_bottom_sheet_header">Предпросмотр отчёта</string>
-  <!-- Label for the “Send” button shown in the WebCompat Report preview panel, which the user taps to submit the report. -->
-  <string name="webcompat_reporter_preview_bottom_sheet_send">Отправить</string>
   <!-- Title for the Edit URL confirmation dialog in the WebCompatReporter -->
   <string name="webcompat_reporter_edit_url_dialog_title">Изменить URL веб-сайта</string>
   <!-- Text shown on the save button for the Edit URL confirmation dialog in the WebCompatReporter. -->
@@ -2421,6 +2415,20 @@
   <string name="sent_from_firefox_template" tools:ignore="UnusedResources">%1$s\n\nОтправлено с %2$s 🦊 Попробуйте мобильный браузер: %3$s</string>
   <!-- A short message template for the shared link with a footer. %1$s is the shared link, %2$s is the app name (e.g. Firefox) and %3$s is a download link for the app. -->
   <string name="sent_from_firefox_template_short" tools:ignore="UnusedResources">%1$s\n\nОтправлено с %2$s 🦊 %3$s</string>
+  <!-- Send tab to synced devices: Authentication error title - Message asking the user to re-authenticate -->
+  <string name="sync_send_tab_error_auth_title">Войдите снова, чтобы отправлять вкладки между устройствами</string>
+  <!-- Send tab to synced devices: Authentication error button - Allows user to re-authenticate -->
+  <string name="sync_send_tab_error_auth_button">Войти</string>
+  <!-- Send tab to synced devices: Authentication error button - Allows user to remove the currently connected account -->
+  <string name="sync_send_tab_error_auth_remove_account">Удалить аккаунт</string>
+  <!-- Send tab to synced devices: Empty state title - Displayed when the user has no synced devices -->
+  <string name="sync_send_tab_empty_state_title">Нет подключённых устройств</string>
+  <!-- Send tab to synced devices: Empty state message - Displayed when the user has no synced devices -->
+  <string name="sync_send_tab_empty_state_description" tools:ignore="BrandUsage">Чтобы отправить вкладку, войдите в Firefox хотя бы на ещё одном устройстве.</string>
+  <!-- Send tab to synced devices: Connectivity Error title -->
+  <string name="sync_send_tab_error_connection_title">Проверьте своё соединение с Интернетом</string>
+  <!-- Send tab to synced devices: Connectivity Error message - Suggested user action after internet connection has been established -->
+  <string name="sync_send_tab_error_connection_text">После этого попробуйте отправить вкладку ещё раз.</string>
   <!--
     Notifications
 
@@ -2868,12 +2876,8 @@
   <string name="add_to_homescreen_cancel">Отмена</string>
   <!-- Add button text for the Add to Homescreen dialog -->
   <string name="add_to_homescreen_add">Добавить</string>
-  <!-- Continue to website button text for the first-time Add to Homescreen dialog -->
-  <string name="add_to_homescreen_continue">Вернуться к сайту</string>
   <!-- Placeholder text for the TextView in the Add to Homescreen dialog -->
   <string name="add_to_homescreen_text_placeholder">Название ярлыка</string>
-  <!-- Describes the add to homescreen functionality -->
-  <string name="add_to_homescreen_description_2">Вы можете легко добавить этот сайт на домашний экран вашего устройства, чтобы иметь к нему мгновенный доступ.</string>
   <!-- Preference for managing the settings for logins and passwords in Fenix -->
   <string name="preferences_passwords_logins_and_passwords_2">Пароли</string>
   <!-- Preference for managing the saving of logins and passwords in Fenix -->
@@ -3043,8 +3047,6 @@
   <string name="ip_protection_location_section">Расположение</string>
   <!-- Label for the recommended automatic location option on the browser VPN settings screen -->
   <string name="ip_protection_location_recommended_label">Рекомендуемые</string>
-  <!-- Description for the recommended automatic location option on the browser VPN settings screen -->
-  <string name="ip_protection_location_recommended_description">Выбирает самое быстрое для вас местоположение VPN.</string>
   <!-- Badge label shown in the menu item when the browser VPN is active -->
   <string name="preferences_ip_protection_on">Вкл.</string>
   <!-- Badge label shown in the menu item when the browser VPN is off -->
@@ -3136,10 +3138,6 @@
   <string name="ip_protection_locations_title">Выберите местоположение VPN</string>
   <!-- Content description for the browser VPN location selection screen top bar back button -->
   <string name="ip_protection_locations_navigate_back_button_content_description">Перейти назад</string>
-  <!-- Title for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_title" tools:ignore="UnusedResources">Предыдущее местоположение недоступно</string>
-  <!-- Description for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_recommended_description" tools:ignore="UnusedResources">Подключено к рекомендуемому местоположению.</string>
   <!--
     Autofill
 
@@ -4567,4 +4565,18 @@
   <string name="pdf_tools_print_content_description">Печать PDF</string>
   <!-- Content description for accessibility (used by screen readers): Description for the button that opens the sharing options for the PDF being displayed on the screen. -->
   <string name="pdf_tools_share_content_description">Поделиться PDF</string>
+  <!--
+    PDF viewer add a signature dialog
+
+    The title of the dialog for adding a signature to a PDF.
+  -->
+  <string name="pdf_tools_signature_title">Добавить подпись</string>
+  <!-- Content description for accessibility (used by screen readers): Description for the button that closes the dialog for adding a signature to a PDF. -->
+  <string name="pdf_tools_signature_close_content_description">Закрыть панель подписи PDF</string>
+  <!-- The placeholder text shown in the empty text input field where users can enter the signature they wish to add to a PDF. -->
+  <string name="pdf_tools_signature_placeholder">Введите подпись</string>
+  <!-- The text for the button that erases the text the user entered in the "add a signature" field. -->
+  <string name="pdf_tools_signature_clear_button">Очистить</string>
+  <!-- The text for the button that adds the signature the user has typed to the PDF. -->
+  <string name="pdf_tools_signature_add_button">Добавить</string>
 </resources>

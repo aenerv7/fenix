@@ -779,8 +779,6 @@
   <string name="preferences_pbm_lock_screen_title">Використовувати блокування екрана, щоб приховати вкладки в приватному перегляді</string>
   <!-- Informs the user how to access the tabs when "Use screen lock to hide tabs in private browsing" is enabled -->
   <string name="preferences_pbm_lock_screen_summary_3">Захистіть вкладки за допомогою відбитка пальця, PIN-коду або розпізнавання обличчя. Увімкнення цієї функції також забороняє знімки та поширення екрана.</string>
-  <!-- Preference for removing cookie/consent banners from sites automatically in private mode. See reduce_cookie_banner_summary for additional context. -->
-  <string name="preferences_cookie_banner_reduction_private_mode">Блокувальник банерів файлів cookie у приватному перегляді</string>
   <!-- Description of the preference to enable "HTTPS-Only" mode. -->
   <string name="preferences_https_only_summary">Намагатися автоматично встановлювати з’єднання з сайтами за допомогою протоколу шифрування HTTPS для поліпшення безпеки.</string>
   <!-- Summary of https only preference if https only is set to off -->
@@ -1646,16 +1644,6 @@
     <item quantity="few">Додати до групи вкладок %1$s, %2$d вкладки, %3$s колір</item>
     <item quantity="other">Додати до групи вкладок %1$s, %2$d вкладок, %3$s колір</item>
   </plurals>
-  <plurals name="share_tab_group_button_content_description">
-    <!--
-      Content Description for share tab group button.
-      %1$s is the name of the tab group.
-      %2$d is the number of tabs in a tab group.
-    -->
-    <item quantity="one">Поділитися групою вкладок %1$s з %2$d вкладкою.</item>
-    <item quantity="few">Поділитися групою вкладок %1$s з %2$d вкладками.</item>
-    <item quantity="other">Поділитися групою вкладок %1$s з %2$d вкладками.</item>
-  </plurals>
   <!-- Content description for the grabber/handle of the tab group bottom sheet. -->
   <string name="tab_group_sheet_dismiss_description">Переглянути групу вкладок, згорнути маркер перетягування</string>
   <plurals name="expanded_tab_group_header_description">
@@ -2003,8 +1991,6 @@
   <string name="webcompat_reporter_preview_report">Переглянути звіт</string>
   <!-- The title shown at the top of the WebCompat Report preview panel. This appears after the user taps the “Preview” button before sending a report. -->
   <string name="webcompat_reporter_preview_bottom_sheet_header">Перегляд звіту</string>
-  <!-- Label for the “Send” button shown in the WebCompat Report preview panel, which the user taps to submit the report. -->
-  <string name="webcompat_reporter_preview_bottom_sheet_send">Надіслати</string>
   <!-- Title for the Edit URL confirmation dialog in the WebCompatReporter -->
   <string name="webcompat_reporter_edit_url_dialog_title">Редагувати URL-адресу вебсайту</string>
   <!-- Text shown on the save button for the Edit URL confirmation dialog in the WebCompatReporter. -->
@@ -2868,12 +2854,8 @@
   <string name="add_to_homescreen_cancel">Скасувати</string>
   <!-- Add button text for the Add to Homescreen dialog -->
   <string name="add_to_homescreen_add">Додати</string>
-  <!-- Continue to website button text for the first-time Add to Homescreen dialog -->
-  <string name="add_to_homescreen_continue">Продовжити на вебсайті</string>
   <!-- Placeholder text for the TextView in the Add to Homescreen dialog -->
   <string name="add_to_homescreen_text_placeholder">Назва ярлика</string>
-  <!-- Describes the add to homescreen functionality -->
-  <string name="add_to_homescreen_description_2">Ви можете легко додати цей вебсайт на головний екран вашого пристрою, щоб мати миттєвий доступ до нього і працювати швидше.</string>
   <!-- Preference for managing the settings for logins and passwords in Fenix -->
   <string name="preferences_passwords_logins_and_passwords_2">Паролі</string>
   <!-- Preference for managing the saving of logins and passwords in Fenix -->
@@ -3043,8 +3025,6 @@
   <string name="ip_protection_location_section">Розташування</string>
   <!-- Label for the recommended automatic location option on the browser VPN settings screen -->
   <string name="ip_protection_location_recommended_label">Рекомендовано</string>
-  <!-- Description for the recommended automatic location option on the browser VPN settings screen -->
-  <string name="ip_protection_location_recommended_description">Вибір найшвидшого для вас розташування VPN.</string>
   <!-- Badge label shown in the menu item when the browser VPN is active -->
   <string name="preferences_ip_protection_on">Увімкнено</string>
   <!-- Badge label shown in the menu item when the browser VPN is off -->
@@ -3136,10 +3116,6 @@
   <string name="ip_protection_locations_title">Вибір розташування VPN</string>
   <!-- Content description for the browser VPN location selection screen top bar back button -->
   <string name="ip_protection_locations_navigate_back_button_content_description">Перейти назад</string>
-  <!-- Title for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_title" tools:ignore="UnusedResources">Попереднє розташування недоступне</string>
-  <!-- Description for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_recommended_description" tools:ignore="UnusedResources">Під’єднано до рекомендованого розташування.</string>
   <!--
     Autofill
 

@@ -60,18 +60,19 @@ fun createGridReorderState(
     val scope = rememberCoroutineScope()
     val touchSlop = LocalViewConfiguration.current.touchSlop
     val hapticFeedback = LocalHapticFeedback.current
-    val state = remember(gridState) {
-        GridReorderState(
-            gridState = gridState,
-            onMove = onMove,
-            scope = scope,
-            touchSlop = touchSlop,
-            ignoredItems = ignoredItems,
-            onLongPress = onLongPress,
-            hapticFeedback = hapticFeedback,
-            tabInteractionHandler = tabInteractionHandler,
-        )
-    }
+    val state =
+        remember(gridState) {
+            GridReorderState(
+                gridState = gridState,
+                onMove = onMove,
+                scope = scope,
+                touchSlop = touchSlop,
+                ignoredItems = ignoredItems,
+                onLongPress = onLongPress,
+                hapticFeedback = hapticFeedback,
+                tabInteractionHandler = tabInteractionHandler,
+            )
+        }
     return state
 }
 
@@ -87,7 +88,8 @@ fun createGridReorderState(
  * @param ignoredItems List of keys for non-draggable items.
  * @param tabInteractionHandler The tab interaction handler for moves, drops, and drag events.
  */
-class GridReorderState internal constructor(
+class GridReorderState
+internal constructor(
     private val gridState: LazyGridState,
     private val scope: CoroutineScope,
     private val hapticFeedback: HapticFeedback,
@@ -107,13 +109,14 @@ class GridReorderState internal constructor(
     private var draggingItemInitialOffset by mutableStateOf(Offset.Zero)
     internal var moved by mutableStateOf(false)
     private val draggingItemOffset: Offset
-        get() = draggingItemLayoutInfo?.let { item ->
-            draggingItemInitialOffset + draggingItemCumulatedOffset - item.offset.toOffset()
-        } ?: Offset.Zero
+        get() =
+            draggingItemLayoutInfo?.let { item ->
+                draggingItemInitialOffset + draggingItemCumulatedOffset - item.offset.toOffset()
+            } ?: Offset.Zero
 
     internal fun computeItemOffset(index: Int): Offset {
-        val itemAtIndex = gridState.layoutInfo.visibleItemsInfo.firstOrNull { info -> info.index == index }
-            ?: return Offset.Zero
+        val itemAtIndex =
+            gridState.layoutInfo.visibleItemsInfo.firstOrNull { info -> info.index == index } ?: return Offset.Zero
         return draggingItemInitialOffset + draggingItemCumulatedOffset - itemAtIndex.offset.toOffset()
     }
 
@@ -122,6 +125,7 @@ class GridReorderState internal constructor(
 
     internal var previousKeyOfDraggedItem by mutableStateOf<GridItemKey?>(null)
         private set
+
     internal var previousItemOffset = Animatable(Offset.Zero, Offset.VectorConverter)
         private set
 
@@ -191,17 +195,19 @@ class GridReorderState internal constructor(
             moved = true
         }
         val startOffset = draggingItem.offset.toOffset() + draggingItemOffset
-        val endOffset = Offset(
-            startOffset.x + draggingItem.size.toSize().width,
-            startOffset.y + draggingItem.size.toSize().height,
-        )
+        val endOffset =
+            Offset(
+                startOffset.x + draggingItem.size.toSize().width,
+                startOffset.y + draggingItem.size.toSize().height,
+            )
         val middleOffset = startOffset + (endOffset - startOffset) / 2f
 
-        val targetItem = gridState.layoutInfo.visibleItemsInfo.find { item ->
-            middleOffset.x.toInt() in item.offset.x..item.endOffset.x &&
-                middleOffset.y.toInt() in item.offset.y..item.endOffset.y &&
-                draggingItemKey != item.key
-        }
+        val targetItem =
+            gridState.layoutInfo.visibleItemsInfo.find { item ->
+                middleOffset.x.toInt() in item.offset.x..item.endOffset.x &&
+                    middleOffset.y.toInt() in item.offset.y..item.endOffset.y &&
+                    draggingItemKey != item.key
+            }
         if (targetItem != null && targetItem.key !in ignoredItems) {
             if (draggingItem.index == gridState.firstVisibleItemIndex) {
                 scope.launch {
@@ -210,15 +216,16 @@ class GridReorderState internal constructor(
             }
             onMove.invoke(draggingItem, targetItem)
         } else {
-            val overscroll = when {
-                draggingItemCumulatedOffset.y > 0 ->
-                    (endOffset.y - gridState.layoutInfo.viewportEndOffset).coerceAtLeast(0f)
+            val overscroll =
+                when {
+                    draggingItemCumulatedOffset.y > 0 ->
+                        (endOffset.y - gridState.layoutInfo.viewportEndOffset).coerceAtLeast(0f)
 
-                draggingItemCumulatedOffset.y < 0 ->
-                    (startOffset.y - gridState.layoutInfo.viewportStartOffset).coerceAtMost(0f)
+                    draggingItemCumulatedOffset.y < 0 ->
+                        (startOffset.y - gridState.layoutInfo.viewportStartOffset).coerceAtMost(0f)
 
-                else -> 0f
-            }
+                    else -> 0f
+                }
             if (overscroll != 0f) {
                 scope.launch {
                     gridState.scrollBy(overscroll)
@@ -319,30 +326,31 @@ fun Modifier.detectGridPressAndDragGestures(
     gridState: LazyGridState,
     reorderState: GridReorderState,
     isInMultiSelectMode: Boolean,
-): Modifier = pointerInput(gridState, isInMultiSelectMode) {
-    // In multi-select mode, drag gestures will be detected without a long press and the reorder state
-    // will attempt to preserve the select mode state.
-    if (isInMultiSelectMode) {
-        detectDragGestures(
-            onDragStart = { offset -> reorderState.onTouchSlopPassed(offset, false) },
-            onDrag = { change, dragAmount ->
-                change.consume()
-                reorderState.onDrag(offset = dragAmount, preserveSelectMode = true)
-            },
-            onDragEnd = reorderState::onDragInterrupted,
-            onDragCancel = reorderState::onDragInterrupted,
-        )
-    } else {
-        detectDragGesturesAfterLongPress(
-            onDragStart = { offset -> reorderState.onTouchSlopPassed(offset, true) },
-            onDrag = { change, dragAmount ->
-                change.consume()
-                reorderState.onDrag(offset = dragAmount, preserveSelectMode = false)
-            },
-            onDragEnd = reorderState::onDragInterrupted,
-            onDragCancel = reorderState::onDragInterrupted,
-        )
+): Modifier =
+    pointerInput(gridState, isInMultiSelectMode) {
+        // In multi-select mode, drag gestures will be detected without a long press and the reorder state
+        // will attempt to preserve the select mode state.
+        if (isInMultiSelectMode) {
+            detectDragGestures(
+                onDragStart = { offset -> reorderState.onTouchSlopPassed(offset, false) },
+                onDrag = { change, dragAmount ->
+                    change.consume()
+                    reorderState.onDrag(offset = dragAmount, preserveSelectMode = true)
+                },
+                onDragEnd = reorderState::onDragInterrupted,
+                onDragCancel = reorderState::onDragInterrupted,
+            )
+        } else {
+            detectDragGesturesAfterLongPress(
+                onDragStart = { offset -> reorderState.onTouchSlopPassed(offset, true) },
+                onDrag = { change, dragAmount ->
+                    change.consume()
+                    reorderState.onDrag(offset = dragAmount, preserveSelectMode = false)
+                },
+                onDragEnd = reorderState::onDragInterrupted,
+                onDragCancel = reorderState::onDragInterrupted,
+            )
+        }
     }
-}
 
 typealias GridItemKey = Any

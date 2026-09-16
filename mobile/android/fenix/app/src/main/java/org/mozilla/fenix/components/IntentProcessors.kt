@@ -40,16 +40,12 @@ class IntentProcessors(
     private val manifestStorage: ManifestStorage,
     private val engine: Engine,
 ) {
-    /**
-     * Provides intent processing functionality for ACTION_VIEW and ACTION_SEND intents.
-     */
+    /** Provides intent processing functionality for ACTION_VIEW and ACTION_SEND intents. */
     val intentProcessor by lazyMonitored {
         TabIntentProcessor(tabsUseCases, searchUseCases.newTabSearch, isPrivate = false, engine = engine)
     }
 
-    /**
-     * Provides intent processing functionality for ACTION_VIEW and ACTION_SEND intents in private tabs.
-     */
+    /** Provides intent processing functionality for ACTION_VIEW and ACTION_SEND intents in private tabs. */
     val privateIntentProcessor by lazyMonitored {
         TabIntentProcessor(tabsUseCases, searchUseCases.newPrivateTabSearch, isPrivate = true, engine = engine)
     }

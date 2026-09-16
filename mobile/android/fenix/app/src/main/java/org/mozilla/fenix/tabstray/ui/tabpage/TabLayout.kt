@@ -68,12 +68,18 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.semantics.CollectionItemInfo
+import androidx.compose.ui.semantics.CustomAccessibilityAction
+import androidx.compose.ui.semantics.collectionInfo
+import androidx.compose.ui.semantics.collectionItemInfo
+import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlin.math.max
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import mozilla.components.compose.base.RadioCheckmark
@@ -128,7 +134,6 @@ import org.mozilla.fenix.theme.Theme
 import org.mozilla.fenix.theme.ThemedValue
 import org.mozilla.fenix.theme.ThemedValueProvider
 import org.mozilla.fenix.trackingprotection.TrackersBlockedCard
-import kotlin.math.max
 
 // Key for the span item at the bottom of the tray, used to make the item not reorderable.
 private const val SPAN_ITEM_KEY = "span"
@@ -156,9 +161,7 @@ private const val NUM_COLUMNS_TAB_GRID_LANDSCAPE_THRESHOLD_2 = 4
 private const val NUM_COLUMNS_TAB_GRID_LANDSCAPE_THRESHOLD_3 = 5
 
 private val tabListPadding
-    @Composable
-    @ReadOnlyComposable
-    get() = FirefoxTheme.layout.space.static200
+    @Composable @ReadOnlyComposable get() = FirefoxTheme.layout.space.static200
 private val ignoredItems = setOf(HEADER_ITEM_KEY, SPAN_ITEM_KEY, TAB_GROUP_ONBOARDING_ITEM_KEY)
 
 /**
@@ -170,8 +173,8 @@ private val ignoredItems = setOf(HEADER_ITEM_KEY, SPAN_ITEM_KEY, TAB_GROUP_ONBOA
  * @param displayTabGroupOnboarding Whether onboarding for tab groups should be shown.
  * @param liveReorderEnabled Whether tab reorders should happen 'live' during a drag.
  * @param selectedItemIndex The index of the currently selected tab. This will be scrolled to on first-render.
- * @param selectionMode [TabsTrayState.Mode] indicating whether the Tabs Tray is in single selection
- * or multi-selection and contains the set of selected tabs.
+ * @param selectionMode [TabsTrayState.Mode] indicating whether the Tabs Tray is in single selection or multi-selection
+ *   and contains the set of selected tabs.
  * @param focusEnabled Whether the focus indication state is enabled.
  * @param tabInteractionHandler Handles tab interactions such as moves and drag and drop.
  * @param modifier [Modifier] to be applied to the layout.
@@ -475,11 +478,12 @@ private fun TabLayoutScrollHelper(
         val onboardingOffset = if (showOnboarding) 1 else 0
         val targetIndex = selectedTabIndex + headerOffset + onboardingOffset
 
-        val scrollToItem: suspend (Int, Int) -> Unit = when (state) {
-            is LazyListState -> state::scrollToItem
-            is LazyGridState -> state::scrollToItem
-            else -> return@LaunchedEffect
-        }
+        val scrollToItem: suspend (Int, Int) -> Unit =
+            when (state) {
+                is LazyListState -> state::scrollToItem
+                is LazyGridState -> state::scrollToItem
+                else -> return@LaunchedEffect
+            }
 
         snapshotFlow { calculateScrollDimensions(state) }
             .filterNotNull()
@@ -542,8 +546,7 @@ private fun ReorderableTabGrid(
     val gridState = rememberLazyGridState()
     val tabGridBottomPadding = dimensionResource(id = R.dimen.tab_tray_grid_bottom_padding)
     val spacing = FirefoxTheme.layout.space.static200
-    val navigationBarPadding =
-        WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    val navigationBarPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
     TabLayoutScrollHelper(
         state = gridState,
@@ -589,19 +592,22 @@ private fun ReorderableTabGrid(
         val columns = numberOfGridColumns
         LazyVerticalGrid(
             columns = GridCells.Fixed(count = columns),
-            modifier = modifier
-                .fillMaxSize()
-                .thenConditional(
-                    Modifier.detectGridPressAndDragGestures(
-                        gridState = gridState,
-                        reorderState = reorderState,
-                        isInMultiSelectMode = isInMultiSelectMode,
-                    ),
-                ) { reorderingEnabled }
-                .semantics {
-                    tabGridColumnCount = columns
-                    testTag = TabsTrayTestTag.TAB_GRID
-                },
+            modifier =
+                modifier
+                    .fillMaxSize()
+                    .thenConditional(
+                        Modifier.detectGridPressAndDragGestures(
+                            gridState = gridState,
+                            reorderState = reorderState,
+                            isInMultiSelectMode = isInMultiSelectMode,
+                        )
+                    ) {
+                        reorderingEnabled
+                    }
+                    .semantics {
+                        tabGridColumnCount = columns
+                        testTag = TabsTrayTestTag.TAB_GRID
+                    },
             state = gridState,
             contentPadding = contentPadding,
             verticalArrangement = Arrangement.spacedBy(space = spacing),
@@ -619,10 +625,10 @@ private fun ReorderableTabGrid(
                 selectedItemIndex = selectedItemIndex,
                 columns = columns,
                 onTabGroupOnboardingDismiss = onTabGroupOnboardingDismiss,
-            ) { index, tab ->
+            ) { _, gridIndex, _, tab ->
                 ReorderableTabGridItemContent(
                     tabsTrayItem = tab,
-                    index = index,
+                    gridIndex = gridIndex,
                     thumbnailSizePx = thumbnailSizePx,
                     hasHeader = header != null,
                     isInMultiSelectMode = isInMultiSelectMode,
@@ -647,7 +653,7 @@ private fun ReorderableTabGrid(
 }
 
 // Tab grid that supports reordering as well as drag and drop.
-@Suppress("LongParameterList", "LongMethod")
+@Suppress("LongParameterList", "LongMethod", "CognitiveComplexMethod")
 @Composable
 private fun InteractableTabGrid(
     tabs: List<TabsTrayItem>,
@@ -678,8 +684,7 @@ private fun InteractableTabGrid(
     val gridState = rememberLazyGridState()
     val tabGridBottomPadding = dimensionResource(id = R.dimen.tab_tray_grid_bottom_padding)
     val spacing = FirefoxTheme.layout.space.static200
-    val navigationBarPadding =
-        WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    val navigationBarPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
     TabLayoutScrollHelper(
         state = gridState,
@@ -732,26 +737,30 @@ private fun InteractableTabGrid(
     }
 
     BoxWithConstraints(
-        modifier = Modifier
-            .onGloballyPositioned {
-                gridInteractionState.updateGridLayoutCoordinates(it)
-            }
-            .detectGridPressAndDragGestures(
-                reorderState = gridInteractionState,
-                isInMultiSelectMode = isInMultiSelectMode,
-            )
-            .drawVerticalReorderIndicator(
-                gridInteractionState = gridInteractionState,
-            ),
+        modifier =
+            Modifier.onGloballyPositioned {
+                    gridInteractionState.updateGridLayoutCoordinates(it)
+                }
+                .detectGridPressAndDragGestures(
+                    reorderState = gridInteractionState,
+                    isInMultiSelectMode = isInMultiSelectMode,
+                )
+                .drawVerticalReorderIndicator(gridInteractionState = gridInteractionState)
     ) {
         val columns = numberOfGridColumns
+        val collectionSemantics =
+            TabCollectionSemantics(
+                itemCount = tabs.size + if (showOnboardingCardInGrid) columns else 0,
+                columns = columns,
+            )
+        val reorderGeometry = TabReorderGeometry(tabCount = tabs.size, columns = columns)
         LazyVerticalGrid(
             columns = GridCells.Fixed(count = columns),
-            modifier = modifier
-                .fillMaxSize()
-                .semantics {
+            modifier =
+                modifier.fillMaxSize().semantics {
                     tabGridColumnCount = columns
                     testTag = TabsTrayTestTag.TAB_GRID
+                    collectionInfo = collectionSemantics.collectionInfo
                 },
             state = gridState,
             userScrollEnabled = gridInteractionState.draggedItem == InteractionState.Grid.None,
@@ -771,21 +780,32 @@ private fun InteractableTabGrid(
                 selectedItemIndex = selectedItemIndex,
                 columns = columns,
                 onTabGroupOnboardingDismiss = onTabGroupOnboardingDismiss,
-            ) { index, tab ->
+                collectionSemantics = collectionSemantics,
+            ) { tabIndex, gridIndex, collectionIndex, tab ->
                 val pinnableContainer = LocalPinnableContainer.current
-                val isDragged by remember(tab.id) {
-                    derivedStateOf {
-                        gridInteractionState.draggedItem.key == tab.id
+                val isDragged by
+                    remember(tab.id) {
+                        derivedStateOf {
+                            gridInteractionState.draggedItem.key == tab.id
+                        }
                     }
-                }
 
                 DisposableEffect(isDragged) {
                     val handle = if (isDragged) pinnableContainer?.pin() else null
                     onDispose { handle?.release() }
                 }
+                val reorderActions =
+                    rememberTabReorderActions(
+                        item = tab,
+                        tabs = tabs,
+                        tabIndex = tabIndex,
+                        reorderGeometry = reorderGeometry,
+                        enabled = !isInMultiSelectMode,
+                        tabInteractionHandler = tabInteractionHandler,
+                    )
                 InteractableTabGridItemContent(
                     tabsTrayItem = tab,
-                    index = index,
+                    gridIndex = gridIndex,
                     thumbnailSizePx = thumbnailSizePx,
                     hasHeader = header != null,
                     isInMultiSelectMode = isInMultiSelectMode,
@@ -800,6 +820,8 @@ private fun InteractableTabGrid(
                     onDeleteTabGroupClick = onDeleteTabGroupClick,
                     enteringGroupId = enteringGroupId,
                     onGroupEntranceAnimationPlayed = onGroupEntranceAnimationPlayed,
+                    itemInfo = collectionSemantics.itemInfo(position = collectionIndex),
+                    accessibilityActions = reorderActions,
                 )
             }
 
@@ -811,47 +833,63 @@ private fun InteractableTabGrid(
     }
 }
 
-/**
- * Splits grid view [tabs] around the tab group onboarding card when [showTabGroupOnboarding] is true.
- */
+/** Splits grid view [tabs] around the tab group onboarding card when [showTabGroupOnboarding] is true. */
 private fun LazyGridScope.tabGridItems(
     tabs: List<TabsTrayItem>,
     showTabGroupOnboarding: Boolean,
     selectedItemIndex: Int,
     columns: Int,
     onTabGroupOnboardingDismiss: () -> Unit,
-    tabContent: @Composable LazyGridItemScope.(gridIndex: Int, tab: TabsTrayItem) -> Unit,
+    collectionSemantics: TabCollectionSemantics? = null,
+    tabContent:
+        @Composable
+        LazyGridItemScope.(
+            tabIndex: Int,
+            gridIndex: Int,
+            collectionIndex: Int,
+            tab: TabsTrayItem,
+        ) -> Unit,
 ) {
     // Integer division rounds down so the onboarding card is inserted at the start
     //  of the row containing the selected tab, instead of splitting the row.
     val onboardingInsertIndex = (selectedItemIndex / columns) * columns
-    val tabsBeforeOnboarding =
-        if (showTabGroupOnboarding) tabs.subList(0, onboardingInsertIndex) else tabs
+    val tabsBeforeOnboarding = if (showTabGroupOnboarding) tabs.subList(0, onboardingInsertIndex) else tabs
     itemsIndexed(
         items = tabsBeforeOnboarding,
         key = { _, tab -> tab.id },
     ) { index, tab ->
-        tabContent(index, tab)
+        // Before the onboarding card is placed,
+        // the tab, index, and collection positions all coincide
+        tabContent(index, index, index, tab)
     }
 
+    val modifier =
+        collectionSemantics?.let {
+            Modifier.semantics {
+                collectionItemInfo = it.itemInfo(position = onboardingInsertIndex, columnSpan = columns)
+            }
+        } ?: Modifier
     if (showTabGroupOnboarding) {
         item(key = TAB_GROUP_ONBOARDING_ITEM_KEY, span = { GridItemSpan(maxLineSpan) }) {
-            TabGroupOnboardingGridItem(onDismiss = onTabGroupOnboardingDismiss)
+            TabGroupOnboardingGridItem(
+                onDismiss = onTabGroupOnboardingDismiss,
+                modifier = modifier,
+            )
         }
 
         itemsIndexed(
             items = tabs.subList(onboardingInsertIndex, tabs.size),
             key = { _, tab -> tab.id },
         ) { index, tab ->
-            // + 1 to accommodate for the slot occupied by the onboarding row.
-            tabContent(onboardingInsertIndex + index + 1, tab)
+            val tabIndex = onboardingInsertIndex + index
+            val gridIndex = tabIndex + 1
+            val collectionIndex = tabIndex + columns
+            tabContent(tabIndex, gridIndex, collectionIndex, tab)
         }
     }
 }
 
-/**
- * Footer item for the tab grid: a [TrackersBlockedCard] when trackers are blocked.
- */
+/** Footer item for the tab grid: a [TrackersBlockedCard] when trackers are blocked. */
 private fun LazyGridScope.tabGridFooter(
     trackersBlockedCount: Int?,
     onPrivacyReportTapped: (() -> Unit)? = null,
@@ -860,10 +898,11 @@ private fun LazyGridScope.tabGridFooter(
         val bottomBarHeight = dimensionResource(id = R.dimen.browser_toolbar_height)
         val tabGridBottomPadding = dimensionResource(id = R.dimen.tab_tray_grid_bottom_padding)
         Column(
-            modifier = Modifier.thenConditional(
-                Modifier.padding(top = FirefoxTheme.layout.space.static200),
-                { trackersBlockedCount != null },
-            ),
+            modifier =
+                Modifier.thenConditional(
+                    Modifier.padding(top = FirefoxTheme.layout.space.static200),
+                    { trackersBlockedCount != null },
+                ),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             if (trackersBlockedCount != null) {
@@ -883,7 +922,7 @@ private fun LazyGridScope.tabGridFooter(
 @Composable
 private fun LazyGridItemScope.ReorderableTabGridItemContent(
     tabsTrayItem: TabsTrayItem,
-    index: Int,
+    gridIndex: Int,
     thumbnailSizePx: Int,
     hasHeader: Boolean,
     isInMultiSelectMode: Boolean,
@@ -899,24 +938,26 @@ private fun LazyGridItemScope.ReorderableTabGridItemContent(
 ) {
     val swipeToDismissBoxState = rememberTabSwipeToDismissBoxState(tabId = tabsTrayItem.id)
     val shouldClickListen = reorderState.draggingItemKey != tabsTrayItem.id
-    val swipingActive by remember(swipeToDismissBoxState) {
-        derivedStateOf {
-            swipeToDismissBoxState.dismissDirection != SwipeToDismissBoxValue.Settled
+    val swipingActive by
+        remember(swipeToDismissBoxState) {
+            derivedStateOf {
+                swipeToDismissBoxState.dismissDirection != SwipeToDismissBoxValue.Settled
+            }
         }
-    }
 
     ReorderableDragItemContainer(
         state = reorderState,
-        position = index + if (hasHeader) 1 else 0,
+        position = gridIndex + if (hasHeader) 1 else 0,
         key = tabsTrayItem.id,
         swipingActive = swipingActive,
     ) { interactionState ->
-        val selectionState = TabsTrayItemSelectionState(
-            isFocused = tabsTrayItem.isFocused,
-            isSelected = isMultiSelected,
-            multiSelectEnabled = isInMultiSelectMode,
-            focusEnabled = focusEnabled,
-        )
+        val selectionState =
+            TabsTrayItemSelectionState(
+                isFocused = tabsTrayItem.isFocused,
+                isSelected = isMultiSelected,
+                multiSelectEnabled = isInMultiSelectMode,
+                focusEnabled = focusEnabled,
+            )
         when (tabsTrayItem) {
             is TabsTrayItem.Tab -> {
                 TabGridTabItem(
@@ -936,10 +977,11 @@ private fun LazyGridItemScope.ReorderableTabGridItemContent(
                 TabGroupCard(
                     group = tabsTrayItem,
                     selectionState = selectionState,
-                    clickHandler = TabsTrayItemClickHandler(
-                        enabled = shouldClickListen,
-                        onClick = onItemClick,
-                    ),
+                    clickHandler =
+                        TabsTrayItemClickHandler(
+                            enabled = shouldClickListen,
+                            onClick = onItemClick,
+                        ),
                     interactionState = interactionState,
                     onEditTabGroupClick = { onEditTabGroupClick(tabsTrayItem) },
                     onCloseTabGroupClick = { onCloseTabGroupClick(tabsTrayItem) },
@@ -955,7 +997,7 @@ private fun LazyGridItemScope.ReorderableTabGridItemContent(
 @Composable
 private fun LazyGridItemScope.InteractableTabGridItemContent(
     tabsTrayItem: TabsTrayItem,
-    index: Int,
+    gridIndex: Int,
     thumbnailSizePx: Int,
     hasHeader: Boolean,
     isInMultiSelectMode: Boolean,
@@ -970,28 +1012,33 @@ private fun LazyGridItemScope.InteractableTabGridItemContent(
     onDeleteTabGroupClick: (TabsTrayItem.TabGroup) -> Unit,
     enteringGroupId: String?,
     onGroupEntranceAnimationPlayed: () -> Unit,
+    modifier: Modifier = Modifier,
+    itemInfo: CollectionItemInfo? = null,
+    accessibilityActions: List<CustomAccessibilityAction> = emptyList(),
 ) {
     val swipeToDismissBoxState = rememberTabSwipeToDismissBoxState(tabId = tabsTrayItem.id)
     val shouldClickListen = reorderState.draggedItem.key != tabsTrayItem.id
-    val swipingActive by remember(swipeToDismissBoxState) {
-        derivedStateOf {
-            swipeToDismissBoxState.dismissDirection != SwipeToDismissBoxValue.Settled
+    val swipingActive by
+        remember(swipeToDismissBoxState) {
+            derivedStateOf {
+                swipeToDismissBoxState.dismissDirection != SwipeToDismissBoxValue.Settled
+            }
         }
-    }
     InteractableDragItemContainer(
         state = reorderState,
-        position = index + if (hasHeader) 1 else 0,
+        position = gridIndex + if (hasHeader) 1 else 0,
         key = tabsTrayItem.id,
         swipingActive = swipingActive,
         enteringGroupId = enteringGroupId,
         onGroupEntranceAnimationPlayed = onGroupEntranceAnimationPlayed,
     ) { interactionState ->
-        val selectionState = TabsTrayItemSelectionState(
-            isFocused = tabsTrayItem.isFocused,
-            isSelected = isMultiSelected,
-            multiSelectEnabled = isInMultiSelectMode,
-            focusEnabled = focusEnabled,
-        )
+        val selectionState =
+            TabsTrayItemSelectionState(
+                isFocused = tabsTrayItem.isFocused,
+                isSelected = isMultiSelected,
+                multiSelectEnabled = isInMultiSelectMode,
+                focusEnabled = focusEnabled,
+            )
         when (tabsTrayItem) {
             is TabsTrayItem.Tab -> {
                 TabGridTabItem(
@@ -1004,6 +1051,9 @@ private fun LazyGridItemScope.InteractableTabGridItemContent(
                     thumbnailSizePx = thumbnailSizePx,
                     selectionState = selectionState,
                     shouldClickListen = shouldClickListen,
+                    modifier = modifier,
+                    itemInfo = itemInfo,
+                    accessibilityActions = accessibilityActions,
                 )
             }
 
@@ -1011,15 +1061,19 @@ private fun LazyGridItemScope.InteractableTabGridItemContent(
                 TabGroupCard(
                     group = tabsTrayItem,
                     selectionState = selectionState,
-                    clickHandler = TabsTrayItemClickHandler(
-                        enabled = shouldClickListen,
-                        onClick = onItemClick,
-                    ),
+                    clickHandler =
+                        TabsTrayItemClickHandler(
+                            enabled = shouldClickListen,
+                            onClick = onItemClick,
+                        ),
                     interactionState = interactionState,
                     onEditTabGroupClick = { onEditTabGroupClick(tabsTrayItem) },
                     onCloseTabGroupClick = { onCloseTabGroupClick(tabsTrayItem) },
                     onShareTabGroupClick = onShareTabGroupClick,
                     onDeleteTabGroupClick = onDeleteTabGroupClick,
+                    modifier = modifier,
+                    itemInfo = itemInfo,
+                    accessibilityActions = accessibilityActions,
                 )
             }
         }
@@ -1027,9 +1081,7 @@ private fun LazyGridItemScope.InteractableTabGridItemContent(
 }
 
 internal val horizontalGridPadding: Dp
-    @ReadOnlyComposable
-    @Composable
-    get() = FirefoxTheme.layout.space.static200
+    @ReadOnlyComposable @Composable get() = FirefoxTheme.layout.space.static200
 
 private val BoxWithConstraintsScope.thumbnailSizePx: Int
     @Composable
@@ -1037,8 +1089,7 @@ private val BoxWithConstraintsScope.thumbnailSizePx: Int
     get() {
         val columns = numberOfGridColumns
         val density = LocalDensity.current
-        val totalSpacing = horizontalGridPadding * (columns - 1) +
-            FirefoxTheme.layout.space.static50 * columns * 2
+        val totalSpacing = horizontalGridPadding * (columns - 1) + FirefoxTheme.layout.space.static50 * columns * 2
         val thumbnailWidth = constraints.maxWidth - with(density) { totalSpacing.roundToPx() }
         val thumbnailHeight = (thumbnailWidth / gridItemAspectRatio).toInt()
         return max(thumbnailWidth, thumbnailHeight)
@@ -1059,14 +1110,15 @@ private fun TabListItemContent(
     onShareTabGroupClick: (TabsTrayItem.TabGroup) -> Unit,
     onDeleteTabGroupClick: (TabsTrayItem.TabGroup) -> Unit,
     onGroupEntranceAnimationPlayed: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val shouldClickListen = listInteractionState.draggedItem.key != tab.id
     when (tab) {
         is TabsTrayItem.Tab -> {
             TabListTabItem(
                 tab = tab,
-                modifier = Modifier
-                    .tabListItemShapeStyling(
+                modifier =
+                    modifier.tabListItemShapeStyling(
                         tabShapeInfo = tabShapeInfo,
                         selectionState = selectionState,
                     ),
@@ -1082,25 +1134,26 @@ private fun TabListItemContent(
             TabGroupRow(
                 tabGroup = tab,
                 onClick = { onItemClick(tab) },
-                modifier = Modifier
-                    .tabListItemShapeStyling(
-                        tabShapeInfo = tabShapeInfo,
-                        selectionState = selectionState,
-                    )
-                    // The interaction animation must be applied before the background for the
-                    // conditional transparency to behave as expected
-                    .tabItemGroupListInteractionAnimation(
-                        interactionState = tabInteractionState,
-                        key = tab.id,
-                        onGroupEntranceAnimationPlayed = onGroupEntranceAnimationPlayed,
-                    )
-                    .background(
-                        if (selectionState.isSelected) {
-                            MaterialTheme.colorScheme.primaryContainer
-                        } else {
-                            MaterialTheme.colorScheme.surfaceBright
-                        },
-                    ),
+                modifier =
+                    modifier
+                        .tabListItemShapeStyling(
+                            tabShapeInfo = tabShapeInfo,
+                            selectionState = selectionState,
+                        )
+                        // The interaction animation must be applied before the background for the
+                        // conditional transparency to behave as expected
+                        .tabItemGroupListInteractionAnimation(
+                            interactionState = tabInteractionState,
+                            key = tab.id,
+                            onGroupEntranceAnimationPlayed = onGroupEntranceAnimationPlayed,
+                        )
+                        .background(
+                            if (selectionState.isSelected) {
+                                MaterialTheme.colorScheme.primaryContainer
+                            } else {
+                                MaterialTheme.colorScheme.surfaceBright
+                            }
+                        ),
                 trailingContent = {
                     if (selectionState.multiSelectEnabled) {
                         RadioCheckmark(
@@ -1208,31 +1261,40 @@ private fun InteractableTabList(
             listInteractionState.reset()
         }
     }
+    val collectionSemantics =
+        TabCollectionSemantics(
+            itemCount = tabs.size + if (showOnboardingCardInList) 1 else 0,
+            columns = 1,
+        )
+    val reorderGeometry = TabReorderGeometry(tabCount = tabs.size, columns = 1)
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .detectListPressAndDrag(
-                listState = state,
-                interactionState = listInteractionState,
-                shouldLongPressToDrag = !isInMultiSelectMode,
-            ),
+        modifier =
+            Modifier.fillMaxSize()
+                .detectListPressAndDrag(
+                    listState = state,
+                    interactionState = listInteractionState,
+                    shouldLongPressToDrag = !isInMultiSelectMode,
+                ),
         contentAlignment = Alignment.TopCenter,
     ) {
         LazyColumn(
-            modifier = modifier
-                .width(FirefoxTheme.layout.size.containerMaxWidth)
-                .padding(horizontal = horizontalPadding)
-                .background(MaterialTheme.colorScheme.surface)
-                .semantics {
-                    testTag = TabsTrayTestTag.TAB_LIST
-                }
-                .drawHorizontalReorderIndicator(listInteractionState = listInteractionState, listState = state),
+            modifier =
+                modifier
+                    .width(FirefoxTheme.layout.size.containerMaxWidth)
+                    .padding(horizontal = horizontalPadding)
+                    .background(MaterialTheme.colorScheme.surface)
+                    .semantics {
+                        testTag = TabsTrayTestTag.TAB_LIST
+                        collectionInfo = collectionSemantics.collectionInfo
+                    }
+                    .drawHorizontalReorderIndicator(listInteractionState = listInteractionState, listState = state),
             state = state,
             verticalArrangement = Arrangement.spacedBy(FirefoxTheme.layout.space.static25),
-            contentPadding = PaddingValues(
-                bottom = tabListBottomPadding,
-                top = tabListPadding,
-            ),
+            contentPadding =
+                PaddingValues(
+                    bottom = tabListBottomPadding,
+                    top = tabListPadding,
+                ),
         ) {
             interactableTabListContent(
                 header = header,
@@ -1254,12 +1316,15 @@ private fun InteractableTabList(
                 onPrivacyReportTapped = onPrivacyReportTapped,
                 enteringGroupId = enteringGroupId,
                 onGroupEntranceAnimationPlayed = onGroupEntranceAnimationPlayed,
+                tabCollectionSemantics = collectionSemantics,
+                tabReorderGeometry = reorderGeometry,
+                tabInteractionHandler = tabInteractionHandler,
             )
         }
     }
 }
 
-@Suppress("LongParameterList")
+@Suppress("LongParameterList", "LongMethod")
 private fun LazyListScope.interactableTabListContent(
     header: (@Composable () -> Unit)? = null,
     tabs: List<TabsTrayItem>,
@@ -1269,6 +1334,9 @@ private fun LazyListScope.interactableTabListContent(
     isInMultiSelectMode: Boolean,
     selectionMode: TabsTrayState.Mode,
     focusEnabled: Boolean,
+    tabCollectionSemantics: TabCollectionSemantics,
+    tabReorderGeometry: TabReorderGeometry,
+    tabInteractionHandler: TabInteractionHandler,
     onTabClose: (TabsTrayItem.Tab) -> Unit,
     onItemClick: (TabsTrayItem) -> Unit,
     onEditTabGroupClick: (TabsTrayItem.TabGroup) -> Unit,
@@ -1291,23 +1359,35 @@ private fun LazyListScope.interactableTabListContent(
         showTabGroupOnboarding = displayTabGroupOnboarding,
         selectedItemIndex = selectedItemIndex,
         onTabGroupOnboardingDismiss = onTabGroupOnboardingDismiss,
-    ) { position, shapeInfo, tab ->
+        collectionSemantics = tabCollectionSemantics,
+    ) { tabIndex, position, shapeInfo, tab ->
         // Pins the currently dragged item so that it can be scrolled off screen without being disposed
         val pinnableContainer = LocalPinnableContainer.current
-        val isDragged by remember(tab.id) {
-            derivedStateOf {
-                listInteractionState.draggedItem.key == tab.id
+        val isDragged by
+            remember(tab.id) {
+                derivedStateOf {
+                    listInteractionState.draggedItem.key == tab.id
+                }
             }
-        }
-        val isHeld by remember(tab.id) {
-            derivedStateOf {
-                isDragged && !listInteractionState.draggedItem.moved
+        val isHeld by
+            remember(tab.id) {
+                derivedStateOf {
+                    isDragged && !listInteractionState.draggedItem.moved
+                }
             }
-        }
         DisposableEffect(isDragged) {
             val handle = if (isDragged) pinnableContainer?.pin() else null
             onDispose { handle?.release() }
         }
+        val reorderActions =
+            rememberTabReorderActions(
+                item = tab,
+                tabs = tabs,
+                tabIndex = tabIndex,
+                reorderGeometry = tabReorderGeometry,
+                enabled = !isInMultiSelectMode,
+                tabInteractionHandler = tabInteractionHandler,
+            )
         InteractableDragItemContainer(
             state = listInteractionState,
             position = position + if (header != null) 1 else 0,
@@ -1317,12 +1397,13 @@ private fun LazyListScope.interactableTabListContent(
             TabListItemContent(
                 tab = tab,
                 tabShapeInfo = shapeInfo,
-                selectionState = TabsTrayItemSelectionState(
-                    isFocused = tab.isFocused,
-                    multiSelectEnabled = isInMultiSelectMode || isHeld,
-                    isSelected = selectionMode.contains(tab) || isHeld,
-                    focusEnabled = focusEnabled,
-                ),
+                selectionState =
+                    TabsTrayItemSelectionState(
+                        isFocused = tab.isFocused,
+                        multiSelectEnabled = isInMultiSelectMode || isHeld,
+                        isSelected = selectionMode.contains(tab) || isHeld,
+                        focusEnabled = focusEnabled,
+                    ),
                 tabInteractionState = tabInteractionState.copy(isHeld = isHeld),
                 listInteractionState = listInteractionState,
                 onTabClose = onTabClose,
@@ -1332,6 +1413,13 @@ private fun LazyListScope.interactableTabListContent(
                 onShareTabGroupClick = onShareTabGroupClick,
                 onDeleteTabGroupClick = onDeleteTabGroupClick,
                 onGroupEntranceAnimationPlayed = onGroupEntranceAnimationPlayed,
+                modifier =
+                    Modifier.semantics {
+                        collectionItemInfo = tabCollectionSemantics.itemInfo(position = position)
+                        if (reorderActions.isNotEmpty()) {
+                            customActions = reorderActions
+                        }
+                    },
             )
         }
     }
@@ -1346,32 +1434,33 @@ private fun LazyListScope.trackersBlockedContent(
         item(key = SPAN_ITEM_KEY) {
             TrackersBlockedCard(
                 trackersBlockedCount = trackersBlockedCount,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentWidth(Alignment.CenterHorizontally)
-                    .padding(top = FirefoxTheme.layout.space.static200),
+                modifier =
+                    Modifier.fillMaxWidth()
+                        .wrapContentWidth(Alignment.CenterHorizontally)
+                        .padding(top = FirefoxTheme.layout.space.static200),
                 onPrivacyReportTapped = onPrivacyReportTapped,
             )
         }
     }
 }
 
-/**
- * Splits list view [tabs] around the tab group onboarding card when [showTabGroupOnboarding] is true.
- */
+/** Splits list view [tabs] around the tab group onboarding card when [showTabGroupOnboarding] is true. */
 private fun LazyListScope.tabListItems(
     tabs: List<TabsTrayItem>,
     showTabGroupOnboarding: Boolean,
     selectedItemIndex: Int,
     onTabGroupOnboardingDismiss: () -> Unit,
-    tabContent: @Composable LazyItemScope.(
-        position: Int,
-        shapeInfo: TabListShapeInfo,
-        tab: TabsTrayItem,
-    ) -> Unit,
+    collectionSemantics: TabCollectionSemantics? = null,
+    tabContent:
+        @Composable
+        LazyItemScope.(
+            tabIndex: Int,
+            position: Int,
+            shapeInfo: TabListShapeInfo,
+            tab: TabsTrayItem,
+        ) -> Unit,
 ) {
-    val onboardingInsertIndex =
-        if (showTabGroupOnboarding) selectedItemIndex.coerceIn(0, tabs.size) else tabs.size
+    val onboardingInsertIndex = if (showTabGroupOnboarding) selectedItemIndex.coerceIn(0, tabs.size) else tabs.size
     val rowCount = tabs.size + if (showTabGroupOnboarding) 1 else 0
     val lastRowIndex = rowCount - 1
 
@@ -1380,7 +1469,10 @@ private fun LazyListScope.tabListItems(
         items = tabsBeforeOnboarding,
         key = { _, tab -> tab.id },
     ) { index, tab ->
+        // Before the onboarding card is placed,
+        // the tab, index, and collection positions all coincide
         tabContent(
+            index,
             index,
             getTabShapeInfo(
                 firstItemIndex = 0,
@@ -1395,11 +1487,16 @@ private fun LazyListScope.tabListItems(
     if (showTabGroupOnboarding) {
         item(key = TAB_GROUP_ONBOARDING_ITEM_KEY) {
             // The onboarding card is always before a tab, so it will clip to TabListFirstItemShape if first.
-            val cardModifier =
-                if (onboardingInsertIndex == 0) Modifier.clip(TabListFirstItemShape) else Modifier
+            val cardModifier = if (onboardingInsertIndex == 0) Modifier.clip(TabListFirstItemShape) else Modifier
+            val collectionSemanticsModifier =
+                collectionSemantics?.let {
+                    Modifier.semantics {
+                        collectionItemInfo = collectionSemantics.itemInfo(position = onboardingInsertIndex)
+                    }
+                } ?: Modifier
             TabGroupOnboardingListItem(
                 onDismiss = onTabGroupOnboardingDismiss,
-                modifier = cardModifier,
+                modifier = cardModifier.then(collectionSemanticsModifier),
             )
         }
 
@@ -1410,7 +1507,9 @@ private fun LazyListScope.tabListItems(
         ) { index, tab ->
             // + 1 to accommodate for the onboarding row
             val position = onboardingInsertIndex + index + 1
+            val tabIndex = onboardingInsertIndex + index
             tabContent(
+                tabIndex,
                 position,
                 getTabShapeInfo(
                     firstItemIndex = 0,
@@ -1503,23 +1602,22 @@ private fun ReorderableTabList(
         contentAlignment = Alignment.TopCenter,
     ) {
         LazyColumn(
-            modifier = modifier
-                .width(FirefoxTheme.layout.size.containerMaxWidth)
-                .padding(horizontal = horizontalPadding)
-                .background(MaterialTheme.colorScheme.surface)
-                .semantics {
-                    testTag = TabsTrayTestTag.TAB_LIST
-                }
-                .detectListPressAndDrag(
-                    listState = state,
-                    reorderState = reorderState,
-                    shouldLongPressToDrag = reorderingEnabled && !isInMultiSelectMode,
-                ),
+            modifier =
+                modifier
+                    .width(FirefoxTheme.layout.size.containerMaxWidth)
+                    .padding(horizontal = horizontalPadding)
+                    .background(MaterialTheme.colorScheme.surface)
+                    .semantics {
+                        testTag = TabsTrayTestTag.TAB_LIST
+                    }
+                    .detectListPressAndDrag(
+                        listState = state,
+                        reorderState = reorderState,
+                        shouldLongPressToDrag = reorderingEnabled && !isInMultiSelectMode,
+                    ),
             state = state,
             verticalArrangement = Arrangement.spacedBy(FirefoxTheme.layout.space.static25),
-            contentPadding = PaddingValues(
-                bottom = tabListBottomPadding,
-            ),
+            contentPadding = PaddingValues(bottom = tabListBottomPadding),
         ) {
             header?.let {
                 item(key = HEADER_ITEM_KEY) {
@@ -1532,13 +1630,14 @@ private fun ReorderableTabList(
                 showTabGroupOnboarding = displayTabGroupOnboarding,
                 selectedItemIndex = selectedItemIndex,
                 onTabGroupOnboardingDismiss = onTabGroupOnboardingDismiss,
-            ) { position, shapeInfo, tab ->
-                val selectionState = TabsTrayItemSelectionState(
-                    isFocused = tab.isFocused,
-                    multiSelectEnabled = isInMultiSelectMode,
-                    isSelected = selectionMode.contains(tab),
-                    focusEnabled = focusEnabled,
-                )
+            ) { _, position, shapeInfo, tab ->
+                val selectionState =
+                    TabsTrayItemSelectionState(
+                        isFocused = tab.isFocused,
+                        multiSelectEnabled = isInMultiSelectMode,
+                        isSelected = selectionMode.contains(tab),
+                        focusEnabled = focusEnabled,
+                    )
                 val shouldClickListen = reorderState.draggingItemKey != tab.id
                 when (tab) {
                     is TabsTrayItem.Tab -> {
@@ -1549,8 +1648,8 @@ private fun ReorderableTabList(
                         ) {
                             TabListTabItem(
                                 tab = tab,
-                                modifier = Modifier
-                                    .tabListItemShapeStyling(
+                                modifier =
+                                    Modifier.tabListItemShapeStyling(
                                         tabShapeInfo = shapeInfo,
                                         selectionState = selectionState,
                                     ),
@@ -1571,18 +1670,18 @@ private fun ReorderableTabList(
                             TabGroupRow(
                                 tabGroup = tab,
                                 onClick = { onItemClick(tab) },
-                                modifier = Modifier
-                                    .tabListItemShapeStyling(
-                                        tabShapeInfo = shapeInfo,
-                                        selectionState = selectionState,
-                                    )
-                                    .background(
-                                        if (selectionState.isSelected) {
-                                            MaterialTheme.colorScheme.primaryContainer
-                                        } else {
-                                            MaterialTheme.colorScheme.surfaceBright
-                                        },
-                                    ),
+                                modifier =
+                                    Modifier.tabListItemShapeStyling(
+                                            tabShapeInfo = shapeInfo,
+                                            selectionState = selectionState,
+                                        )
+                                        .background(
+                                            if (selectionState.isSelected) {
+                                                MaterialTheme.colorScheme.primaryContainer
+                                            } else {
+                                                MaterialTheme.colorScheme.surfaceBright
+                                            }
+                                        ),
                                 trailingContent = {
                                     if (selectionState.multiSelectEnabled) {
                                         RadioCheckmark(
@@ -1614,10 +1713,7 @@ private fun ReorderableTabList(
     }
 }
 
-/**
- * Returns the number of grid columns we can fit on the screen in the tabs tray.
- */
-
+/** Returns the number of grid columns we can fit on the screen in the tabs tray. */
 private val BoxWithConstraintsScope.numberOfGridColumns: Int
     @Composable
     @ReadOnlyComposable
@@ -1631,30 +1727,32 @@ private val BoxWithConstraintsScope.numberOfGridColumns: Int
     }
 
 /**
- * Returns the number of columns to be rendered for a grid in portrait mode
- * given the screen width.
+ * Returns the number of columns to be rendered for a grid in portrait mode given the screen width.
+ *
  * @param screenWidthDp Float representation of screenWidth dp
  */
 @VisibleForTesting
-internal fun numberOfGridColumnsPortrait(screenWidthDp: Float): Int = when {
-    screenWidthDp >= TAB_GRID_PORTRAIT_WIDTH_THRESHOLD_3 -> NUM_COLUMNS_TAB_GRID_PORTRAIT_THRESHOLD_3
-    screenWidthDp >= TAB_GRID_PORTRAIT_WIDTH_THRESHOLD_2 -> NUM_COLUMNS_TAB_GRID_PORTRAIT_THRESHOLD_2
-    screenWidthDp >= TAB_GRID_PORTRAIT_WIDTH_THRESHOLD_1 -> NUM_COLUMNS_TAB_GRID_PORTRAIT_THRESHOLD_1
-    else -> NUM_COLUMNS_TAB_GRID_PORTRAIT_THRESHOLD_1
-}
+internal fun numberOfGridColumnsPortrait(screenWidthDp: Float): Int =
+    when {
+        screenWidthDp >= TAB_GRID_PORTRAIT_WIDTH_THRESHOLD_3 -> NUM_COLUMNS_TAB_GRID_PORTRAIT_THRESHOLD_3
+        screenWidthDp >= TAB_GRID_PORTRAIT_WIDTH_THRESHOLD_2 -> NUM_COLUMNS_TAB_GRID_PORTRAIT_THRESHOLD_2
+        screenWidthDp >= TAB_GRID_PORTRAIT_WIDTH_THRESHOLD_1 -> NUM_COLUMNS_TAB_GRID_PORTRAIT_THRESHOLD_1
+        else -> NUM_COLUMNS_TAB_GRID_PORTRAIT_THRESHOLD_1
+    }
 
 /**
- * Returns the number of columns to be rendered for a grid in landscape mode
- * given the screen width.
+ * Returns the number of columns to be rendered for a grid in landscape mode given the screen width.
+ *
  * @param screenWidthDp Float representation of screenWidth dp
  */
 @VisibleForTesting
-internal fun numberOfGridColumnsLandscape(screenWidthDp: Float): Int = when {
-    screenWidthDp >= TAB_GRID_LANDSCAPE_WIDTH_THRESHOLD_3 -> NUM_COLUMNS_TAB_GRID_LANDSCAPE_THRESHOLD_3
-    screenWidthDp >= TAB_GRID_LANDSCAPE_WIDTH_THRESHOLD_2 -> NUM_COLUMNS_TAB_GRID_LANDSCAPE_THRESHOLD_2
-    screenWidthDp >= TAB_GRID_LANDSCAPE_WIDTH_THRESHOLD_1 -> NUM_COLUMNS_TAB_GRID_LANDSCAPE_THRESHOLD_1
-    else -> NUM_COLUMNS_TAB_GRID_LANDSCAPE_THRESHOLD_1
-}
+internal fun numberOfGridColumnsLandscape(screenWidthDp: Float): Int =
+    when {
+        screenWidthDp >= TAB_GRID_LANDSCAPE_WIDTH_THRESHOLD_3 -> NUM_COLUMNS_TAB_GRID_LANDSCAPE_THRESHOLD_3
+        screenWidthDp >= TAB_GRID_LANDSCAPE_WIDTH_THRESHOLD_2 -> NUM_COLUMNS_TAB_GRID_LANDSCAPE_THRESHOLD_2
+        screenWidthDp >= TAB_GRID_LANDSCAPE_WIDTH_THRESHOLD_1 -> NUM_COLUMNS_TAB_GRID_LANDSCAPE_THRESHOLD_1
+        else -> NUM_COLUMNS_TAB_GRID_LANDSCAPE_THRESHOLD_1
+    }
 
 private data class TabLayoutPreviewModel(
     val tabCount: Int = 10,
@@ -1662,57 +1760,60 @@ private data class TabLayoutPreviewModel(
     val tabGroupIndices: List<Int> = emptyList(),
 )
 
-private val tabLayoutPreviewData: List<Pair<String, TabLayoutPreviewModel>> = listOf(
-    Pair(
-        "50 Tabs, 25th selected",
-        TabLayoutPreviewModel(
-            tabCount = 50,
-            selectedTabIndex = 25,
+private val tabLayoutPreviewData: List<Pair<String, TabLayoutPreviewModel>> =
+    listOf(
+        Pair(
+            "50 Tabs, 25th selected",
+            TabLayoutPreviewModel(
+                tabCount = 50,
+                selectedTabIndex = 25,
+            ),
         ),
-    ),
-    Pair(
-        "10 Tabs, first selected",
-        TabLayoutPreviewModel(tabCount = 10, selectedTabIndex = 0),
-    ),
-    Pair(
-        "10 Tabs, last selected",
-        TabLayoutPreviewModel(tabCount = 10, selectedTabIndex = 9),
-    ),
-    Pair(
-        "10 Groups, 1st selected",
-        TabLayoutPreviewModel(tabCount = 10, tabGroupIndices = (0..9).toList(), selectedTabIndex = 0),
-    ),
-    Pair(
-        "10 Tabs, 3 groups, 2nd selected",
-        TabLayoutPreviewModel(tabCount = 10, tabGroupIndices = listOf(3, 6, 9), selectedTabIndex = 1),
-    ),
-    Pair(
-        "Single, selected tab",
-        TabLayoutPreviewModel(tabCount = 1),
-    ),
-    Pair(
-        "Single, selected group",
-        TabLayoutPreviewModel(tabCount = 1, tabGroupIndices = listOf(0)),
-    ),
-)
+        Pair(
+            "10 Tabs, first selected",
+            TabLayoutPreviewModel(tabCount = 10, selectedTabIndex = 0),
+        ),
+        Pair(
+            "10 Tabs, last selected",
+            TabLayoutPreviewModel(tabCount = 10, selectedTabIndex = 9),
+        ),
+        Pair(
+            "10 Groups, 1st selected",
+            TabLayoutPreviewModel(tabCount = 10, tabGroupIndices = (0..9).toList(), selectedTabIndex = 0),
+        ),
+        Pair(
+            "10 Tabs, 3 groups, 2nd selected",
+            TabLayoutPreviewModel(tabCount = 10, tabGroupIndices = listOf(3, 6, 9), selectedTabIndex = 1),
+        ),
+        Pair(
+            "Single, selected tab",
+            TabLayoutPreviewModel(tabCount = 1),
+        ),
+        Pair(
+            "Single, selected group",
+            TabLayoutPreviewModel(tabCount = 1, tabGroupIndices = listOf(0)),
+        ),
+    )
 
-private class TabLayoutPreviewParameterProvider : ThemedValueProvider<TabLayoutPreviewModel>(
-    baseValues = tabLayoutPreviewData.map { it.second }.asSequence(),
-    getDisplayName = { index, _ -> tabLayoutPreviewData[index].first },
-)
+private class TabLayoutPreviewParameterProvider :
+    ThemedValueProvider<TabLayoutPreviewModel>(
+        baseValues = tabLayoutPreviewData.map { it.second }.asSequence(),
+        getDisplayName = { index, _ -> tabLayoutPreviewData[index].first },
+    )
 
 @Preview
 @Composable
 private fun TabListPreview(
-    @PreviewParameter(TabLayoutPreviewParameterProvider::class) previewModel: ThemedValue<TabLayoutPreviewModel>,
+    @PreviewParameter(TabLayoutPreviewParameterProvider::class) previewModel: ThemedValue<TabLayoutPreviewModel>
 ) {
     val tabs = remember {
         generateFakeTabsList(
-            tabCount = previewModel.value.tabCount,
-            tabGroupIndices = previewModel.value.tabGroupIndices,
-            selectedTabIndex = previewModel.value.selectedTabIndex,
-            isPrivate = previewModel.theme == Theme.Private,
-        ).toMutableStateList()
+                tabCount = previewModel.value.tabCount,
+                tabGroupIndices = previewModel.value.tabGroupIndices,
+                selectedTabIndex = previewModel.value.selectedTabIndex,
+                isPrivate = previewModel.theme == Theme.Private,
+            )
+            .toMutableStateList()
     }
 
     FirefoxTheme(theme = previewModel.theme) {
@@ -1745,15 +1846,16 @@ private fun TabListPreview(
 @Preview
 @Composable
 private fun TabGridPreview(
-    @PreviewParameter(TabLayoutPreviewParameterProvider::class) previewModel: ThemedValue<TabLayoutPreviewModel>,
+    @PreviewParameter(TabLayoutPreviewParameterProvider::class) previewModel: ThemedValue<TabLayoutPreviewModel>
 ) {
     val tabs = remember {
         generateFakeTabsList(
-            tabCount = previewModel.value.tabCount,
-            tabGroupIndices = previewModel.value.tabGroupIndices,
-            selectedTabIndex = previewModel.value.selectedTabIndex,
-            isPrivate = previewModel.theme == Theme.Private,
-        ).toMutableStateList()
+                tabCount = previewModel.value.tabCount,
+                tabGroupIndices = previewModel.value.tabGroupIndices,
+                selectedTabIndex = previewModel.value.selectedTabIndex,
+                isPrivate = previewModel.theme == Theme.Private,
+            )
+            .toMutableStateList()
     }
 
     FirefoxTheme(theme = previewModel.theme) {
@@ -1788,10 +1890,11 @@ private fun TabListWindowSizePreview() {
     val previewModel = tabLayoutPreviewData[0].second
     val tabs = remember {
         generateFakeTabsList(
-            tabCount = previewModel.tabCount,
-            tabGroupIndices = previewModel.tabGroupIndices,
-            selectedTabIndex = previewModel.selectedTabIndex,
-        ).toMutableStateList()
+                tabCount = previewModel.tabCount,
+                tabGroupIndices = previewModel.tabGroupIndices,
+                selectedTabIndex = previewModel.selectedTabIndex,
+            )
+            .toMutableStateList()
     }
 
     FirefoxTheme(theme = Theme.Light) {
@@ -1827,10 +1930,11 @@ private fun TabGridWindowSizePreview() {
     val previewModel = tabLayoutPreviewData[0].second
     val tabs = remember {
         generateFakeTabsList(
-            tabCount = previewModel.tabCount,
-            tabGroupIndices = previewModel.tabGroupIndices,
-            selectedTabIndex = previewModel.selectedTabIndex,
-        ).toMutableStateList()
+                tabCount = previewModel.tabCount,
+                tabGroupIndices = previewModel.tabGroupIndices,
+                selectedTabIndex = previewModel.selectedTabIndex,
+            )
+            .toMutableStateList()
     }
 
     FirefoxTheme(theme = Theme.Light) {
@@ -1864,7 +1968,7 @@ private const val SELECTED_TAB_COUNT_PREVIEW = 4
 @Preview
 @Composable
 private fun TabGridMultiSelectPreview(
-    @PreviewParameter(TabLayoutPreviewParameterProvider::class) previewModel: ThemedValue<TabLayoutPreviewModel>,
+    @PreviewParameter(TabLayoutPreviewParameterProvider::class) previewModel: ThemedValue<TabLayoutPreviewModel>
 ) {
     MultiSelectPreview(
         previewModel = previewModel,
@@ -1875,7 +1979,7 @@ private fun TabGridMultiSelectPreview(
 @Preview
 @Composable
 private fun TabListMultiSelectPreview(
-    @PreviewParameter(TabLayoutPreviewParameterProvider::class) previewModel: ThemedValue<TabLayoutPreviewModel>,
+    @PreviewParameter(TabLayoutPreviewParameterProvider::class) previewModel: ThemedValue<TabLayoutPreviewModel>
 ) {
     MultiSelectPreview(
         previewModel = previewModel,
@@ -1888,12 +1992,13 @@ private fun MultiSelectPreview(
     previewModel: ThemedValue<TabLayoutPreviewModel>,
     displayTabsInGrid: Boolean,
 ) {
-    val tabs = generateFakeTabsList(
-        tabCount = previewModel.value.tabCount,
-        tabGroupIndices = previewModel.value.tabGroupIndices,
-        selectedTabIndex = previewModel.value.selectedTabIndex,
-        isPrivate = previewModel.theme == Theme.Private,
-    )
+    val tabs =
+        generateFakeTabsList(
+            tabCount = previewModel.value.tabCount,
+            tabGroupIndices = previewModel.value.tabGroupIndices,
+            selectedTabIndex = previewModel.value.selectedTabIndex,
+            isPrivate = previewModel.theme == Theme.Private,
+        )
     val selectedTabs = remember {
         tabs.take(SELECTED_TAB_COUNT_PREVIEW).filterIsInstance<TabsTrayItem.Tab>().toMutableStateList()
     }
@@ -1905,10 +2010,11 @@ private fun MultiSelectPreview(
         TabLayout(
             tabs = tabs,
             selectedItemIndex = previewModel.value.selectedTabIndex,
-            selectionMode = TabsTrayState.Mode.Select(
-                selectedTabs = selectedTabs.toSet(),
-                selectedTabGroups = selectedTabGroups.toSet(),
-            ),
+            selectionMode =
+                TabsTrayState.Mode.Select(
+                    selectedTabs = selectedTabs.toSet(),
+                    selectedTabGroups = selectedTabGroups.toSet(),
+                ),
             tabInteractionHandler = NoOpTabInteractionHandler,
             modifier = Modifier.background(MaterialTheme.colorScheme.surface),
             displayTabsInGrid = displayTabsInGrid,
@@ -1917,17 +2023,19 @@ private fun MultiSelectPreview(
             onTabClose = {},
             onItemClick = { tab ->
                 when (tab) {
-                    is TabsTrayItem.Tab -> if (selectedTabs.contains(tab)) {
-                        selectedTabs.remove(tab)
-                    } else {
-                        selectedTabs.add(tab)
-                    }
+                    is TabsTrayItem.Tab ->
+                        if (selectedTabs.contains(tab)) {
+                            selectedTabs.remove(tab)
+                        } else {
+                            selectedTabs.add(tab)
+                        }
 
-                    is TabsTrayItem.TabGroup -> if (selectedTabGroups.contains(tab)) {
-                        selectedTabGroups.remove(tab)
-                    } else {
-                        selectedTabGroups.add(tab)
-                    }
+                    is TabsTrayItem.TabGroup ->
+                        if (selectedTabGroups.contains(tab)) {
+                            selectedTabGroups.remove(tab)
+                        } else {
+                            selectedTabGroups.add(tab)
+                        }
                 }
             },
             onItemLongClick = {},
@@ -1956,28 +2064,29 @@ private fun generateFakeTabsList(
             createTabGroup(
                 title = "Group $index",
                 theme = TabGroupTheme.Pink,
-                tabs = mutableListOf(
-                    createTab(
-                        id = "groupTab1",
-                        url = "www.mozilla.com",
-                        private = isPrivate,
+                tabs =
+                    mutableListOf(
+                        createTab(
+                            id = "groupTab1",
+                            url = "www.mozilla.com",
+                            private = isPrivate,
+                        ),
+                        createTab(
+                            id = "groupTab2",
+                            url = "www.mozilla.com",
+                            private = isPrivate,
+                        ),
+                        createTab(
+                            id = "groupTab3",
+                            url = "www.mozilla.com",
+                            private = isPrivate,
+                        ),
+                        createTab(
+                            id = "groupTab4",
+                            url = "www.mozilla.com",
+                            private = isPrivate,
+                        ),
                     ),
-                    createTab(
-                        id = "groupTab2",
-                        url = "www.mozilla.com",
-                        private = isPrivate,
-                    ),
-                    createTab(
-                        id = "groupTab3",
-                        url = "www.mozilla.com",
-                        private = isPrivate,
-                    ),
-                    createTab(
-                        id = "groupTab4",
-                        url = "www.mozilla.com",
-                        private = isPrivate,
-                    ),
-                ),
                 isFocused = isFocused,
             )
         } else {
@@ -2007,28 +2116,28 @@ private fun getTabShapeInfo(
 }
 
 /**
- * The default horizontal content padding used by TabLayout.
- * In some cases, such as when a tab layout is embedded inside another view,
- * we may wish to override this content padding.
+ * The default horizontal content padding used by TabLayout. In some cases, such as when a tab layout is embedded inside
+ * another view, we may wish to override this content padding.
  */
 @Composable
 @ReadOnlyComposable
-private fun defaultTabLayoutContentPadding(): PaddingValues = PaddingValues(
-    horizontal = if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-        TAB_LAYOUT_HORIZONTAL_LANDSCAPE_PADDING
-    } else {
-        FirefoxTheme.layout.space.static200
-    },
-    vertical = FirefoxTheme.layout.space.static300,
-)
+private fun defaultTabLayoutContentPadding(): PaddingValues =
+    PaddingValues(
+        horizontal =
+            if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                TAB_LAYOUT_HORIZONTAL_LANDSCAPE_PADDING
+            } else {
+                FirefoxTheme.layout.space.static200
+            },
+        vertical = FirefoxTheme.layout.space.static300,
+    )
 
 private val TAB_LAYOUT_HORIZONTAL_LANDSCAPE_PADDING = 52.dp
 
 /**
- * Because our TabLayout uses a passed in ContentPadding value that differs in portrait and landscape,
- * and that is not accessible inside the LazyGrid API, which only exposes the main axis padding,
- * this Composable returns the computed offset that is needed to adjust indicators that appear to the
- * left or right of grid items.
+ * Because our TabLayout uses a passed in ContentPadding value that differs in portrait and landscape, and that is not
+ * accessible inside the LazyGrid API, which only exposes the main axis padding, this Composable returns the computed
+ * offset that is needed to adjust indicators that appear to the left or right of grid items.
  */
 @Composable
 @ReadOnlyComposable
@@ -2042,34 +2151,31 @@ private fun defaultCrossAxisStartPadding(): Float =
     }
 
 /**
- * Draws a line in the 'gutters' between tab items to indicate to the user between which tabs they are attempting
- * to reorder.
+ * Draws a line in the 'gutters' between tab items to indicate to the user between which tabs they are attempting to
+ * reorder.
  */
 @Composable
 private fun Modifier.drawVerticalReorderIndicator(gridInteractionState: GridInteractionState): Modifier {
     val crossAxisStartPadding = defaultCrossAxisStartPadding()
     val indicatorColor = MaterialTheme.colorScheme.tertiary
     val strokeWidth = FirefoxTheme.layout.border.heaviest
-    return this.drawBehind(
-        {
-            val rect = gridInteractionState.highlightedRect ?: return@drawBehind
-            // This is a workaround correction at draw time stemming from the fact that
-            // LazyGrid does not expose the cross axis padding as part of its API.
-            val adjustedCenter = rect.center.x + crossAxisStartPadding
-            drawLine(
-                color = indicatorColor,
-                start = Offset(x = adjustedCenter, y = rect.top),
-                end = Offset(x = adjustedCenter, y = rect.bottom),
-                strokeWidth = strokeWidth.toPx(),
-            )
-        },
-    )
+    return this.drawBehind({
+        val rect = gridInteractionState.highlightedRect ?: return@drawBehind
+        // This is a workaround correction at draw time stemming from the fact that
+        // LazyGrid does not expose the cross axis padding as part of its API.
+        val adjustedCenter = rect.center.x + crossAxisStartPadding
+        drawLine(
+            color = indicatorColor,
+            start = Offset(x = adjustedCenter, y = rect.top),
+            end = Offset(x = adjustedCenter, y = rect.bottom),
+            strokeWidth = strokeWidth.toPx(),
+        )
+    })
 }
 
 /**
- * Draws a line in the 'gutters' between tab items to indicate to the user between which tabs they are attempting
- * to reorder.
- * Uses drawWithContent because the reorder line must be drawn -over- the divider line content.
+ * Draws a line in the 'gutters' between tab items to indicate to the user between which tabs they are attempting to
+ * reorder. Uses drawWithContent because the reorder line must be drawn -over- the divider line content.
  */
 @Composable
 private fun Modifier.drawHorizontalReorderIndicator(
@@ -2089,14 +2195,14 @@ private fun Modifier.drawHorizontalReorderIndicator(
                 end = Offset(x = rect.right, adjustedCenter),
                 strokeWidth = strokeWidth.toPx(),
             )
-        },
+        }
     )
 }
 
 /**
- * After a drag and drop creates a new group, the list of tabs updates, so the long-lived onLongPress lambda
- * needs to update its captured argument.  Otherwise, the new group will not respond properly to multi-select
- * until recomposition updates the state.
+ * After a drag and drop creates a new group, the list of tabs updates, so the long-lived onLongPress lambda needs to
+ * update its captured argument. Otherwise, the new group will not respond properly to multi-select until recomposition
+ * updates the state.
  */
 @Composable
 private fun rememberReactiveLongPressList(
@@ -2114,9 +2220,9 @@ private fun rememberReactiveLongPressList(
 }
 
 /**
- * After a drag and drop creates a new group, the grid of tabs updates, so the long-lived onLongPress lambda
- * needs to update its captured argument.  Otherwise, the new group will not respond properly to multi-select
- * until recomposition updates the state.
+ * After a drag and drop creates a new group, the grid of tabs updates, so the long-lived onLongPress lambda needs to
+ * update its captured argument. Otherwise, the new group will not respond properly to multi-select until recomposition
+ * updates the state.
  */
 @Composable
 private fun rememberReactiveLongPressGrid(

@@ -340,9 +340,7 @@ private fun ViewTabGroupHeader(
 
             Text(
                 text = title,
-                modifier = Modifier
-                    .weight(1f)
-                    .clearAndSetSemantics { },
+                modifier = Modifier.weight(1f).clearAndSetSemantics {},
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -390,22 +388,22 @@ private fun AddTabToGroupButton(onClick: () -> Unit) {
 @FlexibleWindowLightDarkPreview
 @Composable
 private fun ExpandedTabGroupPreview(
-    @PreviewParameter(ExpandedTabGroupPreviewProvider::class)
-    previewState: ExpandedTabGroupPreviewState,
+    @PreviewParameter(ExpandedTabGroupPreviewProvider::class) previewState: ExpandedTabGroupPreviewState
 ) {
     FirefoxTheme {
         Surface {
             ExpandedTabGroup(
                 group = previewState.group,
-                actions = ExpandedTabGroupActions(
-                    onItemClick = {},
-                    onTabClose = {},
-                    onDeleteTabGroupClick = {},
-                    onEditTabGroupClick = {},
-                    onCloseTabGroupClick = {},
-                    onAddNewTabClick = {},
-                    onShareTabGroupClick = {},
-                ),
+                actions =
+                    ExpandedTabGroupActions(
+                        onItemClick = {},
+                        onTabClose = {},
+                        onDeleteTabGroupClick = {},
+                        onEditTabGroupClick = {},
+                        onCloseTabGroupClick = {},
+                        onAddNewTabClick = {},
+                        onShareTabGroupClick = {},
+                    ),
                 displayTabsInGrid = previewState.displayTabsInGrid,
                 tabInteractionHandler = NoOpTabInteractionHandler,
             )
@@ -413,16 +411,15 @@ private fun ExpandedTabGroupPreview(
     }
 }
 
-private fun generateFakeTabsList(
-    tabCount: Int = 10,
-): MutableList<TabsTrayItem.Tab> = MutableList(tabCount) { index ->
-    createTab(
-        id = "tab$index",
-        title = "Tab $index",
-        url = "www.mozilla.com",
-        private = false,
-    )
-}
+private fun generateFakeTabsList(tabCount: Int = 10): MutableList<TabsTrayItem.Tab> =
+    MutableList(tabCount) { index ->
+        createTab(
+            id = "tab$index",
+            title = "Tab $index",
+            url = "www.mozilla.com",
+            private = false,
+        )
+    }
 
 private data class ExpandedTabGroupPreviewState(
     val group: TabsTrayItem.TabGroup,
@@ -430,76 +427,83 @@ private data class ExpandedTabGroupPreviewState(
     val displayTabsInGrid: Boolean = true,
 )
 
-private class ExpandedTabGroupPreviewProvider :
-    PreviewParameterProvider<ExpandedTabGroupPreviewState> {
-    val data = listOf(
-        Pair(
-            "1 Tab",
-            ExpandedTabGroupPreviewState(
-                group = createTabGroup(
-                    title = "Tab Group",
-                    tabs = generateFakeTabsList(tabCount = 1),
+private class ExpandedTabGroupPreviewProvider : PreviewParameterProvider<ExpandedTabGroupPreviewState> {
+    val data =
+        listOf(
+            Pair(
+                "1 Tab",
+                ExpandedTabGroupPreviewState(
+                    group =
+                        createTabGroup(
+                            title = "Tab Group",
+                            tabs = generateFakeTabsList(tabCount = 1),
+                        )
                 ),
             ),
-        ),
-        Pair(
-            "2 Tabs",
-            ExpandedTabGroupPreviewState(
-                group = createTabGroup(
-                    title = "Tab Group",
-                    tabs = generateFakeTabsList(tabCount = 2),
+            Pair(
+                "2 Tabs",
+                ExpandedTabGroupPreviewState(
+                    group =
+                        createTabGroup(
+                            title = "Tab Group",
+                            tabs = generateFakeTabsList(tabCount = 2),
+                        )
                 ),
             ),
-        ),
-        Pair(
-            "3 Tabs",
-            ExpandedTabGroupPreviewState(
-                group = createTabGroup(
-                    title = "Tab Group",
-                    tabs = generateFakeTabsList(tabCount = 3),
+            Pair(
+                "3 Tabs",
+                ExpandedTabGroupPreviewState(
+                    group =
+                        createTabGroup(
+                            title = "Tab Group",
+                            tabs = generateFakeTabsList(tabCount = 3),
+                        )
                 ),
             ),
-        ),
-        Pair(
-            "4 Tabs",
-            ExpandedTabGroupPreviewState(
-                group = createTabGroup(
-                    title = "Tab Group",
-                    tabs = generateFakeTabsList(),
+            Pair(
+                "4 Tabs",
+                ExpandedTabGroupPreviewState(
+                    group =
+                        createTabGroup(
+                            title = "Tab Group",
+                            tabs = generateFakeTabsList(),
+                        )
                 ),
             ),
-        ),
-        Pair(
-            "Selected tab",
-            ExpandedTabGroupPreviewState(
-                group = createTabGroup(
-                    title = "Tab Group",
-                    tabs = generateFakeTabsList(),
+            Pair(
+                "Selected tab",
+                ExpandedTabGroupPreviewState(
+                    group =
+                        createTabGroup(
+                            title = "Tab Group",
+                            tabs = generateFakeTabsList(),
+                        ),
+                    selectedTabId = "tabid0",
                 ),
-                selectedTabId = "tabid0",
             ),
-        ),
-        Pair(
-            "Large title",
-            ExpandedTabGroupPreviewState(
-                group = createTabGroup(
-                    title = LOREM_IPSUM,
-                    tabs = generateFakeTabsList(),
+            Pair(
+                "Large title",
+                ExpandedTabGroupPreviewState(
+                    group =
+                        createTabGroup(
+                            title = LOREM_IPSUM,
+                            tabs = generateFakeTabsList(),
+                        ),
+                    selectedTabId = "tabid0",
                 ),
-                selectedTabId = "tabid0",
             ),
-        ),
-        Pair(
-            "List view",
-            ExpandedTabGroupPreviewState(
-                group = createTabGroup(
-                    title = "Tab Group",
-                    tabs = generateFakeTabsList(),
+            Pair(
+                "List view",
+                ExpandedTabGroupPreviewState(
+                    group =
+                        createTabGroup(
+                            title = "Tab Group",
+                            tabs = generateFakeTabsList(),
+                        ),
+                    displayTabsInGrid = false,
                 ),
-                displayTabsInGrid = false,
             ),
-        ),
-    )
+        )
     override val values: Sequence<ExpandedTabGroupPreviewState>
         get() = data.map { it.second }.asSequence()
 

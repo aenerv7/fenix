@@ -779,8 +779,6 @@
   <string name="preferences_pbm_lock_screen_title">Користи закључавање екрана за скривање језичака у приватном прегледању</string>
   <!-- Informs the user how to access the tabs when "Use screen lock to hide tabs in private browsing" is enabled -->
   <string name="preferences_pbm_lock_screen_summary_3">Прегледајте језичке помоћу отиска прста, ПИН-а или откључавања лицем. Укључивање овога такође спречава снимање и дељење екрана.</string>
-  <!-- Preference for removing cookie/consent banners from sites automatically in private mode. See reduce_cookie_banner_summary for additional context. -->
-  <string name="preferences_cookie_banner_reduction_private_mode">Блокатор барјака колачића у приватном прегледању</string>
   <!-- Description of the preference to enable "HTTPS-Only" mode. -->
   <string name="preferences_https_only_summary">Самостално се повезујемо на странице користећи HTTPS протокол за шифровање података у преносу зарад боље безбедности.</string>
   <!-- Summary of https only preference if https only is set to off -->
@@ -1627,15 +1625,6 @@
     <item quantity="one">Додај у групу језичака %1$s, %2$d језичак, боја %3$s</item>
     <item quantity="other">Додај у групу језичака %1$s, %2$d језичака, боја %3$s</item>
   </plurals>
-  <plurals name="share_tab_group_button_content_description">
-    <!--
-      Content Description for share tab group button.
-      %1$s is the name of the tab group.
-      %2$d is the number of tabs in a tab group.
-    -->
-    <item quantity="one">Подели групу језичака %1$s са %2$d језичком.</item>
-    <item quantity="other">Подели групу језичака %1$s са %2$d језицима.</item>
-  </plurals>
   <!-- Content description for the grabber/handle of the tab group bottom sheet. -->
   <string name="tab_group_sheet_dismiss_description">Преглед групе језичака, скупи ручку за превлачење</string>
   <plurals name="expanded_tab_group_header_description">
@@ -1972,8 +1961,6 @@
   <string name="webcompat_reporter_preview_report">Преглед извештаја</string>
   <!-- The title shown at the top of the WebCompat Report preview panel. This appears after the user taps the “Preview” button before sending a report. -->
   <string name="webcompat_reporter_preview_bottom_sheet_header">Преглед извештаја</string>
-  <!-- Label for the “Send” button shown in the WebCompat Report preview panel, which the user taps to submit the report. -->
-  <string name="webcompat_reporter_preview_bottom_sheet_send">Пошаљи</string>
   <!-- Title for the Edit URL confirmation dialog in the WebCompatReporter -->
   <string name="webcompat_reporter_edit_url_dialog_title">Измена УРЛ-а веб странице</string>
   <!-- Text shown on the save button for the Edit URL confirmation dialog in the WebCompatReporter. -->
@@ -2836,12 +2823,8 @@
   <string name="add_to_homescreen_cancel">Откажи</string>
   <!-- Add button text for the Add to Homescreen dialog -->
   <string name="add_to_homescreen_add">Додај</string>
-  <!-- Continue to website button text for the first-time Add to Homescreen dialog -->
-  <string name="add_to_homescreen_continue">Наставите на страницу</string>
   <!-- Placeholder text for the TextView in the Add to Homescreen dialog -->
   <string name="add_to_homescreen_text_placeholder">Назив пречице</string>
-  <!-- Describes the add to homescreen functionality -->
-  <string name="add_to_homescreen_description_2">Ову страницу можете лако додати на почетни екран уређаја за директан приступ и брже прегледање, баш као што користите апликацију.</string>
   <!-- Preference for managing the settings for logins and passwords in Fenix -->
   <string name="preferences_passwords_logins_and_passwords_2">Лозинке</string>
   <!-- Preference for managing the saving of logins and passwords in Fenix -->
@@ -3011,8 +2994,6 @@
   <string name="ip_protection_location_section">Локација</string>
   <!-- Label for the recommended automatic location option on the browser VPN settings screen -->
   <string name="ip_protection_location_recommended_label">Препоручено</string>
-  <!-- Description for the recommended automatic location option on the browser VPN settings screen -->
-  <string name="ip_protection_location_recommended_description">Бира најбржу ВПН локацију за вас.</string>
   <!-- Badge label shown in the menu item when the browser VPN is active -->
   <string name="preferences_ip_protection_on">Укључено</string>
   <!-- Badge label shown in the menu item when the browser VPN is off -->
@@ -3102,10 +3083,6 @@
   <string name="ip_protection_locations_title">Изаберите VPN локацију</string>
   <!-- Content description for the browser VPN location selection screen top bar back button -->
   <string name="ip_protection_locations_navigate_back_button_content_description">Иди назад</string>
-  <!-- Title for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_title" tools:ignore="UnusedResources">Претходна локација је недоступна</string>
-  <!-- Description for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_recommended_description" tools:ignore="UnusedResources">Повезано са препорученом локацијом.</string>
   <!--
     Autofill
 

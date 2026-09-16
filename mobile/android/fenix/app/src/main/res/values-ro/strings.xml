@@ -779,8 +779,6 @@
   <string name="preferences_pbm_lock_screen_title">Folosește blocarea ecranului pentru a ascunde filele în navigarea privată</string>
   <!-- Informs the user how to access the tabs when "Use screen lock to hide tabs in private browsing" is enabled -->
   <string name="preferences_pbm_lock_screen_summary_3">Vizualizează filele cu amprenta, codul PIN sau deblocarea facială. Activarea acestei opțiuni împiedică și capturarea și partajarea ecranului.</string>
-  <!-- Preference for removing cookie/consent banners from sites automatically in private mode. See reduce_cookie_banner_summary for additional context. -->
-  <string name="preferences_cookie_banner_reduction_private_mode">Funcția de blocare a bannerelor pentru cookie-uri în navigarea privată</string>
   <!-- Description of the preference to enable "HTTPS-Only" mode. -->
   <string name="preferences_https_only_summary">Încearcă automat să se conecteze la site-uri folosind protocolul de criptare HTTPS pentru o securitate sporită.</string>
   <!-- Summary of https only preference if https only is set to off -->
@@ -1648,16 +1646,6 @@
     <item quantity="few">Adaugă la %1$s grupuri de file, %2$d file, culorile %3$s</item>
     <item quantity="other">Adaugă la %1$s de grupuri de file, %2$d de file, culorile %3$s</item>
   </plurals>
-  <plurals name="share_tab_group_button_content_description">
-    <!--
-      Content Description for share tab group button.
-      %1$s is the name of the tab group.
-      %2$d is the number of tabs in a tab group.
-    -->
-    <item quantity="one">Partajează %1$s grup de file cu %2$d filă.</item>
-    <item quantity="few">Partajează %1$s grupuri de file cu %2$d file.</item>
-    <item quantity="other">Partajează %1$s de grupuri de file cu %2$d de file.</item>
-  </plurals>
   <!-- Content description for the grabber/handle of the tab group bottom sheet. -->
   <string name="tab_group_sheet_dismiss_description">Afișează grupul de file, repliază mânerul de tragere</string>
   <plurals name="expanded_tab_group_header_description">
@@ -2005,8 +1993,6 @@
   <string name="webcompat_reporter_preview_report">Raport de previzualizare</string>
   <!-- The title shown at the top of the WebCompat Report preview panel. This appears after the user taps the “Preview” button before sending a report. -->
   <string name="webcompat_reporter_preview_bottom_sheet_header">Previzualizare raport</string>
-  <!-- Label for the “Send” button shown in the WebCompat Report preview panel, which the user taps to submit the report. -->
-  <string name="webcompat_reporter_preview_bottom_sheet_send">Trimite</string>
   <!-- Title for the Edit URL confirmation dialog in the WebCompatReporter -->
   <string name="webcompat_reporter_edit_url_dialog_title">Editează URL-ul siteului</string>
   <!-- Text shown on the save button for the Edit URL confirmation dialog in the WebCompatReporter. -->
@@ -2870,12 +2856,8 @@
   <string name="add_to_homescreen_cancel">Anulează</string>
   <!-- Add button text for the Add to Homescreen dialog -->
   <string name="add_to_homescreen_add">Adaugă</string>
-  <!-- Continue to website button text for the first-time Add to Homescreen dialog -->
-  <string name="add_to_homescreen_continue">Mergi pe site</string>
   <!-- Placeholder text for the TextView in the Add to Homescreen dialog -->
   <string name="add_to_homescreen_text_placeholder">Denumire comandă rapidă</string>
-  <!-- Describes the add to homescreen functionality -->
-  <string name="add_to_homescreen_description_2">Poți adăuga cu ușurință acest site în ecranul de pornire al dispozitivului pentru acces instant și o navigare mai rapidă, ca și cum ai fi într-o aplicație.</string>
   <!-- Preference for managing the settings for logins and passwords in Fenix -->
   <string name="preferences_passwords_logins_and_passwords_2">Parolele</string>
   <!-- Preference for managing the saving of logins and passwords in Fenix -->
@@ -3045,8 +3027,6 @@
   <string name="ip_protection_location_section">Locație</string>
   <!-- Label for the recommended automatic location option on the browser VPN settings screen -->
   <string name="ip_protection_location_recommended_label">Recomandate</string>
-  <!-- Description for the recommended automatic location option on the browser VPN settings screen -->
-  <string name="ip_protection_location_recommended_description">Selectează cea mai rapidă locație VPN pentru tine.</string>
   <!-- Badge label shown in the menu item when the browser VPN is active -->
   <string name="preferences_ip_protection_on">Activat</string>
   <!-- Badge label shown in the menu item when the browser VPN is off -->
@@ -3142,10 +3122,6 @@
   <string name="ip_protection_locations_title">Alege locația VPN</string>
   <!-- Content description for the browser VPN location selection screen top bar back button -->
   <string name="ip_protection_locations_navigate_back_button_content_description">Navighează înapoi</string>
-  <!-- Title for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_title" tools:ignore="UnusedResources">Locația anterioară nu este disponibilă</string>
-  <!-- Description for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_recommended_description" tools:ignore="UnusedResources">Conectat la locația recomandată.</string>
   <!--
     Autofill
 

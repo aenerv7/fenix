@@ -778,8 +778,6 @@
   <string name="preferences_pbm_lock_screen_title">Impiegà l’ammarchjunata di u screnu per piattà l’unghjette in navigazione privata</string>
   <!-- Informs the user how to access the tabs when "Use screen lock to hide tabs in private browsing" is enabled -->
   <string name="preferences_pbm_lock_screen_summary_3">Affissà l’unghjette cù a vostra impronta digitale, un codice PIN o a ricunnuscenza faciale. L’attivazione di sta funzione impedisce dinù a cattura è a spartera di screnu.</string>
-  <!-- Preference for removing cookie/consent banners from sites automatically in private mode. See reduce_cookie_banner_summary for additional context. -->
-  <string name="preferences_cookie_banner_reduction_private_mode">Blucchime di e striscie di cannistrelli in navigazione privata</string>
   <!-- Description of the preference to enable "HTTPS-Only" mode. -->
   <string name="preferences_https_only_summary">Tentativu autumaticu di cunnessione à i siti impieghendu u protocollu di cifratura HTTPS per aumentà a sicurità.</string>
   <!-- Summary of https only preference if https only is set to off -->
@@ -1617,15 +1615,6 @@
     <item quantity="one">Aghjunghje à u gruppu d’unghjette %1$s, %2$d unghjetta, culore %3$s</item>
     <item quantity="other">Aghjunghje à u gruppu d’unghjette %1$s, %2$d unghjette, culore %3$s</item>
   </plurals>
-  <plurals name="share_tab_group_button_content_description">
-    <!--
-      Content Description for share tab group button.
-      %1$s is the name of the tab group.
-      %2$d is the number of tabs in a tab group.
-    -->
-    <item quantity="one">Sparte u gruppu d’unghjette %1$s cù %2$d unghjetta.</item>
-    <item quantity="other">Sparte u gruppu d’unghjette %1$s cù %2$d unghjette.</item>
-  </plurals>
   <!-- Content description for the grabber/handle of the tab group bottom sheet. -->
   <string name="tab_group_sheet_dismiss_description">Affissà u gruppu d’unghjette, maneghja di spiazzamentu di l’elementi</string>
   <plurals name="expanded_tab_group_header_description">
@@ -1939,8 +1928,6 @@
   <string name="webcompat_reporter_preview_report">Fighjulata di u signalamentu</string>
   <!-- The title shown at the top of the WebCompat Report preview panel. This appears after the user taps the “Preview” button before sending a report. -->
   <string name="webcompat_reporter_preview_bottom_sheet_header">Fighjulata di u signalamentu</string>
-  <!-- Label for the “Send” button shown in the WebCompat Report preview panel, which the user taps to submit the report. -->
-  <string name="webcompat_reporter_preview_bottom_sheet_send">Mandà</string>
   <!-- Title for the Edit URL confirmation dialog in the WebCompatReporter -->
   <string name="webcompat_reporter_edit_url_dialog_title">Mudificà l’indirizzu web di u situ</string>
   <!-- Text shown on the save button for the Edit URL confirmation dialog in the WebCompatReporter. -->
@@ -2799,12 +2786,8 @@
   <string name="add_to_homescreen_cancel">Abbandunà</string>
   <!-- Add button text for the Add to Homescreen dialog -->
   <string name="add_to_homescreen_add">Aghjunghje</string>
-  <!-- Continue to website button text for the first-time Add to Homescreen dialog -->
-  <string name="add_to_homescreen_continue">Cuntinuà nant’à u situ web</string>
   <!-- Placeholder text for the TextView in the Add to Homescreen dialog -->
   <string name="add_to_homescreen_text_placeholder">Nome di l’accurtatoghju</string>
-  <!-- Describes the add to homescreen functionality -->
-  <string name="add_to_homescreen_description_2">Hè faciule d’aghjunghje stu situ nant’à u screnu d’accolta di u vostru apparechju per accedeci direttamente è navigà più prestu cum’è s’ella fussi un’appiecazione.</string>
   <!-- Preference for managing the settings for logins and passwords in Fenix -->
   <string name="preferences_passwords_logins_and_passwords_2">Parolle d’intesa</string>
   <!-- Preference for managing the saving of logins and passwords in Fenix -->
@@ -2974,8 +2957,6 @@
   <string name="ip_protection_location_section">Lucalizazione</string>
   <!-- Label for the recommended automatic location option on the browser VPN settings screen -->
   <string name="ip_protection_location_recommended_label">Ricumandatu</string>
-  <!-- Description for the recommended automatic location option on the browser VPN settings screen -->
-  <string name="ip_protection_location_recommended_description">Selezziuneghja per voi a lucalizazione VPN a più rapida.</string>
   <!-- Badge label shown in the menu item when the browser VPN is active -->
   <string name="preferences_ip_protection_on">Attivata</string>
   <!-- Badge label shown in the menu item when the browser VPN is off -->
@@ -3057,10 +3038,6 @@
   <string name="ip_protection_location_unavailable" tools:ignore="UnusedResources">Pusizione indispunibule. Sciglite un’altra pusizione.</string>
   <!-- Snackbar (in-app pop-up notification) text shown when the previously selected browser VPN location is unavailable and the recommended location was used instead. -->
   <string name="ip_protection_location_unavailable_recommended_snackbar" tools:ignore="UnusedResources">A pusizione VPN selezziunata hè indispunibule. A cunnessione hè stata fatta à a pusizione ricumandata.</string>
-  <!-- Title for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_title" tools:ignore="UnusedResources">A pusizione precedente ùn hè micca dispunibule</string>
-  <!-- Description for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_recommended_description" tools:ignore="UnusedResources">A cunnessione hè stata fatta à a pusizione ricumandata.</string>
   <!--
     Autofill
 

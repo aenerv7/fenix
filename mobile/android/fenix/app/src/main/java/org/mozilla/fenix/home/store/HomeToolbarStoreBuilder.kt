@@ -24,9 +24,7 @@ import org.mozilla.fenix.search.BrowserToolbarSearchMiddleware
 import org.mozilla.fenix.search.BrowserToolbarSearchStatusSyncMiddleware
 import org.mozilla.fenix.translations.TranslationsEnabledSettings
 
-/**
- * Delegate for building the [BrowserToolbarStore] used in the home screen.
- */
+/** Delegate for building the [BrowserToolbarStore] used in the home screen. */
 object HomeToolbarStoreBuilder {
     /**
      * Build the [BrowserToolbarStore] used in the home screen.

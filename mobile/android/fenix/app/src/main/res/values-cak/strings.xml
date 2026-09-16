@@ -778,8 +778,6 @@
   <string name="preferences_pbm_lock_screen_title">Tawokisaj ri q\'atoj ruwäch richin ye\'awewaj taq ruwi\' pa ri ichinan okem</string>
   <!-- Informs the user how to access the tabs when "Use screen lock to hide tabs in private browsing" is enabled -->
   <string name="preferences_pbm_lock_screen_summary_3">Titz\'et ruwi\' rik\'in ri retal ruwi\' aq\'a\', PIN o wachaj meq\'atoj. Toq natzïj re\' chuqa\' nuq\'ät ri chapoj chuqa\' ri rokisaxik pa komon ri ruwäch.</string>
-  <!-- Preference for removing cookie/consent banners from sites automatically in private mode. See reduce_cookie_banner_summary for additional context. -->
-  <string name="preferences_cookie_banner_reduction_private_mode">Ruq\'atöy kitzijol taq cookie pan ichinan okem</string>
   <!-- Description of the preference to enable "HTTPS-Only" mode. -->
   <string name="preferences_https_only_summary">Tatojtob\'ej yatok pa yonil chupam ri ruxaq akuchi\' nawokisaj ri rub\'eyal ewan rusik\'ixik ri HTTPS richin jun ütz jikib\'anem</string>
   <!-- Summary of https only preference if https only is set to off -->
@@ -1644,15 +1642,6 @@
     <item quantity="one">Titz\'aqatisäx pa %1$s molaj ruwi\', %2$d ruwi\', %3$s b\'onil</item>
     <item quantity="other">Titz\'aqatisäx pa %1$s molaj ruwi\', %2$d taq ruwi\', %3$s b\'onil</item>
   </plurals>
-  <plurals name="share_tab_group_button_content_description">
-    <!--
-      Content Description for share tab group button.
-      %1$s is the name of the tab group.
-      %2$d is the number of tabs in a tab group.
-    -->
-    <item quantity="one">Titz\'aqatisäx %1$s molaj ruwi\' rik\'in %2$d ruwi\'.</item>
-    <item quantity="other">Titz\'aqatisäx %1$s molaj ruwi\' kik\'in %2$d taq ruwi\'.</item>
-  </plurals>
   <!-- Content description for the grabber/handle of the tab group bottom sheet. -->
   <string name="tab_group_sheet_dismiss_description">Titz\'et molaj ruwi\', tich\'utinisäx rusamajib\'al qirirenïk</string>
   <plurals name="expanded_tab_group_header_description">
@@ -1998,8 +1987,6 @@
   <string name="webcompat_reporter_preview_report">Titz\'et chik ri rutzijol</string>
   <!-- The title shown at the top of the WebCompat Report preview panel. This appears after the user taps the “Preview” button before sending a report. -->
   <string name="webcompat_reporter_preview_bottom_sheet_header">Nab\'ey rutz\'etik rutzijol</string>
-  <!-- Label for the “Send” button shown in the WebCompat Report preview panel, which the user taps to submit the report. -->
-  <string name="webcompat_reporter_preview_bottom_sheet_send">Titaq</string>
   <!-- Title for the Edit URL confirmation dialog in the WebCompatReporter -->
   <string name="webcompat_reporter_edit_url_dialog_title">Tinuk\' ri ajk\'am ruxaq URL</string>
   <!-- Text shown on the save button for the Edit URL confirmation dialog in the WebCompatReporter. -->
@@ -2862,12 +2849,8 @@
   <string name="add_to_homescreen_cancel">Tiq\'at</string>
   <!-- Add button text for the Add to Homescreen dialog -->
   <string name="add_to_homescreen_add">Titz\'aqatisäx</string>
-  <!-- Continue to website button text for the first-time Add to Homescreen dialog -->
-  <string name="add_to_homescreen_continue">Tik\'oje\' pan ajk\'amaya\'l ruxaq</string>
   <!-- Placeholder text for the TextView in the Add to Homescreen dialog -->
   <string name="add_to_homescreen_text_placeholder">Rub\'i\' ri choj okem</string>
-  <!-- Describes the add to homescreen functionality -->
-  <string name="add_to_homescreen_description_2">Anin yatikïr naya\' re ajk\'amaya\'l pa ri Rutikirib\'al ruxaq okisab\'al richin aninäq nawokisaj chuqa\' aninäq yatok pa k\'amaya\'l, achi\'el ta xa jun chokoy.</string>
   <!-- Preference for managing the settings for logins and passwords in Fenix -->
   <string name="preferences_passwords_logins_and_passwords_2">Ewan taq tzij</string>
   <!-- Preference for managing the saving of logins and passwords in Fenix -->
@@ -3037,8 +3020,6 @@
   <string name="ip_protection_location_section">K\'ojlib\'äl</string>
   <!-- Label for the recommended automatic location option on the browser VPN settings screen -->
   <string name="ip_protection_location_recommended_label">Chilab\'en</string>
-  <!-- Description for the recommended automatic location option on the browser VPN settings screen -->
-  <string name="ip_protection_location_recommended_description">Tacha\' pa ruyonil ri ruk\'ojlib\'al VPN aninäq.</string>
   <!-- Badge label shown in the menu item when the browser VPN is active -->
   <string name="preferences_ip_protection_on">Titzij</string>
   <!-- Badge label shown in the menu item when the browser VPN is off -->
@@ -3134,10 +3115,6 @@
   <string name="ip_protection_locations_title">Ticha\' VPN k\'ojlib\'äl</string>
   <!-- Content description for the browser VPN location selection screen top bar back button -->
   <string name="ip_protection_locations_navigate_back_button_content_description">Katok pa k\'amaya\'l chi rij</string>
-  <!-- Title for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_title" tools:ignore="UnusedResources">Ri jun kan k\'ojlib\'äl man k\'o ta</string>
-  <!-- Description for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_recommended_description" tools:ignore="UnusedResources">Okinäq pa ri k\'ojlib\'äl chilab\'en.</string>
   <!--
     Autofill
 

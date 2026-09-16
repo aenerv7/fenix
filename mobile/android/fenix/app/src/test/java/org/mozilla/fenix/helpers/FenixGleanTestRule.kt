@@ -64,18 +64,19 @@ class FenixGleanTestRule(
         // This is the same as `delayMetricsPing` from `TestUtils.kt`,
         // but now part of the publicly available test rule.
 
-//        // Set the current system time to a known datetime.
-//        val fakeNow = Calendar.getInstance()
-//        fakeNow.clear()
-//        @Suppress("MagicNumber") // it's a fixed date only used in tests.
-//        fakeNow.set(2015, 6, 11, 2, 0, 0)
-//        SystemClock.setCurrentTimeMillis(fakeNow.timeInMillis)
-//
-//        // Set the last sent date to yesterday.
-//        val buildInfo = BuildInfo(versionCode = "0.0.1", versionName = "0.0.1", buildDate = Calendar.getInstance())
-//        val mps = MetricsPingScheduler(context, buildInfo)
-//
-//        mps.updateSentDate(getISOTimeString(fakeNow, truncateTo = TimeUnit.DAY))
+        //        // Set the current system time to a known datetime.
+        //        val fakeNow = Calendar.getInstance()
+        //        fakeNow.clear()
+        //        @Suppress("MagicNumber") // it's a fixed date only used in tests.
+        //        fakeNow.set(2015, 6, 11, 2, 0, 0)
+        //        SystemClock.setCurrentTimeMillis(fakeNow.timeInMillis)
+        //
+        //        // Set the last sent date to yesterday.
+        //        val buildInfo = BuildInfo(versionCode = "0.0.1", versionName = "0.0.1", buildDate =
+        // Calendar.getInstance())
+        //        val mps = MetricsPingScheduler(context, buildInfo)
+        //
+        //        mps.updateSentDate(getISOTimeString(fakeNow, truncateTo = TimeUnit.DAY))
 
         Glean.registerPings(Pings)
 

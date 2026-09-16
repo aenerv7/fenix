@@ -9,6 +9,8 @@ import androidx.core.content.edit
 import io.mockk.every
 import io.mockk.spyk
 import io.mockk.verify
+import java.io.File
+import java.util.Calendar
 import mozilla.components.concept.engine.Engine.HttpsOnlyMode.DISABLED
 import mozilla.components.concept.engine.Engine.HttpsOnlyMode.ENABLED
 import mozilla.components.concept.engine.Engine.HttpsOnlyMode.ENABLED_PRIVATE_ONLY
@@ -35,8 +37,6 @@ import org.mozilla.fenix.settings.ShortcutType
 import org.mozilla.fenix.settings.deletebrowsingdata.DeleteBrowsingDataOnQuitType
 import org.mozilla.fenix.wallpapers.Wallpaper
 import org.robolectric.RobolectricTestRunner
-import java.io.File
-import java.util.Calendar
 
 private const val TOU_VERSION = 5
 
@@ -45,19 +45,20 @@ class SettingsTest {
 
     lateinit var settings: Settings
 
-    private val defaultPermissions = SitePermissionsRules(
-        camera = ASK_TO_ALLOW,
-        location = ASK_TO_ALLOW,
-        microphone = ASK_TO_ALLOW,
-        notification = ASK_TO_ALLOW,
-        autoplayAudible = AutoplayAction.BLOCKED,
-        autoplayInaudible = AutoplayAction.ALLOWED,
-        persistentStorage = ASK_TO_ALLOW,
-        mediaKeySystemAccess = ASK_TO_ALLOW,
-        crossOriginStorageAccess = ASK_TO_ALLOW,
-        localDeviceAccess = ASK_TO_ALLOW,
-        localNetworkAccess = ASK_TO_ALLOW,
-    )
+    private val defaultPermissions =
+        SitePermissionsRules(
+            camera = ASK_TO_ALLOW,
+            location = ASK_TO_ALLOW,
+            microphone = ASK_TO_ALLOW,
+            notification = ASK_TO_ALLOW,
+            autoplayAudible = AutoplayAction.BLOCKED,
+            autoplayInaudible = AutoplayAction.ALLOWED,
+            persistentStorage = ASK_TO_ALLOW,
+            mediaKeySystemAccess = ASK_TO_ALLOW,
+            crossOriginStorageAccess = ASK_TO_ALLOW,
+            localDeviceAccess = ASK_TO_ALLOW,
+            localNetworkAccess = ASK_TO_ALLOW,
+        )
 
     @Before
     fun setUp() {
@@ -150,9 +151,7 @@ class SettingsTest {
 
     @Test
     fun defaultWallpaperIsEdgeToEdgeWhenEdgeToEdgeFeatureEnabled() {
-        FxNimbus.features.homescreenEdgeToEdgeBackground.withCachedValue(
-            HomescreenEdgeToEdgeBackground(enabled = true),
-        )
+        FxNimbus.features.homescreenEdgeToEdgeBackground.withCachedValue(HomescreenEdgeToEdgeBackground(enabled = true))
         val settings = Settings(testContext)
 
         // Then
@@ -162,7 +161,7 @@ class SettingsTest {
     @Test
     fun defaultWallpaperIsDefaultWhenEdgeToEdgeDisabled() {
         FxNimbus.features.homescreenEdgeToEdgeBackground.withCachedValue(
-            HomescreenEdgeToEdgeBackground(enabled = false),
+            HomescreenEdgeToEdgeBackground(enabled = false)
         )
         val settings = Settings(testContext)
 
@@ -806,10 +805,11 @@ class SettingsTest {
     fun `GIVEN feature is disabled, hasUserBeenOnboarded is true THEN shouldShowOnboarding returns false`() {
         val settings = spyk(settings)
 
-        val actual = settings.shouldShowOnboarding(
-            featureEnabled = false,
-            hasUserBeenOnboarded = true,
-        )
+        val actual =
+            settings.shouldShowOnboarding(
+                featureEnabled = false,
+                hasUserBeenOnboarded = true,
+            )
 
         assertFalse(actual)
     }
@@ -818,10 +818,11 @@ class SettingsTest {
     fun `GIVEN feature is enabled, hasUserBeenOnboarded is true THEN shouldShowOnboarding returns false`() {
         val settings = spyk(settings)
 
-        val actual = settings.shouldShowOnboarding(
-            featureEnabled = true,
-            hasUserBeenOnboarded = true,
-        )
+        val actual =
+            settings.shouldShowOnboarding(
+                featureEnabled = true,
+                hasUserBeenOnboarded = true,
+            )
 
         assertFalse(actual)
     }
@@ -830,10 +831,11 @@ class SettingsTest {
     fun `GIVEN feature is enabled, hasUserBeenOnboarded is false THEN shouldShowOnboarding returns true`() {
         val settings = spyk(settings)
 
-        val actual = settings.shouldShowOnboarding(
-            featureEnabled = true,
-            hasUserBeenOnboarded = false,
-        )
+        val actual =
+            settings.shouldShowOnboarding(
+                featureEnabled = true,
+                hasUserBeenOnboarded = false,
+            )
 
         assertTrue(actual)
     }
@@ -843,10 +845,11 @@ class SettingsTest {
         val settings = spyk(settings)
         every { settings.enablePersistentOnboarding } returns true
 
-        val actual = settings.shouldShowOnboarding(
-            featureEnabled = false,
-            hasUserBeenOnboarded = true,
-        )
+        val actual =
+            settings.shouldShowOnboarding(
+                featureEnabled = false,
+                hasUserBeenOnboarded = true,
+            )
 
         assertTrue(actual)
     }
@@ -860,7 +863,7 @@ class SettingsTest {
                 featureEnabled = true,
                 hasUserBeenOnboarded = false,
                 forceOnboardingForBenchmark = false,
-            ),
+            )
         )
     }
 
@@ -873,7 +876,7 @@ class SettingsTest {
                 featureEnabled = true,
                 hasUserBeenOnboarded = false,
                 forceOnboardingForBenchmark = true,
-            ),
+            )
         )
     }
 
@@ -886,7 +889,7 @@ class SettingsTest {
                 featureEnabled = true,
                 hasUserBeenOnboarded = true,
                 forceOnboardingForBenchmark = true,
-            ),
+            )
         )
     }
 
@@ -1089,7 +1092,8 @@ class SettingsTest {
         assertEquals(64, settings.getBrowserToolbarHeight(testContext))
     }
 
-    @Test fun `GIVEN bottom composable toolbar is enabled and navigation bar is enabled WHEN querying the toolbar height THEN get the height of the composable toolbar`() {
+    @Test
+    fun `GIVEN bottom composable toolbar is enabled and navigation bar is enabled WHEN querying the toolbar height THEN get the height of the composable toolbar`() {
         testContext.resources.configuration.apply {
             screenHeightDp = 481
             screenWidthDp = 599
@@ -1140,7 +1144,8 @@ class SettingsTest {
 
     @Test
     fun `GIVEN the prompt has been shown maximum times WHEN checking prompt eligibility THEN shouldShowSetAsDefaultPrompt is false`() {
-        settings.numberOfSetAsDefaultPromptShownTimes = 3 // Maximum number of times the prompt can be shown based on the design criteria
+        settings.numberOfSetAsDefaultPromptShownTimes =
+            3 // Maximum number of times the prompt can be shown based on the design criteria
         settings.lastSetAsDefaultPromptShownTimeInMillis = 0L
         settings.coldStartsBetweenSetAsDefaultPrompts = 5
 
@@ -1180,13 +1185,7 @@ class SettingsTest {
         settings.lastSetAsDefaultPromptShownTimeInMillis = 0L
         settings.coldStartsBetweenSetAsDefaultPrompts = 5 // More than required cold starts
 
-        assertFalse(
-            settings.shouldShowSetAsDefaultPrompt(
-                DefaultBrowserPrompt(
-                    enabled = false,
-                ),
-            ),
-        )
+        assertFalse(settings.shouldShowSetAsDefaultPrompt(DefaultBrowserPrompt(enabled = false)))
     }
 
     @Test
@@ -1195,13 +1194,7 @@ class SettingsTest {
         settings.lastSetAsDefaultPromptShownTimeInMillis = System.currentTimeMillis()
         settings.coldStartsBetweenSetAsDefaultPrompts = 5
 
-        assertTrue(
-            settings.shouldShowSetAsDefaultPrompt(
-                DefaultBrowserPrompt(
-                    daysBetweenPrompts = null,
-                ),
-            ),
-        )
+        assertTrue(settings.shouldShowSetAsDefaultPrompt(DefaultBrowserPrompt(daysBetweenPrompts = null)))
     }
 
     @Test
@@ -1210,13 +1203,7 @@ class SettingsTest {
         settings.lastSetAsDefaultPromptShownTimeInMillis = 0L
         settings.coldStartsBetweenSetAsDefaultPrompts = 5
 
-        assertTrue(
-            settings.shouldShowSetAsDefaultPrompt(
-                DefaultBrowserPrompt(
-                    maxPromptsShown = null,
-                ),
-            ),
-        )
+        assertTrue(settings.shouldShowSetAsDefaultPrompt(DefaultBrowserPrompt(maxPromptsShown = null)))
     }
 
     @Test
@@ -1225,13 +1212,7 @@ class SettingsTest {
         settings.lastSetAsDefaultPromptShownTimeInMillis = 0L
         settings.coldStartsBetweenSetAsDefaultPrompts = 0
 
-        assertTrue(
-            settings.shouldShowSetAsDefaultPrompt(
-                DefaultBrowserPrompt(
-                    coldStartsBetweenPrompts = null,
-                ),
-            ),
-        )
+        assertTrue(settings.shouldShowSetAsDefaultPrompt(DefaultBrowserPrompt(coldStartsBetweenPrompts = null)))
     }
 
     @Test
@@ -1254,13 +1235,15 @@ class SettingsTest {
     @Test
     fun `WHEN user has not accepted the ToU THEN termsOfUseAcceptedTimeInMillis returns 0L`() {
         val installTime = 12345L
-        val settings = Settings(
-            appContext = testContext,
-            packageName = "test",
-            packageManagerCompatHelper = FakePackageManagerCompatHelper(
-                packageInfo = PackageInfo().apply { firstInstallTime = installTime },
-            ),
-        )
+        val settings =
+            Settings(
+                appContext = testContext,
+                packageName = "test",
+                packageManagerCompatHelper =
+                    FakePackageManagerCompatHelper(
+                        packageInfo = PackageInfo().apply { firstInstallTime = installTime }
+                    ),
+            )
         settings.hasAcceptedTermsOfService = false
 
         val result = settings.termsOfUseAcceptedTimeInMillis
@@ -1333,7 +1316,8 @@ class SettingsTest {
     @Test
     fun `WHEN old cleanup file preference is DELETE_FROM_DEVICE THEN delete behavior should be ASK_WHEN_DELETING`() {
         // Bug 2002334 introduced a new key for the download deletion behavior.
-        // We want to make sure that the settings is ASK_WHEN_DELETING after the migration from version using the old preference.
+        // We want to make sure that the settings is ASK_WHEN_DELETING after the migration from version using the old
+        // preference.
         settings.preferences.edit {
             putBoolean("pref_key_downloads_clean_up_files_automatically", true)
         }

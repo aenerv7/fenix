@@ -150,6 +150,12 @@
   <!--
     Recent Tabs
 
+    Header text on the homescreen for continuing to browse the most recent browser tab
+  -->
+  <string name="recent_tabs_header_2">داۋاملاشتۇر</string>
+  <!--
+    Recent Tabs
+
     Header text for jumping back into the recent tab in the home screen
   -->
   <string name="recent_tabs_header">ئالدىنقى بەتكە قايت</string>
@@ -778,8 +784,6 @@
   <string name="preferences_pbm_lock_screen_title">شەخسىي تور زىيارەت ھالىتىدە ئېكران قۇلۇپى ئارقىلىق بەتكۈچنى يوشۇرىدۇ</string>
   <!-- Informs the user how to access the tabs when "Use screen lock to hide tabs in private browsing" is enabled -->
   <string name="preferences_pbm_lock_screen_summary_3">بارماق ئىزى، PIN ياكى چىرايدا قۇلۇپ ئېچىپ بەتكۈچنى كۆرگىلى بولىدۇ. بۇ ئېچىلغاندىن كېيىن ئېكران كۆرۈنۈشىدىن سۈرەت تۇتۇش ۋە ھەمبەھىرلەش چەكلىنىدۇ.</string>
-  <!-- Preference for removing cookie/consent banners from sites automatically in private mode. See reduce_cookie_banner_summary for additional context. -->
-  <string name="preferences_cookie_banner_reduction_private_mode">شەخسىي تور زىيارەتتىكى cookie لوزۇنكىسىنى توسقۇچ</string>
   <!-- Description of the preference to enable "HTTPS-Only" mode. -->
   <string name="preferences_https_only_summary">بىخەتەرلىكنى ئۆستۈرۈش ئۈچۈن HTTPS مەخپىيلەشتۈرۈش كېلىشىمنامىسى ئارقىلىق تور بېكەتلەرگە ئاپتوماتىك ئۇلىنىدۇ.</string>
   <!-- Summary of https only preference if https only is set to off -->
@@ -984,6 +988,8 @@
     Title for the customize home screen section with privacy report.
   -->
   <string name="customize_toggle_privacy_report">شەخسىيەت دوكلاتى</string>
+  <!-- Title for a customize home screen section. Continue is a section that displays the most recent browser tab, so users can continue browsing where they left off. -->
+  <string name="customize_toggle_continue">داۋاملاشتۇر</string>
   <!-- Header text for jumping back into the recent tab in customize the home screen -->
   <string name="customize_toggle_jump_back_in">كەينىگە قايت</string>
   <!-- Title for the customize home screen section with bookmarks. -->
@@ -1635,15 +1641,6 @@
     <item quantity="one">بەتكۈچ گۇرۇپپىسى %1$s غا قوشىدۇ، %2$d بەتكۈچ، رەڭگى %3$s</item>
     <item quantity="other">بەتكۈچ گۇرۇپپىسى %1$s غا قوشىدۇ، %2$d بەتكۈچ، رەڭگى %3$s</item>
   </plurals>
-  <plurals name="share_tab_group_button_content_description">
-    <!--
-      Content Description for share tab group button.
-      %1$s is the name of the tab group.
-      %2$d is the number of tabs in a tab group.
-    -->
-    <item quantity="one">%1$s بەتكۈچ گۇرۇپپىسىنى %2$d بەتكۈچكە ھەمبەھىرلەيدۇ</item>
-    <item quantity="other">%1$s بەتكۈچ گۇرۇپپىسىنى %2$d بەتكۈچكە ھەمبەھىرلەيدۇ</item>
-  </plurals>
   <!-- Content description for the grabber/handle of the tab group bottom sheet. -->
   <string name="tab_group_sheet_dismiss_description">بەتكۈچ گۇرۇپپىسىنى كۆرسىتىپ، سۆرەش تۇتقۇچىنى يىغىدۇ</string>
   <plurals name="expanded_tab_group_header_description">
@@ -1981,8 +1978,6 @@
   <string name="webcompat_reporter_preview_report">دوكلاتنى ئالدىن كۆزەت</string>
   <!-- The title shown at the top of the WebCompat Report preview panel. This appears after the user taps the “Preview” button before sending a report. -->
   <string name="webcompat_reporter_preview_bottom_sheet_header">دوكلاتنى ئالدىن كۆزىتىش</string>
-  <!-- Label for the “Send” button shown in the WebCompat Report preview panel, which the user taps to submit the report. -->
-  <string name="webcompat_reporter_preview_bottom_sheet_send">يوللا</string>
   <!-- Title for the Edit URL confirmation dialog in the WebCompatReporter -->
   <string name="webcompat_reporter_edit_url_dialog_title">تور بېكەت ئادرېس تەھرىر</string>
   <!-- Text shown on the save button for the Edit URL confirmation dialog in the WebCompatReporter. -->
@@ -2399,6 +2394,20 @@
   <string name="sent_from_firefox_template" tools:ignore="UnusedResources">%1$s\n\nيوللىغۇچى %2$s 🦊 كۆچمە توركۆرگۈنى سىناڭ: %3$s</string>
   <!-- A short message template for the shared link with a footer. %1$s is the shared link, %2$s is the app name (e.g. Firefox) and %3$s is a download link for the app. -->
   <string name="sent_from_firefox_template_short" tools:ignore="UnusedResources">%1$s\n\nيوللىغۇچى %2$s 🦊 %3$s</string>
+  <!-- Send tab to synced devices: Authentication error title - Message asking the user to re-authenticate -->
+  <string name="sync_send_tab_error_auth_title">قايتا تىزىمغا كىرسە ئۈسكۈنە ئارىسىدا بەتكۈچنى يوللىيالايدۇ</string>
+  <!-- Send tab to synced devices: Authentication error button - Allows user to re-authenticate -->
+  <string name="sync_send_tab_error_auth_button">تىزىمغا كىرىڭ</string>
+  <!-- Send tab to synced devices: Authentication error button - Allows user to remove the currently connected account -->
+  <string name="sync_send_tab_error_auth_remove_account">ھېسابنى چىقىرىۋەت</string>
+  <!-- Send tab to synced devices: Empty state title - Displayed when the user has no synced devices -->
+  <string name="sync_send_tab_empty_state_title">ھېچقانداق ئۈسكۈنە باغلانمىدى</string>
+  <!-- Send tab to synced devices: Empty state message - Displayed when the user has no synced devices -->
+  <string name="sync_send_tab_empty_state_description" tools:ignore="BrandUsage">ئاز دېگەندە بىر ئۈسكۈنىدە Firefox تىزىمغا كىرگەندە ئاندىن بەتكۈچ يوللىيالايدۇ.</string>
+  <!-- Send tab to synced devices: Connectivity Error title -->
+  <string name="sync_send_tab_error_connection_title">ئىنتېرنېت باغلىنىشىڭىزنى تەكشۈرۈڭ</string>
+  <!-- Send tab to synced devices: Connectivity Error message - Suggested user action after internet connection has been established -->
+  <string name="sync_send_tab_error_connection_text">ئاندىن بەتكۈچنى قايتا يوللاشنى سىناڭ.</string>
   <!--
     Notifications
 
@@ -2845,12 +2854,8 @@
   <string name="add_to_homescreen_cancel">ۋاز كەچ</string>
   <!-- Add button text for the Add to Homescreen dialog -->
   <string name="add_to_homescreen_add">قوشاي</string>
-  <!-- Continue to website button text for the first-time Add to Homescreen dialog -->
-  <string name="add_to_homescreen_continue">توربېكەتنى داۋاملاشتۇر</string>
   <!-- Placeholder text for the TextView in the Add to Homescreen dialog -->
   <string name="add_to_homescreen_text_placeholder">تېزلەتمە ئىسمى</string>
-  <!-- Describes the add to homescreen functionality -->
-  <string name="add_to_homescreen_description_2">تېز سۈرئەتتە زىيارەت قىلىش ۋە ئەپكە ئوخشاش زىيارەت تۇيغۇسىغا ئېرىشىش ئۈچۈن، مەزكۇر تور بېكەتنى باش ئېكرانغا ئاسانلا قوشالايسىز.</string>
   <!-- Preference for managing the settings for logins and passwords in Fenix -->
   <string name="preferences_passwords_logins_and_passwords_2">ئىم</string>
   <!-- Preference for managing the saving of logins and passwords in Fenix -->
@@ -3020,8 +3025,6 @@
   <string name="ip_protection_location_section">ئورنى</string>
   <!-- Label for the recommended automatic location option on the browser VPN settings screen -->
   <string name="ip_protection_location_recommended_label">تەۋسىيەلەندى</string>
-  <!-- Description for the recommended automatic location option on the browser VPN settings screen -->
-  <string name="ip_protection_location_recommended_description">سىز ئۈچۈن ئەڭ تېز مەۋھۇم شەخسىي تور يەنى VPN نى تاللايدۇ.</string>
   <!-- Badge label shown in the menu item when the browser VPN is active -->
   <string name="preferences_ip_protection_on">ئوچۇق</string>
   <!-- Badge label shown in the menu item when the browser VPN is off -->
@@ -3032,6 +3035,8 @@
   <string name="ip_protection_menu_paused">ۋاقىتلىق توختىدى</string>
   <!-- Badge label shown in the menu item when the browser VPN has an error -->
   <string name="ip_protection_menu_error">خاتالىق</string>
+  <!-- Badge label shown in the VPN menu item when the user is eligible for the feature but needs to authenticate / authorize to enable it -->
+  <string name="ip_protection_menu_try_vpn_cta">سىناش ھەقسىز</string>
   <!-- Badge label shown in the menu item when the user is eligible to use the browser VPN but should authenticate or authorize it first. -->
   <string name="ip_protection_menu_auth_required">سىنا</string>
   <!-- Content description for the chevron button that opens the browser VPN settings screen -->
@@ -3076,6 +3081,8 @@
   <string name="ip_protection_onboarding_not_now_button">ھازىر ئەمەس</string>
   <!-- Snackbar (in-app pop-up notification) text to signal the browser VPN connection error -->
   <string name="ip_protection_connection_error_snackbar">مەۋھۇم شەخسىي تور يەنى VPN غا باغلىنالمىدى. بىر قانچە مىنۇتتىن كېيىن قايتا سىناڭ.</string>
+  <!-- Snackbar (in-app pop-up notification) text to signal the VPN location has been reset due to the previously selected VPN location being no longer available. -->
+  <string name="ip_protection_location_selection_reset_snackbar">تاللىغان VPN ئورنى ئىناۋەتسىز. تەۋسىيە قىلىنغان ئورۇنغا ئالماشتۇرۇلدى.</string>
   <!--
     Snackbar (in-app pop-up notification) text to signal the browser VPN has reached the monthly data limit.
     %1$d is the total monthly allowance in GB (for example "50").
@@ -3111,10 +3118,6 @@
   <string name="ip_protection_locations_title">VPN ئورنى تاللىنىدۇ</string>
   <!-- Content description for the browser VPN location selection screen top bar back button -->
   <string name="ip_protection_locations_navigate_back_button_content_description">كەينىگە قايت</string>
-  <!-- Title for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_title" tools:ignore="UnusedResources">ئالدىنقى ئورۇننى ئىشلەتكىلى بولمايدۇ</string>
-  <!-- Description for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_recommended_description" tools:ignore="UnusedResources">تەۋسىيە قىلىنغان ئورۇنغا باغلاندى.</string>
   <!--
     Autofill
 

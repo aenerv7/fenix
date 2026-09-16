@@ -150,6 +150,12 @@
   <!--
     Recent Tabs
 
+    Header text on the homescreen for continuing to browse the most recent browser tab
+  -->
+  <string name="recent_tabs_header_2">Fortsæt</string>
+  <!--
+    Recent Tabs
+
     Header text for jumping back into the recent tab in the home screen
   -->
   <string name="recent_tabs_header">Hop tilbage til</string>
@@ -778,8 +784,6 @@
   <string name="preferences_pbm_lock_screen_title">Brug skærmlås til at skjule faneblade i privat browsing</string>
   <!-- Informs the user how to access the tabs when "Use screen lock to hide tabs in private browsing" is enabled -->
   <string name="preferences_pbm_lock_screen_summary_3">Vis faneblade med dit fingeraftryk, pinkode eller ansigtslås. Hvis du aktiverer dette, forhindres skærmoptagelse og deling.</string>
-  <!-- Preference for removing cookie/consent banners from sites automatically in private mode. See reduce_cookie_banner_summary for additional context. -->
-  <string name="preferences_cookie_banner_reduction_private_mode">Blokering af cookie-bannere i privat browsing</string>
   <!-- Description of the preference to enable "HTTPS-Only" mode. -->
   <string name="preferences_https_only_summary">Forsøger automatisk at oprette forbindelse til websteder ved hjælp af krypteringsprotokollen HTTPS for øget sikkerhed.</string>
   <!-- Summary of https only preference if https only is set to off -->
@@ -1644,15 +1648,6 @@
     <item quantity="one">Føj til fanebladsgruppen %1$s, %2$d faneblad, farve %3$s</item>
     <item quantity="other">Føj til fanebladsgruppen %1$s, %2$d faneblade, farve %3$s</item>
   </plurals>
-  <plurals name="share_tab_group_button_content_description">
-    <!--
-      Content Description for share tab group button.
-      %1$s is the name of the tab group.
-      %2$d is the number of tabs in a tab group.
-    -->
-    <item quantity="one">Del fanebladsgruppen %1$s med %2$d faneblad.</item>
-    <item quantity="other">Del fanebladsgruppen %1$s med %2$d faneblade.</item>
-  </plurals>
   <!-- Content description for the grabber/handle of the tab group bottom sheet. -->
   <string name="tab_group_sheet_dismiss_description">Vis fanebladsgruppe, træk i håndtaget for at skjule</string>
   <plurals name="expanded_tab_group_header_description">
@@ -1998,8 +1993,6 @@
   <string name="webcompat_reporter_preview_report">Forhåndsvis rapport</string>
   <!-- The title shown at the top of the WebCompat Report preview panel. This appears after the user taps the “Preview” button before sending a report. -->
   <string name="webcompat_reporter_preview_bottom_sheet_header">Forhåndsvisning af rapport</string>
-  <!-- Label for the “Send” button shown in the WebCompat Report preview panel, which the user taps to submit the report. -->
-  <string name="webcompat_reporter_preview_bottom_sheet_send">Send</string>
   <!-- Title for the Edit URL confirmation dialog in the WebCompatReporter -->
   <string name="webcompat_reporter_edit_url_dialog_title">Rediger websteds-URL</string>
   <!-- Text shown on the save button for the Edit URL confirmation dialog in the WebCompatReporter. -->
@@ -2862,12 +2855,8 @@
   <string name="add_to_homescreen_cancel">Annuller</string>
   <!-- Add button text for the Add to Homescreen dialog -->
   <string name="add_to_homescreen_add">Tilføj</string>
-  <!-- Continue to website button text for the first-time Add to Homescreen dialog -->
-  <string name="add_to_homescreen_continue">Fortsæt til websted</string>
   <!-- Placeholder text for the TextView in the Add to Homescreen dialog -->
   <string name="add_to_homescreen_text_placeholder">Genvejsnavn</string>
-  <!-- Describes the add to homescreen functionality -->
-  <string name="add_to_homescreen_description_2">Du kan nemt føje dette websted til din enheds startskærm for at have hurtig adgang til det og browse hurtigere med en app-lignende oplevelse.</string>
   <!-- Preference for managing the settings for logins and passwords in Fenix -->
   <string name="preferences_passwords_logins_and_passwords_2">Adgangskoder</string>
   <!-- Preference for managing the saving of logins and passwords in Fenix -->
@@ -3037,8 +3026,6 @@
   <string name="ip_protection_location_section">Placering</string>
   <!-- Label for the recommended automatic location option on the browser VPN settings screen -->
   <string name="ip_protection_location_recommended_label">Anbefalet</string>
-  <!-- Description for the recommended automatic location option on the browser VPN settings screen -->
-  <string name="ip_protection_location_recommended_description">Vælger den hurtigste VPN-placering for dig.</string>
   <!-- Badge label shown in the menu item when the browser VPN is active -->
   <string name="preferences_ip_protection_on">Til</string>
   <!-- Badge label shown in the menu item when the browser VPN is off -->
@@ -3134,10 +3121,6 @@
   <string name="ip_protection_locations_title">Vælg VPN-placering</string>
   <!-- Content description for the browser VPN location selection screen top bar back button -->
   <string name="ip_protection_locations_navigate_back_button_content_description">Gå tilbage</string>
-  <!-- Title for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_title" tools:ignore="UnusedResources">Tidligere placering er ikke tilgængelig</string>
-  <!-- Description for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_recommended_description" tools:ignore="UnusedResources">Forbundet til den anbefalede placering.</string>
   <!--
     Autofill
 

@@ -150,6 +150,12 @@
   <!--
     Recent Tabs
 
+    Header text on the homescreen for continuing to browse the most recent browser tab
+  -->
+  <string name="recent_tabs_header_2">המשך</string>
+  <!--
+    Recent Tabs
+
     Header text for jumping back into the recent tab in the home screen
   -->
   <string name="recent_tabs_header">המשך גלישה</string>
@@ -779,8 +785,6 @@
   <string name="preferences_pbm_lock_screen_title">שימוש בנעילת מסך כדי להסתיר לשוניות בגלישה פרטית</string>
   <!-- Informs the user how to access the tabs when "Use screen lock to hide tabs in private browsing" is enabled -->
   <string name="preferences_pbm_lock_screen_summary_3">צפייה בלשוניות שלך באמצעות טביעת האצבע שלך, קוד PIN או זיהוי פנים. הפעלת אפשרות זו מונעת גם צילום ושיתוף מסך.</string>
-  <!-- Preference for removing cookie/consent banners from sites automatically in private mode. See reduce_cookie_banner_summary for additional context. -->
-  <string name="preferences_cookie_banner_reduction_private_mode">חוסם כרזות עוגיות בגלישה פרטית</string>
   <!-- Description of the preference to enable "HTTPS-Only" mode. -->
   <string name="preferences_https_only_summary">מנסה להתחבר באופן אוטומטי לאתרים באמצעות פרוטוקול ההצפנה HTTPS לצורך אבטחה מוגברת.</string>
   <!-- Summary of https only preference if https only is set to off -->
@@ -985,6 +989,8 @@
     Title for the customize home screen section with privacy report.
   -->
   <string name="customize_toggle_privacy_report">דוח פרטיות</string>
+  <!-- Title for a customize home screen section. Continue is a section that displays the most recent browser tab, so users can continue browsing where they left off. -->
+  <string name="customize_toggle_continue">המשך</string>
   <!-- Header text for jumping back into the recent tab in customize the home screen -->
   <string name="customize_toggle_jump_back_in">המשך גלישה</string>
   <!-- Title for the customize home screen section with bookmarks. -->
@@ -1648,16 +1654,6 @@
     <item quantity="two">הוספה לקבוצת לשוניות %1$s, %2$d לשוניות, בצבע %3$s</item>
     <item quantity="other">הוספה לקבוצת לשוניות %1$s, %2$d לשוניות, בצבע %3$s</item>
   </plurals>
-  <plurals name="share_tab_group_button_content_description">
-    <!--
-      Content Description for share tab group button.
-      %1$s is the name of the tab group.
-      %2$d is the number of tabs in a tab group.
-    -->
-    <item quantity="one">שיתוף קבוצת לשוניות %1$s בעלת לשונית אחת.</item>
-    <item quantity="two">שיתוף קבוצת לשוניות %1$s בעלת %2$d לשוניות.</item>
-    <item quantity="other">שיתוף קבוצת לשוניות %1$s בעלת %2$d לשוניות.</item>
-  </plurals>
   <!-- Content description for the grabber/handle of the tab group bottom sheet. -->
   <string name="tab_group_sheet_dismiss_description">הצגת קבוצת לשוניות, כיווץ ידית גרירה</string>
   <plurals name="expanded_tab_group_header_description">
@@ -2005,8 +2001,6 @@
   <string name="webcompat_reporter_preview_report">תצוגה מקדימה של הדיווח</string>
   <!-- The title shown at the top of the WebCompat Report preview panel. This appears after the user taps the “Preview” button before sending a report. -->
   <string name="webcompat_reporter_preview_bottom_sheet_header">תצוגה מקדימה של הדיווח</string>
-  <!-- Label for the “Send” button shown in the WebCompat Report preview panel, which the user taps to submit the report. -->
-  <string name="webcompat_reporter_preview_bottom_sheet_send">שליחה</string>
   <!-- Title for the Edit URL confirmation dialog in the WebCompatReporter -->
   <string name="webcompat_reporter_edit_url_dialog_title">עריכת כתובת אתר</string>
   <!-- Text shown on the save button for the Edit URL confirmation dialog in the WebCompatReporter. -->
@@ -2423,6 +2417,20 @@
   <string name="sent_from_firefox_template" tools:ignore="UnusedResources">‏%1$s\n\nנשלח מ־%2$s 🦊 נסו את הדפדפן הנייד: %3$s</string>
   <!-- A short message template for the shared link with a footer. %1$s is the shared link, %2$s is the app name (e.g. Firefox) and %3$s is a download link for the app. -->
   <string name="sent_from_firefox_template_short" tools:ignore="UnusedResources">‏%1$s\n\nנשלח מ־%2$s 🦊 ‏%3$s</string>
+  <!-- Send tab to synced devices: Authentication error title - Message asking the user to re-authenticate -->
+  <string name="sync_send_tab_error_auth_title">יש להתחבר מחדש כדי לשלוח לשוניות בין מכשירים</string>
+  <!-- Send tab to synced devices: Authentication error button - Allows user to re-authenticate -->
+  <string name="sync_send_tab_error_auth_button">כניסה</string>
+  <!-- Send tab to synced devices: Authentication error button - Allows user to remove the currently connected account -->
+  <string name="sync_send_tab_error_auth_remove_account">הסרת חשבון</string>
+  <!-- Send tab to synced devices: Empty state title - Displayed when the user has no synced devices -->
+  <string name="sync_send_tab_empty_state_title">אין מכשירים מחוברים</string>
+  <!-- Send tab to synced devices: Empty state message - Displayed when the user has no synced devices -->
+  <string name="sync_send_tab_empty_state_description" tools:ignore="BrandUsage">כדי לשלוח לשונית, יש להתחבר ל־Firefox לפחות במכשיר אחד נוסף.</string>
+  <!-- Send tab to synced devices: Connectivity Error title -->
+  <string name="sync_send_tab_error_connection_title">יש לבדוק את חיבור האינטרנט שלך</string>
+  <!-- Send tab to synced devices: Connectivity Error message - Suggested user action after internet connection has been established -->
+  <string name="sync_send_tab_error_connection_text">ולאחר מכן לנסות לשלוח מחדש את הלשונית שלך.</string>
   <!--
     Notifications
 
@@ -2870,12 +2878,8 @@
   <string name="add_to_homescreen_cancel">ביטול</string>
   <!-- Add button text for the Add to Homescreen dialog -->
   <string name="add_to_homescreen_add">הוספה</string>
-  <!-- Continue to website button text for the first-time Add to Homescreen dialog -->
-  <string name="add_to_homescreen_continue">המשך לאתר</string>
   <!-- Placeholder text for the TextView in the Add to Homescreen dialog -->
   <string name="add_to_homescreen_text_placeholder">שם קיצור הדרך</string>
-  <!-- Describes the add to homescreen functionality -->
-  <string name="add_to_homescreen_description_2">באפשרותך להוסיף בקלות אתר זה למסך הבית של המכשיר שלך כדי לקבל גישה מיידית ולגלוש מהר יותר עם חוויה שמדמה שימוש ביישומון.</string>
   <!-- Preference for managing the settings for logins and passwords in Fenix -->
   <string name="preferences_passwords_logins_and_passwords_2">ססמאות</string>
   <!-- Preference for managing the saving of logins and passwords in Fenix -->
@@ -3045,8 +3049,6 @@
   <string name="ip_protection_location_section">מיקום</string>
   <!-- Label for the recommended automatic location option on the browser VPN settings screen -->
   <string name="ip_protection_location_recommended_label">מומלץ</string>
-  <!-- Description for the recommended automatic location option on the browser VPN settings screen -->
-  <string name="ip_protection_location_recommended_description">בוחר עבורך את מיקום ה־VPN המהיר ביותר.</string>
   <!-- Badge label shown in the menu item when the browser VPN is active -->
   <string name="preferences_ip_protection_on">פעיל</string>
   <!-- Badge label shown in the menu item when the browser VPN is off -->
@@ -3142,10 +3144,6 @@
   <string name="ip_protection_locations_title">בחירת מיקום VPN</string>
   <!-- Content description for the browser VPN location selection screen top bar back button -->
   <string name="ip_protection_locations_navigate_back_button_content_description">ניווט אחורה</string>
-  <!-- Title for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_title" tools:ignore="UnusedResources">המיקום הקודם אינו זמין</string>
-  <!-- Description for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_recommended_description" tools:ignore="UnusedResources">בוצע חיבור למיקום המומלץ.</string>
   <!--
     Autofill
 
@@ -4569,4 +4567,18 @@
   <string name="pdf_tools_print_content_description">הדפסת PDF</string>
   <!-- Content description for accessibility (used by screen readers): Description for the button that opens the sharing options for the PDF being displayed on the screen. -->
   <string name="pdf_tools_share_content_description">שיתוף PDF</string>
+  <!--
+    PDF viewer add a signature dialog
+
+    The title of the dialog for adding a signature to a PDF.
+  -->
+  <string name="pdf_tools_signature_title">הוספת חתימה</string>
+  <!-- Content description for accessibility (used by screen readers): Description for the button that closes the dialog for adding a signature to a PDF. -->
+  <string name="pdf_tools_signature_close_content_description">סגירת חלונית החתימה ב־PDF</string>
+  <!-- The placeholder text shown in the empty text input field where users can enter the signature they wish to add to a PDF. -->
+  <string name="pdf_tools_signature_placeholder">נא לרשום חתימה</string>
+  <!-- The text for the button that erases the text the user entered in the "add a signature" field. -->
+  <string name="pdf_tools_signature_clear_button">ניקוי</string>
+  <!-- The text for the button that adds the signature the user has typed to the PDF. -->
+  <string name="pdf_tools_signature_add_button">הוספה</string>
 </resources>

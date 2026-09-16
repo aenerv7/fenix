@@ -66,47 +66,47 @@ object GeckoProvider {
         context: Context,
         policy: TrackingProtectionPolicy,
     ): GeckoRuntimeSettings {
-        val builder = GeckoRuntimeSettings.Builder()
-            .crashHandler(CrashHandlerService::class.java)
-            .experimentDelegate(NimbusExperimentDelegate())
-            .contentBlocking(
-                policy.toContentBlockingSetting(
-                    queryParameterStripping = false,
-                    queryParameterStrippingPrivateBrowsing = false,
-                    queryParameterStrippingAllowList = "",
-                    queryParameterStrippingStripList = "",
-                    allowListBaselineTrackingProtection =
-                    context.components.settings.strictAllowListBaselineTrackingProtection,
-                    allowListConvenienceTrackingProtection =
-                    context.components.settings.strictAllowListConvenienceTrackingProtection,
-                    safeBrowsingGlobalCacheEnabled = Config.channel.isNightlyOrDebug,
-                    safeBrowsingRealTimeEnabled = Config.channel.isNightlyOrDebug,
-                    safeBrowsingRealTimeSimulationEnabled = Config.channel.isNightlyOrDebug,
-                    safeBrowsingRealTimeSimulationHitProbability = 5,
-                    safeBrowsingRealTimeSimulationCacheTTLSec = 300,
-                    safeBrowsingRealTimeSimulationNegativeCacheEnabled = false,
-                    safeBrowsingRealTimeSimulationNegativeCacheTTLSec = 300,
-                ),
-            )
-            .consoleOutput(context.components.settings.enableGeckoLogs)
-            .debugLogging(Config.channel.isDebug || context.components.settings.enableGeckoLogs)
-            .aboutConfigEnabled(Config.channel.isBeta || Config.channel.isNightlyOrDebug)
-            .extensionsProcessEnabled(true)
-            .extensionsWebAPIEnabled(true)
-            .translationsOfferPopup(context.components.settings.offerTranslation)
-            .crashPullNeverShowAgain(context.components.settings.crashPullNeverShowAgain)
-            .setSameDocumentNavigationOverridesLoadType(
-                FxNimbus.features.sameDocumentNavigationOverridesLoadType.value().enabled,
-            )
-            .setSameDocumentNavigationOverridesLoadTypeForceDisable(
-                FxNimbus.features.sameDocumentNavigationOverridesLoadType.value().forceDisableUri,
-            )
-            .isolatedProcessEnabled(context.components.settings.isIsolatedProcessEnabled)
-            .appZygoteProcessEnabled(context.components.settings.isAppZygoteEnabled)
+        val builder =
+            GeckoRuntimeSettings.Builder()
+                .crashHandler(CrashHandlerService::class.java)
+                .experimentDelegate(NimbusExperimentDelegate())
+                .contentBlocking(
+                    policy.toContentBlockingSetting(
+                        queryParameterStripping = false,
+                        queryParameterStrippingPrivateBrowsing = false,
+                        queryParameterStrippingAllowList = "",
+                        queryParameterStrippingStripList = "",
+                        allowListBaselineTrackingProtection =
+                            context.components.settings.strictAllowListBaselineTrackingProtection,
+                        allowListConvenienceTrackingProtection =
+                            context.components.settings.strictAllowListConvenienceTrackingProtection,
+                        safeBrowsingGlobalCacheEnabled = Config.channel.isNightlyOrDebug,
+                        safeBrowsingRealTimeEnabled = Config.channel.isNightlyOrDebug,
+                        safeBrowsingRealTimeSimulationEnabled = Config.channel.isNightlyOrDebug,
+                        safeBrowsingRealTimeSimulationHitProbability = 5,
+                        safeBrowsingRealTimeSimulationCacheTTLSec = 300,
+                        safeBrowsingRealTimeSimulationNegativeCacheEnabled = false,
+                        safeBrowsingRealTimeSimulationNegativeCacheTTLSec = 300,
+                    )
+                )
+                .consoleOutput(context.components.settings.enableGeckoLogs)
+                .debugLogging(Config.channel.isDebug || context.components.settings.enableGeckoLogs)
+                .aboutConfigEnabled(Config.channel.isBeta || Config.channel.isNightlyOrDebug)
+                .extensionsProcessEnabled(true)
+                .extensionsWebAPIEnabled(true)
+                .translationsOfferPopup(context.components.settings.offerTranslation)
+                .crashPullNeverShowAgain(context.components.settings.crashPullNeverShowAgain)
+                .setSameDocumentNavigationOverridesLoadType(
+                    FxNimbus.features.sameDocumentNavigationOverridesLoadType.value().enabled
+                )
+                .setSameDocumentNavigationOverridesLoadTypeForceDisable(
+                    FxNimbus.features.sameDocumentNavigationOverridesLoadType.value().forceDisableUri
+                )
+                .isolatedProcessEnabled(context.components.settings.isIsolatedProcessEnabled)
+                .appZygoteProcessEnabled(context.components.settings.isAppZygoteEnabled)
 
         if (FxNimbus.features.fission.value().shouldUseNimbus) {
-            builder
-                .fissionEnabled(FxNimbus.features.fission.value().enabled)
+            builder.fissionEnabled(FxNimbus.features.fission.value().enabled)
         }
 
         return builder.build()

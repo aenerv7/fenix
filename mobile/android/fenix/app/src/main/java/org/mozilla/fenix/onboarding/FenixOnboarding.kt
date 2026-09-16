@@ -50,21 +50,15 @@ class FenixOnboarding(context: Context) : PreferencesHolder {
 
     companion object {
         /**
-         * The current onboarding version. When incremented,
-         * users who were previously onboarded will be show the onboarding again.
+         * The current onboarding version. When incremented, users who were previously onboarded will be show the
+         * onboarding again.
          */
-        @VisibleForTesting
-        internal const val CURRENT_ONBOARDING_VERSION = 1
+        @VisibleForTesting internal const val CURRENT_ONBOARDING_VERSION = 1
 
-        /**
-         * Name of the shared preferences file.
-         */
+        /** Name of the shared preferences file. */
         private const val PREF_NAME_ONBOARDING_KEY = "fenix.onboarding"
 
-        /**
-         * Key for [onboardedVersion].
-         */
-        @VisibleForTesting
-        internal const val LAST_VERSION_ONBOARDING_KEY = "fenix.onboarding.last_version"
+        /** Key for [onboardedVersion]. */
+        @VisibleForTesting internal const val LAST_VERSION_ONBOARDING_KEY = "fenix.onboarding.last_version"
     }
 }

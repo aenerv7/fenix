@@ -150,6 +150,12 @@
   <!--
     Recent Tabs
 
+    Header text on the homescreen for continuing to browse the most recent browser tab
+  -->
+  <string name="recent_tabs_header_2">Nadaljuj</string>
+  <!--
+    Recent Tabs
+
     Header text for jumping back into the recent tab in the home screen
   -->
   <string name="recent_tabs_header">Skoči nazaj</string>
@@ -780,8 +786,6 @@
   <string name="preferences_pbm_lock_screen_title">Uporabite zaklepanje zaslona za skrivanje zavihkov v zasebnem brskanju</string>
   <!-- Informs the user how to access the tabs when "Use screen lock to hide tabs in private browsing" is enabled -->
   <string name="preferences_pbm_lock_screen_summary_3">Odklenite zavihke s prstnim odtisom, kodo PIN ali s prepoznavo obraza. Ob vklopu bo preprečeno tudi zajemanje posnetkov zaslona in deljenje.</string>
-  <!-- Preference for removing cookie/consent banners from sites automatically in private mode. See reduce_cookie_banner_summary for additional context. -->
-  <string name="preferences_cookie_banner_reduction_private_mode">Zavračanje pasic s piškotki v zasebnem brskanju</string>
   <!-- Description of the preference to enable "HTTPS-Only" mode. -->
   <string name="preferences_https_only_summary">Za večjo varnost poskuša samodejno vzpostaviti povezavo s šifrirnim protokolom HTTPS.</string>
   <!-- Summary of https only preference if https only is set to off -->
@@ -986,6 +990,8 @@
     Title for the customize home screen section with privacy report.
   -->
   <string name="customize_toggle_privacy_report">Poročilo o zasebnosti</string>
+  <!-- Title for a customize home screen section. Continue is a section that displays the most recent browser tab, so users can continue browsing where they left off. -->
+  <string name="customize_toggle_continue">Nadaljuj</string>
   <!-- Header text for jumping back into the recent tab in customize the home screen -->
   <string name="customize_toggle_jump_back_in">Skoči nazaj</string>
   <!-- Title for the customize home screen section with bookmarks. -->
@@ -1650,17 +1656,6 @@
     <item quantity="few">Dodaj skupini zavihkov %1$s, %2$d zavihki, barva %3$s</item>
     <item quantity="other">Dodaj skupini zavihkov %1$s, %2$d zavihkov, barva %3$s</item>
   </plurals>
-  <plurals name="share_tab_group_button_content_description">
-    <!--
-      Content Description for share tab group button.
-      %1$s is the name of the tab group.
-      %2$d is the number of tabs in a tab group.
-    -->
-    <item quantity="one">Deli skupino zavihkov %1$s z %2$d zavihkom.</item>
-    <item quantity="two">Deli skupino zavihkov %1$s z %2$d zavihkoma.</item>
-    <item quantity="few">Deli skupino zavihkov %1$s z %2$d zavihki.</item>
-    <item quantity="other">Deli skupino zavihkov %1$s z %2$d zavihki.</item>
-  </plurals>
   <!-- Content description for the grabber/handle of the tab group bottom sheet. -->
   <string name="tab_group_sheet_dismiss_description">Prikaži skupino zavihkov, strni ročico za vlečenje</string>
   <plurals name="expanded_tab_group_header_description">
@@ -2010,8 +2005,6 @@
   <string name="webcompat_reporter_preview_report">Predogled prijave</string>
   <!-- The title shown at the top of the WebCompat Report preview panel. This appears after the user taps the “Preview” button before sending a report. -->
   <string name="webcompat_reporter_preview_bottom_sheet_header">Predogled prijave</string>
-  <!-- Label for the “Send” button shown in the WebCompat Report preview panel, which the user taps to submit the report. -->
-  <string name="webcompat_reporter_preview_bottom_sheet_send">Pošlji</string>
   <!-- Title for the Edit URL confirmation dialog in the WebCompatReporter -->
   <string name="webcompat_reporter_edit_url_dialog_title">Urejanje naslova spletne strani</string>
   <!-- Text shown on the save button for the Edit URL confirmation dialog in the WebCompatReporter. -->
@@ -2428,6 +2421,18 @@
   <string name="sent_from_firefox_template" tools:ignore="UnusedResources">%1$s\n\nPoslano iz %2$sa 🦊 Preizkusite mobilni brskalnik: %3$s</string>
   <!-- A short message template for the shared link with a footer. %1$s is the shared link, %2$s is the app name (e.g. Firefox) and %3$s is a download link for the app. -->
   <string name="sent_from_firefox_template_short" tools:ignore="UnusedResources">%1$s\n\nPoslano iz %2$sa 🦊 %3$s</string>
+  <!-- Send tab to synced devices: Authentication error button - Allows user to re-authenticate -->
+  <string name="sync_send_tab_error_auth_button">Prijava</string>
+  <!-- Send tab to synced devices: Authentication error button - Allows user to remove the currently connected account -->
+  <string name="sync_send_tab_error_auth_remove_account">Odstrani račun</string>
+  <!-- Send tab to synced devices: Empty state title - Displayed when the user has no synced devices -->
+  <string name="sync_send_tab_empty_state_title">Ni povezanih naprav</string>
+  <!-- Send tab to synced devices: Empty state message - Displayed when the user has no synced devices -->
+  <string name="sync_send_tab_empty_state_description" tools:ignore="BrandUsage">Če želite poslati zavihek, se v Firefox prijavite v vsaj še eni napravi.</string>
+  <!-- Send tab to synced devices: Connectivity Error title -->
+  <string name="sync_send_tab_error_connection_title">Preverite svojo povezavo z internetom</string>
+  <!-- Send tab to synced devices: Connectivity Error message - Suggested user action after internet connection has been established -->
+  <string name="sync_send_tab_error_connection_text">Nato poskusite zavihek znova poslati.</string>
   <!--
     Notifications
 
@@ -2876,12 +2881,8 @@
   <string name="add_to_homescreen_cancel">Prekliči</string>
   <!-- Add button text for the Add to Homescreen dialog -->
   <string name="add_to_homescreen_add">Dodaj</string>
-  <!-- Continue to website button text for the first-time Add to Homescreen dialog -->
-  <string name="add_to_homescreen_continue">Nadaljuj na spletno stran</string>
   <!-- Placeholder text for the TextView in the Add to Homescreen dialog -->
   <string name="add_to_homescreen_text_placeholder">Ime bližnjice</string>
-  <!-- Describes the add to homescreen functionality -->
-  <string name="add_to_homescreen_description_2">To stran lahko preprosto dodate na svoj domači zaslon naprave za lažji dostop in hitrejše brskanje v načinu, podobnem aplikaciji.</string>
   <!-- Preference for managing the settings for logins and passwords in Fenix -->
   <string name="preferences_passwords_logins_and_passwords_2">Gesla</string>
   <!-- Preference for managing the saving of logins and passwords in Fenix -->
@@ -3051,8 +3052,6 @@
   <string name="ip_protection_location_section">Lokacija</string>
   <!-- Label for the recommended automatic location option on the browser VPN settings screen -->
   <string name="ip_protection_location_recommended_label">Priporočena</string>
-  <!-- Description for the recommended automatic location option on the browser VPN settings screen -->
-  <string name="ip_protection_location_recommended_description">Samodejno izbere najhitrejšo lokacijo VPN za vas.</string>
   <!-- Badge label shown in the menu item when the browser VPN is active -->
   <string name="preferences_ip_protection_on">Vklopljen</string>
   <!-- Badge label shown in the menu item when the browser VPN is off -->
@@ -3144,10 +3143,6 @@
   <string name="ip_protection_locations_title">Izberite lokacijo VPN</string>
   <!-- Content description for the browser VPN location selection screen top bar back button -->
   <string name="ip_protection_locations_navigate_back_button_content_description">Pojdi nazaj</string>
-  <!-- Title for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_title" tools:ignore="UnusedResources">Prejšnja lokacija ni na voljo</string>
-  <!-- Description for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_recommended_description" tools:ignore="UnusedResources">Povezava vzpostavljena s priporočeno lokacijo.</string>
   <!--
     Autofill
 
@@ -4583,4 +4578,18 @@
   <string name="pdf_tools_print_content_description">Natisni PDF</string>
   <!-- Content description for accessibility (used by screen readers): Description for the button that opens the sharing options for the PDF being displayed on the screen. -->
   <string name="pdf_tools_share_content_description">Deli PDF</string>
+  <!--
+    PDF viewer add a signature dialog
+
+    The title of the dialog for adding a signature to a PDF.
+  -->
+  <string name="pdf_tools_signature_title">Dodaj podpis</string>
+  <!-- Content description for accessibility (used by screen readers): Description for the button that closes the dialog for adding a signature to a PDF. -->
+  <string name="pdf_tools_signature_close_content_description">Zapri podokno za podpisovanje datoteke PDF</string>
+  <!-- The placeholder text shown in the empty text input field where users can enter the signature they wish to add to a PDF. -->
+  <string name="pdf_tools_signature_placeholder">Natipkajte podpis</string>
+  <!-- The text for the button that erases the text the user entered in the "add a signature" field. -->
+  <string name="pdf_tools_signature_clear_button">Izbriši</string>
+  <!-- The text for the button that adds the signature the user has typed to the PDF. -->
+  <string name="pdf_tools_signature_add_button">Dodaj</string>
 </resources>

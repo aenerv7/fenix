@@ -150,6 +150,12 @@
   <!--
     Recent Tabs
 
+    Header text on the homescreen for continuing to browse the most recent browser tab
+  -->
+  <string name="recent_tabs_header_2">İleri</string>
+  <!--
+    Recent Tabs
+
     Header text for jumping back into the recent tab in the home screen
   -->
   <string name="recent_tabs_header">Açık sekmeler</string>
@@ -778,8 +784,6 @@
   <string name="preferences_pbm_lock_screen_title">Gizli gezintide sekmeleri gizlemek için ekran kilidini kullan</string>
   <!-- Informs the user how to access the tabs when "Use screen lock to hide tabs in private browsing" is enabled -->
   <string name="preferences_pbm_lock_screen_summary_3">Sekmeleri parmak izi, PIN veya yüz tanıma ile görüntüleyebilirsiniz. Bu özelliği etkinleştirdiğinizde ekran görüntüsü alma ve paylaşma da engellenir.</string>
-  <!-- Preference for removing cookie/consent banners from sites automatically in private mode. See reduce_cookie_banner_summary for additional context. -->
-  <string name="preferences_cookie_banner_reduction_private_mode">Gizli gezintide çerez bildirimi engelleyici</string>
   <!-- Description of the preference to enable "HTTPS-Only" mode. -->
   <string name="preferences_https_only_summary">Daha fazla güvenlik için sitelere otomatik olarak HTTPS şifreleme protokolüyle bağlanmaya çalışır.</string>
   <!-- Summary of https only preference if https only is set to off -->
@@ -984,6 +988,8 @@
     Title for the customize home screen section with privacy report.
   -->
   <string name="customize_toggle_privacy_report">Gizlilik raporu</string>
+  <!-- Title for a customize home screen section. Continue is a section that displays the most recent browser tab, so users can continue browsing where they left off. -->
+  <string name="customize_toggle_continue">İleri</string>
   <!-- Header text for jumping back into the recent tab in customize the home screen -->
   <string name="customize_toggle_jump_back_in">Açık sekmeler</string>
   <!-- Title for the customize home screen section with bookmarks. -->
@@ -1644,15 +1650,6 @@
     <item quantity="one">%1$s sekme grubuna ekle, %2$d sekme, %3$s renkli</item>
     <item quantity="other">%1$s sekme grubuna ekle, %2$d sekme, %3$s renkli</item>
   </plurals>
-  <plurals name="share_tab_group_button_content_description">
-    <!--
-      Content Description for share tab group button.
-      %1$s is the name of the tab group.
-      %2$d is the number of tabs in a tab group.
-    -->
-    <item quantity="one">%1$s sekme grubunu %2$d sekmeyle paylaş.</item>
-    <item quantity="other">%1$s sekme grubunu %2$d sekmeyle paylaş.</item>
-  </plurals>
   <!-- Content description for the grabber/handle of the tab group bottom sheet. -->
   <string name="tab_group_sheet_dismiss_description">Sekme grubunu göster, sürükleme tutamacını daralt</string>
   <plurals name="expanded_tab_group_header_description">
@@ -1998,8 +1995,6 @@
   <string name="webcompat_reporter_preview_report">Raporu ön izle</string>
   <!-- The title shown at the top of the WebCompat Report preview panel. This appears after the user taps the “Preview” button before sending a report. -->
   <string name="webcompat_reporter_preview_bottom_sheet_header">Rapor Ön İzlemesi</string>
-  <!-- Label for the “Send” button shown in the WebCompat Report preview panel, which the user taps to submit the report. -->
-  <string name="webcompat_reporter_preview_bottom_sheet_send">Gönder</string>
   <!-- Title for the Edit URL confirmation dialog in the WebCompatReporter -->
   <string name="webcompat_reporter_edit_url_dialog_title">Site adresini düzenle</string>
   <!-- Text shown on the save button for the Edit URL confirmation dialog in the WebCompatReporter. -->
@@ -2416,6 +2411,20 @@
   <string name="sent_from_firefox_template" tools:ignore="UnusedResources">%1$s\n\n%2$s ile paylaşıldı 🦊 Mobil tarayıcıyı deneyin: %3$s</string>
   <!-- A short message template for the shared link with a footer. %1$s is the shared link, %2$s is the app name (e.g. Firefox) and %3$s is a download link for the app. -->
   <string name="sent_from_firefox_template_short" tools:ignore="UnusedResources">%1$s\n\n%2$s ile paylaşıldı 🦊 %3$s</string>
+  <!-- Send tab to synced devices: Authentication error title - Message asking the user to re-authenticate -->
+  <string name="sync_send_tab_error_auth_title">Cihazlar arasında sekme göndermek için yeniden giriş yapın</string>
+  <!-- Send tab to synced devices: Authentication error button - Allows user to re-authenticate -->
+  <string name="sync_send_tab_error_auth_button">Giriş yap</string>
+  <!-- Send tab to synced devices: Authentication error button - Allows user to remove the currently connected account -->
+  <string name="sync_send_tab_error_auth_remove_account">Hesabı kaldır</string>
+  <!-- Send tab to synced devices: Empty state title - Displayed when the user has no synced devices -->
+  <string name="sync_send_tab_empty_state_title">Bağlı cihaz yok</string>
+  <!-- Send tab to synced devices: Empty state message - Displayed when the user has no synced devices -->
+  <string name="sync_send_tab_empty_state_description" tools:ignore="BrandUsage">Sekme göndermek için başka bir cihazdan daha Firefox’a giriş yapmalısınız.</string>
+  <!-- Send tab to synced devices: Connectivity Error title -->
+  <string name="sync_send_tab_error_connection_title">İnternet bağlantınızı kontrol edin</string>
+  <!-- Send tab to synced devices: Connectivity Error message - Suggested user action after internet connection has been established -->
+  <string name="sync_send_tab_error_connection_text">Ardından sekmenizi yeniden göndermeyi deneyin.</string>
   <!--
     Notifications
 
@@ -2862,12 +2871,8 @@
   <string name="add_to_homescreen_cancel">İptal</string>
   <!-- Add button text for the Add to Homescreen dialog -->
   <string name="add_to_homescreen_add">Ekle</string>
-  <!-- Continue to website button text for the first-time Add to Homescreen dialog -->
-  <string name="add_to_homescreen_continue">Siteye devam et</string>
   <!-- Placeholder text for the TextView in the Add to Homescreen dialog -->
   <string name="add_to_homescreen_text_placeholder">Kısayol adı</string>
-  <!-- Describes the add to homescreen functionality -->
-  <string name="add_to_homescreen_description_2">Bu siteyi cihazınızın ana ekranına ekleyerek ona hızlıca erişebilir, site bir uygulamaymış gibi daha hızlı gezinti yapabilirsiniz.</string>
   <!-- Preference for managing the settings for logins and passwords in Fenix -->
   <string name="preferences_passwords_logins_and_passwords_2">Parolalar</string>
   <!-- Preference for managing the saving of logins and passwords in Fenix -->
@@ -3015,7 +3020,7 @@
   <!-- Content description for the browser VPN settings screen top bar back button -->
   <string name="ip_protection_navigate_back_button_content_description">Geri git</string>
   <!-- Headline for the browser VPN promo card. %s is the name of the app (for example "Firefox"). -->
-  <string name="ip_protection_promo_headline">%s tarayıcısından yerleşik VPN</string>
+  <string name="ip_protection_promo_headline">%s’tan yerleşik VPN</string>
   <!-- Body text for the browser VPN promo card . %s is a learn more link using ip_protection_learn_more as text. -->
   <string name="ip_protection_promo_body_2">Konumunuzu gizleyin, halka açık Wi-Fi ağlarında bile ekstra korumayla gezinin. %s</string>
   <!-- Link text that opens additional information about the browser VPN -->
@@ -3037,8 +3042,6 @@
   <string name="ip_protection_location_section">Konum</string>
   <!-- Label for the recommended automatic location option on the browser VPN settings screen -->
   <string name="ip_protection_location_recommended_label">Önerilen</string>
-  <!-- Description for the recommended automatic location option on the browser VPN settings screen -->
-  <string name="ip_protection_location_recommended_description">Sizin için en hızlı VPN konumunu seçer.</string>
   <!-- Badge label shown in the menu item when the browser VPN is active -->
   <string name="preferences_ip_protection_on">Açık</string>
   <!-- Badge label shown in the menu item when the browser VPN is off -->
@@ -3049,6 +3052,8 @@
   <string name="ip_protection_menu_paused">Duraklatıldı</string>
   <!-- Badge label shown in the menu item when the browser VPN has an error -->
   <string name="ip_protection_menu_error">Hata</string>
+  <!-- Badge label shown in the VPN menu item when the user is eligible for the feature but needs to authenticate / authorize to enable it -->
+  <string name="ip_protection_menu_try_vpn_cta">Ücretsiz dene</string>
   <!-- Badge label shown in the menu item when the user is eligible to use the browser VPN but should authenticate or authorize it first. -->
   <string name="ip_protection_menu_auth_required">Dene</string>
   <!-- Content description for the chevron button that opens the browser VPN settings screen -->
@@ -3097,6 +3102,8 @@
   <string name="ip_protection_onboarding_not_now_button">Şimdi değil</string>
   <!-- Snackbar (in-app pop-up notification) text to signal the browser VPN connection error -->
   <string name="ip_protection_connection_error_snackbar">VPN’e bağlanılamadı. Birkaç dakika sonra tekrar deneyin.</string>
+  <!-- Snackbar (in-app pop-up notification) text to signal the VPN location has been reset due to the previously selected VPN location being no longer available. -->
+  <string name="ip_protection_location_selection_reset_snackbar">Seçilen VPN konumu kullanılamıyor. Önerilen konuma geçildi.</string>
   <!--
     Snackbar (in-app pop-up notification) text to signal the browser VPN has reached the monthly data limit.
     %1$d is the total monthly allowance in GB (for example "50").
@@ -3134,10 +3141,6 @@
   <string name="ip_protection_locations_title">VPN konumunu seçin</string>
   <!-- Content description for the browser VPN location selection screen top bar back button -->
   <string name="ip_protection_locations_navigate_back_button_content_description">Geri git</string>
-  <!-- Title for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_title" tools:ignore="UnusedResources">Önceki konum kullanılamıyor</string>
-  <!-- Description for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_recommended_description" tools:ignore="UnusedResources">Önerilen konuma bağlanıldı.</string>
   <!--
     Autofill
 
@@ -4557,4 +4560,18 @@
   <string name="pdf_tools_print_content_description">PDF’i yazdır</string>
   <!-- Content description for accessibility (used by screen readers): Description for the button that opens the sharing options for the PDF being displayed on the screen. -->
   <string name="pdf_tools_share_content_description">PDF’i paylaş</string>
+  <!--
+    PDF viewer add a signature dialog
+
+    The title of the dialog for adding a signature to a PDF.
+  -->
+  <string name="pdf_tools_signature_title">İmza ekle</string>
+  <!-- Content description for accessibility (used by screen readers): Description for the button that closes the dialog for adding a signature to a PDF. -->
+  <string name="pdf_tools_signature_close_content_description">PDF imza panelini kapat</string>
+  <!-- The placeholder text shown in the empty text input field where users can enter the signature they wish to add to a PDF. -->
+  <string name="pdf_tools_signature_placeholder">İmzanızı yaz</string>
+  <!-- The text for the button that erases the text the user entered in the "add a signature" field. -->
+  <string name="pdf_tools_signature_clear_button">Temizle</string>
+  <!-- The text for the button that adds the signature the user has typed to the PDF. -->
+  <string name="pdf_tools_signature_add_button">Ekle</string>
 </resources>

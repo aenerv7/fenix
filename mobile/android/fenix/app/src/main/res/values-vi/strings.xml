@@ -777,8 +777,6 @@
   <string name="preferences_pbm_lock_screen_title">Sử dụng khóa màn hình để ẩn các thẻ trong chế độ duyệt riêng tư</string>
   <!-- Informs the user how to access the tabs when "Use screen lock to hide tabs in private browsing" is enabled -->
   <string name="preferences_pbm_lock_screen_summary_3">Xem các thẻ bằng vân tay, mã PIN hoặc mở khóa bằng khuôn mặt. Bật tính năng này cũng ngăn chặn việc chụp và chia sẻ màn hình.</string>
-  <!-- Preference for removing cookie/consent banners from sites automatically in private mode. See reduce_cookie_banner_summary for additional context. -->
-  <string name="preferences_cookie_banner_reduction_private_mode">Trình chặn biểu ngữ cookie trong trình duyệt riêng tư</string>
   <!-- Description of the preference to enable "HTTPS-Only" mode. -->
   <string name="preferences_https_only_summary">Tự động cố gắng kết nối với các trang web bằng giao thức mã hóa HTTPS để tăng cường bảo mật.</string>
   <!-- Summary of https only preference if https only is set to off -->
@@ -1638,14 +1636,6 @@
     -->
     <item quantity="other">Thêm vào nhóm thẻ %1$s, %2$d thẻ, màu %3$s</item>
   </plurals>
-  <plurals name="share_tab_group_button_content_description">
-    <!--
-      Content Description for share tab group button.
-      %1$s is the name of the tab group.
-      %2$d is the number of tabs in a tab group.
-    -->
-    <item quantity="other">Chia sẻ nhóm thẻ %1$s với %2$d thẻ.</item>
-  </plurals>
   <!-- Content description for the grabber/handle of the tab group bottom sheet. -->
   <string name="tab_group_sheet_dismiss_description">Xem nhóm thẻ, kéo xuống để thu gọn</string>
   <plurals name="expanded_tab_group_header_description">
@@ -1989,8 +1979,6 @@
   <string name="webcompat_reporter_preview_report">Xem trước báo cáo</string>
   <!-- The title shown at the top of the WebCompat Report preview panel. This appears after the user taps the “Preview” button before sending a report. -->
   <string name="webcompat_reporter_preview_bottom_sheet_header">Xem trước báo cáo</string>
-  <!-- Label for the “Send” button shown in the WebCompat Report preview panel, which the user taps to submit the report. -->
-  <string name="webcompat_reporter_preview_bottom_sheet_send">Gửi</string>
   <!-- Title for the Edit URL confirmation dialog in the WebCompatReporter -->
   <string name="webcompat_reporter_edit_url_dialog_title">Chỉnh sửa URL trang web</string>
   <!-- Text shown on the save button for the Edit URL confirmation dialog in the WebCompatReporter. -->
@@ -2852,12 +2840,8 @@
   <string name="add_to_homescreen_cancel">Hủy bỏ</string>
   <!-- Add button text for the Add to Homescreen dialog -->
   <string name="add_to_homescreen_add">Thêm</string>
-  <!-- Continue to website button text for the first-time Add to Homescreen dialog -->
-  <string name="add_to_homescreen_continue">Tiếp tục với trang web</string>
   <!-- Placeholder text for the TextView in the Add to Homescreen dialog -->
   <string name="add_to_homescreen_text_placeholder">Tên lối tắt</string>
-  <!-- Describes the add to homescreen functionality -->
-  <string name="add_to_homescreen_description_2">Bạn có thể dễ dàng thêm trang web vào màn hình chính thiết bị của bạn để có thể truy cập và duyệt web nhanh hơn với trải nghiệm giống như trên ứng dụng.</string>
   <!-- Preference for managing the settings for logins and passwords in Fenix -->
   <string name="preferences_passwords_logins_and_passwords_2">Mật khẩu</string>
   <!-- Preference for managing the saving of logins and passwords in Fenix -->
@@ -3027,8 +3011,6 @@
   <string name="ip_protection_location_section">Địa điểm</string>
   <!-- Label for the recommended automatic location option on the browser VPN settings screen -->
   <string name="ip_protection_location_recommended_label">Được đề xuất</string>
-  <!-- Description for the recommended automatic location option on the browser VPN settings screen -->
-  <string name="ip_protection_location_recommended_description">Tự động chọn địa điểm VPN nhanh nhất cho bạn.</string>
   <!-- Badge label shown in the menu item when the browser VPN is active -->
   <string name="preferences_ip_protection_on">Bật</string>
   <!-- Badge label shown in the menu item when the browser VPN is off -->
@@ -3039,6 +3021,8 @@
   <string name="ip_protection_menu_paused">Đã tạm dừng</string>
   <!-- Badge label shown in the menu item when the browser VPN has an error -->
   <string name="ip_protection_menu_error">Lỗi</string>
+  <!-- Badge label shown in the VPN menu item when the user is eligible for the feature but needs to authenticate / authorize to enable it -->
+  <string name="ip_protection_menu_try_vpn_cta">Dùng thử miễn phí</string>
   <!-- Badge label shown in the menu item when the user is eligible to use the browser VPN but should authenticate or authorize it first. -->
   <string name="ip_protection_menu_auth_required">Thử ngay</string>
   <!-- Content description for the chevron button that opens the browser VPN settings screen -->
@@ -3083,6 +3067,8 @@
   <string name="ip_protection_onboarding_not_now_button">Để sau</string>
   <!-- Snackbar (in-app pop-up notification) text to signal the browser VPN connection error -->
   <string name="ip_protection_connection_error_snackbar">Không thể kết nối VPN. Hãy thử lại sau vài phút.</string>
+  <!-- Snackbar (in-app pop-up notification) text to signal the VPN location has been reset due to the previously selected VPN location being no longer available. -->
+  <string name="ip_protection_location_selection_reset_snackbar">Địa điểm VPN đã chọn không khả dụng. Đã chuyển sang địa điểm được đề xuất.</string>
   <!--
     Snackbar (in-app pop-up notification) text to signal the browser VPN has reached the monthly data limit.
     %1$d is the total monthly allowance in GB (for example "50").
@@ -3120,10 +3106,6 @@
   <string name="ip_protection_locations_title">Chọn địa điểm VPN</string>
   <!-- Content description for the browser VPN location selection screen top bar back button -->
   <string name="ip_protection_locations_navigate_back_button_content_description">Điều hướng quay lại</string>
-  <!-- Title for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_title" tools:ignore="UnusedResources">Địa điểm trước đó không khả dụng</string>
-  <!-- Description for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_recommended_description" tools:ignore="UnusedResources">Đã kết nối đến địa điểm được đề xuất.</string>
   <!--
     Autofill
 

@@ -778,8 +778,6 @@
   <string name="preferences_pbm_lock_screen_title">Usa el bloqueo de pantalla para ocultar las pestañas en la navegación privada</string>
   <!-- Informs the user how to access the tabs when "Use screen lock to hide tabs in private browsing" is enabled -->
   <string name="preferences_pbm_lock_screen_summary_3">Visualiza las pestañas mediante huella digital, PIN o desbloqueo facial. Al activar esta función, también se impide la captura y el uso compartido de pantalla.</string>
-  <!-- Preference for removing cookie/consent banners from sites automatically in private mode. See reduce_cookie_banner_summary for additional context. -->
-  <string name="preferences_cookie_banner_reduction_private_mode">Bloqueador de anuncios de cookies en navegación privada</string>
   <!-- Description of the preference to enable "HTTPS-Only" mode. -->
   <string name="preferences_https_only_summary">Intentar conectarse automáticamente a sitios que utilizan el protocolo de encriptación HTTPS para mayor seguridad.</string>
   <!-- Summary of https only preference if https only is set to off -->
@@ -1625,15 +1623,6 @@
     <item quantity="one">Agregar al grupo de pestañas %1$s, %2$d pestaña, color %3$s</item>
     <item quantity="other">Agregar al grupo de pestañas %1$s, %2$d pestañas, color %3$s</item>
   </plurals>
-  <plurals name="share_tab_group_button_content_description">
-    <!--
-      Content Description for share tab group button.
-      %1$s is the name of the tab group.
-      %2$d is the number of tabs in a tab group.
-    -->
-    <item quantity="one">Compartir al grupo pestañas %1$s con %2$d pestaña.</item>
-    <item quantity="other">Compartir grupo de pestañas %1$s con %2$d pestañas.</item>
-  </plurals>
   <!-- Content description for the grabber/handle of the tab group bottom sheet. -->
   <string name="tab_group_sheet_dismiss_description">Ver grupo, control para contraer</string>
   <plurals name="expanded_tab_group_header_description">
@@ -1969,8 +1958,6 @@
   <string name="webcompat_reporter_preview_report">Vista previa del informe</string>
   <!-- The title shown at the top of the WebCompat Report preview panel. This appears after the user taps the “Preview” button before sending a report. -->
   <string name="webcompat_reporter_preview_bottom_sheet_header">Vista previa del reporte</string>
-  <!-- Label for the “Send” button shown in the WebCompat Report preview panel, which the user taps to submit the report. -->
-  <string name="webcompat_reporter_preview_bottom_sheet_send">Enviar</string>
   <!-- Title for the Edit URL confirmation dialog in the WebCompatReporter -->
   <string name="webcompat_reporter_edit_url_dialog_title">Edita la URL del sitio web</string>
   <!-- Text shown on the save button for the Edit URL confirmation dialog in the WebCompatReporter. -->
@@ -2833,12 +2820,8 @@
   <string name="add_to_homescreen_cancel">Cancelar</string>
   <!-- Add button text for the Add to Homescreen dialog -->
   <string name="add_to_homescreen_add">Agregar</string>
-  <!-- Continue to website button text for the first-time Add to Homescreen dialog -->
-  <string name="add_to_homescreen_continue">Continuar al sitio web</string>
   <!-- Placeholder text for the TextView in the Add to Homescreen dialog -->
   <string name="add_to_homescreen_text_placeholder">Nombre del acceso directo</string>
-  <!-- Describes the add to homescreen functionality -->
-  <string name="add_to_homescreen_description_2">Puedes añadir fácilmente este sitio web a la pantalla de inicio de tu dispositivo para tener acceso instantáneo y navegar rápidamente, consiguiendo una experiencia similar a la de una aplicación real.</string>
   <!-- Preference for managing the settings for logins and passwords in Fenix -->
   <string name="preferences_passwords_logins_and_passwords_2">Contraseñas</string>
   <!-- Preference for managing the saving of logins and passwords in Fenix -->
@@ -3008,8 +2991,6 @@
   <string name="ip_protection_location_section">Ubicación</string>
   <!-- Label for the recommended automatic location option on the browser VPN settings screen -->
   <string name="ip_protection_location_recommended_label">Recomendados</string>
-  <!-- Description for the recommended automatic location option on the browser VPN settings screen -->
-  <string name="ip_protection_location_recommended_description">Selecciona automáticamente la ubicación de VPN más rápida.</string>
   <!-- Badge label shown in the menu item when the browser VPN is active -->
   <string name="preferences_ip_protection_on">Activada</string>
   <!-- Badge label shown in the menu item when the browser VPN is off -->
@@ -3099,10 +3080,6 @@
   <string name="ip_protection_locations_title">Elige una ubicación de VPN</string>
   <!-- Content description for the browser VPN location selection screen top bar back button -->
   <string name="ip_protection_locations_navigate_back_button_content_description">Regresar</string>
-  <!-- Title for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_title" tools:ignore="UnusedResources">La ubicación anterior no está disponible</string>
-  <!-- Description for the card shown to the user when we are unable to fetch server locations -->
-  <string name="ip_protection_location_unavailable_recommended_description" tools:ignore="UnusedResources">Conectado a la ubicación recomendada.</string>
   <!--
     Autofill
 

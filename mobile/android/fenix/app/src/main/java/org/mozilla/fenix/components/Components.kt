@@ -73,6 +73,8 @@ import org.mozilla.fenix.home.PocketMiddleware
 import org.mozilla.fenix.home.SettingsBackedPocketSettings
 import org.mozilla.fenix.home.blocklist.BlocklistHandler
 import org.mozilla.fenix.home.blocklist.BlocklistMiddleware
+import org.mozilla.fenix.home.collections.migration.CollectionsMigrationRepository
+import org.mozilla.fenix.home.collections.migration.DefaultCollectionsMigrationRepository
 import org.mozilla.fenix.home.middleware.HomeTelemetryMiddleware
 import org.mozilla.fenix.home.setup.store.DefaultSetupChecklistRepository
 import org.mozilla.fenix.home.setup.store.SetupChecklistPreferencesMiddleware
@@ -182,9 +184,7 @@ class Components(
             )
         }
         // Use build config otherwise
-        else if (BuildConfig.AMO_COLLECTION_USER.isNotEmpty() &&
-            BuildConfig.AMO_COLLECTION_NAME.isNotEmpty()
-        ) {
+        else if (BuildConfig.AMO_COLLECTION_USER.isNotEmpty() && BuildConfig.AMO_COLLECTION_NAME.isNotEmpty()) {
             AMOAddonsProvider(
                 context,
                 core.client,
@@ -374,17 +374,8 @@ class Components(
     val settingsIndexer by lazyMonitored {
         DefaultFenixSettingsIndexer(
             context = context,
-            additionalProviders = listOf(
-                DataChoicesSearchProvider,
-                AIControlsSearchProvider,
-                PageSummariesSettingsSearchProvider(
-                    summarizationFeatureConfiguration = core.summarizeFeatureSettings,
-                ),
-                FirefoxLabsSettingsSearchProvider(
-                    isLabsEnabled = { settings.enableFirefoxLabs },
-                ),
-                ToolbarShortcutSettingsSearchProvider,
-            ),
+            additionalProviders =
+                settingsSearchProviders(summarizationFeatureConfiguration = core.summarizeFeatureSettings),
         )
     }
 
@@ -404,16 +395,21 @@ class Components(
         DefaultEmailMasksRepository(settings)
     }
 
+    val collectionsMigrationRepository: CollectionsMigrationRepository by lazyMonitored {
+        DefaultCollectionsMigrationRepository(settings)
+    }
+
     val relayFeatureIntegration by lazyMonitored {
         RelayFeatureIntegration(
             engine = core.engine,
             accountManager = backgroundServices.accountManager,
             store = relayEligibilityStore,
             appStore = appStore,
-            errorMessages = ErrorMessages(
-                maxMasksReached = context.getString(R.string.email_masks_max_free_tier_reached),
-                errorRetrievingMasks = context.getString(R.string.email_masks_error_retrieving_masks),
-            ),
+            errorMessages =
+                ErrorMessages(
+                    maxMasksReached = context.getString(R.string.email_masks_max_free_tier_reached),
+                    errorRetrievingMasks = context.getString(R.string.email_masks_error_retrieving_masks),
+                ),
         )
     }
 
@@ -425,13 +421,6 @@ class Components(
         SummarizationSettings.dataStore(context)
     }
 
-    val summarizationSettingsCache by lazyMonitored {
-        SummarizationSettingsCache(
-            settings = summarizationSettings,
-            scope = CoroutineScope(SupervisorJob() + Dispatchers.IO),
-        )
-    }
-
     val aiFeatureRegistry by lazyMonitored {
         AIFeatureRegistry.default(scope = MainScope(), context = context).also {
             if (settings.shakeToSummarizeFeatureFlagEnabled) {
@@ -440,8 +429,8 @@ class Components(
             it.register(
                 VoiceSearchAIControlFeature(
                     settings = settings,
-                    onUpdateWidget = { VoiceSearchAIControlFeature.updateWidget(context) },
-                ),
+                    onUpdateWidget = { SearchWidgetProvider.updateAllWidgets(context) },
+                )
             )
         }
     }
@@ -471,10 +460,11 @@ class Components(
             engine = core.engine,
             browserStore = core.store,
             syncStore = backgroundServices.syncStore,
-            authSources = IPProtectionAuthSources(
-                fxaAccountManager = lazy { backgroundServices.accountManager },
-                integrityClient = lazy { integrityClient },
-            ),
+            authSources =
+                IPProtectionAuthSources(
+                    fxaAccountManager = lazy { backgroundServices.accountManager },
+                    integrityClient = lazy { integrityClient },
+                ),
             lazyAppStore = lazy { appStore },
             settings = settings,
             context = context,
@@ -482,10 +472,6 @@ class Components(
     }
 }
 
-/**
- * Returns the [Components] object from within a [Composable].
- */
+/** Returns the [Components] object from within a [Composable]. */
 val components: Components
-    @Composable
-    @ReadOnlyComposable
-    get() = LocalContext.current.components
+    @Composable @ReadOnlyComposable get() = LocalContext.current.components

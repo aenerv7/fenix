@@ -752,8 +752,6 @@
   <string name="preferences_pbm_lock_screen_title">Koristi zaključavanje ekrana za skrivanje kartica u privatnom pregledavanju</string>
   <!-- Informs the user how to access the tabs when "Use screen lock to hide tabs in private browsing" is enabled -->
   <string name="preferences_pbm_lock_screen_summary_3">Pregledaj kartice s otiskom prsta, PIN-om ili otključavanjem pomoću lica. Uključivanjem ove stavke se također sprečava snimanje i dijeljenje ekrana.</string>
-  <!-- Preference for removing cookie/consent banners from sites automatically in private mode. See reduce_cookie_banner_summary for additional context. -->
-  <string name="preferences_cookie_banner_reduction_private_mode">Blokiranje dijalog kolačića tijekom privatnog pregledavanja</string>
   <!-- Description of the preference to enable "HTTPS-Only" mode. -->
   <string name="preferences_https_only_summary">Automatski se pokušava povezati s web stranicama pomoću HTTPS protokola za šifriranje radi povećane sigurnosti.</string>
   <!-- Summary of https only preference if https only is set to off -->
@@ -1580,16 +1578,6 @@
     <item quantity="few">Dodaj u grupu kartica %1$s, %2$d kartice, boja %3$s</item>
     <item quantity="other">Dodaj u grupu kartica %1$s, %2$d kartica, boja %3$s</item>
   </plurals>
-  <plurals name="share_tab_group_button_content_description">
-    <!--
-      Content Description for share tab group button.
-      %1$s is the name of the tab group.
-      %2$d is the number of tabs in a tab group.
-    -->
-    <item quantity="one">Dijeli grupu kartica %1$s s %2$d karticom.</item>
-    <item quantity="few">Dijeli grupu kartica %1$s s %2$d kartice.</item>
-    <item quantity="other">Dijeli grupu kartica %1$s s %2$d kartica.</item>
-  </plurals>
   <!-- Content description for the grabber/handle of the tab group bottom sheet. -->
   <string name="tab_group_sheet_dismiss_description">Prikaži grupu kartica, sažmi ručku za povlačenje</string>
   <plurals name="expanded_tab_group_header_description">
@@ -1891,8 +1879,6 @@
   <string name="webcompat_reporter_preview_report">Pregledaj izvještaj</string>
   <!-- The title shown at the top of the WebCompat Report preview panel. This appears after the user taps the “Preview” button before sending a report. -->
   <string name="webcompat_reporter_preview_bottom_sheet_header">Pregled izvještaja</string>
-  <!-- Label for the “Send” button shown in the WebCompat Report preview panel, which the user taps to submit the report. -->
-  <string name="webcompat_reporter_preview_bottom_sheet_send">Pošalji</string>
   <!--
     These reason strings are dropdown options on a WebCompat reporter form, indicating what is broken on the site.
 
@@ -2291,6 +2277,20 @@
   <string name="sent_from_firefox_template" tools:ignore="UnusedResources">%1$s\n\nPoslano od aplikacije %2$s 🦊 Isprobaj mobilni preglednik: %3$s</string>
   <!-- A short message template for the shared link with a footer. %1$s is the shared link, %2$s is the app name (e.g. Firefox) and %3$s is a download link for the app. -->
   <string name="sent_from_firefox_template_short" tools:ignore="UnusedResources">%1$s\n\nPoslano od aplikacije %2$s 🦊 %3$s</string>
+  <!-- Send tab to synced devices: Authentication error title - Message asking the user to re-authenticate -->
+  <string name="sync_send_tab_error_auth_title">Ponovo se prijavi za slanje kartica između uređaja</string>
+  <!-- Send tab to synced devices: Authentication error button - Allows user to re-authenticate -->
+  <string name="sync_send_tab_error_auth_button">Prijavi se</string>
+  <!-- Send tab to synced devices: Authentication error button - Allows user to remove the currently connected account -->
+  <string name="sync_send_tab_error_auth_remove_account">Ukloni račun</string>
+  <!-- Send tab to synced devices: Empty state title - Displayed when the user has no synced devices -->
+  <string name="sync_send_tab_empty_state_title">Niti jedan uređaj nije povezan</string>
+  <!-- Send tab to synced devices: Empty state message - Displayed when the user has no synced devices -->
+  <string name="sync_send_tab_empty_state_description" tools:ignore="BrandUsage">Za slanje kartice, prijavi se na Firefox na barem jednom drugom uređaju.</string>
+  <!-- Send tab to synced devices: Connectivity Error title -->
+  <string name="sync_send_tab_error_connection_title">Provjeri internetsku vezu</string>
+  <!-- Send tab to synced devices: Connectivity Error message - Suggested user action after internet connection has been established -->
+  <string name="sync_send_tab_error_connection_text">Zatim pokušaj ponovo poslati tvoju karticu.</string>
   <!--
     Notifications
 
@@ -2726,12 +2726,8 @@
   <string name="add_to_homescreen_cancel">Odustani</string>
   <!-- Add button text for the Add to Homescreen dialog -->
   <string name="add_to_homescreen_add">Dodaj</string>
-  <!-- Continue to website button text for the first-time Add to Homescreen dialog -->
-  <string name="add_to_homescreen_continue">Nastavi na web stranicu</string>
   <!-- Placeholder text for the TextView in the Add to Homescreen dialog -->
   <string name="add_to_homescreen_text_placeholder">Ime prečaca</string>
-  <!-- Describes the add to homescreen functionality -->
-  <string name="add_to_homescreen_description_2">Ovu stranicu lako možeš dodati na početni zaslon svog uređaja za brže pretraživanje s iskustvom sličnim aplikacijama.</string>
   <!-- Preference for managing the settings for logins and passwords in Fenix -->
   <string name="preferences_passwords_logins_and_passwords_2">Lozinke</string>
   <!-- Preference for managing the saving of logins and passwords in Fenix -->
@@ -2895,8 +2891,6 @@
   <string name="ip_protection_location_section">Lokacija</string>
   <!-- Label for the recommended automatic location option on the browser VPN settings screen -->
   <string name="ip_protection_location_recommended_label">Preporučeno</string>
-  <!-- Description for the recommended automatic location option on the browser VPN settings screen -->
-  <string name="ip_protection_location_recommended_description">Bira najbržu VPN lokaciju za tebe.</string>
   <!-- Badge label shown in the menu item when the browser VPN is active -->
   <string name="preferences_ip_protection_on">Uključeno</string>
   <!-- Badge label shown in the menu item when the browser VPN is off -->

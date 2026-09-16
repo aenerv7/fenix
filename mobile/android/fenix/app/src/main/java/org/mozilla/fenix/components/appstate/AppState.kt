@@ -41,14 +41,14 @@ import org.mozilla.fenix.wallpapers.WallpaperState
  * - Recreating the state does not involve expensive operations (for example, network or disk I/O).
  *
  * @property isForeground Whether or not the app is in the foreground.
- * @property inactiveTabsExpanded A flag to know if the Inactive Tabs section of the Tabs Tray
- * should be expanded when the tray is opened.
+ * @property inactiveTabsExpanded A flag to know if the Inactive Tabs section of the Tabs Tray should be expanded when
+ *   the tray is opened.
  * @property firstFrameDrawn Flag indicating whether the first frame of the homescreen has been drawn.
  * @property openInFirefoxRequested Flag indicating whether a custom tab should be opened in the browser.
  * @property nonFatalCrashes List of non-fatal crashes that allow the app to continue being used.
  * @property collections The list of [TabCollection] to display in the [HomeFragment].
- * @property expandedCollections A set containing the ids of the [TabCollection] that are expanded
- * in the [HomeFragment].
+ * @property expandedCollections A set containing the ids of the [TabCollection] that are expanded in the
+ *   [HomeFragment].
  * @property mode Whether the app is in private browsing mode.
  * @property orientation Current orientation of the application.
  * @property topSites The list of [TopSite] in the [HomeFragment].
@@ -59,9 +59,9 @@ import org.mozilla.fenix.wallpapers.WallpaperState
  * @property recommendationState The [ContentRecommendationsState] to display.
  * @property messaging State related messages.
  * @property microsurvey The [MicrosurveyState] derived from the MICROSURVEY message surface.
- * @property pendingDeletionHistoryItems The set of History items marked for removal in the UI,
- * awaiting to be removed once the Undo snackbar hides away.
- * Also serves as an in memory cache of all stories mapped by category allowing for quick stories filtering.
+ * @property pendingDeletionHistoryItems The set of History items marked for removal in the UI, awaiting to be removed
+ *   once the Undo snackbar hides away. Also serves as an in memory cache of all stories mapped by category allowing for
+ *   quick stories filtering.
  * @property wallpaperState The [WallpaperState] to display in the [HomeFragment].
  * @property standardSnackbarError A snackbar error message to display.
  * @property readerViewState The [ReaderViewState] to display.

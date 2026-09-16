@@ -36,9 +36,7 @@ import org.mozilla.fenix.search.BrowserToolbarSearchStatusSyncMiddleware
 import org.mozilla.fenix.summarization.SummarizationNavigator
 import org.mozilla.fenix.translations.TranslationsEnabledSettings
 
-/**
- * Delegate for building the [BrowserToolbarStore] used in the browser screen.
- */
+/** Delegate for building the [BrowserToolbarStore] used in the browser screen. */
 object BrowserToolbarStoreBuilder {
 
     /**
