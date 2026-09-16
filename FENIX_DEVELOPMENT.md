@@ -7,7 +7,7 @@ Mozilla's general Firefox source documentation remains authoritative for the res
 
 ## Current fork customization summary
 
-The current upstream baseline is Firefox Android 155.0.1 (`FIREFOX-ANDROID_155_0_1_RELEASE`). The first
+The current upstream baseline is Firefox Android 156.0 (`FIREFOX-ANDROID_156_0_RELEASE`). The first
 upstream synchronization, including manual conflict resolution and the limited-time activity policy,
 is recorded in [FENIX_UPSTREAM_SYNC.md](FENIX_UPSTREAM_SYNC.md). Release-by-release user-facing notes
 are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
@@ -109,12 +109,16 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
 
 ### Current validation state
 
-The 155.0.1-r8 release replaces the Custom Tab menu's remaining Firefox icon with the existing
-transparent Fenix rabbit. Kotlin lint, Release assembly/lintVital, package checks, and the Fenix
-documentation build passed. No device UI checks or unit tests were run for this icon-only change;
-remote try CI requires Mozilla Auth0 authorization unavailable in this environment. The arm64-v8a
-release uses the pinned official 155.0.1 GeckoView package through `-UseUpstreamGecko`; no local
-GeckoView build is permitted for this release. The Windows `FenixGleanTestRule`
+The 156.0-r1 release updates the baseline to Firefox Android 156.0 and re-applies the whole Fenix
+change set on top of the upstream 156.0 delta. An earlier 156.0-r1 candidate had to be withdrawn: its
+merge commit changed only `FENIX_UPSTREAM_RELEASE`, so the source stayed on 155.0.1 while the release
+metadata declared 156.0 and pinned the 156.0 GeckoView binaries. That baseline mismatch crashed the
+app on startup. The replacement merge changes roughly 16.7k files and is verified by comparing the
+candidate diff against the size of the upstream delta, not by the merge commit merely existing.
+
+The arm64-v8a release uses the pinned official 156.0 GeckoView package through `-UseUpstreamGecko`
+and the exact official versionCode `2016183650`; no local GeckoView build is permitted because no
+Fenix-authored Gecko, C++, Rust, or Gecko locale source changed. The Windows `FenixGleanTestRule`
 native-library limitation remains documented below; affected tests need Linux or CI coverage even
 when the Windows task completes by skipping them.
 
@@ -245,8 +249,8 @@ Release APKs must use the exact versionCode from the corresponding official upst
 same baseline and ABI. The checked-in `FENIX_UPSTREAM_VERSION_CODES.json` records those values;
 update it from the official Mozilla archive when changing `FENIX_UPSTREAM_RELEASE`. The release
 script passes the recorded value to Gradle and verifies the resulting APK manifest, so a build-time
-clock value cannot silently become the release versionCode. For the 155.0.1 baseline, the official
-arm64-v8a value is `2016182530`.
+clock value cannot silently become the release versionCode. For the 156.0 baseline, the official
+arm64-v8a value is `2016183650`.
 
 Do not add a fork revision offset: a fork build is a modified build of that upstream versionCode,
 and changing it would prevent normal downgrade or replacement workflows.

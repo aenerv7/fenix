@@ -206,6 +206,50 @@ The retained release target is `fenix-155.0.1-r8`, with only the arm64-v8a APK p
 arm64-v8a versionCode is `2016182530`; the release checklist also verifies all 99 Gecko locales,
 native library hashes, application ID, signature schemes, and the final APK checksum.
 
+## Firefox Android 156.0 synchronization
+
+The 156.0 update was prepared from the official `FIREFOX-ANDROID_156_0_RELEASE` tag on the candidate
+branch `sync/firefox-android-156.0`. The upstream delta spans about 16.7k files. Conflicts were
+resolved file by file in favor of the existing Fenix product policy, branding, and Simplified Chinese
+resources; no locale or branding decision was taken from upstream.
+
+The update preserves Fenix branding (`github.aenerv7.fenix`), the tab-group behavior, the IP
+Protection entry point, and the removal of password, autofill, sync, and Play Store rating entry
+points. The release uses the pinned official 156.0 arm64-v8a GeckoView package recorded in
+`FENIX_UPSTREAM_GECKOVIEW.json`; local GeckoView compilation is prohibited because no Fenix-authored
+Gecko or native source changed. The exact official arm64-v8a versionCode is `2016183650`.
+
+### Silent no-op merge hazard
+
+`tools/fenix/sync-official-release.ps1` applies the upstream delta with a single `git apply --3way`
+call. `git apply` is atomic: if any one file fails, it discards the entire patch and leaves the tree
+unchanged while the merge commit may still be created. A 156.0 candidate was once committed in that
+state: the merge changed only `FENIX_UPSTREAM_RELEASE`, so the source tree stayed on 155.0.1 while
+the release metadata declared 156.0 and pinned the 156.0 GeckoView binaries. That mismatch crashed
+the app on startup and the release had to be withdrawn.
+
+Files the fork deliberately deleted (autofill, password manager, review prompt, Play Store rating,
+Firefox wordmark) are the usual cause: upstream still modifies them, so `git apply` reports
+`does not exist in index` and aborts everything.
+
+Always verify a synchronized candidate before committing it:
+
+```powershell
+git diff --name-only <fenix-parent> <candidate> | Measure-Object -Line
+```
+
+The count must be close to the size of the upstream delta (tens of thousands of files), never one or
+two. Apply the delta with `git apply --reject` so failures are isolated into `.rej` files instead of
+discarding the whole patch, resolve those files, and confirm that upstream-added files actually exist
+in the working tree. Never treat a zero exit code, or a merge commit that merely exists, as evidence
+that the delta landed.
+
+A baseline update also advances `CLOBBER` (156.0 carries the 2026-09-09 merge day clobber), so the
+existing object directories require a clobber acknowledgement before the next `mach build`. Generated
+sources such as `CrashReport.kt` are produced into the object directory from
+`toolkit/crashreporter/CrashAnnotations.yaml`; they are not checked in, and a stale copy fails the
+Kotlin build with unresolved `Annotation` members until the object directory is regenerated.
+
 ## Source-to-binary traceability
 
 If APKs are distributed, record their SHA-256 hashes and the exact Fenix tag in release notes. The
