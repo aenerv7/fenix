@@ -1,5 +1,75 @@
 # Fenix changes
 
+## 156.0-r2
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_156_0_RELEASE`。本版本补全简体中文，其余内容与 `156.0-r1` 相同。
+
+`156.0-r1` 使用的资源已包含上游 156.0 新增的 38 条面向用户的字符串，但 `values-zh-rCN` 尚无对应
+翻译。Android 在缺少翻译时按字符串回退到英文，因此这些条目在中文界面中显示为英文，例如设置中标签页
+选项里的 “Enable Tab Groups”。
+
+本次为全部 38 条补齐简体中文翻译，沿用文件既有术语（标签页群组、取消群组、跟踪器、隐私报告、收藏集、
+重试）。改动为纯新增，未修改任何现有翻译，并已按 `values/strings.xml` 的顺序插入对应位置。
+
+#### 补齐的界面
+
+- 标签页群组：设置中的启用开关、三点菜单的取消群组、取消群组的确认对话框标题、正文与按钮。
+- 标签页操作的无障碍自定义操作：上移、下移、左移、右移标签页。
+- PDF 工具：签名、下载、打印、分享的内容描述，以及添加签名对话框的标题、关闭说明、输入提示、清除与添加按钮。
+- 隐私报告通知：通知渠道名称与说明，以及有/无跟踪器时的通知标题与正文。
+- IP Protection：VPN 关闭状态的标签与说明、位置不可用提示、位置重置提示、位置列表不可用标题、返回按钮说明、免费试用入口。
+- 收藏集迁移：主页迁移卡片标题、正文与链接。
+- 其他：最近标签页标题、定制主页“继续”、扩展操作失败重试、最深主题、无可用同步设备说明、Firefox Labs 网站隔离说明。
+
+#### 发布与验证
+
+- 仅发布 `arm64-v8a` APK，使用官方 156.0 多语言 GeckoView，严格沿用官方 `versionCode 2016183650` 和上游 `versionName 156.0`；未进行本地 GeckoView 编译或打包。
+- 发布流程校验官方基线、ABI、99 个 Gecko locale（含 `zh-CN`）、`assets/omni.ja`、Gecko 原生库、application ID、版本、签名和校验和。
+- `fenix:assembleDebug` 与 `fenix:spotlessKotlinCheck` 通过。
+- 资源审计确认 `values/strings.xml` 的 1788 条字符串与 `values/arrays.xml` 的 5 个数组在 `values-zh-rCN` 中均有对应条目，缺失数为 0；复数资源 15 条亦全部覆盖。
+- 已将该 APK 安装到 Android 34 x86_64 模拟器并将系统语言设为简体中文：应用正常启动，无 `FATAL EXCEPTION`；从已安装 APK 的资源表逐条确认 38 条字符串均解析为 `zh-rCN` 中文值；界面确认真实显示“搜索”“添加快捷方式”“一起抓跟踪器”“免费试用”等中文文案。
+- APK：`Fenix-156.0-r2-arm64-v8a-release.apk`，大小 `131010652` 字节，SHA-256：`C8D3E79B6D307AC219457B70D21419368814F790DEBDD532070DE54105A0FC94`。
+- 对应完整源码：[fenix-156.0-r2](https://github.com/aenerv7/fenix/tree/fenix-156.0-r2)。Fenix 是非官方独立修改版，不受 Mozilla 赞助或背书；维护与支持由本项目提供。保留 MPL 2.0 和第三方许可；Firefox 是 Mozilla Foundation 的商标。
+- `.idsig` 仅保留本地校验和重签名使用，不作为 GitHub Release 资产；Windows Glean 原生库限制仍需 Linux 或 CI 覆盖。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_156_0_RELEASE`. This release completes the Simplified
+Chinese localization; everything else is identical to `156.0-r1`.
+
+The resources shipped in `156.0-r1` already included 38 new user-visible strings from the 156.0
+baseline, but `values-zh-rCN` had no translation for them. Android falls back to English per string
+when a translation is missing, so those entries appeared in English in the Chinese UI, for example
+"Enable Tab Groups" in the tab settings.
+
+All 38 strings are now translated, reusing the terminology already established in the file
+(标签页群组, 取消群组, 跟踪器, 隐私报告, 收藏集, 重试). The change is additive: no existing translation
+is modified, and each string is inserted at the position matching its counterpart in
+`values/strings.xml`.
+
+#### Surfaces completed
+
+- Tab groups: the settings enable toggle, the three-dot menu ungroup action, and the ungroup confirmation dialog title, body, and button.
+- Custom accessibility actions for reordering a tab up, down, left, and right.
+- PDF tools: the sign, download, print, and share content descriptions, plus the add-signature dialog title, close description, input placeholder, and clear and add buttons.
+- Privacy report notifications: the channel name and description, and the notification headline and body for when trackers have and have not been blocked.
+- IP Protection: the VPN-off label and description, the unavailable-location label, the location-reset snackbar, the locations-unavailable title, the back button description, and the free-trial entry point.
+- Collections migration: the homepage migration card title, message, and link.
+- Miscellaneous: the recent tabs header, the customize-homepage continue toggle, the add-on failure retry action, the darkest theme name, the no-sync-devices description, and the Firefox Labs website isolation description.
+
+#### Release and validation
+
+- Publishes only the `arm64-v8a` APK using the official 156.0 multi-locale GeckoView and the exact official `versionCode 2016183650` with upstream `versionName 156.0`; no local GeckoView compilation or packaging was performed.
+- The release process verifies the official baseline, ABI, all 99 Gecko locales (including `zh-CN`), `assets/omni.ja`, Gecko native libraries, application ID, version, signature, and checksums.
+- `fenix:assembleDebug` and `fenix:spotlessKotlinCheck` pass.
+- A resource audit confirms that all 1788 strings in `values/strings.xml` and all 5 arrays in `values/arrays.xml` now have a `values-zh-rCN` entry, with zero missing; all 15 plurals are covered as well.
+- The APK was installed on an Android 34 x86_64 emulator with the system language set to Simplified Chinese: the app launched with no `FATAL EXCEPTION`, all 38 strings were confirmed to resolve to `zh-rCN` Chinese values directly from the installed APK resource table, and the UI was confirmed to display Chinese text such as 搜索, 添加快捷方式, 一起抓跟踪器, and 免费试用.
+- APK: `Fenix-156.0-r2-arm64-v8a-release.apk`, size `131010652` bytes, SHA-256: `C8D3E79B6D307AC219457B70D21419368814F790DEBDD532070DE54105A0FC94`.
+- Complete corresponding source: [fenix-156.0-r2](https://github.com/aenerv7/fenix/tree/fenix-156.0-r2). Fenix is an independent unofficial modified build, not sponsored or endorsed by Mozilla; this project provides maintenance and support. MPL 2.0 and third-party licenses are retained; Firefox is a trademark of the Mozilla Foundation.
+- `.idsig` is retained locally for verification and re-signing and is not a GitHub Release asset; the Windows Glean native-library limitation still requires Linux or CI coverage.
+
 ## 156.0-r1
 
 ### 中文
