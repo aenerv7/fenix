@@ -149,6 +149,8 @@
   <string name="home_screen_shortcut_passwords">密码</string>
   <!-- Shortcut action to open uninstall survey -->
   <string name="home_screen_shortcut_uninstall_survey">卸载并询问原因</string>
+  <!-- Header text on the homescreen for continuing to browse the most recent browser tab -->
+  <string name="recent_tabs_header_2">继续</string>
   <!--
     Recent Tabs
 
@@ -983,6 +985,8 @@
     Title for the customize home screen section with privacy report.
   -->
   <string name="customize_toggle_privacy_report">隐私报告</string>
+  <!-- Title for a customize home screen section. Continue is a section that displays the most recent browser tab, so users can continue browsing where they left off. -->
+  <string name="customize_toggle_continue">继续</string>
   <!-- Header text for jumping back into the recent tab in customize the home screen -->
   <string name="customize_toggle_jump_back_in">回到先前页面</string>
   <!-- Title for the customize home screen section with bookmarks. -->
@@ -1128,6 +1132,8 @@
   <string name="extension_process_crash_dialog_retry_button_text" tools:ignore="UnusedResources">尝试重启扩展</string>
   <!-- Button text on the extension crash dialog to prompt the user to continue with all extensions disabled. -->
   <string name="extension_process_crash_dialog_disable_extensions_button_text">禁用扩展并继续</string>
+  <!-- Text shown in the snackbar action button that lets the user retry an add-on operation that just failed. -->
+  <string name="addon_failure_retry_action">重试</string>
   <!--
     Account Preferences
 
@@ -1301,6 +1307,9 @@
   <string name="preference_light_theme">明亮</string>
   <!-- Preference for using dark theme -->
   <string name="preference_dark_theme">深邃</string>
+  <!-- Preference for using the OLED theme. For localization, this can be translated as "True Black", "Maximum Darkness",
+  or "Full dark" if needed. -->
+  <string name="preference_oled_theme">最深</string>
   <!-- Preference for using using dark or light theme automatically set by battery -->
   <string name="preference_auto_battery_theme">依系统省电模式设置</string>
   <!-- Preference for using following device theme -->
@@ -1449,6 +1458,8 @@
   <string name="preferences_inactive_tabs">将旧标签页切换至休眠状态</string>
   <!-- Title of inactive tabs preference -->
   <string name="preferences_inactive_tabs_title">两周内未查看的标签页将进入休眠状态。</string>
+  <!-- Title for the preference to enable or disable the tab groups feature -->
+  <string name="preferences_tab_groups_feature">启用标签页群组</string>
   <!--
     Privacy report
 
@@ -1664,16 +1675,32 @@
   <string name="tab_group_three_dot_button_content_description">更多选项</string>
   <!-- Text shown on the edit button for a tab group on the three dot menu -->
   <string name="tab_group_three_dot_menu_edit">编辑</string>
+  <!-- Text shown on the ungroup button for a tab group on the three dot menu -->
+  <string name="tab_group_three_dot_menu_ungroup">取消群组</string>
   <!-- Text shown on the delete button for a tab group on the three dot menu -->
   <string name="tab_group_three_dot_menu_delete">删除</string>
   <!-- Text shown on the share button for a tab group on the three dot menu -->
   <string name="tab_group_three_dot_menu_share">分享</string>
   <!-- Text shown on the close button for a tab group on the three dot menu -->
   <string name="tab_group_three_dot_menu_close">关闭</string>
+  <!-- Title for the Ungroup tab group confirmation dialog. -->
+  <string name="ungroup_tab_group_confirmation_dialog_title">要取消标签页群组吗？</string>
+  <!-- Text shown in the body of the Ungroup tab group confirmation dialog. -->
+  <string name="ungroup_tab_group_confirmation_dialog_body">标签页会在此设备上保持打开，但群组将被删除。</string>
   <!-- Text shown on the Don't Ask Again checkbox button in the Ungroup tab group confirmation dialog. -->
   <string name="ungroup_tab_group_confirmation_dialog_dont_ask_again">不再询问</string>
+  <!-- Text shown on the confirm button in the Ungroup tab group confirmation dialog. -->
+  <string name="ungroup_tab_group_confirmation_dialog_confirm">取消群组</string>
   <!-- Text shown on the cancel button in the Ungroup tab group confirmation dialog. -->
   <string name="ungroup_tab_group_confirmation_dialog_cancel">取消</string>
+  <!-- Custom accessibility action to reorder a tab up rather than dragging. -->
+  <string name="custom_accessibility_action_reorder_tab_up">上移标签页</string>
+  <!-- Custom accessibility action to reorder a tab left rather than dragging. -->
+  <string name="custom_accessibility_action_reorder_tab_left">左移标签页</string>
+  <!-- Custom accessibility action to reorder a tab right rather than dragging. -->
+  <string name="custom_accessibility_action_reorder_tab_right">右移标签页</string>
+  <!-- Custom accessibility action to reorder a tab down rather than dragging. -->
+  <string name="custom_accessibility_action_reorder_tab_down">下移标签页</string>
   <!--
     Color labels for tab groups, used for accessibility and selection UI.
 
@@ -2348,6 +2375,8 @@
   <string name="sync_send_to_all">发送到所有设备</string>
   <!-- Text displayed when no other sync devices are available for link sharing -->
   <string name="sync_no_devices_available">无可用设备</string>
+  <!-- Text displayed when no other sync devices are available for link sharing. -->
+  <string name="sync_no_devices_available_description">任何登录并同步到此账户的设备都会显示在这里。</string>
   <!-- An option from the share dialog to reconnect to sync -->
   <string name="sync_reconnect">重新连接同步</string>
   <!-- Text displayed when sync is offline and cannot be accessed -->
@@ -2393,6 +2422,14 @@
     The app name is in the text, due to limitations with localizing Nimbus experiments
   -->
   <string name="nimbus_notification_default_browser_text" tools:ignore="BrandUsage,UnusedResources">将 Fenix 设为您的默认浏览器</string>
+  <!-- Name of the weekly privacy report notification channel. Displayed in the "App notifications" system settings for the app. -->
+  <string name="notification_privacy_report_channel_name">隐私报告</string>
+  <!-- Description of the weekly privacy report notification channel. Displayed in the "App notifications" system settings for the app. %1$s is the app name (e.g. Firefox) -->
+  <string name="notification_privacy_report_channel_description">%1$s 会显示您浏览期间拦截了多少个跟踪器。</string>
+  <!-- Body text for the weekly privacy report notification for when trackers have been blocked. %1$s is the app name (e.g. Firefox) -->
+  <string name="notification_privacy_report_body_has_trackers">继续浏览。%1$s 会继续拦截。</string>
+  <!-- Headline text of the weekly privacy report notification for when no trackers have been blocked. %1$s is the app name (e.g. Firefox) -->
+  <string name="notification_privacy_report_headline_no_trackers">%1$s 会在您浏览时拦截跟踪器，结果显示在这里。</string>
   <!--
     Survey
 
@@ -2998,6 +3035,8 @@
   <string name="ip_protection_menu_paused">已暂停</string>
   <!-- Badge label shown in the menu item when the browser VPN has an error -->
   <string name="ip_protection_menu_error">错误</string>
+  <!-- Badge label shown in the VPN menu item when the user is eligible for the feature but needs to authenticate / authorize to enable it -->
+  <string name="ip_protection_menu_try_vpn_cta">免费试用</string>
   <!-- Badge label shown in the menu item when the user is eligible to use the browser VPN but should authenticate or authorize it first. -->
   <string name="ip_protection_menu_auth_required">试试看</string>
   <!-- Content description for the chevron button that opens the browser VPN settings screen -->
@@ -3016,6 +3055,10 @@
   <string name="ip_protection_toolbar_pill_label">VPN 已开启</string>
   <!-- Accessibility description for the browser VPN pill in the address bar when the VPN has been activated -->
   <string name="ip_protection_toolbar_pill_description">VPN 已启用。</string>
+  <!-- Label shown next to the browser protection icon in the address bar when the browser VPN turns off -->
+  <string name="ip_protection_toolbar_pill_label_off">VPN 已关闭</string>
+  <!-- Accessibility description for the browser VPN pill in the address bar when the VPN has turned off -->
+  <string name="ip_protection_toolbar_pill_description_off">VPN 已关闭。</string>
   <!-- Label for the button that starts the browser VPN authentication or authorization flow on the settings screen -->
   <string name="ip_protection_get_started">开始使用</string>
   <!-- Label for the "connecting" state of the button that starts the browser VPN authentication or authorization flow on the settings screen -->
@@ -3042,6 +3085,8 @@
   <string name="ip_protection_onboarding_not_now_button">暂时不要</string>
   <!-- Snackbar (in-app pop-up notification) text to signal the browser VPN connection error -->
   <string name="ip_protection_connection_error_snackbar">无法连接 VPN，请过几分钟再试。</string>
+  <!-- Snackbar (in-app pop-up notification) text to signal the VPN location has been reset due to the previously selected VPN location being no longer available. -->
+  <string name="ip_protection_location_selection_reset_snackbar">所选的 VPN 位置不可用，已切换到推荐位置。</string>
   <!--
     Snackbar (in-app pop-up notification) text to signal the browser VPN has reached the monthly data limit.
     %1$d is the total monthly allowance in GB (for example "50").
@@ -3065,6 +3110,8 @@
   <string name="ip_protection_locations_unavailable_description">已切换到推荐位置。</string>
   <!-- Title for the browser VPN location selection screen (displayed in the app bar) -->
   <string name="ip_protection_locations_title">选择 VPN 位置</string>
+  <!-- Content description for the browser VPN location selection screen top bar back button -->
+  <string name="ip_protection_locations_navigate_back_button_content_description">返回</string>
   <!--
     Autofill
 
@@ -4366,6 +4413,12 @@
   <string name="privacy_notice_updated_homepage_message_privacy_notice" tools:ignore="UnusedResources">隐私声明</string>
   <!-- The second active link used in privacy_notice_updated_homepage_message -->
   <string name="privacy_notice_updated_homepage_message_learn_more" tools:ignore="UnusedResources">详细了解</string>
+  <!-- Title shown on the collections to tab groups migration card on the homepage. -->
+  <string name="collections_migration_homepage_banner_title">收藏集已变为群组</string>
+  <!-- Message shown on the collections to tab groups migration card on the homepage. -->
+  <string name="collections_migration_homepage_card_message">有一种更简单的方式整理您的标签页</string>
+  <!-- Link text shown on the collections to tab groups migration card that opens the tab groups page in the tab manager. -->
+  <string name="collections_migration_homepage_card_link">查看我的标签页群组</string>
   <!-- Google Lens prototype related strings -->
   <string name="preferences_debug_settings_google_lens_integration">启用 Google 智能镜头集成</string>
   <!-- Lens image search button content description -->
@@ -4452,6 +4505,26 @@
   <string name="firefox_labs_no_labs_available_description">暂无可试用的实验性功能</string>
   <!-- Title of the Firefox Labs Sandboxing experiment. -->
   <string name="firefox_labs_website_isolation_title" tools:ignore="UnusedResources">网站隔离</string>
+  <!-- Description of the Firefox Labs Sandboxing experiment. -->
+  <string name="firefox_labs_website_isolation_description" tools:ignore="UnusedResources">在网站之间增加一道屏障，帮助保护您跨标签页的数据。可能会影响性能、稳定性、网站兼容性以及浏览历史的保存方式。</string>
+  <!-- Content description for accessibility (used by screen readers): Description for the button that triggers the start of a signature workflow on the PDF displayed on the screen. -->
+  <string name="pdf_tools_sign_content_description">签署 PDF</string>
+  <!-- Content description for accessibility (used by screen readers): Description of the button that downloads the PDF displayed on the screen to the user's device. -->
+  <string name="pdf_tools_download_content_description">下载 PDF</string>
+  <!-- Content description for accessibility (used by screen readers): Description for the button that opens the printing dialogue window for the PDF displayed on the screen. -->
+  <string name="pdf_tools_print_content_description">打印 PDF</string>
+  <!-- Content description for accessibility (used by screen readers): Description for the button that opens the sharing options for the PDF being displayed on the screen. -->
+  <string name="pdf_tools_share_content_description">分享 PDF</string>
+  <!-- The title of the dialog for adding a signature to a PDF. -->
+  <string name="pdf_tools_signature_title">添加签名</string>
+  <!-- Content description for accessibility (used by screen readers): Description for the button that closes the dialog for adding a signature to a PDF. -->
+  <string name="pdf_tools_signature_close_content_description">关闭 PDF 签名面板</string>
+  <!-- The placeholder text shown in the empty text input field where users can enter the signature they wish to add to a PDF. -->
+  <string name="pdf_tools_signature_placeholder">输入签名</string>
+  <!-- The text for the button that erases the text the user entered in the "add a signature" field. -->
+  <string name="pdf_tools_signature_clear_button">清除</string>
+  <!-- The text for the button that adds the signature the user has typed to the PDF. -->
+  <string name="pdf_tools_signature_add_button">添加</string>
   <string-array name="cookies_options_entries">
     <item>@string/preference_enhanced_tracking_protection_custom_cookies_5</item>
     <item>@string/preference_enhanced_tracking_protection_custom_cookies_1</item>
@@ -4539,9 +4612,13 @@
   <string name="inactive_tabs_menu_item_2">将标签页设为不活跃</string>
   <string name="integrity_debug_tools_title">Play Integrity 工具</string>
   <string name="ip_protection_location_fastest_description">Fenix 会查找速度最快的位置</string>
+  <!-- Description for an unavailable VPN location in the location list. -->
+  <string name="ip_protection_location_unavailable_description">不可用</string>
   <string name="ip_protection_location_unavailable">位置不可用，请选择其他位置。</string>
   <string name="ip_protection_location_unavailable_recommended_description">已连接到推荐位置。</string>
   <string name="ip_protection_location_unavailable_recommended_snackbar">所选 VPN 位置不可用，已连接到推荐位置。</string>
+  <!-- Title for the card shown to the user when we are unable to fetch server locations -->
+  <string name="ip_protection_locations_unavailable_title">位置不可用</string>
   <string name="ip_protection_location_unavailable_title">先前的位置不可用</string>
   <string name="ip_protection_mozilla_vpn_upsell_body">可从 300 多个位置中选择，并在最多 5 台设备上保护所有应用。</string>
   <string name="lens_opt_out_description">选择图片或使用相机，通过 Google Lens 获取结果。</string>
