@@ -51,6 +51,14 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
   `versionCode`. The About "What's new" link and text refer to Fenix rather than Firefox.
 - Release notes are always bilingual: a complete `## 中文` section followed by an equivalent
   `## English` section.
+- Simplified Chinese is a fork-maintained locale, not an upstream passthrough: `values-zh-rCN`
+  carries more strings than upstream's copy. Every user-visible string added by an upstream baseline
+  update must be translated, otherwise Android silently falls back to English for that string only,
+  which is easy to miss. After each baseline update, diff the resource names in
+  `values/strings.xml` and `values/arrays.xml` against `values-zh-rCN/strings.xml` and translate any
+  missing entry, reusing the terminology already established in the file. English comments stay above
+  each translated string, and the file must keep LF line endings. Other shipped locales are upstream's
+  partially translated set; per-string English fallback there is expected and not a defect.
 - Because GitHub keeps only the latest successful revision for each upstream baseline, the retained
   release notes must list all effective user-facing Fenix changes relative to the exact official
   upstream baseline, not only changes since the previous `rN`. Exclude intermediate behavior that
