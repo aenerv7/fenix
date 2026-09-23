@@ -23,6 +23,18 @@
       }
     }
   },
+  "156.0.1": {
+    "arm64-v8a": {
+      "url": "https://archive.mozilla.org/pub/fenix/releases/156.0.1/android/fenix-156.0.1-android-arm64-v8a/fenix-156.0.1.multi.android-arm64-v8a.apk",
+      "apkSha256": "A37AC4DE7B61C79DAD5C1B639D9BD3AFBE18F6B781A56759DBB8BB0D394F8957",
+      "certificateSha256": "A78B62A5165B4494B2FEAD9E76A280D22D937FEE6251AECE599446B2EA319B04",
+      "entries": {
+        "assets/omni.ja": "93D3B256D480ACC7F4F5C8EA2BD5785BAF3656C2FB72EBB67D1F9865243EC443",
+        "lib/arm64-v8a/libmozglue.so": "2D90A47D7518746129E769EF3D1396B7E102C072DE838F1926A97ADAB847A465",
+        "lib/arm64-v8a/libxul.so": "EA1DB515EB2F3101C7CF369538FB9A8B8C6B542E8C8148401D84F468078073E9"
+      }
+    }
+  },
   "156.0": {
     "arm64-v8a": {
       "url": "https://archive.mozilla.org/pub/fenix/releases/156.0/android/fenix-156.0-android-arm64-v8a/fenix-156.0.multi.android-arm64-v8a.apk",
