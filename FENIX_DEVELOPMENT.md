@@ -7,7 +7,7 @@ Mozilla's general Firefox source documentation remains authoritative for the res
 
 ## Current fork customization summary
 
-The current upstream baseline is Firefox Android 156.0 (`FIREFOX-ANDROID_156_0_RELEASE`). The first
+The current upstream baseline is Firefox Android 156.0.1 (`FIREFOX-ANDROID_156_0_1_RELEASE`). The first
 upstream synchronization, including manual conflict resolution and the limited-time activity policy,
 is recorded in [FENIX_UPSTREAM_SYNC.md](FENIX_UPSTREAM_SYNC.md). Release-by-release user-facing notes
 are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
@@ -117,18 +117,25 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
 
 ### Current validation state
 
-The 156.0-r1 release updates the baseline to Firefox Android 156.0 and re-applies the whole Fenix
-change set on top of the upstream 156.0 delta. An earlier 156.0-r1 candidate had to be withdrawn: its
-merge commit changed only `FENIX_UPSTREAM_RELEASE`, so the source stayed on 155.0.1 while the release
-metadata declared 156.0 and pinned the 156.0 GeckoView binaries. That baseline mismatch crashed the
-app on startup. The replacement merge changes roughly 16.7k files and is verified by comparing the
-candidate diff against the size of the upstream delta, not by the merge commit merely existing.
+The 156.0.1-r1 release updates the baseline to Firefox Android 156.0.1 and re-applies the whole Fenix
+change set on top of the upstream 156.0.1 delta. The upstream delta spans 306 files and roughly 15k
+added lines. All 43 conflicts were confined to `values-*/strings.xml`; the candidate changes 309 files
+against its Fenix parent, which matches the upstream delta size and is how the merge is verified
+rather than by the merge commit merely existing.
 
-The arm64-v8a release uses the pinned official 156.0 GeckoView package through `-UseUpstreamGecko`
-and the exact official versionCode `2016183650`; no local GeckoView build is permitted because no
+The arm64-v8a release uses the pinned official 156.0.1 GeckoView package through `-UseUpstreamGecko`
+and the exact official versionCode `2016185922`; no local GeckoView build is permitted because no
 Fenix-authored Gecko, C++, Rust, or Gecko locale source changed. The Windows `FenixGleanTestRule`
 native-library limitation remains documented below; affected tests need Linux or CI coverage even
 when the Windows task completes by skipping them.
+
+A debug or test Gradle run replaces the object directory's staged GeckoView `omni.ja` with an
+`en-US`-only copy. A later `-UseUpstreamGecko` release build can then reuse that stale asset, because
+Gradle's asset merge tasks report `UP-TO-DATE` and the import step only rewrites the native
+libraries. The release script catches this: the assembled APK fails with
+`has an invalid Gecko locale set`. Delete the staged `omni.ja` copies under
+`<objdir>\dist\geckoview\assets\` and `gradle\build\mobile\android\**\merge*Assets\` and rebuild; never
+repair it by compiling Gecko locally.
 
 ## Repository-local state
 
@@ -257,8 +264,8 @@ Release APKs must use the exact versionCode from the corresponding official upst
 same baseline and ABI. The checked-in `FENIX_UPSTREAM_VERSION_CODES.json` records those values;
 update it from the official Mozilla archive when changing `FENIX_UPSTREAM_RELEASE`. The release
 script passes the recorded value to Gradle and verifies the resulting APK manifest, so a build-time
-clock value cannot silently become the release versionCode. For the 156.0 baseline, the official
-arm64-v8a value is `2016183650`.
+clock value cannot silently become the release versionCode. For the 156.0.1 baseline, the official
+arm64-v8a value is `2016185922`.
 
 Do not add a fork revision offset: a fork build is a modified build of that upstream versionCode,
 and changing it would prevent normal downgrade or replacement workflows.
@@ -302,14 +309,14 @@ For a narrow test class, append Gradle's test selector:
 Slow command output should be redirected to `artifacts/` and inspected there instead of piping the
 live process through output filters.
 
-### Windows native-test limitation in the 154.0.1, 155.0, and 155.0.1 baselines
+### Windows native-test limitation in the 154.0.1, 155.0, 155.0.1, 156.0, and 156.0.1 baselines
 
 Some Fenix JVM test classes use `FenixGleanTestRule`, which loads Application Services through JNA.
 The upstream `full-megazord-libsForTests-154.0.1.jar` contains Linux and macOS megazord libraries but
 does not contain the required Windows native libraries. On native Windows, these classes fail during
 test-rule initialization with `UnsatisfiedLinkError` for `jnidispatch.dll`; their test bodies have not
-started at that point. The same limitation was observed when validating the 155.0 and 155.0.1
-baselines.
+started at that point. The same limitation was observed when validating the 155.0, 155.0.1, 156.0, and
+156.0.1 baselines.
 
 Do not repeatedly clear Gradle caches or download only `jnidispatch.dll`: JNA is merely the first
 missing layer, and the Windows megazord is absent as well. Run affected Glean-backed unit tests in a

@@ -1,5 +1,126 @@
 # Fenix changes
 
+## 156.0.1-r1
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_156_0_1_RELEASE`。本版本将上游基线从 156.0 更新到 Firefox Android
+156.0.1，并把 Fenix 的全部有效改动重新落位到 156.0.1 代码之上。
+
+上游 156.0 到 156.0.1 的增量为 306 个文件、约 1.5 万行新增。合并以 `git apply --3way` 应用上游树
+增量，43 个冲突全部集中在 Fenix 的本地化资源 `values-*/strings.xml`，已逐文件解决。候选相对于
+Fenix 父提交实际改动 309 个文件，与上游增量规模一致，确认增量已完整落地，而非只改基线标记。
+
+#### 有效 Fenix 改动
+
+- 使用 `github.aenerv7.fenix` application ID、Fenix 名称和兔子品牌；保留必要的 Mozilla/Firefox
+  上游与许可证说明；Focus 不在构建范围内。
+- 主页、关于页和关于弹层使用透明背景的 Fenix 兔子 wordmark，替换上游的 Firefox wordmark 组件；
+  私人浏览解锁页与生物识别解锁页使用 Fenix wordmark 资源。启动器透明前景缩放至 80%。
+- 标签页群组：始终以完全展开方式打开群组面板；展开群组复用全部标签页的选择工具栏样式与内容宽度；
+  长按群组内标签页派发群组作用域的选择动作，不改变全局标签栏导航行为。
+- 展开群组界面自行消费系统返回：有选择时先清空选择，浏览器当前标签页属于该群组时显示该标签页，
+  否则折叠群组。手动关闭面板（拖拽、遮罩或把手）始终折叠群组并清空选择，绝不打开标签页。
+- 关闭最后一个未分组标签页时，同步从不可变快照和 Lazy 列表交互状态中移除该项，并重置缺失的拖拽键，
+  避免残留的标签页仍可见、可选中或可交互。
+- 保留上游长按手势序列：不在长按回调中同步切换 `pointerInput` 模式，以免取消进行中的手势。
+- 地址栏与搜索建议点击使用当前 `AppStore.searchState.sourceTabId`，保留既有标签页/群组归属、隐私
+  模式，以及搜索来源缺失时的新建标签页回退。
+- IP Protection 入口保留。已移除密码、自动填充、同步与 Play 商店评分入口；自定义标签页
+  “Powered by Fenix” 菜单项使用 Fenix 品牌。
+- 已按限时活动政策移除 Sports/世界杯活动；名称恰好重叠的搜索优化设置保留。
+- 简体中文为本地维护语言：`values-zh-rCN` 覆盖 `values/strings.xml` 的全部 1789 条字符串与
+  `values/arrays.xml` 的全部 5 个数组，缺失数为 0。
+
+#### 本次基线的界面变化
+
+- 新增“无法在此设备上打开文件夹选择器”提示的简体中文翻译（`preferences_downloads_no_folder_picker_available`）。
+- 上游移除 `customize_toggle_jump_back_in` 与 `ip_protection_menu_auth_required`，本地化文件同步删除。
+- 上游新增 VPN 位置相关的 5 条字符串（最快位置说明、位置不可用说明与错误、推荐位置提示、位置列表
+  不可用标题），已全部翻译，品牌名沿用 Fenix。
+- 隐私报告通知与最近标签页标题改用上游重组后的注释格式与措辞，去除本地重复条目。
+- 保留 Fenix 品牌：凡上游写 Firefox 而本fork写 Fenix 的字符串（fa、hi-rIN、hr、is、sl、sr 六种
+  语言），一律沿用 Fenix 文案。
+
+#### 发布与验证
+
+- 仅发布 `arm64-v8a` APK，使用官方 156.0.1 多语言 GeckoView，严格沿用官方 `versionCode 2016185922`
+  和上游 `versionName 156.0.1`；未进行本地 GeckoView 编译或打包。
+- 发布流程校验官方基线、ABI、99 个 Gecko locale（含 `zh-CN`）、`assets/omni.ja`、Gecko 原生库、
+  application ID、版本、签名和校验和。
+- `fenix:spotlessKotlinCheck` 通过；`fenix:testDebugUnitTest` 完成 6061 项测试，失败 252 项、
+  跳过 1339 项。失败的 27 个测试类全部是 156.0 基线上已失败的同一批（其中 228 项为 Windows
+  Glean/JNA 原生库限制），相对上一基线新增失败数为 0。
+- 已从签名 APK 的资源表确认新增中文串解析为 `zh-rCN` 中文值（如“无法在此设备上打开文件夹选择器。”）。
+- APK：`Fenix-156.0.1-r1-arm64-v8a-release.apk`，大小 `131256412` 字节，SHA-256：`4F7736FE3988107EF0A29E962F67C89BD70731DC62FB9AACF8CFB2361E1174E0`。
+- 对应完整源码：[fenix-156.0.1-r1](https://github.com/aenerv7/fenix/tree/fenix-156.0.1-r1)。Fenix 是非官方独立修改版，不受 Mozilla 赞助或背书；维护与支持由本项目提供。保留 MPL 2.0 和第三方许可；Firefox 是 Mozilla Foundation 的商标。
+- `.idsig` 仅保留本地校验和重签名使用，不作为 GitHub Release 资产；Windows Glean 原生库限制仍需 Linux 或 CI 覆盖。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_156_0_1_RELEASE`. This release updates the baseline from
+156.0 to Firefox Android 156.0.1 and re-applies the complete Fenix change set on top of the 156.0.1
+sources.
+
+The upstream 156.0 to 156.0.1 delta spans 306 files and roughly 15k added lines. The upstream tree
+delta was applied with `git apply --3way`; all 43 conflicts were confined to the Fenix localization
+resources `values-*/strings.xml` and were resolved file by file. The candidate changes 309 files
+against its Fenix parent, matching the upstream delta size, which confirms the delta landed in full
+rather than only the baseline marker.
+
+#### Effective Fenix changes
+
+- Uses the `github.aenerv7.fenix` application ID, the Fenix name, and the rabbit branding; retains the
+  required Mozilla/Firefox upstream and license notices; Focus is out of build scope.
+- The home screen, About screen, and About sheet use the transparent-background Fenix rabbit wordmark
+  instead of the upstream Firefox wordmark component; the private-browsing unlock and biometric unlock
+  screens use Fenix wordmark resources. The launcher foreground is scaled to 80%.
+- Tab groups: the group sheet always opens fully expanded; expanded groups reuse the All Tabs selection
+  toolbar styling and content width; long-pressing a group tab dispatches the group-scoped selection
+  action without changing the global tab-tray navigation behavior.
+- The expanded-group screen consumes system Back itself: it clears a non-empty selection first, shows
+  the browser tab when the focused tab belongs to the displayed group, and otherwise collapses the
+  group. Manual sheet dismissal (drag, scrim, or handle) always collapses the group and clears its
+  selection; it never opens a tab.
+- Closing the last ungrouped tab removes the item from both the immutable snapshot and the Lazy
+  list/grid interaction state immediately and resets missing drag keys, so the removed tab cannot
+  remain visible, selected, or interactable.
+- The upstream long-press gesture sequence is preserved: the `pointerInput` mode is not switched
+  synchronously from the long-press callback, which would cancel the active gesture.
+- URL and search suggestion clicks use the current `AppStore.searchState.sourceTabId`, preserving
+  existing tab/group membership, private mode, and the new-tab fallback when the search source is
+  absent.
+- The IP Protection entry point is retained. Password, autofill, sync, and Play Store rating entry
+  points are removed; the Custom Tab "Powered by Fenix" menu item uses Fenix branding.
+- The Sports/World Cup activity was removed under the limited-time activity policy; search-optimization
+  settings whose names merely overlap are retained.
+- Simplified Chinese is fork-maintained: `values-zh-rCN` covers all 1789 strings in
+  `values/strings.xml` and all 5 arrays in `values/arrays.xml`, with zero missing.
+
+#### User-visible changes from this baseline
+
+- Adds the Simplified Chinese translation for the new "Unable to open the folder picker on this
+  device." message (`preferences_downloads_no_folder_picker_available`).
+- Upstream removed `customize_toggle_jump_back_in` and `ip_protection_menu_auth_required`; the
+  localization files drop them as well.
+- Upstream added 5 VPN location strings (fastest-location description, unavailable-location
+  description and error, recommended-location notice, and locations-unavailable title); all are
+  translated, using the Fenix brand name.
+- The privacy report notification and recent tabs header adopt the upstream reorganized comment format
+  and wording, removing local duplicates.
+- Fenix branding is preserved: where upstream writes Firefox and this fork writes Fenix (the fa, hi-rIN,
+  hr, is, sl, and sr locales), the Fenix wording is kept.
+
+#### Release and validation
+
+- Publishes only the `arm64-v8a` APK using the official 156.0.1 multi-locale GeckoView and the exact official `versionCode 2016185922` with upstream `versionName 156.0.1`; no local GeckoView compilation or packaging was performed.
+- The release process verifies the official baseline, ABI, all 99 Gecko locales (including `zh-CN`), `assets/omni.ja`, Gecko native libraries, application ID, version, signature, and checksums.
+- `fenix:spotlessKotlinCheck` passes; `fenix:testDebugUnitTest` completed 6061 tests with 252 failures and 1339 skipped. All 27 failing test classes are the same set that already failed on the 156.0 baseline (228 of the failures are the Windows Glean/JNA native-library limitation), so there are zero new failures relative to the previous baseline.
+- The new Chinese string was confirmed to resolve to a `zh-rCN` Chinese value directly from the signed APK resource table (for example 无法在此设备上打开文件夹选择器。).
+- APK: `Fenix-156.0.1-r1-arm64-v8a-release.apk`, size `131256412` bytes, SHA-256: `4F7736FE3988107EF0A29E962F67C89BD70731DC62FB9AACF8CFB2361E1174E0`.
+- Complete corresponding source: [fenix-156.0.1-r1](https://github.com/aenerv7/fenix/tree/fenix-156.0.1-r1). Fenix is an independent unofficial modified build, not sponsored or endorsed by Mozilla; this project provides maintenance and support. MPL 2.0 and third-party licenses are retained; Firefox is a trademark of the Mozilla Foundation.
+- `.idsig` is retained locally for verification and re-signing and is not a GitHub Release asset; the Windows Glean native-library limitation still requires Linux or CI coverage.
+
 ## 156.0-r2
 
 ### 中文

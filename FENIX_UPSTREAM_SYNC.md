@@ -257,6 +257,41 @@ sources such as `CrashReport.kt` are produced into the object directory from
 `toolkit/crashreporter/CrashAnnotations.yaml`; they are not checked in, and a stale copy fails the
 Kotlin build with unresolved `Annotation` members until the object directory is regenerated.
 
+## Firefox Android 156.0.1 synchronization
+
+The 156.0.1 update was prepared from the official `FIREFOX-ANDROID_156_0_1_RELEASE` tag on the
+candidate branch `sync/firefox-android-156.0.1`, starting from the 156.0 baseline. The upstream delta
+spans 306 files and roughly 15k added lines. The candidate changes 309 files against its Fenix parent,
+which matches the delta size plus the baseline marker and the two pin files.
+
+All 43 conflicts were confined to the Fenix localization resources `values-*/strings.xml`. They were
+resolved with one rule: where `ours` and `theirs` define the same string name, the Fenix line wins
+(branding and established terminology); where upstream adds new strings, upstream is taken. Six locales
+(fa, hi-rIN, hr, is, sl, sr) contained branding conflicts in which upstream writes Firefox and the fork
+writes Fenix; the Fenix wording was kept everywhere. `values-zh-rCN` needed the most care: upstream
+removed `customize_toggle_jump_back_in` and `ip_protection_menu_auth_required`, added five VPN location
+strings, and restructured the privacy-report and recent-tabs comments. The local duplicate entries that
+resulted were removed, and the new strings were translated, restoring zero missing entries against
+`values/strings.xml`.
+
+The release uses the pinned official 156.0.1 arm64-v8a GeckoView package recorded in
+`FENIX_UPSTREAM_GECKOVIEW.json`; local GeckoView compilation is prohibited because no Fenix-authored
+Gecko or native source changed. The exact official arm64-v8a versionCode is `2016185922`.
+
+### Stale staged GeckoView asset
+
+A debug or test Gradle run replaces the object directory's staged GeckoView `omni.ja` with an
+`en-US`-only copy. A subsequent `-UseUpstreamGecko` release build imports the correct native libraries
+but the Gradle asset-merge tasks still report `UP-TO-DATE`, so the assembled APK keeps the
+single-locale `omni.ja` and the release script fails with `has an invalid Gecko locale set`. The first
+156.0.1 build attempt failed exactly this way.
+
+Diagnose by reading `res/multilocale.txt` inside `assets/omni.ja` of the assembled APK; it contains
+only `en-US` instead of the 99-locale list. Fix by deleting the stale copies under
+`<objdir>\dist\geckoview\assets\omni.ja` and
+`<objdir>\gradle\build\mobile\android\**\merge*Assets\omni.ja`, then rebuilding with
+`-UseUpstreamGecko`. Never repair this by compiling Gecko locally.
+
 ## Source-to-binary traceability
 
 If APKs are distributed, record their SHA-256 hashes and the exact Fenix tag in release notes. The
