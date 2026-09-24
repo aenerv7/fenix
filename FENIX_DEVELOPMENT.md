@@ -40,6 +40,10 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
   background-free; the launcher foreground uses a transparent canvas with the rabbit scaled to 80% so
   the app icon is not oversized. The widget and launcher variants must be checked separately because
   they use different Android resource paths.
+- The shield panel's "is on guard" banner is text-only. It must not render the upstream Firefox fox
+  head (`kit_head_protection_blocker_banner`), which is a standalone vector and is not part of the
+  banner's gradient plate. That plate is drawn by Compose and stays; only the fox is removed. A
+  branding sweep should also check the banner's sibling states, which use unrelated artwork.
 - The add-widget preview must remain a wide horizontal search field. Its rabbit belongs in a larger,
   contained left icon area, while the runtime layouts reserve separate space for the search text and
   microphone action. The Fenix Labs welcome banner is text-only; the rabbit is reserved for the Labs
