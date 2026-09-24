@@ -55,7 +55,7 @@ private val GradientAISubtleStop3Dark = Color(0xFFFF8A50)
 
 @Immutable
 private data class ProtectionPanelBannerContent(
-    val imageId: Int,
+    val imageId: Int?,
     val title: String,
     val description: String?,
     val backgroundColor: Color,
@@ -92,7 +92,7 @@ private fun protectionPanelBannerContent(
             )
         else ->
             ProtectionPanelBannerContent(
-                imageId = R.drawable.kit_head_protection_blocker_banner,
+                imageId = null,
                 title = protectedTitle,
                 description =
                     if (numberOfTrackersBlocked > 0) {
@@ -147,7 +147,6 @@ internal fun ProtectionPanelBanner(
         ProtectionPanelGradientBanner(
             title = content.title,
             description = content.description,
-            imageId = content.imageId,
             modifier = bannerModifier,
         )
     } else {
@@ -179,11 +178,13 @@ private fun ProtectionPanelBannerRow(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Image(
-            modifier = Modifier.size(BANNER_IMAGE_SIZE),
-            painter = painterResource(id = content.imageId),
-            contentDescription = null,
-        )
+        content.imageId?.let { imageId ->
+            Image(
+                modifier = Modifier.size(BANNER_IMAGE_SIZE),
+                painter = painterResource(id = imageId),
+                contentDescription = null,
+            )
+        }
 
         Column(
             modifier = Modifier.weight(1f),
@@ -208,7 +209,6 @@ private fun ProtectionPanelBannerRow(
 private fun ProtectionPanelGradientBanner(
     title: String,
     description: String?,
-    imageId: Int,
     modifier: Modifier = Modifier,
 ) {
     val (stop2, stop3) =
@@ -234,12 +234,6 @@ private fun ProtectionPanelGradientBanner(
             ) {
                 BannerTexts(title = title, description = description)
             }
-
-            Image(
-                painter = painterResource(id = imageId),
-                contentDescription = null,
-                modifier = Modifier.size(BANNER_IMAGE_SIZE),
-            )
         }
     }
 }
