@@ -4,7 +4,6 @@
 
 package org.mozilla.fenix.settings.trustpanel.ui
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -47,7 +45,6 @@ import mozilla.components.ui.icons.R as iconsR
 import org.mozilla.fenix.R
 import org.mozilla.fenix.theme.FirefoxTheme
 
-private val BANNER_IMAGE_SIZE = 80.dp
 private val GradientAISubtleStop2Light = Color(0xFFE9DAFB)
 private val GradientAISubtleStop3Light = Color(0xFFFFE3CE)
 private val GradientAISubtleStop2Dark = Color(0xFFAB71FF)
@@ -55,7 +52,6 @@ private val GradientAISubtleStop3Dark = Color(0xFFFF8A50)
 
 @Immutable
 private data class ProtectionPanelBannerContent(
-    val imageId: Int?,
     val title: String,
     val description: String?,
     val backgroundColor: Color,
@@ -74,14 +70,12 @@ private fun protectionPanelBannerContent(
     return when {
         !isSecured ->
             ProtectionPanelBannerContent(
-                imageId = R.drawable.protection_panel_not_secure,
                 title = stringResource(id = R.string.protection_panel_banner_not_secure_title),
                 description = stringResource(id = R.string.protection_panel_banner_not_secure_description),
                 backgroundColor = defaultBackground,
             )
         !isTrackingProtectionEnabled ->
             ProtectionPanelBannerContent(
-                imageId = R.drawable.protection_panel_not_protected,
                 title = stringResource(id = R.string.protection_panel_banner_not_protected_title),
                 description =
                     stringResource(
@@ -92,7 +86,6 @@ private fun protectionPanelBannerContent(
             )
         else ->
             ProtectionPanelBannerContent(
-                imageId = null,
                 title = protectedTitle,
                 description =
                     if (numberOfTrackersBlocked > 0) {
@@ -178,14 +171,6 @@ private fun ProtectionPanelBannerRow(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        content.imageId?.let { imageId ->
-            Image(
-                modifier = Modifier.size(BANNER_IMAGE_SIZE),
-                painter = painterResource(id = imageId),
-                contentDescription = null,
-            )
-        }
-
         Column(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(4.dp),

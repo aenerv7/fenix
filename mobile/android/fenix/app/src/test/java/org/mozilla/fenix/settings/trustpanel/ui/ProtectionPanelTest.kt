@@ -85,6 +85,33 @@ class ProtectionPanelTest {
     }
 
     @Test
+    fun `WHEN the site is not secure THEN the not secure banner is shown`() {
+        setProtectionPanel(numberOfTrackersBlocked = 0, isWebsiteSecured = false)
+
+        composeTestRule
+            .onNodeWithContentDescription(
+                "${resources.getString(R.string.protection_panel_banner_not_secure_title)}. " +
+                    resources.getString(R.string.protection_panel_banner_not_secure_description)
+            )
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun `WHEN tracking protection is disabled THEN the not protected banner is shown`() {
+        setProtectionPanel(numberOfTrackersBlocked = 0, isTrackingProtectionEnabled = false)
+
+        composeTestRule
+            .onNodeWithContentDescription(
+                "${resources.getString(R.string.protection_panel_banner_not_protected_title)}. " +
+                    resources.getString(
+                        R.string.protection_panel_banner_not_protected_description,
+                        appName,
+                    )
+            )
+            .assertIsDisplayed()
+    }
+
+    @Test
     fun `WHEN tab is private THEN clear site data menu is not shown`() {
         setProtectionPanel(
             numberOfTrackersBlocked = 0,
@@ -111,6 +138,8 @@ class ProtectionPanelTest {
     private fun setProtectionPanel(
         numberOfTrackersBlocked: Int,
         isPrivate: Boolean = false,
+        isWebsiteSecured: Boolean = true,
+        isTrackingProtectionEnabled: Boolean = true,
         onTrackerBlockedMenuClick: () -> Unit = {},
     ) {
         composeTestRule.setContent {
@@ -118,14 +147,14 @@ class ProtectionPanelTest {
                 ProtectionPanel(
                     websiteInfoState =
                         WebsiteInfoState(
-                            isSecured = true,
+                            isSecured = isWebsiteSecured,
                             websiteUrl = "https://www.mozilla.org",
                             websiteTitle = "Mozilla",
                             certificate = null,
                         ),
                     ipProtectionMenuState = IPProtectionMenuState(),
                     icon = null,
-                    isTrackingProtectionEnabled = true,
+                    isTrackingProtectionEnabled = isTrackingProtectionEnabled,
                     isGlobalTrackingProtectionEnabled = true,
                     isLocalPdf = false,
                     isPrivate = isPrivate,
