@@ -1,5 +1,74 @@
 # Fenix changes
 
+## 156.0.1-r3
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_156_0_1_RELEASE`（与 `156.0.1-r2` 相同）。本版本移除盾牌面板其余两个
+横幅状态中的狐狸美术资源，其余内容与 `156.0.1-r2` 相同。
+
+盾牌面板横幅共有三种状态，此前全部显示上游的 Mozilla 狐狸插图：
+
+- “%s 正在防护”（已防护）—— 橙色狐狸头 `kit_head_protection_blocker_banner`，已在 `156.0.1-r2` 移除；
+- “谨慎使用此网站”（非 HTTPS）—— 橙色狐狸＋紫衣人物＋文件 `protection_panel_not_secure`；
+- “已关闭保护”（已关闭跟踪保护）—— 灰色狐狸 `protection_panel_not_protected`。
+
+后两者本次一并移除，插图位置改为纯文本并左对齐。三处插图均为独立 vector，不是底板的一部分；已防护
+状态的紫→橙渐变底板由 Compose 绘制，予以保留。
+
+三种状态的图片均已移除后，横幅组件中的 `imageId` 字段与相关图片代码已无任何使用，一并删除，同时删掉
+两个已无引用的 drawable。
+
+#### 发布与验证
+
+- `fenix:spotlessKotlinCheck` 通过。
+- `ProtectionPanelTest` 8 项全部通过，其中新增 2 项分别覆盖“非 HTTPS”与“已关闭保护”分支（此前这两个
+  分支无测试覆盖）。
+- 仅发布 `arm64-v8a` APK，使用官方 156.0.1 多语言 GeckoView，严格沿用官方 `versionCode 2016185922`
+  和上游 `versionName 156.0.1`；未进行本地 GeckoView 编译或打包。
+- 已确认签名 APK 的资源表中不再包含 `kit_head_protection_blocker_banner`、
+  `protection_panel_not_secure`、`protection_panel_not_protected`。
+- APK：`Fenix-156.0.1-r3-arm64-v8a-release.apk`，大小 `131218869` 字节，SHA-256：`B98B3DAB2209699EBE8296DCB4F3680E1372B581A6F420AF9AA6B17E676AAD1E`。
+- 对应完整源码：[fenix-156.0.1-r3](https://github.com/aenerv7/fenix/tree/fenix-156.0.1-r3)。Fenix 是非官方独立修改版，不受 Mozilla 赞助或背书；维护与支持由本项目提供。保留 MPL 2.0 和第三方许可；Firefox 是 Mozilla Foundation 的商标。
+- `.idsig` 仅保留本地校验和重签名使用，不作为 GitHub Release 资产；Windows Glean 原生库限制仍需 Linux 或 CI 覆盖。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_156_0_1_RELEASE` (unchanged from `156.0.1-r2`). This
+release removes the fox artwork from the remaining two shield panel banner states; everything else is
+identical to `156.0.1-r2`.
+
+The shield panel banner has three states, all of which previously rendered an upstream Mozilla fox
+illustration:
+
+- `%s is on guard` (protected) — the orange fox head `kit_head_protection_blocker_banner`, already
+  removed in `156.0.1-r2`;
+- "Be careful on this site" (not HTTPS) — an orange fox with a purple figure and documents,
+  `protection_panel_not_secure`;
+- "You turned off protections" — a grey fox, `protection_panel_not_protected`.
+
+The latter two are removed here; their artwork slot becomes plain left-aligned text. All three
+illustrations are standalone vectors rather than part of a plate; the protected state's
+purple-to-orange gradient plate is drawn by Compose and is kept.
+
+With the images gone from every state, the banner's `imageId` field and the related image code have no
+remaining users and are removed, along with the two now-unreferenced drawables.
+
+#### Release and validation
+
+- `fenix:spotlessKotlinCheck` passes.
+- All 8 `ProtectionPanelTest` cases pass, including 2 new ones covering the not-HTTPS and
+  protections-off branches, which previously had no test coverage.
+- Publishes only the `arm64-v8a` APK using the official 156.0.1 multi-locale GeckoView and the exact
+  official `versionCode 2016185922` with upstream `versionName 156.0.1`; no local GeckoView compilation
+  or packaging was performed.
+- The signed APK resource table was confirmed to no longer contain
+  `kit_head_protection_blocker_banner`, `protection_panel_not_secure`, or
+  `protection_panel_not_protected`.
+- APK: `Fenix-156.0.1-r3-arm64-v8a-release.apk`, size `131218869` bytes, SHA-256: `B98B3DAB2209699EBE8296DCB4F3680E1372B581A6F420AF9AA6B17E676AAD1E`.
+- Complete corresponding source: [fenix-156.0.1-r3](https://github.com/aenerv7/fenix/tree/fenix-156.0.1-r3). Fenix is an independent unofficial modified build, not sponsored or endorsed by Mozilla; this project provides maintenance and support. MPL 2.0 and third-party licenses are retained; Firefox is a trademark of the Mozilla Foundation.
+- `.idsig` is retained locally for verification and re-signing and is not a GitHub Release asset; the Windows Glean native-library limitation still requires Linux or CI coverage.
+
 ## 156.0.1-r2
 
 ### 中文
