@@ -36,7 +36,7 @@ if (draggingItemKey?.let { it !in itemKeys } == true) {
 - `fenix:spotlessKotlinCheck` 通过。
 - 仅发布 `arm64-v8a` APK，使用官方 156.0.1 多语言 GeckoView，严格沿用官方 `versionCode 2016185922`
   和上游 `versionName 156.0.1`；未进行本地 GeckoView 编译或打包。
-- APK：`Fenix-156.0.1-r4-arm64-v8a-release.apk`，大小 `SIZE_PLACEHOLDER` 字节，SHA-256：`SHA_PLACEHOLDER`。
+- APK：`Fenix-156.0.1-r4-arm64-v8a-release.apk`，大小 `131218869` 字节，SHA-256：`5DAA5ACDA617F67B05C87BF11E106F691E3C8548ED860F91905D4C2EC1A56EDD`。
 - 对应完整源码：[fenix-156.0.1-r4](https://github.com/aenerv7/fenix/tree/fenix-156.0.1-r4)。Fenix 是非官方独立修改版，不受 Mozilla 赞助或背书；维护与支持由本项目提供。保留 MPL 2.0 和第三方许可；Firefox 是 Mozilla Foundation 的商标。
 - `.idsig` 仅保留本地校验和重签名使用，不作为 GitHub Release 资产；Windows Glean 原生库限制仍需 Linux 或 CI 覆盖。
 
@@ -83,7 +83,7 @@ the set.
 - Publishes only the `arm64-v8a` APK using the official 156.0.1 multi-locale GeckoView and the exact
   official `versionCode 2016185922` with upstream `versionName 156.0.1`; no local GeckoView compilation
   or packaging was performed.
-- APK: `Fenix-156.0.1-r4-arm64-v8a-release.apk`, size `SIZE_PLACEHOLDER` bytes, SHA-256: `SHA_PLACEHOLDER`.
+- APK: `Fenix-156.0.1-r4-arm64-v8a-release.apk`, size `131218869` bytes, SHA-256: `5DAA5ACDA617F67B05C87BF11E106F691E3C8548ED860F91905D4C2EC1A56EDD`.
 - Complete corresponding source: [fenix-156.0.1-r4](https://github.com/aenerv7/fenix/tree/fenix-156.0.1-r4). Fenix is an independent unofficial modified build, not sponsored or endorsed by Mozilla; this project provides maintenance and support. MPL 2.0 and third-party licenses are retained; Firefox is a trademark of the Mozilla Foundation.
 - `.idsig` is retained locally for verification and re-signing and is not a GitHub Release asset; the Windows Glean native-library limitation still requires Linux or CI coverage.
 
