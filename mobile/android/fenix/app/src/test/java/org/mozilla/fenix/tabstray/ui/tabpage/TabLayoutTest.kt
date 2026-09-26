@@ -47,6 +47,9 @@ private const val TAB_COUNT = 10
 // The list layout is a single column grid.
 private const val LIST_COLUMN_COUNT = 1
 
+// Long enough for tab item appearance, placement and disappearance animations to settle.
+private const val ANIMATION_SETTLE_MS = 2000L
+
 @RunWith(AndroidJUnit4::class)
 class TabLayoutTest {
     @get:Rule val composeTestRule = createComposeRule()
@@ -243,6 +246,79 @@ class TabLayoutTest {
     @Test
     fun `WHEN the last top-level tab is closed in grid view THEN it is removed from the layout`() {
         assertLastTopLevelTabIsRemoved(displayTabsInGrid = true)
+    }
+
+    @Test
+    fun `GIVEN several tabs are selected WHEN they enter a group THEN none of them stays in list view`() {
+        assertGroupingSelectedTabsLeavesNoStaleTab(displayTabsInGrid = false)
+    }
+
+    @Test
+    fun `GIVEN several tabs are selected WHEN they enter a group THEN none of them stays in grid view`() {
+        assertGroupingSelectedTabsLeavesNoStaleTab(displayTabsInGrid = true)
+    }
+
+    private fun assertGroupingSelectedTabsLeavesNoStaleTab(displayTabsInGrid: Boolean) {
+        val tabA = createTab(id = "tab-a", url = "https://www.mozilla.org/a")
+        val tabB = createTab(id = "tab-b", url = "https://www.mozilla.org/b")
+        val tabC = createTab(id = "tab-c", url = "https://www.mozilla.org/c")
+        val groupId = "new-group"
+        var tabs by mutableStateOf<List<TabsTrayItem>>(listOf(tabA, tabB, tabC))
+        var selectionMode by mutableStateOf<TabsTrayState.Mode>(
+            TabsTrayState.Mode.Select(selectedTabs = setOf(tabA, tabB))
+        )
+        var enteringGroupId by mutableStateOf<String?>(null)
+
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalUnderTest provides true) {
+                FirefoxTheme(theme = Theme.Light) {
+                    Surface {
+                        TabLayout(
+                            tabs = tabs,
+                            displayTabsInGrid = displayTabsInGrid,
+                            dragAndDropEnabled = true,
+                            displayTabGroupOnboarding = false,
+                            selectedItemIndex = 0,
+                            selectionMode = selectionMode,
+                            focusEnabled = true,
+                            tabInteractionHandler = fakeTabInteractionHandler(),
+                            onTabClose = {},
+                            onItemClick = {},
+                            onItemLongClick = {},
+                            onDeleteTabGroupClick = {},
+                            onEditTabGroupClick = {},
+                            onCloseTabGroupClick = {},
+                            onShareTabGroupClick = {},
+                            onTabGroupOnboardingDismiss = {},
+                            liveReorderEnabled = false,
+                            enteringGroupId = enteringGroupId,
+                        )
+                    }
+                }
+            }
+        }
+
+        composeTestRule.waitForIdle()
+        composeTestRule.onAllNodesWithTag(TabsTrayTestTag.TAB_ITEM_ROOT).assertCountEquals(3)
+
+        // The store removes the selected tabs from the list first, which starts their disappearance
+        // animation, and only then marks the new group as entering. The main clock is driven manually so
+        // the list change and the entering flag land in different frames, as they do in the app.
+        composeTestRule.mainClock.autoAdvance = false
+        tabs = listOf(createTabGroup(id = groupId, tabs = listOf(tabA, tabB)), tabC)
+        selectionMode = TabsTrayState.Mode.Normal
+        composeTestRule.mainClock.advanceTimeByFrame()
+        composeTestRule.mainClock.advanceTimeByFrame()
+
+        enteringGroupId = groupId
+        composeTestRule.mainClock.advanceTimeBy(ANIMATION_SETTLE_MS)
+        composeTestRule.mainClock.autoAdvance = true
+        composeTestRule.waitForIdle()
+
+        // The group card takes the place of the two grouped tabs, so only tab C is left as a tab item. In the
+        // grid the group card is itself tagged as a tab item root, in the list it is not.
+        val remainingTabItems = if (displayTabsInGrid) 2 else 1
+        composeTestRule.onAllNodesWithTag(TabsTrayTestTag.TAB_ITEM_ROOT).assertCountEquals(remainingTabItems)
     }
 
     private fun assertLastTopLevelTabIsRemoved(displayTabsInGrid: Boolean) {
