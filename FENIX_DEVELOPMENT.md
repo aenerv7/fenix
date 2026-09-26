@@ -95,6 +95,12 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
   browser-tab snapshot and the Lazy list/grid interaction state immediately. Reset missing drag keys
   without starting a stale animation, so the removed tab cannot remain visible, selected, or
   interactable until a later navigation.
+- Any change to the displayed tab items must reset the list/grid interaction state, not only a change
+  that removes the dragged key. Drag offsets are computed against the previous layout, so a key that
+  survives the change still pins its item at the old screen position while the rest of the list
+  reflows. `resetForItemChange()` in the list and grid interaction states encodes this. A live reorder
+  drag never changes the item set (only the order, which compares equal as a key set), and drag-and-drop
+  commits its drop before the store updates the set, so an unconditional reset is safe.
 - The upstream long-press gesture sequence is intentionally preserved. Do not synchronously change
   the `pointerInput` mode from the long-press callback: doing so cancels the active gesture. Normal
   long-press drag paths use `preserveSelectMode = false`; selection-mode synchronization waits until

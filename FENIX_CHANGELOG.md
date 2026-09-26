@@ -1,5 +1,92 @@
 # Fenix changes
 
+## 156.0.1-r4
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_156_0_1_RELEASE`（与 `156.0.1-r3` 相同）。本版本修复标签页列表的拖拽残留
+问题，其余内容与 `156.0.1-r3` 相同。
+
+复现：在标签页列表中长按选中多个标签页，再按住拖拽一下，然后把选中的标签页加入群组。此时被拖拽的那个
+标签页不会随列表重排，而是停留在原来的屏幕位置。
+
+原因：列表项的拖拽偏移是按**旧布局**计算的（`初始偏移 + 累计偏移 − 当前布局偏移`），渲染时只要状态里
+还留着该标签页的 key，就会把它钉在原来的屏幕位置。而清理函数只在 key **从列表中消失**时才重置：
+
+```kotlin
+if (draggingItemKey?.let { it !in itemKeys } == true) {
+    resetImmediately()
+}
+```
+
+被拖拽的标签页在加入群组后仍留在列表中（进入群组的是其他标签页），key 没有消失，于是残留的拖拽状态一直
+生效，该项就停在原位。
+
+修复：显示项集合一旦变化就重置交互状态，不再要求 key 必须消失。偏移本来就描述旧布局，集合变化后已无意义。
+`resetIfItemMissing` 改名并改为无条件重置的 `resetForItemChange()`，列表与网格两种交互状态都同步修改。
+
+这个无条件重置是安全的：实时重排只改顺序、不改集合（HashSet 比较相等，不会触发重置）；拖放放入群组在
+释放时才提交，提交完成后集合才变化。
+
+#### 发布与验证
+
+- 新增 4 项回归测试，先确认在修复前失败（被拖拽项残留为 `Active` / key 非空），修复后通过。
+- `ReorderableListTest`、`InteractableListTest`、`ReorderableGridTest`、`InteractableGridTest`
+  全部通过；`org.mozilla.fenix.tabstray.*` 与 `org.mozilla.fenix.tabgroups.*` 全量通过，0 失败。
+- `fenix:spotlessKotlinCheck` 通过。
+- 仅发布 `arm64-v8a` APK，使用官方 156.0.1 多语言 GeckoView，严格沿用官方 `versionCode 2016185922`
+  和上游 `versionName 156.0.1`；未进行本地 GeckoView 编译或打包。
+- APK：`Fenix-156.0.1-r4-arm64-v8a-release.apk`，大小 `SIZE_PLACEHOLDER` 字节，SHA-256：`SHA_PLACEHOLDER`。
+- 对应完整源码：[fenix-156.0.1-r4](https://github.com/aenerv7/fenix/tree/fenix-156.0.1-r4)。Fenix 是非官方独立修改版，不受 Mozilla 赞助或背书；维护与支持由本项目提供。保留 MPL 2.0 和第三方许可；Firefox 是 Mozilla Foundation 的商标。
+- `.idsig` 仅保留本地校验和重签名使用，不作为 GitHub Release 资产；Windows Glean 原生库限制仍需 Linux 或 CI 覆盖。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_156_0_1_RELEASE` (unchanged from `156.0.1-r3`). This
+release fixes stale drag state in the tab list; everything else is identical to `156.0.1-r3`.
+
+Reproduction: long-press in the tab list to select several tabs, then press and drag briefly, then add
+the selected tabs to a group. The dragged tab does not follow the reflow and stays at its original
+screen position.
+
+Cause: an item's drag offset is computed against the **previous** layout
+(`initialOffset + cumulatedOffset - currentLayoutOffset`), so the renderer pins the item at its old
+screen position for as long as the interaction state still holds its key. The reset ran only when a key
+**disappeared from the list**:
+
+```kotlin
+if (draggingItemKey?.let { it !in itemKeys } == true) {
+    resetImmediately()
+}
+```
+
+The dragged tab survives the grouping (it is other tabs that enter the group), so its key never
+disappears and the stale drag state kept pinning it.
+
+Fix: reset the interaction state whenever the displayed item set changes, instead of requiring the key
+to disappear. The offsets describe the previous layout and are meaningless afterwards.
+`resetIfItemMissing` is renamed to `resetForItemChange` and resets unconditionally, in both the list
+and the grid interaction states.
+
+The unconditional reset is safe: a live reorder only changes the order, not the set (equal as a
+HashSet, so it does not trigger a reset), and drag-and-drop commits its drop before the store updates
+the set.
+
+#### Release and validation
+
+- 4 new regression tests were confirmed to fail before the fix (the dragged item stayed `Active` / the
+  key stayed non-null) and pass after it.
+- `ReorderableListTest`, `InteractableListTest`, `ReorderableGridTest`, and `InteractableGridTest` all
+  pass; the full `org.mozilla.fenix.tabstray.*` and `org.mozilla.fenix.tabgroups.*` suites pass with 0
+  failures.
+- `fenix:spotlessKotlinCheck` passes.
+- Publishes only the `arm64-v8a` APK using the official 156.0.1 multi-locale GeckoView and the exact
+  official `versionCode 2016185922` with upstream `versionName 156.0.1`; no local GeckoView compilation
+  or packaging was performed.
+- APK: `Fenix-156.0.1-r4-arm64-v8a-release.apk`, size `SIZE_PLACEHOLDER` bytes, SHA-256: `SHA_PLACEHOLDER`.
+- Complete corresponding source: [fenix-156.0.1-r4](https://github.com/aenerv7/fenix/tree/fenix-156.0.1-r4). Fenix is an independent unofficial modified build, not sponsored or endorsed by Mozilla; this project provides maintenance and support. MPL 2.0 and third-party licenses are retained; Firefox is a trademark of the Mozilla Foundation.
+- `.idsig` is retained locally for verification and re-signing and is not a GitHub Release asset; the Windows Glean native-library limitation still requires Linux or CI coverage.
+
 ## 156.0.1-r3
 
 ### 中文
