@@ -607,14 +607,39 @@ class InteractableListTest {
     }
 
     @Test
-    fun `WHEN the dragged item is removed THEN resetIfItemMissing clears the interaction`() {
+    fun `WHEN the dragged item is removed THEN resetForItemChange clears the interaction`() {
         val reorderState =
             fakeListInteractionState(mockListState(mockItems = listOf(mockListItem(key = TabKeys.TAB_ALPHA))))
         reorderState.onTouchSlopPassed(0f, false)
 
-        reorderState.resetIfItemMissing(setOf(TabKeys.TAB_BETA))
+        reorderState.resetForItemChange()
 
         assertEquals(InteractionState.List.None, reorderState.draggedItem)
+    }
+
+    @Test
+    fun `WHEN the item set changes and the dragged item survives THEN the interaction is reset`() {
+        val reorderState =
+            fakeListInteractionState(mockListState(mockItems = listOf(mockListItem(key = TabKeys.TAB_ALPHA))))
+        reorderState.onTouchSlopPassed(0f, false)
+
+        // TAB_ALPHA survives, but another tab was grouped away, so the drag geometry is stale. Without a
+        // reset the dragged item stays pinned at its old screen position while the rest of the list reflows.
+        reorderState.resetForItemChange()
+
+        assertEquals(InteractionState.List.None, reorderState.draggedItem)
+    }
+
+    @Test
+    fun `WHEN the item set changes and the previously dragged item survives THEN the interaction is reset`() {
+        val reorderState =
+            fakeListInteractionState(mockListState(mockItems = listOf(mockListItem(key = TabKeys.TAB_ALPHA))))
+        reorderState.onTouchSlopPassed(0f, false)
+        reorderState.onDragEnd()
+
+        reorderState.resetForItemChange()
+
+        assertNull(reorderState.previousKeyOfDraggedItem)
     }
 
     private fun mockListItem(

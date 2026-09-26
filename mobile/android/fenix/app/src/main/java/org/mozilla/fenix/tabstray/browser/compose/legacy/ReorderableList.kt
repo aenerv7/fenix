@@ -158,12 +158,13 @@ internal constructor(
         draggingItemInitialOffset = 0f
     }
 
-    internal fun resetIfItemMissing(itemKeys: Set<Any>) {
-        if (draggingItemKey?.let { it !in itemKeys } == true) {
-            resetImmediately()
-        } else if (previousKeyOfDraggedItem?.let { it !in itemKeys } == true) {
-            previousKeyOfDraggedItem = null
-        }
+    /**
+     * Called when the displayed items change. Drag offsets describe the previous layout, so the drag is reset even when
+     * the dragged item survived the change. Otherwise a pinned item stays at its old screen position while the rest of
+     * the list reflows.
+     */
+    internal fun resetForItemChange() {
+        resetImmediately()
     }
 
     internal fun resetImmediately() {

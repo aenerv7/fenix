@@ -104,6 +104,51 @@ class ReorderableListTest {
         assertNull(reorderState.draggingItemKey)
     }
 
+    @Test
+    fun `WHEN the dragged item is removed THEN resetForItemChange clears the drag pin`() {
+        val reorderState = fakeListReorderState(mockListState(mockItems = listOf(mockListItem(key = "key1"))))
+
+        reorderState.onTouchSlopPassed(offset = 0f, shouldLongPress = false)
+        reorderState.resetForItemChange()
+
+        assertNull(reorderState.draggingItemKey)
+    }
+
+    @Test
+    fun `WHEN the item set changes and the dragged item survives THEN the drag pin is cleared`() {
+        val reorderState = fakeListReorderState(mockListState(mockItems = listOf(mockListItem(key = "key1"))))
+
+        reorderState.onTouchSlopPassed(offset = 0f, shouldLongPress = false)
+        // "key1" survives, but another tab was grouped away, so the drag geometry is stale. Without a
+        // reset the dragged item stays pinned at its old screen position while the rest of the list reflows.
+        reorderState.resetForItemChange()
+
+        assertNull(reorderState.draggingItemKey)
+    }
+
+    @Test
+    fun `WHEN the item set changes and the previously dragged item survives THEN the interaction is reset`() {
+        val reorderState = fakeListReorderState(mockListState(mockItems = listOf(mockListItem(key = "key1"))))
+
+        reorderState.onTouchSlopPassed(offset = 0f, shouldLongPress = false)
+        reorderState.onDragInterrupted()
+        reorderState.resetForItemChange()
+
+        assertNull(reorderState.previousKeyOfDraggedItem)
+    }
+
+    private fun mockListItem(
+        key: String,
+        index: Int = 0,
+        size: Int = 10,
+        offset: Int = 0,
+    ): LazyListItemInfo = mockk {
+        every { this@mockk.key } returns key
+        every { this@mockk.index } returns index
+        every { this@mockk.size } returns size
+        every { this@mockk.offset } returns offset
+    }
+
     private fun mockListState(
         mockItems: List<LazyListItemInfo> = emptyList(),
         firstVisibleIndex: Int = 0,

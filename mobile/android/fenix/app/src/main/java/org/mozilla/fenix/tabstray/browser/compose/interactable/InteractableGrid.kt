@@ -163,13 +163,13 @@ interface GridInteractionState {
 
     fun resetImmediately()
 
-    fun resetIfItemMissing(itemKeys: Set<Any>) {
-        if (
-            draggedItem.key?.let { it !in itemKeys } == true ||
-                previousKeyOfDraggedItem?.let { it !in itemKeys } == true
-        ) {
-            resetImmediately()
-        }
+    /**
+     * Called when the displayed items change. Drag offsets describe the previous layout, so the interaction is reset
+     * even when the dragged item survived the change. Otherwise a pinned item stays at its old screen position while
+     * the rest of the grid reflows.
+     */
+    fun resetForItemChange() {
+        resetImmediately()
     }
 }
 

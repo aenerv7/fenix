@@ -584,7 +584,7 @@ private fun ReorderableTabGrid(
         )
     val tabKeys = tabs.mapTo(hashSetOf()) { it.id }
     LaunchedEffect(tabKeys) {
-        reorderState.resetIfItemMissing(itemKeys = tabKeys)
+        reorderState.resetForItemChange()
     }
     // Prevent a race between multi-select and drag by updating the select mode only if the dragging key is null
     LaunchedEffect(selectionMode, reorderState.draggingItemKey) {
@@ -714,7 +714,7 @@ private fun InteractableTabGrid(
         )
     val tabKeys = tabs.mapTo(hashSetOf()) { it.id }
     LaunchedEffect(tabKeys) {
-        gridInteractionState.resetIfItemMissing(itemKeys = tabKeys)
+        gridInteractionState.resetForItemChange()
     }
     // Don't show the onboarding card while a drag is active
     val showOnboardingCardInGrid by
@@ -1242,7 +1242,7 @@ private fun InteractableTabList(
         )
     val tabKeys = tabs.mapTo(hashSetOf()) { it.id }
     LaunchedEffect(tabKeys) {
-        listInteractionState.resetIfItemMissing(itemKeys = tabKeys)
+        listInteractionState.resetForItemChange()
     }
     // Don't show the onboarding card while a drag is active
     val showOnboardingCardInList by
@@ -1598,7 +1598,7 @@ private fun ReorderableTabList(
         )
     val tabKeys = tabs.mapTo(hashSetOf()) { it.id }
     LaunchedEffect(tabKeys) {
-        reorderState.resetIfItemMissing(itemKeys = tabKeys)
+        reorderState.resetForItemChange()
     }
     // Prevent a race between multi-select and drag by updating the select mode only if the dragging key is null
     LaunchedEffect(selectionMode, reorderState.draggingItemKey) {

@@ -585,12 +585,12 @@ class InteractableGridTest {
     }
 
     @Test
-    fun `WHEN the dragged item is removed THEN resetIfItemMissing clears the interaction`() {
+    fun `WHEN the dragged item is removed THEN resetForItemChange clears the interaction`() {
         val reorderState =
             fakeGridReorderState(mockGridState(mockItems = listOf(mockGridItem(key = TabKeys.TAB_ALPHA))))
         reorderState.onTouchSlopPassed(Offset.Zero, false)
 
-        reorderState.resetIfItemMissing(setOf(TabKeys.TAB_BETA))
+        reorderState.resetForItemChange()
 
         assertEquals(InteractionState.Grid.None, reorderState.draggedItem)
     }
