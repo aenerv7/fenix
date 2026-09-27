@@ -1,5 +1,64 @@
 # Fenix changes
 
+## 156.0.1-r12
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_156_0_1_RELEASE`（与 `156.0.1-r11` 相同）。
+
+清理一处已无必要的改动。r8 曾让「加入**已有**群组」也置 `enteringGroupId`，当时是为了抑制那些标签页的
+淡出。但 r11 之后列表项动画已无条件 `fadeOutSpec = null`，被移除的项会立即离开布局，**不再需要任何标记
+来抑制淡出**。
+
+保留它只有副作用：群组本来就在屏幕上，标记为 entering 会让它每次被加入标签页时**重放入场动画**
+（从全透明淡入并缩放）。
+
+本版回退该改动，恢复为「只有新建群组才标记 entering」。相应回退了两处全量状态断言与文档条目。
+
+判定依据：幽灵卡片的成因已在 r11 修正并实机确认，与 `enteringGroupId` 无关。
+
+#### 发布与验证
+
+- r8 期的 reducer 测试断言与 `TabStorageMiddlewareTest` 的三处全量状态断言已一并回退。
+- `org.mozilla.fenix.tabstray.*` 与 `org.mozilla.fenix.tabgroups.*` 全量通过，0 失败；`fenix:spotlessKotlinCheck` 通过。
+- 仅发布 `arm64-v8a` APK，使用官方 156.0.1 多语言 GeckoView，严格沿用官方 `versionCode 2016185922`
+  和上游 `versionName 156.0.1`；未进行本地 GeckoView 编译或打包。
+- APK：`Fenix-156.0.1-r12-arm64-v8a-release.apk`，大小 `SIZE_PLACEHOLDER` 字节，SHA-256：`SHA_PLACEHOLDER`。
+- 对应完整源码：[fenix-156.0.1-r12](https://github.com/aenerv7/fenix/tree/fenix-156.0.1-r12)。Fenix 是非官方独立修改版，不受 Mozilla 赞助或背书；维护与支持由本项目提供。保留 MPL 2.0 和第三方许可；Firefox 是 Mozilla Foundation 的商标。
+- `.idsig` 仅保留本地校验和重签名使用，不作为 GitHub Release 资产；Windows Glean 原生库限制仍需 Linux 或 CI 覆盖。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_156_0_1_RELEASE` (unchanged from `156.0.1-r11`).
+
+Removes a change that is no longer needed. r8 made adding tabs to an **existing** group mark that group as
+entering, in order to suppress those tabs' fade-out. Since r11 the list item animation passes
+`fadeOutSpec = null` unconditionally, so a removed tab leaves the layout at once and **no flag is needed to
+suppress a fade**.
+
+Keeping it only had a side effect: the group is already on screen, so marking it as entering made it
+**replay its entrance animation** — fading in from transparent and scaling — every time tabs were added to
+it.
+
+This release reverts that change, restoring "only a new group is marked as entering". The two whole-state
+assertions and the doc entry that came with it are reverted as well.
+
+Rationale: the ghost card's cause was fixed in r11 and verified on device, independently of
+`enteringGroupId`.
+
+#### Release and validation
+
+- The reducer assertion from r8 and the three whole-state assertions in `TabStorageMiddlewareTest` are
+  reverted too.
+- The full `org.mozilla.fenix.tabstray.*` and `org.mozilla.fenix.tabgroups.*` suites pass with 0
+  failures; `fenix:spotlessKotlinCheck` passes.
+- Publishes only the `arm64-v8a` APK using the official 156.0.1 multi-locale GeckoView and the exact
+  official `versionCode 2016185922` with upstream `versionName 156.0.1`; no local GeckoView compilation
+  or packaging was performed.
+- APK: `Fenix-156.0.1-r12-arm64-v8a-release.apk`, size `SIZE_PLACEHOLDER` bytes, SHA-256: `SHA_PLACEHOLDER`.
+- Complete corresponding source: [fenix-156.0.1-r12](https://github.com/aenerv7/fenix/tree/fenix-156.0.1-r12). Fenix is an independent unofficial modified build, not sponsored or endorsed by Mozilla; this project provides maintenance and support. MPL 2.0 and third-party licenses are retained; Firefox is a trademark of the Mozilla Foundation.
+- `.idsig` is retained locally for verification and re-signing and is not a GitHub Release asset; the Windows Glean native-library limitation still requires Linux or CI coverage.
+
 ## 156.0.1-r11
 
 ### 中文
