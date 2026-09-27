@@ -1,5 +1,56 @@
 # Fenix changes
 
+## 156.0.1-r7
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_156_0_1_RELEASE`（与 `156.0.1-r6` 相同）。
+
+本版**没有行为改动**。幽灵标签页修复过程中同一处代码改了三次（r4 重置拖拽状态、r5 只在位移后 pin、
+r6 pin 句柄改由交互状态持有），四个交互状态的文档注释还停留在第一版的解释：既把成因说成偏移残留，
+又把列表项称作 "pinned"——而 r6 之后 "pinned" 已专指 `LocalPinnableContainer` 的 pin，读起来会误导。
+本版只是把这些注释改成与最终实现一致（持有 pin 的实现写明会释放 pin，不持有 pin 的 legacy 实现只讲
+偏移失效）。
+
+因为仓库要求每次发布都基于一次真实的构建与校验，本版重新打包上传，APK 内容与 `156.0.1-r6` 功能
+等价。
+
+#### 发布与验证
+
+- 仅发布 `arm64-v8a` APK，使用官方 156.0.1 多语言 GeckoView，严格沿用官方 `versionCode 2016185922`
+  和上游 `versionName 156.0.1`；未进行本地 GeckoView 编译或打包。
+- `org.mozilla.fenix.tabstray.browser.compose.*`、`org.mozilla.fenix.tabstray.*`、
+  `org.mozilla.fenix.tabgroups.*` 全量通过，0 失败；`fenix:spotlessKotlinCheck` 通过。
+- APK：`Fenix-156.0.1-r7-arm64-v8a-release.apk`，大小 `131218869` 字节，SHA-256：`02332BA9CFD612BF409CDB0F28637E198B6EBC084203CCE149F0820EE49FC2C8`。
+- 对应完整源码：[fenix-156.0.1-r7](https://github.com/aenerv7/fenix/tree/fenix-156.0.1-r7)。Fenix 是非官方独立修改版，不受 Mozilla 赞助或背书；维护与支持由本项目提供。保留 MPL 2.0 和第三方许可；Firefox 是 Mozilla Foundation 的商标。
+- `.idsig` 仅保留本地校验和重签名使用，不作为 GitHub Release 资产；Windows Glean 原生库限制仍需 Linux 或 CI 覆盖。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_156_0_1_RELEASE` (unchanged from `156.0.1-r6`).
+
+This release has **no behaviour change**. The ghost-tab fix changed the same code three times (r4 reset
+the drag state, r5 pinned only after movement, r6 moved ownership of the pin handle into the interaction
+state), and the docs on all four interaction states still carried the first attempt's explanation: it
+blamed stale offsets and called the item "pinned" — a word that since r6 means the
+`LocalPinnableContainer` pin, and so reads as misleading. This release only brings those comments in
+line with the final implementation (states that own a pin say they release it; the legacy states, which
+do not, only describe the stale offsets).
+
+Because the repository requires every release to be backed by a real build and validation, the APK is
+rebuilt and uploaded here and is functionally equivalent to `156.0.1-r6`.
+
+#### Release and validation
+
+- Publishes only the `arm64-v8a` APK using the official 156.0.1 multi-locale GeckoView and the exact
+  official `versionCode 2016185922` with upstream `versionName 156.0.1`; no local GeckoView compilation
+  or packaging was performed.
+- `org.mozilla.fenix.tabstray.browser.compose.*`, `org.mozilla.fenix.tabstray.*`, and
+  `org.mozilla.fenix.tabgroups.*` all pass with 0 failures; `fenix:spotlessKotlinCheck` passes.
+- APK: `Fenix-156.0.1-r7-arm64-v8a-release.apk`, size `131218869` bytes, SHA-256: `02332BA9CFD612BF409CDB0F28637E198B6EBC084203CCE149F0820EE49FC2C8`.
+- Complete corresponding source: [fenix-156.0.1-r7](https://github.com/aenerv7/fenix/tree/fenix-156.0.1-r7). Fenix is an independent unofficial modified build, not sponsored or endorsed by Mozilla; this project provides maintenance and support. MPL 2.0 and third-party licenses are retained; Firefox is a trademark of the Mozilla Foundation.
+- `.idsig` is retained locally for verification and re-signing and is not a GitHub Release asset; the Windows Glean native-library limitation still requires Linux or CI coverage.
+
 ## 156.0.1-r6
 
 ### 中文
