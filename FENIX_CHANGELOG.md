@@ -1,5 +1,78 @@
 # Fenix changes
 
+## 156.0.1-r11
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_156_0_1_RELEASE`（与 `156.0.1-r10` 相同）。
+
+复现（用户提供）：6 个标签页 a b c d e f，选中 d e f，按住滑动一下列表，再加入标签页组——d e f 进入了
+群组，但它们的幽灵卡片出现在 a b c 下方、位置与原来完全对齐。
+
+根因在**列表项动画的淡出规格**。`SharedTabItemUi.kt` 里网格版一直是无条件禁用淡出，注释已写明原因：
+
+> Fade-out stays disabled for grid items so a removed final cell cannot remain visible as
+> non-interactive content until the next layout update.
+
+而列表版只在群组入场时禁用，否则使用 spring 淡出。加入**已有**群组时（这条路径要等异步数据库写入，
+届时 `enteringGroupId` 往往已被群组入场动画回调清空），被移除的标签页就会走正常淡出：它们仍在旧位置
+被绘制却已脱离布局——不跟滚动、没有触摸目标、不在无障碍层级里，要等之后某次更新才消失。这正是你看到的
+「位置完全对齐、点不动、重进即消失」。
+
+修复：列表版也改为无条件 `fadeOutSpec = null`，与网格版一致。
+
+说明：本版**无法用现有测试框架验证**。我尝试写布局级复现测试，但在 `autoAdvance = false` 下状态写入未被
+观察，测到的是未变化的列表（6 个节点 alpha 全为 1.0、均匀堆叠），该测试已废弃。本条修复依据是网格版既有
+的实现与注释，需实机验证。
+
+#### 发布与验证
+
+- `org.mozilla.fenix.tabstray.*` 与 `org.mozilla.fenix.tabgroups.*` 全量通过，0 失败；`fenix:spotlessKotlinCheck` 通过。
+- 仅发布 `arm64-v8a` APK，使用官方 156.0.1 多语言 GeckoView，严格沿用官方 `versionCode 2016185922`
+  和上游 `versionName 156.0.1`；未进行本地 GeckoView 编译或打包。
+- APK：`Fenix-156.0.1-r11-arm64-v8a-release.apk`，大小 `SIZE_PLACEHOLDER` 字节，SHA-256：`SHA_PLACEHOLDER`。
+- 对应完整源码：[fenix-156.0.1-r11](https://github.com/aenerv7/fenix/tree/fenix-156.0.1-r11)。Fenix 是非官方独立修改版，不受 Mozilla 赞助或背书；维护与支持由本项目提供。保留 MPL 2.0 和第三方许可；Firefox 是 Mozilla Foundation 的商标。
+- `.idsig` 仅保留本地校验和重签名使用，不作为 GitHub Release 资产；Windows Glean 原生库限制仍需 Linux 或 CI 覆盖。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_156_0_1_RELEASE` (unchanged from `156.0.1-r10`).
+
+Reproduction (reported): with tabs a b c d e f, select d e f, press and slide the list, then add them to a
+tab group — d e f do join the group, but ghost cards for them appear below a b c, exactly aligned with
+their previous positions.
+
+The cause is the **list item animation's fade-out spec**. In `SharedTabItemUi.kt` the grid version has
+always disabled fade-out unconditionally, and its comment says why:
+
+> Fade-out stays disabled for grid items so a removed final cell cannot remain visible as
+> non-interactive content until the next layout update.
+
+The list version only disabled it while a group was entering, and used a spring fade otherwise. So when
+tabs join an **existing** group — a path that waits for an asynchronous database write, by which time the
+group entrance callback has usually cleared `enteringGroupId` — the removed tabs played their normal
+fade-out: drawn at their old positions while detached from the layout, so they did not follow the scroll,
+had no touch target, and were absent from the accessibility tree until some later update removed them.
+That is exactly the reported "aligned position, not tappable, gone on re-entry".
+
+Fix: the list version now passes `fadeOutSpec = null` unconditionally, matching the grid.
+
+Note: this release **could not be verified with the existing test framework**. A layout-level reproduction
+test was attempted, but with `autoAdvance = false` the state write was never observed and the test measured
+the unchanged list (6 nodes, all alpha 1.0, evenly stacked); that test was discarded. The fix rests on the
+grid's existing implementation and comment and needs on-device verification.
+
+#### Release and validation
+
+- The full `org.mozilla.fenix.tabstray.*` and `org.mozilla.fenix.tabgroups.*` suites pass with 0
+  failures; `fenix:spotlessKotlinCheck` passes.
+- Publishes only the `arm64-v8a` APK using the official 156.0.1 multi-locale GeckoView and the exact
+  official `versionCode 2016185922` with upstream `versionName 156.0.1`; no local GeckoView compilation
+  or packaging was performed.
+- APK: `Fenix-156.0.1-r11-arm64-v8a-release.apk`, size `SIZE_PLACEHOLDER` bytes, SHA-256: `SHA_PLACEHOLDER`.
+- Complete corresponding source: [fenix-156.0.1-r11](https://github.com/aenerv7/fenix/tree/fenix-156.0.1-r11). Fenix is an independent unofficial modified build, not sponsored or endorsed by Mozilla; this project provides maintenance and support. MPL 2.0 and third-party licenses are retained; Firefox is a trademark of the Mozilla Foundation.
+- `.idsig` is retained locally for verification and re-signing and is not a GitHub Release asset; the Windows Glean native-library limitation still requires Linux or CI coverage.
+
 ## 156.0.1-r10
 
 ### 中文
