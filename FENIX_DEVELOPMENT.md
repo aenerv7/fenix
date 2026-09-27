@@ -101,16 +101,13 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
   reflows. `resetForItemChange()` in the list and grid interaction states encodes this. A live reorder
   drag never changes the item set (only the order, which compares equal as a key set), and drag-and-drop
   commits its drop before the store updates the set, so an unconditional reset is safe.
-- A tab item may only be pinned for `LocalPinnableContainer` once it is actually being dragged, never
-  on a bare long press. A pinned item that later leaves the list is retained, and because the pin
-  itself prevents the disposal that would release it, `DisposableEffect`'s `onDispose` never runs: the
-  item keeps rendering at its stale frame, does not follow the scroll, has no touch target, and looks
-  frozen below the list until the tab tray is recreated. Two rules keep that from happening. First, do
-  not pin on a bare long press: holding without moving cannot scroll the item away, so no pin is needed
-  until the drag moves — the list gates on the drag's `moved` flag and the grid on a non-zero
-  `cumulatedOffset`. Second, the interaction state must own the pin handle via `setItemPin`, so that
-  `resetImmediately()` and `resetState()` can always release it; a handle owned by the item itself
-  cannot be released once the item is retained by its own pin.
+- Keep the item pin for `LocalPinnableContainer` as upstream has it: a tab item pins itself while it is
+  dragged and releases the handle in `onDispose`. Two attempts to rework this — delaying the pin until
+  the drag moved, and moving ownership of the handle into the interaction state — both targeted a
+  "frozen pinned item" mechanism that was not the cause of the leftover-card bug, and the second was
+  defective by construction: one state-level slot written by every item, so a non-dragged item released
+  the pin a dragged item had just taken. Do not reintroduce either without evidence that the item pin is
+  actually involved.
 - Adding selected tabs to an existing group must mark that group as entering, exactly as creating a new
   group does. `enteringGroupId` suppresses the disappearance animation of the tabs that are becoming the
   group; without it those tabs keep their normal fade-out, and one whose fade never finishes stays drawn

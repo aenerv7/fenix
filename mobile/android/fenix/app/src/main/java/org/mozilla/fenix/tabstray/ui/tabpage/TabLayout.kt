@@ -799,21 +799,9 @@ private fun InteractableTabGrid(
                             gridInteractionState.draggedItem.key == tab.id
                         }
                     }
-                val hasMoved by
-                    remember(tab.id) {
-                        derivedStateOf {
-                            gridInteractionState.draggedItem.cumulatedOffset != Offset.Zero
-                        }
-                    }
-
-                // Pin only once the item is actually being dragged. A held long press pins the item too, but
-                // that press may go on to start multi-select instead of a drag. Holding without moving cannot
-                // scroll the item away, so it needs no pin. The state owns the handle so it can always release
-                // it: an item that has left the grid is kept alive by its own pin, so it is never disposed and
-                // cannot release itself.
-                DisposableEffect(isDragged, hasMoved) {
-                    gridInteractionState.setItemPin(if (isDragged && hasMoved) pinnableContainer?.pin() else null)
-                    onDispose { gridInteractionState.setItemPin(null) }
+                DisposableEffect(isDragged) {
+                    val handle = if (isDragged) pinnableContainer?.pin() else null
+                    onDispose { handle?.release() }
                 }
                 val reorderActions =
                     rememberTabReorderActions(
@@ -1396,13 +1384,9 @@ private fun LazyListScope.interactableTabListContent(
                     isDragged && !listInteractionState.draggedItem.moved
                 }
             }
-        // Pin only once the item is actually being dragged. A held long press pins the item too, but that
-        // press may go on to start multi-select instead of a drag. Holding without moving cannot scroll the
-        // item away, so it needs no pin. The state owns the handle so it can always release it: an item that
-        // has left the list is kept alive by its own pin, so it is never disposed and cannot release itself.
-        DisposableEffect(isDragged, isHeld) {
-            listInteractionState.setItemPin(if (isDragged && !isHeld) pinnableContainer?.pin() else null)
-            onDispose { listInteractionState.setItemPin(null) }
+        DisposableEffect(isDragged) {
+            val handle = if (isDragged) pinnableContainer?.pin() else null
+            onDispose { handle?.release() }
         }
         val reorderActions =
             rememberTabReorderActions(

@@ -30,7 +30,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.PinnableContainer
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.zIndex
@@ -145,16 +144,9 @@ interface ListInteractionState {
     fun resetImmediately()
 
     /**
-     * Holds the pin that keeps a dragged item composed while it is scrolled out of view. The state owns the handle so
-     * that it can always release it: an item that has left the list is kept alive by its own pin, so it is never
-     * disposed and can no longer release the pin itself.
-     */
-    fun setItemPin(handle: PinnableContainer.PinnedHandle?)
-
-    /**
-     * Called when the displayed items change. Drag offsets describe the previous layout and the item pin can outlive
-     * its item, so the interaction is reset even when the dragged item survived the change. Otherwise the item keeps
-     * rendering at its stale position while the rest of the list reflows.
+     * Called when the displayed items change. Drag offsets describe the previous layout, so the interaction is reset
+     * even when the dragged item survived the change. Otherwise the item keeps rendering at its stale position while
+     * the rest of the list reflows.
      */
     fun resetForItemChange() {
         resetImmediately()
@@ -203,8 +195,6 @@ internal constructor(
 
     internal var moved by mutableStateOf(false)
         private set
-
-    private var itemPin: PinnableContainer.PinnedHandle? = null
 
     override var previousKeyOfDraggedItem by mutableStateOf<Any?>(null)
         private set
@@ -256,12 +246,6 @@ internal constructor(
         moved = false
         scrollJob?.cancel()
         scrollJob = null
-        setItemPin(null)
-    }
-
-    override fun setItemPin(handle: PinnableContainer.PinnedHandle?) {
-        itemPin?.release()
-        itemPin = handle
     }
 
     override fun onDragEnd() {
@@ -348,7 +332,6 @@ internal constructor(
         moved = false
         scrollJob?.cancel()
         scrollJob = null
-        setItemPin(null)
     }
 
     /**
