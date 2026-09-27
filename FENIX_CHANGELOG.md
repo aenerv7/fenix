@@ -1,5 +1,81 @@
 # Fenix changes
 
+## 156.0.1-r6
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_156_0_1_RELEASE`（与 `156.0.1-r5` 相同）。本版本补完幽灵标签页修复，
+其余内容与 `156.0.1-r5` 相同。
+
+`156.0.1-r5` 只修掉了「长按后不动」的那条路径：那时不获取 pin。但只要发生位移（拖拽，或长时间按住时
+手滑动），`moved` 为真就会获取 pin，幽灵问题依旧——因为 pin 句柄由**列表项自己**持有：
+
+```kotlin
+DisposableEffect(isDragged) {
+    val handle = if (isDragged) pinnableContainer?.pin() else null
+    onDispose { handle?.release() }   // 被 pin 保留的项不会被销毁，这里永不执行
+}
+```
+
+被 pin 保留的项不会被销毁，也就永远不会执行释放 pin 的 `onDispose`；而交互状态里的拖拽 key 也一直
+没被清掉，于是该项冻结在最后一帧，脱离 Lazy 布局继续绘制。
+
+本版把 pin 句柄的所有权交给交互状态（新增 `setItemPin`），并在 `resetImmediately()` 与
+`resetState()` 里释放它。这样即使某项已被自己的 pin 保留、无法再自行释放，显示项集合变化时
+（`resetForItemChange()`）状态仍能强制释放 pin，该项随即被销毁，幽灵不再出现。列表与网格两条路径
+都已处理。
+
+#### 发布与验证
+
+- 仅发布 `arm64-v8a` APK，使用官方 156.0.1 多语言 GeckoView，严格沿用官方 `versionCode 2016185922`
+  和上游 `versionName 156.0.1`；未进行本地 GeckoView 编译或打包。
+- `org.mozilla.fenix.tabstray.*` 与 `org.mozilla.fenix.tabgroups.*` 全量通过，0 失败。
+- `fenix:spotlessKotlinCheck` 通过。
+- 说明：pin 的获取/释放不进入语义树，现有测试框架无法观测，因此本条**没有自动化测试覆盖**，需实机验证。
+- APK：`Fenix-156.0.1-r6-arm64-v8a-release.apk`，大小 `SIZE_PLACEHOLDER` 字节，SHA-256：`SHA_PLACEHOLDER`。
+- 对应完整源码：[fenix-156.0.1-r6](https://github.com/aenerv7/fenix/tree/fenix-156.0.1-r6)。Fenix 是非官方独立修改版，不受 Mozilla 赞助或背书；维护与支持由本项目提供。保留 MPL 2.0 和第三方许可；Firefox 是 Mozilla Foundation 的商标。
+- `.idsig` 仅保留本地校验和重签名使用，不作为 GitHub Release 资产；Windows Glean 原生库限制仍需 Linux 或 CI 覆盖。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_156_0_1_RELEASE` (unchanged from `156.0.1-r5`). This
+release completes the ghost-tab fix; everything else is identical to `156.0.1-r5`.
+
+`156.0.1-r5` only fixed the press-without-moving path, by not acquiring a pin there. As soon as the
+pointer moves (a drag, or sliding while holding), `moved` becomes true and the pin is acquired again, so
+the ghost returned — because the pin handle was owned by the **item itself**:
+
+```kotlin
+DisposableEffect(isDragged) {
+    val handle = if (isDragged) pinnableContainer?.pin() else null
+    onDispose { handle?.release() }   // never runs: the pin prevents this disposal
+}
+```
+
+An item retained by its own pin is never disposed, so the `onDispose` that releases the pin never runs,
+and the drag key in the interaction state was never cleared either. The item stays frozen at its last
+frame, detached from the Lazy layout.
+
+This release moves ownership of the pin handle into the interaction state (new `setItemPin`) and
+releases it from both `resetImmediately()` and `resetState()`. Even when an item is already retained by
+its own pin and can no longer release itself, a change to the displayed items
+(`resetForItemChange()`) now forces the release, the item is disposed, and the ghost is gone. Both the
+list and the grid are handled.
+
+#### Release and validation
+
+- Publishes only the `arm64-v8a` APK using the official 156.0.1 multi-locale GeckoView and the exact
+  official `versionCode 2016185922` with upstream `versionName 156.0.1`; no local GeckoView compilation
+  or packaging was performed.
+- The full `org.mozilla.fenix.tabstray.*` and `org.mozilla.fenix.tabgroups.*` suites pass with 0
+  failures.
+- `fenix:spotlessKotlinCheck` passes.
+- Note: acquiring and releasing the pin does not appear in the semantics tree and cannot be observed in
+  the test harness, so this fix has **no automated test coverage** and needs on-device verification.
+- APK: `Fenix-156.0.1-r6-arm64-v8a-release.apk`, size `SIZE_PLACEHOLDER` bytes, SHA-256: `SHA_PLACEHOLDER`.
+- Complete corresponding source: [fenix-156.0.1-r6](https://github.com/aenerv7/fenix/tree/fenix-156.0.1-r6). Fenix is an independent unofficial modified build, not sponsored or endorsed by Mozilla; this project provides maintenance and support. MPL 2.0 and third-party licenses are retained; Firefox is a trademark of the Mozilla Foundation.
+- `.idsig` is retained locally for verification and re-signing and is not a GitHub Release asset; the Windows Glean native-library limitation still requires Linux or CI coverage.
+
 ## 156.0.1-r5
 
 ### 中文

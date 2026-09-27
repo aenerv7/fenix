@@ -34,6 +34,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.PinnableContainer
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalViewConfiguration
@@ -164,6 +165,13 @@ interface GridInteractionState {
     fun resetImmediately()
 
     /**
+     * Holds the pin that keeps a dragged item composed while it is scrolled out of view. The state owns the handle so
+     * that it can always release it: an item that has left the grid is kept alive by its own pin, so it is never
+     * disposed and can no longer release the pin itself.
+     */
+    fun setItemPin(handle: PinnableContainer.PinnedHandle?)
+
+    /**
      * Called when the displayed items change. Drag offsets describe the previous layout, so the interaction is reset
      * even when the dragged item survived the change. Otherwise a pinned item stays at its old screen position while
      * the rest of the grid reflows.
@@ -219,6 +227,8 @@ internal constructor(
         private set
 
     private var moved by mutableStateOf(false)
+
+    private var itemPin: PinnableContainer.PinnedHandle? = null
 
     override var previousKeyOfDraggedItem by mutableStateOf<TabItemKey?>(null)
         private set
@@ -286,6 +296,12 @@ internal constructor(
         moved = false
         scrollJob?.cancel()
         scrollJob = null
+        setItemPin(null)
+    }
+
+    override fun setItemPin(handle: PinnableContainer.PinnedHandle?) {
+        itemPin?.release()
+        itemPin = handle
     }
 
     private fun doReorder(mode: InteractionMode.Grid.Reordering) {
@@ -378,6 +394,7 @@ internal constructor(
         moved = false
         scrollJob?.cancel()
         scrollJob = null
+        setItemPin(null)
     }
 
     private fun handleReorderingModeOnDrag(mode: InteractionMode.Grid.Reordering) {
