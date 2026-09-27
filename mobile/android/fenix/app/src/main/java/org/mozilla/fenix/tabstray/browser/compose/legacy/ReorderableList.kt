@@ -160,8 +160,8 @@ internal constructor(
 
     /**
      * Called when the displayed items change. Drag offsets describe the previous layout, so the drag is reset even when
-     * the dragged item survived the change. Otherwise a pinned item stays at its old screen position while the rest of
-     * the list reflows.
+     * the dragged item survived the change. Otherwise it keeps rendering at its stale position while the rest of the
+     * list reflows.
      */
     internal fun resetForItemChange() {
         resetImmediately()

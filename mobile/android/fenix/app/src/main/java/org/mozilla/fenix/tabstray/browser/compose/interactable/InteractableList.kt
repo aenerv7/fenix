@@ -152,9 +152,9 @@ interface ListInteractionState {
     fun setItemPin(handle: PinnableContainer.PinnedHandle?)
 
     /**
-     * Called when the displayed items change. Drag offsets describe the previous layout, so the interaction is reset
-     * even when the dragged item survived the change. Otherwise a pinned item stays at its old screen position while
-     * the rest of the list reflows.
+     * Called when the displayed items change. Drag offsets describe the previous layout and the item pin can outlive
+     * its item, so the interaction is reset even when the dragged item survived the change. Otherwise the item keeps
+     * rendering at its stale position while the rest of the list reflows.
      */
     fun resetForItemChange() {
         resetImmediately()
