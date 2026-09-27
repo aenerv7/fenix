@@ -101,6 +101,14 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
   reflows. `resetForItemChange()` in the list and grid interaction states encodes this. A live reorder
   drag never changes the item set (only the order, which compares equal as a key set), and drag-and-drop
   commits its drop before the store updates the set, so an unconditional reset is safe.
+- A tab item may only be pinned for `LocalPinnableContainer` once it is actually being dragged, never
+  on a bare long press. The long press that starts multi-select also sets the drag state, and a pinned
+  item that later leaves the list is retained; because the pin itself prevents the disposal that would
+  release it, `DisposableEffect`'s `onDispose` never runs and the item keeps rendering at its stale
+  position — it does not follow the scroll and has no touch target, so it looks frozen below the list
+  until the tab tray is recreated. Holding without moving cannot scroll the item away, so no pin is
+  needed until the drag moves. The list gates on the drag's `moved` flag and the grid on a non-zero
+  `cumulatedOffset`.
 - The upstream long-press gesture sequence is intentionally preserved. Do not synchronously change
   the `pointerInput` mode from the long-press callback: doing so cancels the active gesture. Normal
   long-press drag paths use `preserveSelectMode = false`; selection-mode synchronization waits until

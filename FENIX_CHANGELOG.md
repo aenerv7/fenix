@@ -1,5 +1,98 @@
 # Fenix changes
 
+## 156.0.1-r5
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_156_0_1_RELEASE`（与 `156.0.1-r4` 相同）。本版本修复标签页列表下方的
+幽灵标签页，其余内容与 `156.0.1-r4` 相同。
+
+复现：在多选状态下把选中的标签页加入**已有**群组后，列表下方会残留一张标签页卡片。
+
+现象（用户确认）：不随滚动移动、点击无反应、只有一个、重新进入标签页界面即消失、标签页计数器不把它
+算进去——即数据是对的，纯属绘制残留。
+
+原因：`LocalPinnableContainer` 的 pin。列表项在 `isDragged` 为真时就 `pin()` 自己：
+
+```kotlin
+DisposableEffect(isDragged) {
+    val handle = if (isDragged) pinnableContainer?.pin() else null
+    onDispose { handle?.release() }
+}
+```
+
+进入多选的那次**长按**就会置 `draggedItem`，于是该项被 pin。被 pin 的项离开列表后不会被销毁，而是
+保留在最后一帧的位置上继续绘制；而释放 pin 的 `onDispose` 永远不会执行——因为 pin 正是阻止销毁的东西
+（自锁）。上面标签页收进群组、列表向上收紧后，它那份冻结的旧位置就落在列表内容的下方。它已脱离
+Lazy 布局，所以不跟滚动、也没有触摸目标。
+
+修复：只在**真正开始拖动之后**才 pin。长按本身不 pin——没有移动就不可能需要「滚出屏幕仍继续绘制」，
+因此不需要 pin。列表用拖拽状态的 `moved` 标志判定，网格用 `cumulatedOffset` 非零判定。
+
+同时修正上一版对此 bug 的判断：r4 的 `resetForItemChange()` 清理的是交互状态里的拖拽 key，它确实是
+真实缺陷（已保留），但**不是**这个幽灵的原因——被 pin 保留的项不再重组，观察不到那个状态变化。
+
+#### 发布与验证
+
+- 仅发布 `arm64-v8a` APK，使用官方 156.0.1 多语言 GeckoView，严格沿用官方 `versionCode 2016185922`
+  和上游 `versionName 156.0.1`；未进行本地 GeckoView 编译或打包。
+- `org.mozilla.fenix.tabstray.*` 与 `org.mozilla.fenix.tabgroups.*` 全量通过，0 失败。
+- `fenix:spotlessKotlinCheck` 通过。
+- 说明：pin 的获取/释放无法在现有测试框架里观测（它不进入语义树），因此本条修复**没有自动化测试覆盖**，
+  需实机验证。
+- APK：`Fenix-156.0.1-r5-arm64-v8a-release.apk`，大小 `SIZE_PLACEHOLDER` 字节，SHA-256：`SHA_PLACEHOLDER`。
+- 对应完整源码：[fenix-156.0.1-r5](https://github.com/aenerv7/fenix/tree/fenix-156.0.1-r5)。Fenix 是非官方独立修改版，不受 Mozilla 赞助或背书；维护与支持由本项目提供。保留 MPL 2.0 和第三方许可；Firefox 是 Mozilla Foundation 的商标。
+- `.idsig` 仅保留本地校验和重签名使用，不作为 GitHub Release 资产；Windows Glean 原生库限制仍需 Linux 或 CI 覆盖。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_156_0_1_RELEASE` (unchanged from `156.0.1-r4`). This
+release fixes a ghost tab left below the tab list; everything else is identical to `156.0.1-r4`.
+
+Reproduction: with several tabs selected, add them to an **existing** group; a tab card is left behind
+below the list.
+
+Observed (confirmed by the reporter): it does not move when scrolling, taps do nothing, only one is
+left, it disappears when the tab tray is re-entered, and the tab counter does not include it — so the
+data is correct and this is purely a rendering leftover.
+
+Cause: the `LocalPinnableContainer` pin. A list item pins itself as soon as `isDragged` is true:
+
+```kotlin
+DisposableEffect(isDragged) {
+    val handle = if (isDragged) pinnableContainer?.pin() else null
+    onDispose { handle?.release() }
+}
+```
+
+The long press that starts multi-select already sets `draggedItem`, so the item gets pinned. A pinned
+item that leaves the list is not disposed; it keeps being drawn at its last frame, and the `onDispose`
+that would release the pin never runs, because the pin itself is what prevents that disposal. Once the
+tabs above it collapse into the group, that frozen position sits below the list's real content. It is
+detached from the Lazy layout, so it neither follows the scroll nor has a touch target.
+
+Fix: pin only once the item is actually being dragged. A bare long press does not pin — without
+movement the item can never be scrolled away, so no pin is needed. The list gates on the drag state's
+`moved` flag and the grid on a non-zero `cumulatedOffset`.
+
+This also corrects the diagnosis behind the previous release: `resetForItemChange()` from r4 clears the
+drag key in the interaction state, which is a real defect and is kept, but it is **not** the cause of
+this ghost — a retained, pinned item is no longer recomposed, so it never observes that state change.
+
+#### Release and validation
+
+- Publishes only the `arm64-v8a` APK using the official 156.0.1 multi-locale GeckoView and the exact
+  official `versionCode 2016185922` with upstream `versionName 156.0.1`; no local GeckoView compilation
+  or packaging was performed.
+- The full `org.mozilla.fenix.tabstray.*` and `org.mozilla.fenix.tabgroups.*` suites pass with 0
+  failures.
+- `fenix:spotlessKotlinCheck` passes.
+- Note: acquiring and releasing the pin cannot be observed in the test harness (it does not appear in
+  the semantics tree), so this fix has **no automated test coverage** and needs on-device verification.
+- APK: `Fenix-156.0.1-r5-arm64-v8a-release.apk`, size `SIZE_PLACEHOLDER` bytes, SHA-256: `SHA_PLACEHOLDER`.
+- Complete corresponding source: [fenix-156.0.1-r5](https://github.com/aenerv7/fenix/tree/fenix-156.0.1-r5). Fenix is an independent unofficial modified build, not sponsored or endorsed by Mozilla; this project provides maintenance and support. MPL 2.0 and third-party licenses are retained; Firefox is a trademark of the Mozilla Foundation.
+- `.idsig` is retained locally for verification and re-signing and is not a GitHub Release asset; the Windows Glean native-library limitation still requires Linux or CI coverage.
+
 ## 156.0.1-r4
 
 ### 中文
