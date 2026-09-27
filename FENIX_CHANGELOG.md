@@ -1,5 +1,73 @@
 # Fenix changes
 
+## 156.0.1-r10
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_156_0_1_RELEASE`（与 `156.0.1-r9` 相同）。本版修掉一处排查期间发现的
+遗留缺陷，其余内容与 `156.0.1-r9` 相同。
+
+缺陷：旧版列表交互状态 `ListReorderState`（`dragAndDropEnabled` 关闭时走的那条路径）在拖拽越过
+touch slop 后**没有把 `moved` 置为 true**：
+
+```kotlin
+if (!moved && abs(draggingItemCumulatedOffset) > touchSlop) {
+    draggingItemKey?.let { onExitLongPress(it) }   // 每个 drag 事件都会再次进来
+}
+```
+
+长按拖拽时 `moved` 初始为 `false` 且再也不会变真，于是 `onExitLongPress` 在整个手势期间对**每一个**
+drag 事件都触发一次，反复派发 `TabDragStart`。另外三个交互状态（旧版网格、两个新版）都正确置位，
+只有这一处漏了。
+
+修复：补上 `moved = true`。新增回归测试，要求该回调在一次长按拖拽中**恰好只触发一次**（修复前实测
+3 次）。
+
+#### 发布与验证
+
+- 先写出失败的测试（`verify(exactly = 1)` 实测 3 次匹配），修复后通过。
+- `org.mozilla.fenix.tabstray.*` 与 `org.mozilla.fenix.tabgroups.*` 全量通过，0 失败；`fenix:spotlessKotlinCheck` 通过。
+- 仅发布 `arm64-v8a` APK，使用官方 156.0.1 多语言 GeckoView，严格沿用官方 `versionCode 2016185922`
+  和上游 `versionName 156.0.1`；未进行本地 GeckoView 编译或打包。
+- APK：`Fenix-156.0.1-r10-arm64-v8a-release.apk`，大小 `SIZE_PLACEHOLDER` 字节，SHA-256：`SHA_PLACEHOLDER`。
+- 对应完整源码：[fenix-156.0.1-r10](https://github.com/aenerv7/fenix/tree/fenix-156.0.1-r10)。Fenix 是非官方独立修改版，不受 Mozilla 赞助或背书；维护与支持由本项目提供。保留 MPL 2.0 和第三方许可；Firefox 是 Mozilla Foundation 的商标。
+- `.idsig` 仅保留本地校验和重签名使用，不作为 GitHub Release 资产；Windows Glean 原生库限制仍需 Linux 或 CI 覆盖。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_156_0_1_RELEASE` (unchanged from `156.0.1-r9`). This
+release fixes a latent defect found while investigating the leftover-card bug; everything else is
+identical to `156.0.1-r9`.
+
+Defect: the legacy list interaction state `ListReorderState` (the path taken when
+`dragAndDropEnabled` is off) never set `moved` to true once the drag passed touch slop:
+
+```kotlin
+if (!moved && abs(draggingItemCumulatedOffset) > touchSlop) {
+    draggingItemKey?.let { onExitLongPress(it) }   // fires again on every drag event
+}
+```
+
+On a long-press drag `moved` starts false and never becomes true, so `onExitLongPress` fired for **every**
+drag event of the gesture and re-dispatched `TabDragStart` each time. The other three interaction states
+(the legacy grid and both interactable ones) already set the flag; only this one was missed.
+
+Fix: set `moved = true`. A regression test now requires that callback to fire **exactly once** per
+long-press drag (it observed 3 before the fix).
+
+#### Release and validation
+
+- A failing test was written first (`verify(exactly = 1)` observed 3 matching calls) and passes after the
+  fix.
+- The full `org.mozilla.fenix.tabstray.*` and `org.mozilla.fenix.tabgroups.*` suites pass with 0
+  failures; `fenix:spotlessKotlinCheck` passes.
+- Publishes only the `arm64-v8a` APK using the official 156.0.1 multi-locale GeckoView and the exact
+  official `versionCode 2016185922` with upstream `versionName 156.0.1`; no local GeckoView compilation
+  or packaging was performed.
+- APK: `Fenix-156.0.1-r10-arm64-v8a-release.apk`, size `SIZE_PLACEHOLDER` bytes, SHA-256: `SHA_PLACEHOLDER`.
+- Complete corresponding source: [fenix-156.0.1-r10](https://github.com/aenerv7/fenix/tree/fenix-156.0.1-r10). Fenix is an independent unofficial modified build, not sponsored or endorsed by Mozilla; this project provides maintenance and support. MPL 2.0 and third-party licenses are retained; Firefox is a trademark of the Mozilla Foundation.
+- `.idsig` is retained locally for verification and re-signing and is not a GitHub Release asset; the Windows Glean native-library limitation still requires Linux or CI coverage.
+
 ## 156.0.1-r9
 
 ### 中文
