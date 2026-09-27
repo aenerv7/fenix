@@ -264,9 +264,8 @@ class TabLayoutTest {
         val tabC = createTab(id = "tab-c", url = "https://www.mozilla.org/c")
         val groupId = "new-group"
         var tabs by mutableStateOf<List<TabsTrayItem>>(listOf(tabA, tabB, tabC))
-        var selectionMode by mutableStateOf<TabsTrayState.Mode>(
-            TabsTrayState.Mode.Select(selectedTabs = setOf(tabA, tabB))
-        )
+        var selectionMode by
+            mutableStateOf<TabsTrayState.Mode>(TabsTrayState.Mode.Select(selectedTabs = setOf(tabA, tabB)))
         var enteringGroupId by mutableStateOf<String?>(null)
 
         composeTestRule.setContent {
