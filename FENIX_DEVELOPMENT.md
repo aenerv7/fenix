@@ -111,6 +111,12 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
 - Every list/grid interaction state must set its `moved` flag once the drag passes touch slop. All four
   states report it to the drag-start callback exactly once; without it `onExitLongPress` fires on every
   drag event and re-dispatches `TabDragStart` for the whole gesture.
+- Neither tab item animation may use a fade-out spec. A removed item that fades is drawn at its old
+  position, detached from the layout: it does not follow the scroll and has no touch target, so it
+  remains visible as non-interactive content until some later update removes it. The grid item animation
+  has always disabled fade-out for exactly this reason; the list item animation did too only while a
+  group was entering, so a tab grouped into an existing group could be left behind as a leftover card.
+  Both now pass `fadeOutSpec = null` unconditionally.
 - Adding selected tabs to an existing group must mark that group as entering, exactly as creating a new
   group does. `enteringGroupId` suppresses the disappearance animation of the tabs that are becoming the
   group; without it those tabs keep their normal fade-out, and one whose fade never finishes stays drawn

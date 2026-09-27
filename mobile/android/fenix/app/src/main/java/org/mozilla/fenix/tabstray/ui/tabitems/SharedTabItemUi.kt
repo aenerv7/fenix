@@ -763,14 +763,12 @@ fun Modifier.defaultListItemAnimation(
 ): Modifier =
     with(lazyListItemScope) {
         this@defaultListItemAnimation.animateItem(
-            // When the group entrance animation is playing, all fade-out animations should be suppressed.
-            // You should not see the exiting tabs fade out that are becoming a group.
-            fadeOutSpec =
-                if (enteringGroupId != null) {
-                    null
-                } else {
-                    spring(dampingRatio = Spring.DampingRatioNoBouncy, stiffness = Spring.StiffnessMediumLow)
-                },
+            // Fade-out stays disabled so a removed item cannot remain visible as non-interactive content
+            // until the next layout update. A tab that is fading is drawn at its old position, detached
+            // from the layout: it does not follow the scroll and has no touch target, which is exactly the
+            // leftover card that used to appear below the list when tabs were added to a group. The grid
+            // item animation has always disabled it for the same reason.
+            fadeOutSpec = null,
             // When the group entrance animation is playing, all grid shuffle animations should be suppressed.
             // The group should appear to enter at the place it was dropped (without translating up/down/left/right).
             // Nearby tabs should not appear to shuffle to make room for the group.
