@@ -117,12 +117,10 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
   has always disabled fade-out for exactly this reason; the list item animation did too only while a
   group was entering, so a tab grouped into an existing group could be left behind as a leftover card.
   Both now pass `fadeOutSpec = null` unconditionally.
-- Adding selected tabs to an existing group must mark that group as entering, exactly as creating a new
-  group does. `enteringGroupId` suppresses the disappearance animation of the tabs that are becoming the
-  group; without it those tabs keep their normal fade-out, and one whose fade never finishes stays drawn
-  as a leftover card below the list — it does not follow the scroll and has no touch target, so it looks
-  frozen until the tab tray is recreated. Set it from `TabGroupAction.SelectedTabsAddedToGroup` as well as
-  from `NewGroupCreated`.
+- Only creating a new group marks it as entering. The selected-tabs path into an existing group must not
+  set `enteringGroupId`: the group is already on screen, so it would replay its entrance animation on
+  every add. Suppressing the exiting tabs' fade-out does not depend on that flag anyway, because neither
+  item animation uses a fade-out spec.
 - The upstream long-press gesture sequence is intentionally preserved. Do not synchronously change
   the `pointerInput` mode from the long-press callback: doing so cancels the active gesture. Normal
   long-press drag paths use `preserveSelectMode = false`; selection-mode synchronization waits until

@@ -50,10 +50,6 @@ object TabGroupActionReducer {
                 state.copy(
                     mode = TabsTrayState.Mode.Normal,
                     backStack = state.backStack.popTabGroupFlow(),
-                    // The selected tabs are entering this group, exactly as they do when a new group is created.
-                    // Marking the group as entering suppresses the exiting tabs' fade out, which is what keeps
-                    // them from being drawn as a leftover card below the list.
-                    tabGroupState = state.tabGroupState.copy(enteringGroupId = action.groupId),
                 )
             is TabGroupAction.SelectedTabsRemovedFromGroup ->
                 state.copy(
