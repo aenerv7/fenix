@@ -1,5 +1,68 @@
 # Fenix changes
 
+## 156.0.1-r9
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_156_0_1_RELEASE`（与 `156.0.1-r8` 相同）。
+
+本版**清理幽灵标签页排查过程中留下的冗余代码**，功能与 `156.0.1-r8` 等价（幽灵修复本身是 r8 的
+`enteringGroupId`，未改动）。
+
+排查期间对 `LocalPinnableContainer` 的 pin 做过两次改动，方向都是错的：
+
+- r5：把 pin 的获取从「开始拖拽」推迟到「拖拽发生位移之后」；
+- r6：把 pin 句柄的所有权从列表项移到交互状态（`setItemPin`）。
+
+两者针对的都是「被 pin 保留的项无法释放自己」这一机制，但该机制并不是本次 bug 的原因。其中 r6 还有
+构造性缺陷：`setItemPin` 是交互状态上的**单个**槽位，而**每个**列表项都会写它，非拖拽项写入 `null`
+就会释放掉刚被拖拽项取得的 pin——结果依赖组合顺序，pin 实际上形同失效。
+
+本版把这两处一并回退，恢复上游行为：列表项在自身被拖拽期间 `pin()` 自己，并在 `onDispose` 里释放。
+`isHeld`（选择态样式用）与 `resetForItemChange()`（r4 的拖拽状态重置）保留。
+
+#### 发布与验证
+
+- `org.mozilla.fenix.tabstray.*` 与 `org.mozilla.fenix.tabgroups.*` 全量通过，0 失败；`fenix:spotlessKotlinCheck` 通过。
+- 仅发布 `arm64-v8a` APK，使用官方 156.0.1 多语言 GeckoView，严格沿用官方 `versionCode 2016185922`
+  和上游 `versionName 156.0.1`；未进行本地 GeckoView 编译或打包。
+- APK：`Fenix-156.0.1-r9-arm64-v8a-release.apk`，大小 `SIZE_PLACEHOLDER` 字节，SHA-256：`SHA_PLACEHOLDER`。
+- 对应完整源码：[fenix-156.0.1-r9](https://github.com/aenerv7/fenix/tree/fenix-156.0.1-r9)。Fenix 是非官方独立修改版，不受 Mozilla 赞助或背书；维护与支持由本项目提供。保留 MPL 2.0 和第三方许可；Firefox 是 Mozilla Foundation 的商标。
+- `.idsig` 仅保留本地校验和重签名使用，不作为 GitHub Release 资产；Windows Glean 原生库限制仍需 Linux 或 CI 覆盖。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_156_0_1_RELEASE` (unchanged from `156.0.1-r8`).
+
+This release **removes the redundant code left over from investigating the leftover-card bug**. It is
+functionally equivalent to `156.0.1-r8`; the fix itself is r8's `enteringGroupId` and is untouched.
+
+Two changes to the `LocalPinnableContainer` pushpin were made while investigating, both in the wrong
+direction:
+
+- r5 delayed acquiring the pin from "drag started" to "the drag has moved";
+- r6 moved ownership of the pin handle from the item into the interaction state (`setItemPin`).
+
+Both targeted a "a pinned item cannot release itself" mechanism that was not the cause. r6 was also
+defective by construction: `setItemPin` was a single slot on the interaction state, written by **every**
+item, so a non-dragged item writing `null` released the pin a dragged item had just taken — the result
+depended on composition order and the pin was effectively disabled.
+
+Both are reverted here, restoring upstream behaviour: an item pins itself while it is dragged and
+releases the handle in `onDispose`. `isHeld` (used for selection styling) and `resetForItemChange()`
+(r4's drag-state reset) are kept.
+
+#### Release and validation
+
+- The full `org.mozilla.fenix.tabstray.*` and `org.mozilla.fenix.tabgroups.*` suites pass with 0
+  failures; `fenix:spotlessKotlinCheck` passes.
+- Publishes only the `arm64-v8a` APK using the official 156.0.1 multi-locale GeckoView and the exact
+  official `versionCode 2016185922` with upstream `versionName 156.0.1`; no local GeckoView compilation
+  or packaging was performed.
+- APK: `Fenix-156.0.1-r9-arm64-v8a-release.apk`, size `SIZE_PLACEHOLDER` bytes, SHA-256: `SHA_PLACEHOLDER`.
+- Complete corresponding source: [fenix-156.0.1-r9](https://github.com/aenerv7/fenix/tree/fenix-156.0.1-r9). Fenix is an independent unofficial modified build, not sponsored or endorsed by Mozilla; this project provides maintenance and support. MPL 2.0 and third-party licenses are retained; Firefox is a trademark of the Mozilla Foundation.
+- `.idsig` is retained locally for verification and re-signing and is not a GitHub Release asset; the Windows Glean native-library limitation still requires Linux or CI coverage.
+
 ## 156.0.1-r8
 
 ### 中文
