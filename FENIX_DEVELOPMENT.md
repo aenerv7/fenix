@@ -64,10 +64,10 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
   missing entry, reusing the terminology already established in the file. English comments stay above
   each translated string, and the file must keep LF line endings. Other shipped locales are upstream's
   partially translated set; per-string English fallback there is expected and not a defect.
-- Because GitHub keeps only the latest successful revision for each upstream baseline, the retained
-  release notes must list all effective user-facing Fenix changes relative to the exact official
-  upstream baseline, not only changes since the previous `rN`. Exclude intermediate behavior that
-  was later reverted, and keep artifact metadata and validation results current for the retained APK.
+- Because GitHub keeps only one release, the retained release notes must list all effective
+  user-facing Fenix changes relative to the exact official upstream baseline, not only changes since
+  the previous `rN`. Exclude intermediate behavior that was later reverted, and keep artifact metadata
+  and validation results current for the retained APK.
   Before replacing an `rN`, derive the notes from the final source tree and baseline diff, verify that
   the Chinese and English sections describe the same changes, and only then remove the superseded
   remote release and tag.
@@ -130,9 +130,11 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
   Gecko, C++, Rust, or Gecko locale sources. An upstream baseline update must use that baseline's
   pinned official package. Use `-BuildLocalGecko` only for Fenix-authored native or Gecko locale
   changes and record those changes in the release notes.
-- GitHub Release retention is per upstream baseline: after the new release is verified, retain only
-  the highest successfully published `rN` release and matching remote tag for that baseline. This
-  does not require deleting local APKs, `.idsig` files, notes, logs, or reusable build caches.
+- GitHub Release retention keeps a single release: after the new release is verified, remove every
+  older release and its remote tag, whichever upstream baseline it belongs to. Fenix changes accumulate
+  as a rolling set, so attributing a change to a particular `rN` is not meaningful and only the newest
+  release is retained. This does not require deleting local APKs, `.idsig` files, notes, logs, or
+  reusable build caches.
 
 ### Current validation state
 
@@ -306,13 +308,12 @@ English section second. Use the headings `## 中文` and `## English`, and keep 
 change summary, validation results, supported ABI, and `.idsig` publication policy equivalent in
 both sections. Do not publish release notes that contain only one language.
 
-GitHub Release history uses a per-baseline latest-revision retention policy. For each upstream
-baseline, keep only the highest successfully published `fenix-<baseline>-rN` GitHub Release and its
-matching tag. When publishing a new revision for one baseline, verify the new release first, then
-remove older releases and tags for that same baseline; never remove the retained latest release of
-another baseline. This remote-release policy does not require deleting local APKs, `.idsig` files,
-release notes, logs, or cross-release build caches; retain those locally according to reuse and
-verification needs.
+GitHub Release history retains a single release: only the newest `fenix-<baseline>-rN` release and its
+matching tag survive. When publishing a new revision, verify the new release first, then remove every
+older release and tag, including those of other upstream baselines. Fenix changes accumulate as a
+rolling set, so attributing a change to a particular `rN` is not meaningful. This remote-release policy
+does not require deleting local APKs, `.idsig` files, release notes, logs, or cross-release build
+caches; retain those locally according to reuse and verification needs.
 
 If an ABI fails, retry only that ABI and retain already completed current-revision APKs. A transient
 Android Lint internal failure is not a reason to rebuild Gecko or other ABIs; rerun the affected ABI
