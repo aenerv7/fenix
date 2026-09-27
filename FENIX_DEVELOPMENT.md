@@ -108,6 +108,9 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
   defective by construction: one state-level slot written by every item, so a non-dragged item released
   the pin a dragged item had just taken. Do not reintroduce either without evidence that the item pin is
   actually involved.
+- Every list/grid interaction state must set its `moved` flag once the drag passes touch slop. All four
+  states report it to the drag-start callback exactly once; without it `onExitLongPress` fires on every
+  drag event and re-dispatches `TabDragStart` for the whole gesture.
 - Adding selected tabs to an existing group must mark that group as entering, exactly as creating a new
   group does. `enteringGroupId` suppresses the disappearance animation of the tabs that are becoming the
   group; without it those tabs keep their normal fade-out, and one whose fade never finishes stays drawn

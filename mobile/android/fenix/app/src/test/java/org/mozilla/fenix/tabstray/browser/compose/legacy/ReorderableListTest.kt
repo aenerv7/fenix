@@ -93,6 +93,34 @@ class ReorderableListTest {
     }
 
     @Test
+    fun `GIVEN a long press drag WHEN the pointer keeps moving THEN the exit long press callback is only invoked once`() {
+        val handler = mockk<TabInteractionHandler>(relaxed = true)
+        val dragItemOffset = 10
+        val reorderState =
+            fakeListReorderState(
+                mockListState(
+                    mockItems =
+                        listOf(
+                            mockk<LazyListItemInfo> {
+                                every { key } returns "key1"
+                                every { index } returns 1
+                                every { size } returns 10
+                                every { offset } returns dragItemOffset
+                            }
+                        )
+                ),
+                handler = handler,
+            )
+
+        reorderState.onTouchSlopPassed(offset = dragItemOffset.toFloat(), shouldLongPress = true)
+        reorderState.onDrag(offset = 20f)
+        reorderState.onDrag(offset = 20f)
+        reorderState.onDrag(offset = 20f)
+
+        verify(exactly = 1) { handler.onDragStart(sourceKey = "key1", preserveSelectMode = true) }
+    }
+
+    @Test
     fun `GIVEN a drag is in progress and onDragInterrupted is called THEN the previous key is saved and the state is reset`() {
         val reorderState = fakeListReorderState(listState = mockListState(mockItems = emptyList()))
         val draggingItemKey = reorderState.draggingItemKey

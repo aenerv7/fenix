@@ -186,6 +186,7 @@ internal constructor(
 
         if (!moved && abs(draggingItemCumulatedOffset) > touchSlop) {
             draggingItemKey?.let { onExitLongPress(it) }
+            moved = true
         }
         val startOffset = draggingItem.offset + draggingItemOffset
         val endOffset = startOffset + draggingItem.size
