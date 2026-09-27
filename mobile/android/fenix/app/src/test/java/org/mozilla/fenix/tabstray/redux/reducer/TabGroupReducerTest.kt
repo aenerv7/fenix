@@ -24,6 +24,7 @@ import org.mozilla.fenix.tabstray.redux.state.Page
 import org.mozilla.fenix.tabstray.redux.state.TabGroupFormState
 import org.mozilla.fenix.tabstray.redux.state.TabsTrayState
 import org.mozilla.fenix.tabstray.redux.state.TabsTrayState.Mode
+import org.mozilla.fenix.tabstray.redux.state.TabsTrayState.TabGroupState
 import org.mozilla.fenix.tabstray.redux.state.initializeTabGroupForm
 
 class TabGroupReducerTest {
@@ -479,7 +480,7 @@ class TabGroupReducerTest {
     }
 
     @Test
-    fun `WHEN tabs are added to a group via multiselection THEN multiselection is exited and navigate back to the root`() {
+    fun `WHEN tabs are added to a group via multiselection THEN multiselection is exited, the target group enters and we navigate back to the root`() {
         val resultState =
             TabGroupActionReducer.reduce(
                 state =
@@ -493,6 +494,9 @@ class TabGroupReducerTest {
             TabsTrayState(
                 mode = Mode.Normal,
                 backStack = TabsTrayState().backStack,
+                // The tabs are entering the group, so its entrance animation must play and the tabs that are
+                // becoming the group must not fade out on their way into it.
+                tabGroupState = TabGroupState(enteringGroupId = "12345"),
             )
 
         assertEquals(expectedState, resultState)

@@ -1212,7 +1212,11 @@ class TabStorageMiddlewareTest {
                             items = expectedTabGroupList,
                             tabCount = selectedTabs.size,
                         ),
-                    tabGroupState = TabsTrayState.TabGroupState(groups = expectedTabGroupList),
+                    tabGroupState =
+                        TabsTrayState.TabGroupState(
+                            groups = expectedTabGroupList,
+                            enteringGroupId = existingGroup.id,
+                        ),
                     hasTabDataLoaded = true,
                 )
 
@@ -1304,7 +1308,11 @@ class TabStorageMiddlewareTest {
                             items = expectedTabGroupList,
                             tabCount = tabs.size,
                         ),
-                    tabGroupState = TabsTrayState.TabGroupState(groups = expectedTabGroupList),
+                    tabGroupState =
+                        TabsTrayState.TabGroupState(
+                            groups = expectedTabGroupList,
+                            enteringGroupId = existingId,
+                        ),
                     hasTabDataLoaded = true,
                 )
 
@@ -1382,7 +1390,11 @@ class TabStorageMiddlewareTest {
                             items = expectedTabGroupList,
                             tabCount = tabs.size,
                         ),
-                    tabGroupState = TabsTrayState.TabGroupState(groups = expectedTabGroupList),
+                    tabGroupState =
+                        TabsTrayState.TabGroupState(
+                            groups = expectedTabGroupList,
+                            enteringGroupId = destinationTabGroup.id,
+                        ),
                     hasTabDataLoaded = true,
                 )
 
