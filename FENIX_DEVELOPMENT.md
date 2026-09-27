@@ -111,6 +111,12 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
   `cumulatedOffset`. Second, the interaction state must own the pin handle via `setItemPin`, so that
   `resetImmediately()` and `resetState()` can always release it; a handle owned by the item itself
   cannot be released once the item is retained by its own pin.
+- Adding selected tabs to an existing group must mark that group as entering, exactly as creating a new
+  group does. `enteringGroupId` suppresses the disappearance animation of the tabs that are becoming the
+  group; without it those tabs keep their normal fade-out, and one whose fade never finishes stays drawn
+  as a leftover card below the list — it does not follow the scroll and has no touch target, so it looks
+  frozen until the tab tray is recreated. Set it from `TabGroupAction.SelectedTabsAddedToGroup` as well as
+  from `NewGroupCreated`.
 - The upstream long-press gesture sequence is intentionally preserved. Do not synchronously change
   the `pointerInput` mode from the long-press callback: doing so cancels the active gesture. Normal
   long-press drag paths use `preserveSelectMode = false`; selection-mode synchronization waits until

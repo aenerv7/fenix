@@ -1,5 +1,74 @@
 # Fenix changes
 
+## 156.0.1-r8
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_156_0_1_RELEASE`（与 `156.0.1-r7` 相同）。本版本修复「把选中的标签页
+加入**已有**群组后，列表下方残留一张标签页卡片」的问题，其余内容与 `156.0.1-r7` 相同。
+
+现象（用户确认）：不随滚动移动、点击无反应、只有一个、**不在无障碍层级里**（纯绘制残影）、重新进入
+标签页界面即消失、标签页计数器不把它算进去。
+
+原因：新建群组时 reducer 会置 `enteringGroupId`，其作用正是**抑制「正在变成群组」的那些标签页的消失
+动画**（`defaultListItemAnimation` 里 `fadeOutSpec = if (enteringGroupId != null) null else spring(...)`，
+注释写明「群组入场动画播放时所有淡出动画都应被抑制」）。而**加入已有群组**这条路径只清了选择状态、
+没有置这个标记，于是这些标签页照常淡出；其中一张的淡出没有走完（消失动画依赖布局继续发生，而加入群组
+时列表正在重排），就停在最后一帧继续被绘制——不再属于布局，所以不跟滚动、没有触摸目标，也不在无障碍
+层级里。这也解释了为什么只有「加入**已有**群组」会出问题。
+
+修复：`SelectedTabsAddedToGroup` 也置 `enteringGroupId = action.groupId`，与新建群组一致；群组卡片入场
+动画结束后照旧由 `NewGroupAnimationFinished` 清空。
+
+#### 发布与验证
+
+- 先写出失败的 reducer 测试（期望 `enteringGroupId = "12345"`，实测 `null`），修复后通过。
+- `org.mozilla.fenix.tabstray.*` 与 `org.mozilla.fenix.tabgroups.*` 全量通过，0 失败；同时更新了
+  `TabStorageMiddlewareTest` 中三处全量状态断言。
+- `fenix:spotlessKotlinCheck` 通过。
+- 仅发布 `arm64-v8a` APK，使用官方 156.0.1 多语言 GeckoView，严格沿用官方 `versionCode 2016185922`
+  和上游 `versionName 156.0.1`；未进行本地 GeckoView 编译或打包。
+- APK：`Fenix-156.0.1-r8-arm64-v8a-release.apk`，大小 `SIZE_PLACEHOLDER` 字节，SHA-256：`SHA_PLACEHOLDER`。
+- 对应完整源码：[fenix-156.0.1-r8](https://github.com/aenerv7/fenix/tree/fenix-156.0.1-r8)。Fenix 是非官方独立修改版，不受 Mozilla 赞助或背书；维护与支持由本项目提供。保留 MPL 2.0 和第三方许可；Firefox 是 Mozilla Foundation 的商标。
+- `.idsig` 仅保留本地校验和重签名使用，不作为 GitHub Release 资产；Windows Glean 原生库限制仍需 Linux 或 CI 覆盖。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_156_0_1_RELEASE` (unchanged from `156.0.1-r7`). This
+release fixes a leftover tab card below the list after adding the selected tabs to an **existing** group;
+everything else is identical to `156.0.1-r7`.
+
+Observed (confirmed by the reporter): it does not move when scrolling, taps do nothing, only one is left,
+it is **not in the accessibility hierarchy** (a pure drawing artifact), it disappears when the tab tray
+is re-entered, and the tab counter does not include it.
+
+Cause: creating a new group sets `enteringGroupId`, whose purpose is exactly to suppress the
+disappearance animation of the tabs that are becoming the group (`defaultListItemAnimation` uses
+`fadeOutSpec = if (enteringGroupId != null) null else spring(...)`, and its comment states that while the
+group entrance animation plays every fade-out is suppressed). The **existing group** path only cleared the
+selection and never set that flag, so those tabs played their normal fade-out; one whose fade never
+completed — the disappearance needs layout to keep happening, and joining a group reflows the list —
+stayed drawn at its last frame. Detached from the layout, it neither followed the scroll nor had a touch
+target and was absent from the accessibility tree. This also explains why only adding to an **existing**
+group showed it.
+
+Fix: `SelectedTabsAddedToGroup` now sets `enteringGroupId = action.groupId`, matching the new-group path;
+`NewGroupAnimationFinished` still clears it once the group's entrance animation has played.
+
+#### Release and validation
+
+- A failing reducer test was written first (expected `enteringGroupId = "12345"`, observed `null`) and
+  passes after the fix.
+- The full `org.mozilla.fenix.tabstray.*` and `org.mozilla.fenix.tabgroups.*` suites pass with 0
+  failures; three whole-state assertions in `TabStorageMiddlewareTest` were updated accordingly.
+- `fenix:spotlessKotlinCheck` passes.
+- Publishes only the `arm64-v8a` APK using the official 156.0.1 multi-locale GeckoView and the exact
+  official `versionCode 2016185922` with upstream `versionName 156.0.1`; no local GeckoView compilation
+  or packaging was performed.
+- APK: `Fenix-156.0.1-r8-arm64-v8a-release.apk`, size `SIZE_PLACEHOLDER` bytes, SHA-256: `SHA_PLACEHOLDER`.
+- Complete corresponding source: [fenix-156.0.1-r8](https://github.com/aenerv7/fenix/tree/fenix-156.0.1-r8). Fenix is an independent unofficial modified build, not sponsored or endorsed by Mozilla; this project provides maintenance and support. MPL 2.0 and third-party licenses are retained; Firefox is a trademark of the Mozilla Foundation.
+- `.idsig` is retained locally for verification and re-signing and is not a GitHub Release asset; the Windows Glean native-library limitation still requires Linux or CI coverage.
+
 ## 156.0.1-r7
 
 ### 中文
