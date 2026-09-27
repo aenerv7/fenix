@@ -32,7 +32,7 @@ DisposableEffect(isDragged) {
 - `org.mozilla.fenix.tabstray.*` 与 `org.mozilla.fenix.tabgroups.*` 全量通过，0 失败。
 - `fenix:spotlessKotlinCheck` 通过。
 - 说明：pin 的获取/释放不进入语义树，现有测试框架无法观测，因此本条**没有自动化测试覆盖**，需实机验证。
-- APK：`Fenix-156.0.1-r6-arm64-v8a-release.apk`，大小 `SIZE_PLACEHOLDER` 字节，SHA-256：`SHA_PLACEHOLDER`。
+- APK：`Fenix-156.0.1-r6-arm64-v8a-release.apk`，大小 `131218869` 字节，SHA-256：`765862F429F5DF1F47D9214B99C7EC2CCEB62589918FDBD26545AB0DA8D33569`。
 - 对应完整源码：[fenix-156.0.1-r6](https://github.com/aenerv7/fenix/tree/fenix-156.0.1-r6)。Fenix 是非官方独立修改版，不受 Mozilla 赞助或背书；维护与支持由本项目提供。保留 MPL 2.0 和第三方许可；Firefox 是 Mozilla Foundation 的商标。
 - `.idsig` 仅保留本地校验和重签名使用，不作为 GitHub Release 资产；Windows Glean 原生库限制仍需 Linux 或 CI 覆盖。
 
@@ -72,7 +72,7 @@ list and the grid are handled.
 - `fenix:spotlessKotlinCheck` passes.
 - Note: acquiring and releasing the pin does not appear in the semantics tree and cannot be observed in
   the test harness, so this fix has **no automated test coverage** and needs on-device verification.
-- APK: `Fenix-156.0.1-r6-arm64-v8a-release.apk`, size `SIZE_PLACEHOLDER` bytes, SHA-256: `SHA_PLACEHOLDER`.
+- APK: `Fenix-156.0.1-r6-arm64-v8a-release.apk`, size `131218869` bytes, SHA-256: `765862F429F5DF1F47D9214B99C7EC2CCEB62589918FDBD26545AB0DA8D33569`.
 - Complete corresponding source: [fenix-156.0.1-r6](https://github.com/aenerv7/fenix/tree/fenix-156.0.1-r6). Fenix is an independent unofficial modified build, not sponsored or endorsed by Mozilla; this project provides maintenance and support. MPL 2.0 and third-party licenses are retained; Firefox is a trademark of the Mozilla Foundation.
 - `.idsig` is retained locally for verification and re-signing and is not a GitHub Release asset; the Windows Glean native-library limitation still requires Linux or CI coverage.
 
