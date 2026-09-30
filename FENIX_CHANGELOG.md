@@ -1,5 +1,85 @@
 # Fenix changes
 
+## 156.0.1-r13
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_156_0_1_RELEASE`（与 `156.0.1-r12` 相同）。
+
+复现（用户提供）：列表模式下按住拖拽一个标签页，超出一定距离后该标签页不再显示半透明的拖拽卡片；此时
+松手仍能正常落位。网格模式没有这个问题。
+
+根因在列表的拖拽平移量。被拖拽的项离开视口后，由它自己的 pin 保活并**停在被移出时的布局偏移**上继续
+绘制，因此：
+
+```
+绘制位置 = 冻结的布局偏移 + 平移量
+平移量   = 初始偏移 + 累计拖拽量 − 布局偏移
+```
+
+`InteractableList.kt` 的 `computeItemOffset` 在项离开 `visibleItemsInfo` 后回退成
+`初始偏移 + 累计拖拽量`，**丢掉了要减去的布局偏移**。实测：项离开视口的那一帧，平移量从 `-150` 跳到
+`+210`，卡片被画到 `570` 而手指在 `210`，即下方约一个视口的位置，直接移出屏幕——用户看不到拖拽卡片，
+但拖拽状态本身没有变化，所以松手仍能正常落位。网格一直把同一数值缓存在 `cachedDraggedItemLayoutOffset`
+里（由 `onGloballyPositioned` 采集），因此没有这个问题。
+
+修复：列表在 `computeItemOffset` 里缓存被拖拽项最后一次的布局偏移，项离开视口后继续用它计算平移量；
+拖拽结束时清空缓存。
+
+#### 发布与验证
+
+- 新增回归测试 `InteractableListDragTest`：用真实的 `InteractableDragItemContainer` 与 pin 渲染列表，
+  逐帧滚动让被拖拽项移出视口，断言卡片仍绘制在手指位置。修复前该测试失败（`570` 而非 `210`），
+  修复后通过。
+- `org.mozilla.fenix.tabstray.*` 与 `org.mozilla.fenix.tabgroups.*` 全量通过，0 失败；`fenix:spotlessKotlinCheck` 通过。
+- 仅发布 `arm64-v8a` APK，使用官方 156.0.1 多语言 GeckoView，严格沿用官方 `versionCode 2016185922`
+  和上游 `versionName 156.0.1`；未进行本地 GeckoView 编译或打包。
+- APK：`Fenix-156.0.1-r13-arm64-v8a-release.apk`，大小 `SIZE_PLACEHOLDER` 字节，SHA-256：`SHA_PLACEHOLDER`。
+- 对应完整源码：[fenix-156.0.1-r13](https://github.com/aenerv7/fenix/tree/fenix-156.0.1-r13)。Fenix 是非官方独立修改版，不受 Mozilla 赞助或背书；维护与支持由本项目提供。保留 MPL 2.0 和第三方许可；Firefox 是 Mozilla Foundation 的商标。
+- `.idsig` 仅保留本地校验和重签名使用，不作为 GitHub Release 资产；Windows Glean 原生库限制仍需 Linux 或 CI 覆盖。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_156_0_1_RELEASE` (unchanged from `156.0.1-r12`).
+
+Reproduction (reported): in list mode, press and drag a tab beyond a certain distance and the tab stops
+showing the semi-transparent drag card; releasing at that point still lands it correctly. Grid mode does
+not have this problem.
+
+The cause is the list's drag translation. Once a dragged item leaves the viewport it is kept alive by its
+own pin and **keeps drawing at the layout offset it had when it left**, so:
+
+```
+drawn    = frozen layout offset + translation
+translation = initial offset + cumulated drag distance - layout offset
+```
+
+`InteractableList.kt`'s `computeItemOffset` fell back to `initial offset + cumulated drag distance` once
+the item left `visibleItemsInfo`, **dropping the layout offset to subtract**. Measured: on the frame the
+item leaves the viewport the translation jumps from `-150` to `+210`, so the card is drawn at `570` while
+the pointer is at `210` — about one viewport lower, off screen. The drag card is then invisible, but the
+drag state itself is unchanged, which is why the drop still lands correctly. The grid has always cached
+that same value in `cachedDraggedItemLayoutOffset` (collected by `onGloballyPositioned`), so it does not
+have this problem.
+
+Fix: the list caches the dragged item's last layout offset in `computeItemOffset` and keeps subtracting it
+after the item leaves the viewport; the cache is cleared when the drag ends.
+
+#### Release and validation
+
+- Adds the `InteractableListDragTest` regression test: it renders the list with the real
+  `InteractableDragItemContainer` and pin, scrolls frame by frame until the dragged item leaves the
+  viewport, and asserts the card still draws at the pointer position. The test fails before the fix
+  (`570` instead of `210`) and passes after it.
+- The full `org.mozilla.fenix.tabstray.*` and `org.mozilla.fenix.tabgroups.*` suites pass with 0
+  failures; `fenix:spotlessKotlinCheck` passes.
+- Publishes only the `arm64-v8a` APK using the official 156.0.1 multi-locale GeckoView and the exact
+  official `versionCode 2016185922` with upstream `versionName 156.0.1`; no local GeckoView compilation
+  or packaging was performed.
+- APK: `Fenix-156.0.1-r13-arm64-v8a-release.apk`, size `SIZE_PLACEHOLDER` bytes, SHA-256: `SHA_PLACEHOLDER`.
+- Complete corresponding source: [fenix-156.0.1-r13](https://github.com/aenerv7/fenix/tree/fenix-156.0.1-r13). Fenix is an independent unofficial modified build, not sponsored or endorsed by Mozilla; this project provides maintenance and support. MPL 2.0 and third-party licenses are retained; Firefox is a trademark of the Mozilla Foundation.
+- `.idsig` is retained locally for verification and re-signing and is not a GitHub Release asset; the Windows Glean native-library limitation still requires Linux or CI coverage.
+
 ## 156.0.1-r12
 
 ### 中文

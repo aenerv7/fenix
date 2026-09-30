@@ -108,6 +108,14 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
   defective by construction: one state-level slot written by every item, so a non-dragged item released
   the pin a dragged item had just taken. Do not reintroduce either without evidence that the item pin is
   actually involved.
+- The list drag translation must keep subtracting the dragged item's layout offset once the item has left
+  the viewport. Such an item is kept composed by its pin and keeps drawing at the layout offset it had
+  when it left, so the item's drawn position is that offset plus the translation. A translation that falls
+  back to the raw drag distance draws the card about one viewport below the pointer, off screen: the drag
+  looks cancelled while the drop still lands correctly. `ListInteractionStateImpl.computeItemOffset`
+  caches the offset it last read from `visibleItemsInfo` and subtracts it in the fallback; the grid caches
+  the same value from the item's `onGloballyPositioned` coordinates. `InteractableListDragTest` covers the
+  list case.
 - Every list/grid interaction state must set its `moved` flag once the drag passes touch slop. All four
   states report it to the drag-start callback exactly once; without it `onExitLongPress` fires on every
   drag event and re-dispatches `TabDragStart` for the whole gesture.
