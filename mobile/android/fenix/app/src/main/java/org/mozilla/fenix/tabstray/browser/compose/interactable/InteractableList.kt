@@ -207,12 +207,20 @@ internal constructor(
     override val itemSize: Int?
         get() = listState.layoutInfo.visibleItemsInfo.firstOrNull { it.key !in ignoredItems }?.size
 
+    /*
+     * The layout offset the dragged item had when it was last laid out. An item that is dragged out of the
+     * viewport is kept composed by its item pin and keeps drawing at that offset, detached from the layout, so
+     * the translation has to keep subtracting it. The grid caches the same value from the item's coordinates.
+     */
+    private var draggedItemLayoutOffset: Float? = null
+
     override fun computeItemOffset(index: Int): Float {
         val itemAtIndex = listState.layoutInfo.visibleItemsInfo.firstOrNull { info -> info.index == index }
         if (itemAtIndex != null) {
+            draggedItemLayoutOffset = itemAtIndex.offset.toFloat()
             return (draggedItem.initialOffset + draggedItem.cumulatedOffset - itemAtIndex.offset)
         }
-        return draggedItem.initialOffset + draggedItem.cumulatedOffset
+        return draggedItem.initialOffset + draggedItem.cumulatedOffset - (draggedItemLayoutOffset ?: 0f)
     }
 
     override fun onTouchSlopPassed(offset: Float, shouldLongPress: Boolean) {
@@ -244,6 +252,7 @@ internal constructor(
         interactionMode = InteractionMode.List.None
         previousKeyOfDraggedItem = null
         moved = false
+        draggedItemLayoutOffset = null
         scrollJob?.cancel()
         scrollJob = null
     }
@@ -330,6 +339,7 @@ internal constructor(
         highlightedRect = null
         interactionMode = InteractionMode.List.None
         moved = false
+        draggedItemLayoutOffset = null
         scrollJob?.cancel()
         scrollJob = null
     }
