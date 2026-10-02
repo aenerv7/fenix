@@ -292,6 +292,66 @@ only `en-US` instead of the 99-locale list. Fix by deleting the stale copies und
 `<objdir>\gradle\build\mobile\android\**\merge*Assets\omni.ja`, then rebuilding with
 `-UseUpstreamGecko`. Never repair this by compiling Gecko locally.
 
+## Firefox Android 157.0 synchronization
+
+The 157.0 update was prepared from the official `FIREFOX-ANDROID_157_0_RELEASE` tag on the candidate
+branch `sync/firefox-android-157.0`, starting from the 156.0.1 baseline. The upstream delta spans
+15460 files and about 1.25M added lines.
+
+The delta was applied with `git apply --reject`, and every rejected file was then reconciled with a
+three-way merge against the fork's own revision of that file, using the 156.0.1 blob as the base.
+30 files were rejected; 21 of them held 38 real conflicts, all inside `mobile/android/fenix`. Two
+rejected paths are files the fork had deleted (the autofill service and the review prompt) that
+upstream still modifies; the fork deletions stand. The candidate changes 15458 files against its
+Fenix parent, which is the upstream delta minus those two paths.
+
+Upstream changes the fork adopts, with the fork's product policy reapplied:
+
+- `TabsUseCases.removeTab` and `removeTabs` renamed the `excludedTabIds` argument to
+  `excludedFallbackTabIds`. The fork's `getExcludedNormalTabIds(closingTabIds)` keeps its extra
+  argument and is renamed `getExcludedFallbackNormalTabIds` to match.
+- `ExpandedTabGroupActions` gained `onUngroupTabGroupClick`, which the expanded group ignores like
+  the other group-level actions. `onAddNewTabClick` stays non-nullable because the fork requires the
+  add-tab action to remain visible, so upstream's `else null` branch is not taken.
+- The efficiency test framework replaced `groups = listOf("...")` with `setOf(Group.…)` and the
+  enumerated `all` list with `scrollTraversalOrder`. The fork keeps its removal of the
+  page-summaries and Google Play rating selectors and of their navigation registrations.
+- `MenuBanner` was reduced upstream to a wrapper around the components banner, which draws the
+  Mozilla illustration. The fork keeps its own text-only banner.
+- `GeckoProvider` keeps the fork's reduced API: no autofill or login storage, and no
+  `applicationScope` argument on `createRuntime`.
+- `TabLayoutTest` and `BrowserToolbarMiddlewareTest` are fork rewrites. Upstream's new tests for the
+  tab-group onboarding callback, the homepage-as-new-tab back and forward actions, and the wide
+  toolbar were re-added on top of the fork's tests.
+- `values-*/strings.xml`: `browser_menu_change_wallpaper` became `browser_menu_customize_homepage`,
+  `ip_protection_title` became `ip_protection_settings_title`, and
+  `ip_protection_data_limit_reached_snackbar_action` became
+  `ip_protection_open_settings_snackbar_action`. Branding conflicts keep the Fenix wording.
+
+The delta adds no fixed-term activity, so the activity-removal policy had nothing to remove.
+Branding improved: upstream deleted the `fox_alert_crash_dark` and `fox_alert_crash_light` fox
+vectors used by the startup crash screen and replaced them with the non-fox `ic_kit_plug_error`,
+`kit_plug_error`, and `kit_devices_sync*` illustrations.
+
+`values-zh-rCN` has no missing entry against `values/strings.xml` and no duplicate name: the two new
+strings were translated, and the two renamed entries reuse the established wording.
+
+The release uses the pinned official 157.0 arm64-v8a GeckoView package recorded in
+`FENIX_UPSTREAM_GECKOVIEW.json`; local GeckoView compilation is prohibited because no Fenix-authored
+Gecko or native source changed. The exact official arm64-v8a versionCode is `2016186458`.
+
+### Stale generated crash-annotation sources
+
+`CrashReport.kt` and `CrashReport.java` are generated into the object directory from
+`CrashAnnotations.yaml` through `load.py` and `generate.py`. The copies left by an earlier baseline
+no longer matched the annotations the Android Components sources use, and Gradle's up-to-date checks
+had hidden the mismatch until the merge invalidated those tasks. `mach build faster` cannot repair
+them on this host: `third_party/angle` generates `angle_commit.h` with `file_generate_wrapper.py`
+and the wrapper passes `/third_party/angle/` as the working directory, which does not exist on
+Windows (`NotADirectoryError`). Regenerate the two files directly with the mach build virtualenv
+Python, passing forward-slash paths so that `generate.py` can derive the package name, and never by
+compiling Gecko for a release.
+
 ## Source-to-binary traceability
 
 If APKs are distributed, record their SHA-256 hashes and the exact Fenix tag in release notes. The

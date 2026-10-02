@@ -1,5 +1,144 @@
 # Fenix changes
 
+## 157.0-r1
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_157_0_RELEASE`（上游增量 15460 个文件）。本版把整个 Fenix 改动集重放到
+157.0 之上；下列条目是相对该基线的**全部生效**改动，156.0.1 各修订版中被后续修订版回退的中间做法
+（r5/r6 的 pin 改动、r8 的 `enteringGroupId` 扩展）不再保留。
+
+#### 品牌与功能精简
+
+- 正式版 launcher、圆形图标、adaptive icon 与主题图标改用兔子品牌；新标签页左上角与关于页显示
+  「兔子 + Fenix」wordmark；Fenix Labs、关于页、主屏搜索小组件与 Custom Tab 的 “Powered by Fenix”
+  菜单项使用 Fenix 品牌；默认浏览器提示不再显示 Mozilla 美术资源。
+- 界面与 Gecko 内置品牌资源中的产品名统一为 Fenix；上游来源与许可说明中必要的 Firefox、Mozilla、
+  GeckoView 名称保留。
+- 盾牌面板三种横幅状态改为纯文本左对齐，不再渲染上游狐狸插图；已防护状态的紫→橙渐变底板保留。
+- 从 UI、Android 自动填充服务与默认同步数据范围中移除密码、地址、信用卡和个人信息管理；系统自动
+  填充提供方列表不再提供 Fenix；移除 Play 商店评分入口。
+- 上游本版删除了启动崩溃页的两个狐狸矢量，替换为非狐狸插图。
+
+#### 标签页与标签页组
+
+- 群组页面产生的新标签默认留在当前群组，并提供「在标签页群组内打开」与「新建标签页群组打开」长按
+  菜单项；URL 与搜索建议点击使用当前 `searchState.sourceTabId`，与工具栏提交一致。
+- 群组内标签页提供作用域隔离的多选、移出群组、删除撤销与空群组恢复；展开群组复用全部标签页多选
+  工具栏的样式与内容宽度；长按群组标签页进入群组作用域选择，不改变全局标签页导航行为。
+- 展开群组内的选择工具栏打开时，系统返回键由该界面消费一次：关闭工具栏并清除选择与本地拖拽状态，
+  不折叠群组、不重复执行根返回；无选择时系统返回显示当前浏览器标签页（若属于该群组）或折叠群组；
+  手动收起（拖动、遮罩、手柄）只折叠群组，绝不打开标签页。
+- 群组内的新建标签页动作保持可见：`onAddNewTabClick` 不可为空，与上游群组工具栏的加号动作一致。
+- 关闭最后一个未分组标签页时，同时从不可变快照与 Lazy 列表/网格交互状态中移除该项，不留下残留项。
+- 显示项集合变化时无条件重置列表/网格交互状态：拖拽偏移按旧布局计算，集合变化后即失效；实时重排
+  只改顺序、不改变集合，因此不会触发重置。
+- 旧版列表交互状态在拖拽越过 touch slop 后置 `moved`，长按拖拽期间 `onExitLongPress` 恰好触发一次。
+- 列表项与网格项动画均无条件 `fadeOutSpec = null`：被移除的项立即离开布局，不会以脱离布局的残影
+  继续绘制（列表此前仅在群组入场时禁用淡出）。
+- 只有新建群组才标记 `enteringGroupId`；加入已有群组不重放群组入场动画。
+- 列表缓存被拖拽项最后一次布局偏移：项离开视口后仍按指针位置绘制，拖拽卡片不再错位约一个视口。
+- 保持上游长按手势序列：不在长按回调中同步切换 `pointerInput` 模式，长按选中后仍可继续拖拽。
+
+#### 本地化与布局
+
+- `values-zh-rCN` 相对 `values/strings.xml` 为 0 缺失、无重复项；本版新增
+  `ip_protection_settings_title`（内置 VPN）与 `ip_protection_open_settings_snackbar_action`（设置），
+  沿用既有术语。
+- 调整群组多选工具栏、系统导航栏、亮暗主题与溢出菜单的布局、层级与动画。
+- 只构建 Fenix，不构建 Focus。
+
+#### 发布与验证
+
+- 上游增量 15460 个文件；候选分支相对 Fenix 父提交改动 15458 个文件（差额为 fork 已删除、上游仍在
+  修改的两个文件）。30 个文件被 `git apply --reject` 拒绝，其中 21 个含 38 处真实冲突，全部位于
+  `mobile/android/fenix`。
+- `fenix:spotlessKotlinCheck` 通过；`fenix:testDebugUnitTest` PENDING_TESTS；`fenix:assembleDebug` PENDING_DEBUG。
+- 仅发布 `arm64-v8a` APK，使用官方 157.0 多语言 GeckoView，严格沿用官方 `versionCode 2016186458`
+  和上游 `versionName 157.0`；未进行本地 GeckoView 编译或打包。
+- APK：`Fenix-157.0-r1-arm64-v8a-release.apk`，大小 PENDING_SIZE 字节，SHA-256：PENDING_SHA。
+- 对应完整源码：[fenix-157.0-r1](https://github.com/aenerv7/fenix/tree/fenix-157.0-r1)。Fenix 是非官方独立修改版，不受 Mozilla 赞助或背书；维护与支持由本项目提供。保留 MPL 2.0 和第三方许可；Firefox 是 Mozilla Foundation 的商标。
+- `.idsig` 仅保留本地校验和重签名使用，不作为 GitHub Release 资产；Windows Glean 原生库限制仍需
+  Linux 或 CI 覆盖。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_157_0_RELEASE` (upstream delta: 15460 files). This release
+replays the whole Fenix change set onto 157.0; the entries below are the **complete effective** change
+set against that baseline. Intermediate behaviour that a later `rN` reverted (r5/r6's pin changes, r8's
+`enteringGroupId` extension) is not retained.
+
+#### Branding and feature reduction
+
+- The release launcher, round icon, adaptive icon, and themed icons use the rabbit branding; the new-tab
+  corner and the About screen show the "rabbit + Fenix" wordmark; Fenix Labs, the About screen, the
+  home-screen search widget, and the Custom Tab "Powered by Fenix" menu item use Fenix branding; the
+  default-browser prompt no longer shows Mozilla artwork.
+- Product names in the UI and in Gecko's built-in branding resources are unified as Fenix; the Firefox,
+  Mozilla, and GeckoView names required by upstream provenance and licence notices are kept.
+- The three shield panel banner states are text-only and left-aligned instead of rendering the upstream
+  fox illustrations; the protected state's purple-to-orange gradient plate is kept.
+- Password, address, credit-card, and personal-information management are removed from the UI, from the
+  Android autofill service, and from the default sync data set; Fenix is no longer offered as a system
+  autofill provider, and the Play Store rating entry point is removed.
+- Upstream deleted the two fox vectors used by the startup crash screen in this baseline and replaced
+  them with non-fox illustrations.
+
+#### Tabs and tab groups
+
+- A link opened from a group page stays in that group by default, with explicit "open in tab group" and
+  "open in a new tab group" long-press menu items; URL and search suggestion clicks use the current
+  `searchState.sourceTabId`, matching direct toolbar submission.
+- Tabs inside a group have group-scoped multi-select, remove-from-group, delete-undo, and empty-group
+  recovery; the expanded group reuses the All Tabs selection toolbar styling and content width;
+  long-pressing a group tab enters group-scoped selection without changing global tab-tray navigation.
+- While the group-tab selection toolbar is open, system Back is consumed once by that screen: it closes
+  the toolbar and clears selection and local drag state without collapsing the group or running the root
+  back action again. With no selection, system Back shows the focused browser tab when it belongs to the
+  displayed group, and otherwise collapses the group. Manual dismissal (drag, scrim, handle) only
+  collapses the group and never opens a browser tab.
+- The add-new-tab action inside a group stays visible: `onAddNewTabClick` is non-nullable, matching the
+  upstream group-toolbar plus action.
+- Closing the last ungrouped tab removes it from both the immutable browser-tab snapshot and the Lazy
+  list/grid interaction state, so no item is left behind.
+- Any change to the displayed item set resets the list/grid interaction state unconditionally: drag
+  offsets are computed against the previous layout and are meaningless afterwards. A live reorder only
+  changes the order, not the set, so it does not trigger a reset.
+- The legacy list interaction state sets `moved` once the drag passes touch slop, so `onExitLongPress`
+  fires exactly once per long-press drag.
+- Both the list and the grid item animations pass `fadeOutSpec = null` unconditionally: a removed item
+  leaves the layout at once instead of staying drawn, detached from the layout (the list previously
+  disabled the fade only while a group was entering).
+- Only a newly created group is marked as entering; adding tabs to an existing group does not replay the
+  group entrance animation.
+- The list caches the dragged item's last layout offset, so an item dragged out of the viewport keeps
+  drawing under the pointer instead of about one viewport away.
+- The upstream long-press gesture sequence is preserved: the `pointerInput` mode is never switched
+  synchronously from the long-press callback, so a held long press can still start a drag.
+
+#### Localization and layout
+
+- `values-zh-rCN` has no missing entry against `values/strings.xml` and no duplicate name; this baseline
+  adds `ip_protection_settings_title` (内置 VPN) and `ip_protection_open_settings_snackbar_action` (设置),
+  reusing the established terminology.
+- The group multi-select toolbar, system navigation bar, light and dark themes, and overflow menu layout,
+  hierarchy, and animations are adjusted.
+- Only Fenix is built; Focus is not built.
+
+#### Release and validation
+
+- Upstream delta: 15460 files. The candidate changes 15458 files against its Fenix parent (the two-path
+  difference is the files the fork deleted that upstream still modifies). `git apply --reject` rejected
+  30 files, 21 of which held 38 real conflicts, all inside `mobile/android/fenix`.
+- `fenix:spotlessKotlinCheck` passes; `fenix:testDebugUnitTest` PENDING_TESTS; `fenix:assembleDebug` PENDING_DEBUG.
+- Publishes only the `arm64-v8a` APK using the official 157.0 multi-locale GeckoView and the exact
+  official `versionCode 2016186458` with upstream `versionName 157.0`; no local GeckoView compilation or
+  packaging was performed.
+- APK: `Fenix-157.0-r1-arm64-v8a-release.apk`, size PENDING_SIZE bytes, SHA-256: PENDING_SHA.
+- Complete corresponding source: [fenix-157.0-r1](https://github.com/aenerv7/fenix/tree/fenix-157.0-r1). Fenix is an independent unofficial modified build, not sponsored or endorsed by Mozilla; this project provides maintenance and support. MPL 2.0 and third-party licenses are retained; Firefox is a trademark of the Mozilla Foundation.
+- `.idsig` is retained locally for verification and re-signing and is not a GitHub Release asset; the
+  Windows Glean native-library limitation still requires Linux or CI coverage.
+
 ## 156.0.1-r13
 
 ### 中文

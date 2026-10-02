@@ -7,7 +7,7 @@ Mozilla's general Firefox source documentation remains authoritative for the res
 
 ## Current fork customization summary
 
-The current upstream baseline is Firefox Android 156.0.1 (`FIREFOX-ANDROID_156_0_1_RELEASE`). The first
+The current upstream baseline is Firefox Android 157.0 (`FIREFOX-ANDROID_157_0_RELEASE`). The first
 upstream synchronization, including manual conflict resolution and the limited-time activity policy,
 is recorded in [FENIX_UPSTREAM_SYNC.md](FENIX_UPSTREAM_SYNC.md). Release-by-release user-facing notes
 are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
@@ -305,8 +305,8 @@ Release APKs must use the exact versionCode from the corresponding official upst
 same baseline and ABI. The checked-in `FENIX_UPSTREAM_VERSION_CODES.json` records those values;
 update it from the official Mozilla archive when changing `FENIX_UPSTREAM_RELEASE`. The release
 script passes the recorded value to Gradle and verifies the resulting APK manifest, so a build-time
-clock value cannot silently become the release versionCode. For the 156.0.1 baseline, the official
-arm64-v8a value is `2016185922`.
+clock value cannot silently become the release versionCode. For the 157.0 baseline, the official
+arm64-v8a value is `2016186458`.
 
 Do not add a fork revision offset: a fork build is a modified build of that upstream versionCode,
 and changing it would prevent normal downgrade or replacement workflows.
@@ -349,14 +349,14 @@ For a narrow test class, append Gradle's test selector:
 Slow command output should be redirected to `artifacts/` and inspected there instead of piping the
 live process through output filters.
 
-### Windows native-test limitation in the 154.0.1, 155.0, 155.0.1, 156.0, and 156.0.1 baselines
+### Windows native-test limitation in the 154.0.1, 155.0, 155.0.1, 156.0, 156.0.1, and 157.0 baselines
 
 Some Fenix JVM test classes use `FenixGleanTestRule`, which loads Application Services through JNA.
 The upstream `full-megazord-libsForTests-154.0.1.jar` contains Linux and macOS megazord libraries but
 does not contain the required Windows native libraries. On native Windows, these classes fail during
 test-rule initialization with `UnsatisfiedLinkError` for `jnidispatch.dll`; their test bodies have not
-started at that point. The same limitation was observed when validating the 155.0, 155.0.1, 156.0, and
-156.0.1 baselines.
+started at that point. The same limitation was observed when validating the 155.0, 155.0.1, 156.0,
+156.0.1, and 157.0 baselines.
 
 Do not repeatedly clear Gradle caches or download only `jnidispatch.dll`: JNA is merely the first
 missing layer, and the Windows megazord is absent as well. Run affected Glean-backed unit tests in a
