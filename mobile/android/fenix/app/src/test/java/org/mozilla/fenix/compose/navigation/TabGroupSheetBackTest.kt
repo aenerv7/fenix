@@ -21,6 +21,7 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlin.test.assertEquals
+import mozilla.components.compose.base.theme.Theme
 import mozilla.components.compose.base.utils.LocalUnderTest
 import org.junit.Rule
 import org.junit.Test
@@ -32,7 +33,6 @@ import org.mozilla.fenix.tabstray.data.createTab
 import org.mozilla.fenix.tabstray.data.createTabGroup
 import org.mozilla.fenix.tabstray.redux.state.TabsTrayState.Mode
 import org.mozilla.fenix.theme.FirefoxTheme
-import org.mozilla.fenix.theme.Theme
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowDialog
 
@@ -176,7 +176,7 @@ class TabGroupSheetBackTest {
                                 ) {
                                     ExpandedTabGroup(
                                         group = group,
-                                        actions = ExpandedTabGroupActions({}, {}, {}, {}, {}, {}, {}),
+                                        actions = ExpandedTabGroupActions({}, {}, {}, {}, {}, {}, {}, {}),
                                         displayTabsInGrid = true,
                                         tabInteractionHandler = NoOpTabInteractionHandler,
                                         selectionMode = mode.value,

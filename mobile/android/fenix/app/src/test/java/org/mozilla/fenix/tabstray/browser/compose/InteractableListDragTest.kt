@@ -23,6 +23,7 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import mozilla.components.compose.base.theme.Theme
 import mozilla.components.compose.base.utils.LocalUnderTest
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -36,7 +37,6 @@ import org.mozilla.fenix.tabstray.browser.compose.interactable.detectListPressAn
 import org.mozilla.fenix.tabstray.controller.NoOpTabInteractionHandler
 import org.mozilla.fenix.tabstray.ui.tabitems.tabItemListInteractionAnimation
 import org.mozilla.fenix.theme.FirefoxTheme
-import org.mozilla.fenix.theme.Theme
 
 // Number of tab items rendered by the harness list.
 private const val ITEM_COUNT = 20

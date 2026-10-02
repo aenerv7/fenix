@@ -237,6 +237,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
                     tabsUseCases = components.useCases.tabsUseCases,
                     sendTabUseCases = null,
                     customTabSessionId = null,
+                    applicationScope = components.applicationScope,
                 ),
             owner = this,
             view = view,

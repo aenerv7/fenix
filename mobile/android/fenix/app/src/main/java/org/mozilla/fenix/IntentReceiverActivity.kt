@@ -151,7 +151,7 @@ class IntentReceiverActivity : Activity() {
             components.intentProcessors.externalDeepLinkIntentProcessor +
             components.intentProcessors.webNotificationsIntentProcessor +
             modeDependentProcessors +
-            NewTabShortcutIntentProcessor() +
+            NewTabShortcutIntentProcessor(components.settings.enableHomepageAsNewTab) +
             UninstallShortcutIntentProcessor()
     }
 

@@ -109,6 +109,8 @@ class SearchSuggestionTabRoutingTest {
                 toolbarStore = mockk(relaxed = true),
                 navController = mockk(relaxed = true),
                 browsingModeManager = browsingModeManager,
+                shareUseCases = mockk(relaxed = true),
+                clipboardHandler = mockk(relaxed = true),
             )
         val store = SearchFragmentStore(SearchFragmentState.EMPTY.copy(tabId = initialTabId))
         val url = "https://example.com/suggestion"

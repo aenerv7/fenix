@@ -12,6 +12,7 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -27,6 +28,8 @@ private val WEEK_IN_MILLIS = TimeUnit.DAYS.toMillis(7)
 
 /** Weekly blocked-tracker counts over this show the "trackers blocked" notification variant. */
 private const val SHOW_NOTIFICATION_THRESHOLD = 47
+
+private val logger = Logger("PrivacyReportNotificationWorker")
 
 /**
  * Background [CoroutineWorker] that shows the weekly privacy report notification, summarizing how many trackers were
@@ -50,8 +53,6 @@ class PrivacyReportNotificationWorker(
     private val dateTimeProvider: DateTimeProvider = DefaultDateTimeProvider(),
 ) : CoroutineWorker(applicationContext, workerParameters) {
 
-    private val logger = Logger("PrivacyReportNotificationWorker")
-
     override suspend fun doWork(): Result {
         ensurePrivacyReportNotificationChannelExists(applicationContext)
 
@@ -60,9 +61,13 @@ class PrivacyReportNotificationWorker(
         // before doing any work.
         if (settings.shouldUseTrackingProtection) {
             val trackersBlockedCount = fetchTrackersBlockedThisWeek()
+            logger.info("trackersBlockedCount is $trackersBlockedCount")
+
             if (trackersBlockedCount > SHOW_NOTIFICATION_THRESHOLD) {
+                logger.info("trackersBlockedCount is above the notification threshold")
                 showPrivacyReportNotification(applicationContext, notificationsDelegate, trackersBlockedCount)
             } else {
+                logger.info("trackersBlockedCount is below the notification threshold")
                 showPrivacyReportNotification(applicationContext, notificationsDelegate)
             }
         }
@@ -84,7 +89,13 @@ class PrivacyReportNotificationWorker(
                 trackingProtectionUseCases.fetchTrackingEvents(
                     dateFrom = oneWeekAgo,
                     dateTo = now,
-                    onSuccess = { events -> continuation.resume(events.sumOf { it.count }) },
+                    onSuccess = { events ->
+                        logger.info(
+                            "Successfully fetched tracking events for the privacy report notification. " +
+                                "Event count: ${events.size}"
+                        )
+                        continuation.resume(events.sumOf { it.count })
+                    },
                     onError = { error ->
                         logger.error("Failed to fetch tracking events for the privacy report notification", error)
                         continuation.resume(0)
@@ -106,6 +117,7 @@ class PrivacyReportNotificationWorker(
         ) {
             val onboardingCompletedTimestamp = settings.onboardingCompletedTimestamp
             if (onboardingCompletedTimestamp < 0) {
+                logger.info("Onboarding is not yet completed.")
                 return
             }
 
@@ -125,11 +137,22 @@ class PrivacyReportNotificationWorker(
                     ExistingPeriodicWorkPolicy.KEEP,
                     request,
                 )
+            logger.info("Registered the privacy report notification worker.")
         }
 
         /** Cancel the [PrivacyReportNotificationWorker]. */
         fun cancel(context: Context) {
-            WorkManager.getInstance(context).cancelUniqueWork(PRIVACY_REPORT_NOTIFICATION_WORK_NAME)
+            logger.info("Cancelling the privacy report notification worker...")
+
+            try {
+                WorkManager.getInstance(context).cancelUniqueWork(PRIVACY_REPORT_NOTIFICATION_WORK_NAME)
+                logger.info("Privacy report notification worker cancellation completed.")
+            } catch (e: CancellationException) {
+                logger.debug(
+                    "Stopped waiting for privacy report notification worker cancellation because" +
+                        " the coroutine was cancelled."
+                )
+            }
         }
     }
 }

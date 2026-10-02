@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
+import mozilla.components.compose.base.theme.Theme
 import mozilla.components.compose.base.utils.LocalUnderTest
 import org.junit.Rule
 import org.junit.Test
@@ -51,7 +52,6 @@ import org.mozilla.fenix.tabstray.ui.banner.MultiSelectTabsTrayBanner
 import org.mozilla.fenix.tabstray.ui.banner.MultiSelectTabsTrayMenu
 import org.mozilla.fenix.tabstray.ui.banner.generateMultiSelectBannerMenuItems
 import org.mozilla.fenix.theme.FirefoxTheme
-import org.mozilla.fenix.theme.Theme
 
 @RunWith(AndroidJUnit4::class)
 class ExpandedTabGroupTest {
@@ -66,6 +66,7 @@ class ExpandedTabGroupTest {
             override val ungroupTabGroupEnabled: Boolean = true
             override val tabGroupsOnboardingEnabled: Boolean = false
             override val tabGroupsLiveReorderEnabled: Boolean = false
+            override val tabGroupsStripEnabled: Boolean = false
         }
 
     @Test
@@ -650,6 +651,31 @@ class ExpandedTabGroupTest {
     }
 
     @Test
+    fun verifyUngroupTabGroupClick() {
+        var ungroupClicked = false
+
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalTabManagementFeatureHelper provides tabManagementFeatureHelper) {
+                FirefoxTheme(theme = Theme.Light) {
+                    Surface {
+                        ExpandedTabGroup(
+                            group = fakeTabGroup(),
+                            actions = expandedTabGroupActions(onUngroupTabGroupClick = { ungroupClicked = true }),
+                            displayTabsInGrid = true,
+                            tabInteractionHandler = NoOpTabInteractionHandler,
+                        )
+                    }
+                }
+            }
+        }
+
+        composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_GROUP_THREE_DOT_BUTTON).performClick()
+        composeTestRule.onNodeWithTag(TabsTrayTestTag.UNGROUP_TAB_GROUP).performClick()
+
+        assertTrue(ungroupClicked)
+    }
+
+    @Test
     fun verifyAddNewTabClick() {
         var addNewTabClicked = false
 
@@ -686,6 +712,7 @@ class ExpandedTabGroupTest {
         onDeleteTabGroupClick: () -> Unit = {},
         onEditTabGroupClick: () -> Unit = {},
         onCloseTabGroupClick: () -> Unit = {},
+        onUngroupTabGroupClick: () -> Unit = {},
         onAddNewTabClick: () -> Unit = {},
         onShareTabGroupClick: () -> Unit = {},
     ) =
@@ -695,6 +722,7 @@ class ExpandedTabGroupTest {
             onDeleteTabGroupClick = onDeleteTabGroupClick,
             onEditTabGroupClick = onEditTabGroupClick,
             onCloseTabGroupClick = onCloseTabGroupClick,
+            onUngroupTabGroupClick = onUngroupTabGroupClick,
             onAddNewTabClick = onAddNewTabClick,
             onShareTabGroupClick = onShareTabGroupClick,
         )

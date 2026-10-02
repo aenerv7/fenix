@@ -237,6 +237,9 @@ class TabStorageMiddleware(
 
             is TabGroupAction.DeleteConfirmed -> handleDeleteClicked(action.group, store)
 
+            is TabGroupAction.UngroupConfirmed ->
+                scope.launch { tabGroupRepository.ungroupTabGroup(tabGroupId = action.group.id) }
+
             is TabGroupAction.DragAndDropInitiated -> {
                 handleDragAndDrop(action = action, store = store)
             }
@@ -860,7 +863,7 @@ class TabStorageMiddleware(
 
             removeTabsUseCase.invoke(
                 ids = group.tabs.map { it.id },
-                excludedTabIds = inactiveTabIds,
+                excludedFallbackTabIds = inactiveTabIds,
             )
 
             tabGroupRepository.deleteTabGroupById(group.id)

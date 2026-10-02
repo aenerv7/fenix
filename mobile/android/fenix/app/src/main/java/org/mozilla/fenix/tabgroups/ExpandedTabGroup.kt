@@ -169,6 +169,7 @@ fun ExpandedTabGroup(
                 onItemClick = actions.onItemClick,
                 onItemLongClick = onItemLongClick,
                 onDeleteTabGroupClick = {}, // Ignore tab group deletes
+                onUngroupTabGroupClick = {}, // Ignore tab group ungroups
                 onEditTabGroupClick = {}, // Ignore tab group edits
                 onCloseTabGroupClick = {}, // Ignore tab group closes
                 onShareTabGroupClick = {}, // Ignore tab group shares
@@ -265,6 +266,7 @@ fun ExpandedTabGroup(
                 onDeleteTabGroupClick = onDeleteTabGroupClick,
                 onEditTabGroupClick = onEditTabGroupClick,
                 onCloseTabGroupClick = onCloseTabGroupClick,
+                onUngroupTabGroupClick = {},
                 onAddNewTabClick = {},
                 onShareTabGroupClick = {},
             ),
@@ -365,7 +367,7 @@ private fun ViewTabGroupHeader(
             onEditTabGroupClick = actions.onEditTabGroupClick,
             onCloseTabGroupClick = actions.onCloseTabGroupClick,
             onShareTabGroupClick = actions.onShareTabGroupClick,
-            onUngroupTabGroupClick = {},
+            onUngroupTabGroupClick = actions.onUngroupTabGroupClick,
         )
     }
 }
@@ -401,6 +403,7 @@ private fun ExpandedTabGroupPreview(
                         onDeleteTabGroupClick = {},
                         onEditTabGroupClick = {},
                         onCloseTabGroupClick = {},
+                        onUngroupTabGroupClick = {},
                         onAddNewTabClick = {},
                         onShareTabGroupClick = {},
                     ),
@@ -520,6 +523,7 @@ private class ExpandedTabGroupPreviewProvider : PreviewParameterProvider<Expande
  * @property onDeleteTabGroupClick Invoked when the user clicks on delete tab group.
  * @property onEditTabGroupClick Invoked when the user clicks to edit the group.
  * @property onCloseTabGroupClick Invoked when the user clicks to close a tab group.
+ * @property onUngroupTabGroupClick Invoked when the user clicks to ungroup a tab group.
  * @property onAddNewTabClick Invoked when the user clicks to add a new tab to the group.
  * @property onShareTabGroupClick Invoked when the user clicks to share the group.
  */
@@ -529,6 +533,7 @@ data class ExpandedTabGroupActions(
     val onDeleteTabGroupClick: () -> Unit,
     val onEditTabGroupClick: () -> Unit,
     val onCloseTabGroupClick: () -> Unit,
+    val onUngroupTabGroupClick: () -> Unit,
     val onAddNewTabClick: () -> Unit,
     val onShareTabGroupClick: () -> Unit,
 )
