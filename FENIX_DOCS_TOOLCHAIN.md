@@ -46,6 +46,26 @@ The command succeeds only when Sphinx returns zero and the warning checker repor
 Entries reported as `Known Failures` match the upstream allowlist in `docs/config.yml`; do not add a
 new pattern merely to make the count green.
 
+### 157.0 baseline run
+
+`mach doc docs --no-serve --no-open --outdir artifacts/docs-full-<timestamp>` completes the build but
+reports `Failures: 2`, both outside `mobile/android/fenix`:
+
+```text
+testing/marionette/client/marionette_driver/addons.py:docstring of marionette_driver.addons.Addons:1:
+  ERROR: Unknown target name: "addonmanager api". [docutils]
+testing/marionette/client/marionette_driver/localization.py:docstring of marionette_driver.localization.L10n:3:
+  ERROR: Unknown target name: "localization". [docutils]
+```
+
+They are upstream Python docstring cross-references, not a Fenix product regression, and they are not
+added to the allowlist. The first 157.0 attempt failed earlier with
+`sphinx.errors.SphinxError: node.cmd was not found. Install it using "npm install -g jsdoc"`: sphinx-js
+looks up `node` on `PATH` under the name `node.cmd`, and the repository-local toolchain only ships
+`node.exe`. A local `.mozbuild/node/node.cmd` shim that forwards to `node.exe` fixes the host tooling
+gap; `.mozbuild/` is ignored by Git, so it must be recreated on a fresh checkout before running the
+documentation gate.
+
 ## JSDoc compatibility debt
 
 The Firefox Android 155.0 tree emits JSDoc diagnostics for TypeScript-style type expressions such as
