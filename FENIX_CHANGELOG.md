@@ -53,10 +53,15 @@
 - 上游增量 15460 个文件；候选分支相对 Fenix 父提交改动 15458 个文件（差额为 fork 已删除、上游仍在
   修改的两个文件）。30 个文件被 `git apply --reject` 拒绝，其中 21 个含 38 处真实冲突，全部位于
   `mobile/android/fenix`。
-- `fenix:spotlessKotlinCheck` 通过；`fenix:testDebugUnitTest` PENDING_TESTS；`fenix:assembleDebug` PENDING_DEBUG。
+- `fenix:spotlessKotlinCheck` 通过；`fenix:assembleDebug` 通过。
+- `fenix:testDebugUnitTest`：6265 项，264 失败、1394 跳过。失败全部是已记录的 Windows 环境限制：241 项
+  为缺失 Windows megazord/JNA 原生库（`Could not initialize class com.sun.jna.Native`），其余为 Windows
+  专有的路径分隔符、Robolectric 临时目录与 DataStore 重命名差异。与本次改动直接相关的
+  `org.mozilla.fenix.tabstray.*`、`org.mozilla.fenix.tabgroups.*`、搜索建议路由、工具栏与导航测试共
+  892 项，0 失败（265 跳过）；这些跳过项仍需 Linux 或 CI 覆盖。
 - 仅发布 `arm64-v8a` APK，使用官方 157.0 多语言 GeckoView，严格沿用官方 `versionCode 2016186458`
   和上游 `versionName 157.0`；未进行本地 GeckoView 编译或打包。
-- APK：`Fenix-157.0-r1-arm64-v8a-release.apk`，大小 PENDING_SIZE 字节，SHA-256：PENDING_SHA。
+- APK：`Fenix-157.0-r1-arm64-v8a-release.apk`，大小 `131938691` 字节，SHA-256：`C5B2CF4C73A7AA801003E193C6DC43386164F2900B22E47E9810CD1DBB058C15`。
 - 对应完整源码：[fenix-157.0-r1](https://github.com/aenerv7/fenix/tree/fenix-157.0-r1)。Fenix 是非官方独立修改版，不受 Mozilla 赞助或背书；维护与支持由本项目提供。保留 MPL 2.0 和第三方许可；Firefox 是 Mozilla Foundation 的商标。
 - `.idsig` 仅保留本地校验和重签名使用，不作为 GitHub Release 资产；Windows Glean 原生库限制仍需
   Linux 或 CI 覆盖。
@@ -130,11 +135,18 @@ set against that baseline. Intermediate behaviour that a later `rN` reverted (r5
 - Upstream delta: 15460 files. The candidate changes 15458 files against its Fenix parent (the two-path
   difference is the files the fork deleted that upstream still modifies). `git apply --reject` rejected
   30 files, 21 of which held 38 real conflicts, all inside `mobile/android/fenix`.
-- `fenix:spotlessKotlinCheck` passes; `fenix:testDebugUnitTest` PENDING_TESTS; `fenix:assembleDebug` PENDING_DEBUG.
+- `fenix:spotlessKotlinCheck` passes; `fenix:assembleDebug` passes.
+- `fenix:testDebugUnitTest`: 6265 tests, 264 failed, 1394 skipped. Every failure is a recorded Windows
+  environment limitation: 241 are the missing Windows megazord/JNA native libraries (`Could not
+  initialize class com.sun.jna.Native`) and the rest are Windows-only path separator, Robolectric temp
+  directory, and DataStore rename differences. The suites that cover this change —
+  `org.mozilla.fenix.tabstray.*`, `org.mozilla.fenix.tabgroups.*`, search suggestion routing, toolbar,
+  and navigation — pass 892 tests with 0 failures (265 skipped); the skipped ones still need Linux or CI
+  coverage.
 - Publishes only the `arm64-v8a` APK using the official 157.0 multi-locale GeckoView and the exact
   official `versionCode 2016186458` with upstream `versionName 157.0`; no local GeckoView compilation or
   packaging was performed.
-- APK: `Fenix-157.0-r1-arm64-v8a-release.apk`, size PENDING_SIZE bytes, SHA-256: PENDING_SHA.
+- APK: `Fenix-157.0-r1-arm64-v8a-release.apk`, size `131938691` bytes, SHA-256: `C5B2CF4C73A7AA801003E193C6DC43386164F2900B22E47E9810CD1DBB058C15`.
 - Complete corresponding source: [fenix-157.0-r1](https://github.com/aenerv7/fenix/tree/fenix-157.0-r1). Fenix is an independent unofficial modified build, not sponsored or endorsed by Mozilla; this project provides maintenance and support. MPL 2.0 and third-party licenses are retained; Firefox is a trademark of the Mozilla Foundation.
 - `.idsig` is retained locally for verification and re-signing and is not a GitHub Release asset; the
   Windows Glean native-library limitation still requires Linux or CI coverage.
