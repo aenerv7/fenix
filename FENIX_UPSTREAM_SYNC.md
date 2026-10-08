@@ -352,6 +352,28 @@ Windows (`NotADirectoryError`). Regenerate the two files directly with the mach 
 Python, passing forward-slash paths so that `generate.py` can derive the package name, and never by
 compiling Gecko for a release.
 
+## Firefox Android 157.0.1 synchronization
+
+The 157.0.1 update was prepared from the official `FIREFOX-ANDROID_157_0_1_RELEASE` tag on the
+candidate branch `sync/firefox-android-157.0.1`, starting from the 157.0 baseline. The upstream delta
+spans 343 files (54 added, 1 deleted, 288 modified).
+
+The delta applied with `git apply --3way` left conflicts in 9 `mobile/android/fenix`
+`values-*/strings.xml` files (`values-el`, `values-en-rCA`, `values-es-rCL`, `values-hu`,
+`values-lv`, `values-oc`, `values-tt`, `values-uk`, `values-zh-rCN`). Every hunk was resolved on the
+fork side, and the genuinely new upstream translations whose name exists in the fork's
+`values/strings.xml` were then appended. This keeps the fork's branding and its removed entries
+while matching the fork's string set. The candidate changes 344 files against its Fenix parent (the
+343 upstream changes plus `FENIX_UPSTREAM_RELEASE`).
+
+`values-zh-rCN` remains complete: no missing entry against `values/strings.xml` and no duplicate
+name. Upstream added translations only for existing strings in the other eight conflicted locales;
+it added and removed no English string in this patch release.
+
+The release uses the pinned official 157.0.1 arm64-v8a GeckoView package recorded in
+`FENIX_UPSTREAM_GECKOVIEW.json`; local GeckoView compilation is prohibited because no Fenix-authored
+Gecko or native source changed. The exact official arm64-v8a versionCode is `2016188626`.
+
 ## Source-to-binary traceability
 
 If APKs are distributed, record their SHA-256 hashes and the exact Fenix tag in release notes. The
