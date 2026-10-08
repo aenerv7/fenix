@@ -1452,7 +1452,7 @@
     Category header of a preference that allows a user to enable or disable the inactive tabs feature
   -->
   <string name="preferences_inactive_tabs">将旧标签页切换至休眠状态</string>
-  <!-- Title of inactive tabs preference -->
+  <!-- Summary of the preference that allows a user to enable or disable the inactive tabs feature. -->
   <string name="preferences_inactive_tabs_title">两周内未查看的标签页将进入休眠状态。</string>
   <!-- Title for the preference to enable or disable the tab groups feature -->
   <string name="preferences_tab_groups_feature">启用标签页群组</string>
@@ -1736,16 +1736,6 @@
     %1$d is the number of bookmarks selected
   -->
   <string name="history_multi_select_title">已选择 %1$d 条历史记录</string>
-  <!-- Text for the header that groups the history for today -->
-  <string name="history_today">今天</string>
-  <!-- Text for the header that groups the history for yesterday -->
-  <string name="history_yesterday">昨天</string>
-  <!-- Text for the header that groups the history the past 7 days -->
-  <string name="history_7_days">最近 7 天</string>
-  <!-- Text for the header that groups the history the past 30 days -->
-  <string name="history_30_days">过去 30 天</string>
-  <!-- Text for the header that groups the history older than the last month -->
-  <string name="history_older">更早</string>
   <!-- Text shown when no history exists -->
   <string name="history_empty_message">无历史记录</string>
   <!--
