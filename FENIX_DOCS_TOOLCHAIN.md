@@ -66,6 +66,15 @@ looks up `node` on `PATH` under the name `node.cmd`, and the repository-local to
 gap; `.mozbuild/` is ignored by Git, so it must be recreated on a fresh checkout before running the
 documentation gate.
 
+### 158.0 baseline run
+
+`mach doc docs --no-serve --no-open --outdir artifacts/docs-full-20261013-101112` completes with
+`Failures: 0` and `Known Failures: 37`. The two marionette docstring cross-reference errors that were
+unaccounted for at 157.0 are gone, so no new pattern was added to `docs/config.yml`. The remaining
+diagnostics are the recorded categories: JSDoc relaxed-mode lexing of TypeScript-style expressions,
+MyST cross-reference mismatches in the generated JS and NSS pages, and python/taskgraph reference
+ambiguities. The repository-local `.mozbuild/node/node.cmd` shim was already present.
+
 ## JSDoc compatibility debt
 
 The Firefox Android 155.0 tree emits JSDoc diagnostics for TypeScript-style type expressions such as

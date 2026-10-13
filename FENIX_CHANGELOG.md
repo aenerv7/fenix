@@ -1,5 +1,174 @@
 # Fenix changes
 
+## 158.0-r1
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_158_0_RELEASE`（上游增量 15042 个文件）。本版把整个 Fenix 改动集重放到
+158.0 之上；下列条目是相对该基线的**全部生效**改动。
+
+#### 品牌与功能精简
+
+- 正式版 launcher、圆形图标、adaptive icon 与主题图标使用兔子品牌；新标签页左上角与关于页显示
+  「兔子 + Fenix」wordmark；Fenix Labs、关于页、主屏搜索小组件与 Custom Tab 的 “Powered by Fenix”
+  菜单项使用 Fenix 品牌；默认浏览器提示不再显示 Mozilla 美术资源。
+- 界面与 Gecko 内置品牌资源中的产品名统一为 Fenix；上游来源与许可说明中必要的 Firefox、Mozilla、
+  GeckoView 名称保留。本版上游新增的界面字符串未引入新的狐狸美术资源。
+- 盾牌面板三种横幅状态仍为纯文本左对齐，不渲染上游狐狸插图；已防护状态的紫→橙渐变底板保留。
+- 密码、地址、信用卡与个人信息管理仍从 UI、Android 自动填充服务与默认同步数据范围中移除：158.0
+  重新引入的密码菜单入口（`MainMenu` 条目、`onPasswordsMenuClick`、`MenuAction.Navigate.Passwords`
+  及其导航与遥测分支）在本版中被再次移除；`BackgroundServices` 仍只同步历史、书签与标签页，账号
+  设置页不恢复密码/信用卡/地址复选框。系统自动填充提供方列表中仍不提供 Fenix，Play 商店评分入口
+  仍未恢复。
+
+#### 标签页与标签页组
+
+- 展开群组保留完整的功能集：群组作用域多选、复用全部标签页样式的选择工具栏与二级菜单、选择期间的
+  系统返回键消费、手动收起只折叠群组，以及始终可见的新建标签页动作（`onAddNewTabClick` 不可为空）。
+- 上游 158.0 把标签页项动画移到新文件 `TabItemAnimations.kt`，本版在该文件中重新落实 fork 策略：
+  列表项与网格项动画均无条件 `fadeOutSpec = null`，被移除的项立即离开布局，不留下脱离布局的残影。
+- 群组内标签页的移出群组、关闭后清空群组、撤销恢复到原群组三条存储动作由 `TabStorageMiddleware`
+  继续处理；上游新增的 `TabAddedToExistingTabGroup` 命名与新增的群组流程 `when` 分支已适配。
+- 群组页面产生的新标签默认留在当前群组，并提供「在标签页群组内打开」与「新建标签页群组打开」长按
+  菜单项；URL 与搜索建议点击使用当前 `searchState.sourceTabId`，与工具栏提交一致。
+- 只有新建群组才标记为入场；加入已有群组不重放群组入场动画。关闭最后一个未分组标签页时同时从不可变
+  快照与 Lazy 列表/网格交互状态中移除；显示项集合变化时无条件重置交互状态；拖拽越过 touch slop 后
+  置 `moved`，长按拖拽期间 `onExitLongPress` 恰好触发一次；列表继续缓存被拖拽项的最后布局偏移。
+- 保持上游长按手势序列：不在长按回调中同步切换 `pointerInput` 模式，长按选中后仍可继续拖拽。
+- 标签页群组存储层改用 android-components 的 `feature-tabgroups-storage`
+  （`mozilla.components.feature.tabgroups.storage.*`），`createTabGroupWithTabs` 通过 `TabGroup(tabIds = …)`
+  携带标签页；`TabInteractionHandler`/`TabItemInteractionState` 更名为
+  `ItemInteractionHandler`/`ItemInteractionState`。
+- 底部弹窗仍使用 fork 的 `skipOpeningAnimation`（直接以展开状态创建 sheet，而不是上游的延时展开）；
+  上游新增的两个调用点（群组流程与标签页托盘）已映射到该参数。
+
+#### 本地化与布局
+
+- `values-zh-rCN` 相对 `values/strings.xml` 为 0 缺失、无重复项；158.0 上游新增的 17 条字符串已翻译，
+  沿用文件既有术语：标签页栏位置/顶部/底部、标签页布局与整理、标签页群组标题与说明、休眠标签页、
+  已缓存、实时页面、添加到群组、页面标记、正在播放媒体、阅读模式选项与朗读、发送到所选设备等。
+- 其他语言沿用上游的部分翻译集合；本版上游新增的翻译按上游内容采用，同名的 fork 品牌条目仍以
+  fork 文本为准。
+- 调整群组多选工具栏、系统导航栏、亮暗主题与溢出菜单的布局、层级与动画。
+- 只构建 Fenix，不构建 Focus。
+
+#### 发布与验证
+
+- 上游增量 15042 个文件；候选提交相对 Fenix 父提交改动 15045 个文件。
+- 本版改以三方合并（`git merge-tree --merge-base=FIREFOX-ANDROID_157_0_RELEASE`）落地上游增量，
+  31 个文件、46 处冲突需要人工解决，其余文件自动合并；合并过程中被上游重写而丢失的 fork 代码
+  （展开群组选择工具栏、`RenderExpandedTabGroup` 参数、`SharedTabItemUi` 动画、`TabsTrayItem`
+  的 `shouldFullyExpandOnFirstOpen`）已全部核对并恢复。
+- `fenix:spotlessKotlinCheck` 通过；`fenix:compileDebugKotlin` 与 `fenix:compileDebugUnitTestKotlin`
+  通过；`fenix:assembleDebug` 通过。
+- `fenix:testDebugUnitTest`：6570 项，253 失败、1474 跳过。失败全部是已记录的 Windows 环境限制：230 项
+  为缺失 Windows megazord/JNA 原生库（`Could not initialize class com.sun.jna.Native` 与
+  `jnidispatch.dll not found`），10 项为下载条目的 Windows 路径分隔符差异，5 项为临时目录重命名差异，
+  4 项为 Robolectric SQLite 数据库路径，其余为 MockK 上下文与遥测顺序差异。`org.mozilla.fenix.tabstray.*`
+  共 731 项 0 失败（195 跳过）；`org.mozilla.fenix.tabgroups.*` 中除上述 SQLite 路径限制外 0 失败。
+- 仅发布 `arm64-v8a` APK，使用官方 158.0 多语言 GeckoView（99 个 locale，含 `zh-CN`），严格沿用官方
+  `versionCode 2016189050` 和上游 `versionName 158.0`；未进行本地 GeckoView 编译或打包。
+- 文档门禁：`mach doc docs` 输出 `Failures: 0`、`Known Failures: 37`，无 `mobile/android` 相关失败。
+- APK：`Fenix-158.0-r1-arm64-v8a-release.apk`，大小 `132934216` 字节，SHA-256：`0E6DA8452F0EEB3EA6E0D1ADA198C1B0DC081BEC14E4656727D3FE5977A78370`。
+- 对应完整源码：[fenix-158.0-r1](https://github.com/aenerv7/fenix/tree/fenix-158.0-r1)。Fenix 是非官方独立修改版，不受 Mozilla 赞助或背书；维护与支持由本项目提供。保留 MPL 2.0 和第三方许可；Firefox 是 Mozilla Foundation 的商标。
+- `.idsig` 仅保留本地校验和重签名使用，不作为 GitHub Release 资产；Windows Glean 原生库限制仍需
+  Linux 或 CI 覆盖。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_158_0_RELEASE` (upstream delta: 15042 files). This release
+replays the whole Fenix change set onto 158.0; the entries below are the **complete effective** change
+set against that baseline.
+
+#### Branding and feature reduction
+
+- The release launcher, round icon, adaptive icon, and themed icons use the rabbit branding; the new-tab
+  corner and the About screen show the "rabbit + Fenix" wordmark; Fenix Labs, the About screen, the
+  home-screen search widget, and the Custom Tab "Powered by Fenix" menu item use Fenix branding; the
+  default-browser prompt no longer shows Mozilla artwork.
+- Product names in the UI and in Gecko's built-in branding resources are unified as Fenix; the Firefox,
+  Mozilla, and GeckoView names required by upstream provenance and licence notices are kept. No string
+  the 158.0 delta adds brings new fox artwork back.
+- The three shield panel banner states stay text-only and left-aligned instead of rendering the upstream
+  fox illustrations; the protected state's purple-to-orange gradient plate is kept.
+- Password, address, credit-card, and personal-information management stay removed from the UI, from the
+  Android autofill service, and from the default sync data set. The passwords menu entry that 158.0
+  brings back (the `MainMenu` item, `onPasswordsMenuClick`, `MenuAction.Navigate.Passwords`, and its
+  navigation and telemetry branches) is removed again; `BackgroundServices` still syncs only history,
+  bookmarks, and tabs, the account settings screen restores none of the password, credit-card, or
+  address checkboxes, Fenix is still not offered as a system autofill provider, and the Play Store
+  rating entry point stays removed.
+
+#### Tabs and tab groups
+
+- The expanded group keeps its full feature set: group-scoped multi-select, the All Tabs selection
+  toolbar styling and its secondary menu, the system Back consumption while selection is active, a
+  manual dismissal that only collapses the group, and the always-visible add-new-tab action
+  (`onAddNewTabClick` is non-nullable).
+- Upstream 158.0 moved the tab item animations into the new `TabItemAnimations.kt`, so the fork's policy
+  is applied there: both the list and the grid item animation pass `fadeOutSpec = null` unconditionally,
+  and a removed item leaves the layout at once instead of staying drawn detached from it.
+- `TabStorageMiddleware` still handles the fork's three storage actions for tabs removed from a group,
+  tabs closed from a group, and an undo that restores tabs into their group, and it adopts upstream's
+  `TabAddedToExistingTabGroup` rename and the new group-flow `when` branches.
+- A link opened from a group page stays in that group by default, with explicit "open in tab group" and
+  "open in a new tab group" long-press menu items; URL and search suggestion clicks use the current
+  `searchState.sourceTabId`, matching direct toolbar submission.
+- Only a newly created group is marked as entering, and adding tabs to an existing group does not replay
+  the entrance animation. Closing the last ungrouped tab removes it from both the immutable snapshot and
+  the Lazy list/grid interaction state; any change to the displayed item set resets that state; the drag
+  sets `moved` once it passes touch slop so `onExitLongPress` fires exactly once; and the list still
+  caches the dragged item's last layout offset.
+- The upstream long-press gesture sequence is preserved: the `pointerInput` mode is never switched
+  synchronously from the long-press callback, so a held long press can still start a drag.
+- Tab-group storage moves to the android-components module `feature-tabgroups-storage`
+  (`mozilla.components.feature.tabgroups.storage.*`), with the tab ids carried in
+  `TabGroup(tabIds = …)`, and `TabInteractionHandler`/`TabItemInteractionState` become
+  `ItemInteractionHandler`/`ItemInteractionState`.
+- The bottom sheet keeps the fork's `skipOpeningAnimation`, which creates the sheet already expanded
+  instead of expanding it after upstream's delay; upstream's two new call sites (the group flow and the
+  tabs tray) are mapped onto that parameter.
+
+#### Localization and layout
+
+- `values-zh-rCN` has no missing entry against `values/strings.xml` and no duplicate name. The 17
+  strings the 158.0 delta adds are translated with the terminology already used in that file: the tab
+  strip location, top and bottom options, tab layout and organisation, the tab-group title and
+  description, inactive tabs, cached and live page indicators, add to tab group, the page badge, the
+  media playing indicator, the reader mode panel and its listen action, and send to selected devices.
+- The other locales keep upstream's partially translated set; translations the delta adds are taken from
+  upstream, while same-named entries keep the fork's wording.
+- The group multi-select toolbar, system navigation bar, light and dark themes, and overflow menu
+  layout, hierarchy, and animations are adjusted.
+- Only Fenix is built; Focus is not built.
+
+#### Release and validation
+
+- Upstream delta: 15042 files. The candidate commit changes 15045 files against its Fenix parent.
+- This baseline was merged with `git merge-tree --merge-base=FIREFOX-ANDROID_157_0_RELEASE` instead of
+  `git apply`: 31 files and 46 conflict blocks needed a manual resolution. Fork code the merge lost
+  because upstream had rewritten the same region (the expanded-group selection toolbar, the
+  `RenderExpandedTabGroup` parameters, the `SharedTabItemUi` animations, and `TabsTrayItem`'s
+  `shouldFullyExpandOnFirstOpen`) was restored after review.
+- `fenix:spotlessKotlinCheck` passes; `fenix:compileDebugKotlin` and
+  `fenix:compileDebugUnitTestKotlin` pass; `fenix:assembleDebug` passes.
+- `fenix:testDebugUnitTest`: 6570 tests, 253 failed, 1474 skipped. Every failure is a recorded Windows
+  environment limitation: 230 are the missing Windows megazord/JNA native libraries
+  (`Could not initialize class com.sun.jna.Native` and `jnidispatch.dll not found`), 10 are Windows path
+  separators in download items, 5 are temporary-directory rename differences, 4 are the Robolectric
+  SQLite database path, and the rest are MockK context and telemetry ordering differences.
+  `org.mozilla.fenix.tabstray.*` passes 731 tests with 0 failures (195 skipped), and
+  `org.mozilla.fenix.tabgroups.*` has no failure beyond the SQLite path limitation above.
+- Publishes only the `arm64-v8a` APK using the official 158.0 multi-locale GeckoView (99 locales
+  including `zh-CN`) and the exact official `versionCode 2016189050` with upstream `versionName 158.0`;
+  no local GeckoView compilation or packaging was performed.
+- Documentation gate: `mach doc docs` reports `Failures: 0` and `Known Failures: 37`, with no
+  `mobile/android` failure.
+- APK: `Fenix-158.0-r1-arm64-v8a-release.apk`, size `132934216` bytes, SHA-256: `0E6DA8452F0EEB3EA6E0D1ADA198C1B0DC081BEC14E4656727D3FE5977A78370`.
+- Complete corresponding source: [fenix-158.0-r1](https://github.com/aenerv7/fenix/tree/fenix-158.0-r1). Fenix is an independent unofficial modified build, not sponsored or endorsed by Mozilla; this project provides maintenance and support. MPL 2.0 and third-party licenses are retained; Firefox is a trademark of the Mozilla Foundation.
+- `.idsig` is retained locally for verification and re-signing and is not a GitHub Release asset; the
+  Windows Glean native-library limitation still requires Linux or CI coverage.
+
 ## 157.0-r1
 
 ### 中文

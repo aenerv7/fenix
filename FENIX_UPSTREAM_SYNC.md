@@ -418,6 +418,66 @@ The release uses the pinned official 158.0 arm64-v8a GeckoView package recorded 
 Gecko or native source changed. The exact official arm64-v8a versionCode is `2016189050`, and the
 official APK SHA-256 is `4E57F3D92B5F77FEAB700D454E8EFB5030279855A2BAE7DB1A14521AC60DF466`.
 
+### Three-way merge hazards
+
+A merge tree is not self-validating either. `git merge-tree` resolves a file whenever the two sides
+edit different regions, which hides the case where upstream rewrote the region the fork had customised
+into a different shape. Four files lost fork code that way and had to be rebuilt by hand:
+
+- `tabgroups/ExpandedTabGroup.kt`: upstream's version has no group selection toolbar, no BackHandler,
+  no snackbar and no `FixedBottomPopupPositionProvider`.
+- `tabstray/ui/TabManagementFragment.kt`: `RenderExpandedTabGroup` lost its selection mode,
+  `onExitSelectMode`, `onBack`, `onItemLongClick`, `selectionBanner`, `selectionMenu` and
+  `snackbarHostState`, and upstream's `if (homepageAsNewTabEnabled) … else null` would have hidden
+  the add-new-tab action.
+- `tabstray/ui/tabitems/SharedTabItemUi.kt`: the fork's animation tail duplicated what upstream moved
+  into `TabItemAnimations.kt`.
+- `tabstray/data/TabsTrayItem.kt`: `shouldFullyExpandOnFirstOpen` and its two count constants
+  disappeared while four callers remained.
+
+Two API divergences also need a decision rather than a merge:
+
+- The fork replaced upstream's `BottomSheetSceneStrategy.bottomSheet(fullyExpandOnFirstOpen = …)` with
+  its own `skipOpeningAnimation`, which starts the sheet in the expanded state instead of expanding it
+  after a delay. Upstream's new callers in `tabgroups/flow/TabGroupFlowFragment.kt` and
+  `tabstray/ui/TabManagementFragment.kt` are mapped onto the fork's parameter.
+- Because the fork adds `SelectedTabsRemovedFromGroup`, `SelectedTabsClosedFromGroup` and
+  `RestoreTabsToGroup` to `TabGroupAction`, upstream's new exhaustive `when` statements in
+  `tabgroups/flow/TabGroupFlowReducer.kt` and `tabgroups/flow/TabGroupFlowTelemetryMiddleware.kt`
+  list them as no-ops.
+
+`BackgroundServicesTest.kt` is reverted to the fork's revision: the automotive tests upstream adds
+there cover the password and credit-card sync engines the fork removes, and they construct
+`BackgroundServices` with storage arguments the fork's constructor does not take.
+
+### Toolchain updates the baseline forces
+
+`python/mozboot/mozboot/android.py` raises three pinned toolchain versions, and configure dies when the
+installed tool reports a different one, so the local toolchain state had to be updated before the first
+configure:
+
+- `NDK_VERSION` `r29` → `r30`, installed as `.mozbuild/android-ndk-r30`;
+- `CMDLINE_TOOLS_VERSION` `21.0` → `23.0`, installed as
+  `.mozbuild/android-sdk-windows/cmdline-tools/23.0`;
+- the Gradle JDK `17.0.18+8` → `17.0.20.1+1`, installed under `.mozbuild/jdk`.
+
+`tools/fenix/mach-local.ps1` points `ANDROID_NDK_HOME`, the `PATH` command-line tools entry, and
+`JAVA_HOME` at those directories.
+
+The baseline also adds a `CbindgenHeader` for the new `dom/push/rust` crate, and its generation runs
+`cargo metadata --frozen` with the object directory's `.cargo/config.toml`. That file is a preprocessed
+copy of `.cargo/config.toml.in` and is only rewritten by the `misc` target, so an object directory left
+over from an older baseline keeps the old git source pins and cargo fails with
+`failed to load source for dependency` (or cbindgen reports `Unable to find dom_push`). Run
+`mach build misc` once after a baseline update to regenerate it before `mach build faster`.
+
+The baseline also changes the `build` command-site definition, so mach recreates
+`.mozbuild/srcdirs/<srcdir>/_virtualenvs/build`. On Windows, Gradle runs `mach configure` through that
+virtualenv's `python.exe`, and mach cannot delete the interpreter it is running under, so `:machConfigure`
+fails with `PermissionError: [WinError 5] ... Scripts/python.exe`. Run one build-site command through
+`tools/fenix/mach-local.ps1` (for example `configure`) so the virtualenv is rebuilt under MozillaBuild's
+Python before Gradle is invoked again.
+
 ## Source-to-binary traceability
 
 If APKs are distributed, record their SHA-256 hashes and the exact Fenix tag in release notes. The

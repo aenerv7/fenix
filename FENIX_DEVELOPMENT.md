@@ -158,15 +158,26 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
 
 ### Current validation state
 
-The 156.0.1-r1 release updates the baseline to Firefox Android 156.0.1 and re-applies the whole Fenix
-change set on top of the upstream 156.0.1 delta. The upstream delta spans 306 files and roughly 15k
-added lines. All 43 conflicts were confined to `values-*/strings.xml`; the candidate changes 309 files
-against its Fenix parent, which matches the upstream delta size and is how the merge is verified
-rather than by the merge commit merely existing.
+The 158.0-r1 release updates the baseline to Firefox Android 158.0 and re-applies the whole Fenix
+change set on top of the upstream 158.0 delta. The upstream delta spans 15042 files, and the candidate
+commit changes 15045 files against its Fenix parent, which is how the update is verified rather than by
+the merge commit merely existing. The delta was merged with `git merge-tree` instead of `git apply`;
+31 files with 46 conflict blocks needed a manual resolution, and the fork code the merge lost where
+upstream had rewritten the same region was restored. [FENIX_UPSTREAM_SYNC.md](FENIX_UPSTREAM_SYNC.md)
+records the merge, the required toolchain updates, and the object-directory steps.
 
-The arm64-v8a release uses the pinned official 156.0.1 GeckoView package through `-UseUpstreamGecko`
-and the exact official versionCode `2016185922`; no local GeckoView build is permitted because no
-Fenix-authored Gecko, C++, Rust, or Gecko locale source changed. The Windows `FenixGleanTestRule`
+Validation: `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`,
+`fenix:compileDebugUnitTestKotlin`, `fenix:assembleDebug`, and the arm64-v8a release build all pass,
+and the documentation gate reports `Failures: 0`. `fenix:testDebugUnitTest` runs 6570 tests with 253
+failures and 1474 skips; all 253 failures are the Windows environment limitations described below
+(missing JNA/megazord native libraries, download path separators, temporary-directory renames, and the
+Robolectric SQLite path). `org.mozilla.fenix.tabstray.*` passes 731 tests with 0 failures.
+
+The arm64-v8a release uses the pinned official 158.0 GeckoView package through `-UseUpstreamGecko` and
+the exact official versionCode `2016189050`; no local GeckoView build is permitted because no
+Fenix-authored Gecko, C++, Rust, or Gecko locale source changed. The signed APK is
+`Fenix-158.0-r1-arm64-v8a-release.apk`, 132934216 bytes, SHA-256
+`0E6DA8452F0EEB3EA6E0D1ADA198C1B0DC081BEC14E4656727D3FE5977A78370`. The Windows `FenixGleanTestRule`
 native-library limitation remains documented below; affected tests need Linux or CI coverage even
 when the Windows task completes by skipping them.
 
@@ -349,14 +360,14 @@ For a narrow test class, append Gradle's test selector:
 Slow command output should be redirected to `artifacts/` and inspected there instead of piping the
 live process through output filters.
 
-### Windows native-test limitation in the 154.0.1, 155.0, 155.0.1, 156.0, 156.0.1, and 157.0 baselines
+### Windows native-test limitation in the 154.0.1, 155.0, 155.0.1, 156.0, 156.0.1, 157.0, and 158.0 baselines
 
 Some Fenix JVM test classes use `FenixGleanTestRule`, which loads Application Services through JNA.
 The upstream `full-megazord-libsForTests-154.0.1.jar` contains Linux and macOS megazord libraries but
 does not contain the required Windows native libraries. On native Windows, these classes fail during
 test-rule initialization with `UnsatisfiedLinkError` for `jnidispatch.dll`; their test bodies have not
 started at that point. The same limitation was observed when validating the 155.0, 155.0.1, 156.0,
-156.0.1, and 157.0 baselines.
+156.0.1, 157.0, and 158.0 baselines.
 
 Do not repeatedly clear Gradle caches or download only `jnidispatch.dll`: JNA is merely the first
 missing layer, and the Windows megazord is absent as well. Run affected Glean-backed unit tests in a

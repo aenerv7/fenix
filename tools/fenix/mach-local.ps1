@@ -7,8 +7,8 @@ $ErrorActionPreference = "Stop"
 $root = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
 $state = Join-Path $root ".mozbuild"
 $sdk = Join-Path $state "android-sdk-windows"
-$ndk = Join-Path $state "android-ndk-r29"
-$jdk = Join-Path $state "jdk\jdk-17.0.18+8"
+$ndk = Join-Path $state "android-ndk-r30"
+$jdk = Join-Path $state "jdk\jdk-17.0.20.1+1"
 
 @(
     ".mozbuild",
@@ -44,7 +44,7 @@ $env:PATH = (@(
     (Join-Path $root ".cargo\bin"),
     (Join-Path $state "nasm"),
     (Join-Path $sdk "platform-tools"),
-    (Join-Path $sdk "cmdline-tools\21.0\bin"),
+    (Join-Path $sdk "cmdline-tools\23.0\bin"),
     (Join-Path $jdk "bin"),
     $env:PATH
 ) -join [IO.Path]::PathSeparator)
