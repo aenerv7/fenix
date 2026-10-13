@@ -5,10 +5,10 @@
 package org.mozilla.fenix.tabgroups
 
 import kotlinx.coroutines.flow.first
+import mozilla.components.feature.tabgroups.storage.data.TabGroup
+import mozilla.components.feature.tabgroups.storage.repository.TabGroupRepository
 import mozilla.components.support.utils.DateTimeProvider
 import mozilla.components.support.utils.DefaultDateTimeProvider
-import org.mozilla.fenix.tabgroups.storage.data.TabGroup
-import org.mozilla.fenix.tabgroups.storage.repository.TabGroupRepository
 import org.mozilla.fenix.tabstray.data.TabGroupTheme
 
 class TabGroupLinkUseCases(
@@ -50,12 +50,10 @@ class TabGroupLinkUseCases(
                 title = newGroupTitle(tabGroupData.tabGroups.size + 1),
                 theme = newTheme.name,
                 lastModified = dateTimeProvider.currentTimeMillis(),
+                tabIds = listOf(parentTabId, tabId),
             )
 
-        tabGroupRepository.createTabGroupWithTabs(
-            tabGroup = tabGroup,
-            tabIds = listOf(parentTabId, tabId),
-        )
+        tabGroupRepository.createTabGroupWithTabs(tabGroup = tabGroup)
     }
 
     private fun String.toTabGroupTheme(): TabGroupTheme = runCatching {

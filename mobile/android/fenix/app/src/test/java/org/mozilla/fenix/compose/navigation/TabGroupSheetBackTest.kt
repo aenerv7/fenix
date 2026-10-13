@@ -28,7 +28,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mozilla.fenix.tabgroups.ExpandedTabGroup
 import org.mozilla.fenix.tabgroups.ExpandedTabGroupActions
-import org.mozilla.fenix.tabstray.controller.NoOpTabInteractionHandler
+import org.mozilla.fenix.tabstray.controller.NoOpItemInteractionHandler
 import org.mozilla.fenix.tabstray.data.createTab
 import org.mozilla.fenix.tabstray.data.createTabGroup
 import org.mozilla.fenix.tabstray.redux.state.TabsTrayState.Mode
@@ -178,7 +178,7 @@ class TabGroupSheetBackTest {
                                         group = group,
                                         actions = ExpandedTabGroupActions({}, {}, {}, {}, {}, {}, {}, {}),
                                         displayTabsInGrid = true,
-                                        tabInteractionHandler = NoOpTabInteractionHandler,
+                                        itemInteractionHandler = NoOpItemInteractionHandler,
                                         selectionMode = mode.value,
                                         onExitSelectMode = { mode.value = Mode.Normal },
                                         onBack = { navigationCount++ },

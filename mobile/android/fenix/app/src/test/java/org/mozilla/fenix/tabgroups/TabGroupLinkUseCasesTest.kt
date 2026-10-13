@@ -7,15 +7,15 @@ package org.mozilla.fenix.tabgroups
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
+import mozilla.components.feature.tabgroups.storage.data.TabGroup
+import mozilla.components.feature.tabgroups.storage.data.TabGroupData
+import mozilla.components.feature.tabgroups.storage.fakes.FakeTabGroupRepository
 import mozilla.components.support.utils.FakeDateTimeProvider
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mozilla.fenix.tabgroups.fakes.FakeTabGroupRepository
-import org.mozilla.fenix.tabgroups.storage.data.TabGroup
-import org.mozilla.fenix.tabgroups.storage.data.TabGroupData
 import org.mozilla.fenix.tabstray.data.TabGroupTheme
 
 @RunWith(AndroidJUnit4::class)
@@ -125,6 +125,7 @@ class TabGroupLinkUseCasesTest {
             title = "Group",
             theme = theme.name,
             lastModified = lastModified,
+            tabIds = listOf(PARENT_TAB_ID),
         )
 
     private companion object {

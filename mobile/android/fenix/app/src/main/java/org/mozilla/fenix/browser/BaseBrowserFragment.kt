@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.getSystemService
 import androidx.core.text.HtmlCompat
 import androidx.core.view.OnApplyWindowInsetsListener
 import androidx.core.view.isVisible
@@ -149,6 +150,8 @@ import org.mozilla.fenix.browser.browsingmode.BrowsingMode
 import org.mozilla.fenix.browser.permissions.FenixSitePermissionLearnMoreUrlProvider
 import org.mozilla.fenix.browser.readermode.DefaultReaderModeController
 import org.mozilla.fenix.browser.readermode.ReaderModeController
+import org.mozilla.fenix.browser.reloadcover.TabReloadCoverFeature
+import org.mozilla.fenix.browser.reloadcover.TabReloadCoverGating
 import org.mozilla.fenix.browser.store.BrowserScreenMiddleware
 import org.mozilla.fenix.browser.store.BrowserScreenState
 import org.mozilla.fenix.browser.store.BrowserScreenStore
@@ -163,6 +166,7 @@ import org.mozilla.fenix.components.share.ShareSource
 import org.mozilla.fenix.components.toolbar.BottomToolbarContainerIntegration
 import org.mozilla.fenix.components.toolbar.BottomToolbarContainerView
 import org.mozilla.fenix.components.toolbar.BrowserNavigationBar
+import org.mozilla.fenix.components.toolbar.BrowserTabStrip
 import org.mozilla.fenix.components.toolbar.BrowserToolbarComposable
 import org.mozilla.fenix.components.toolbar.ToolbarContainerView
 import org.mozilla.fenix.components.toolbar.ToolbarPosition
@@ -182,6 +186,7 @@ import org.mozilla.fenix.ext.getBottomToolbarHeight
 import org.mozilla.fenix.ext.getPreferenceKey
 import org.mozilla.fenix.ext.getTopToolbarHeight
 import org.mozilla.fenix.ext.hideToolbar
+import org.mozilla.fenix.ext.isOnline
 import org.mozilla.fenix.ext.isToolbarAtBottom
 import org.mozilla.fenix.ext.nav
 import org.mozilla.fenix.ext.requireComponents
@@ -201,6 +206,7 @@ import org.mozilla.fenix.settings.SupportUtils
 import org.mozilla.fenix.settings.downloads.DownloadLocationManager
 import org.mozilla.fenix.snackbar.FenixSnackbarDelegate
 import org.mozilla.fenix.snackbar.SnackbarBinding
+import org.mozilla.fenix.tabgroups.TabGroupsStrip
 import org.mozilla.fenix.tabstray.ext.toDisplayTitle
 import org.mozilla.fenix.tabstray.redux.state.Page
 import org.mozilla.fenix.theme.FirefoxTheme
@@ -237,6 +243,8 @@ abstract class BaseBrowserFragment :
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     internal var browserNavigationBar: BrowserNavigationBar? = null
 
+    @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED) internal var browserTabStrip: BrowserTabStrip? = null
+
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     @Suppress("VariableNaming")
     internal var _bottomToolbarContainerView: BottomToolbarContainerView? = null
@@ -249,6 +257,8 @@ abstract class BaseBrowserFragment :
 
     protected val readerViewFeature = ViewBoundFeatureWrapper<ReaderViewFeature>()
     protected val thumbnailsFeature = ViewBoundFeatureWrapper<BrowserThumbnails>()
+    private val scrollAwareThumbnailFeature = ViewBoundFeatureWrapper<ScrollAwareThumbnailFeature>()
+    private val tabReloadCoverFeature = ViewBoundFeatureWrapper<TabReloadCoverFeature>()
 
     @VisibleForTesting internal val messagingFeatureMicrosurvey = ViewBoundFeatureWrapper<MessagingFeature>()
 
@@ -418,10 +428,6 @@ abstract class BaseBrowserFragment :
                 )
         }
 
-        if (!requireComponents.fenixOnboarding.userHasBeenOnboarded()) {
-            observeTabSource(requireComponents.core.store)
-        }
-
         requireContext().accessibilityManager.addAccessibilityStateChangeListener(this)
 
         requireComponents.backgroundServices.closeSyncedTabsCommandReceiver.register(
@@ -462,6 +468,7 @@ abstract class BaseBrowserFragment :
         val store = context.components.core.store
         val activity = requireActivity() as HomeActivity
         val appStore = context.components.appStore
+        val settings = context.components.settings
 
         val openInFenixIntent =
             Intent(context, IntentReceiverActivity::class.java).apply {
@@ -469,13 +476,11 @@ abstract class BaseBrowserFragment :
                 putExtra(HomeActivity.OPEN_TO_BROWSER, true)
             }
 
-        val isListenToPageEnabled = context.components.settings.listenToPageFeatureFlagEnabled
         val readerMenuController =
             DefaultReaderModeController(
                 readerViewFeature,
                 binding.readerViewControlsBar,
                 isPrivate = appStore.state.mode.isPrivate,
-                isListenToPageEnabled = isListenToPageEnabled,
                 onReaderModeChanged = { activity.finishActionMode() },
             )
         _findInPageLauncher = {
@@ -483,8 +488,9 @@ abstract class BaseBrowserFragment :
         }
 
         _browserToolbar = initializeBrowserToolbar(activity, store, readerMenuController)
+        browserTabStrip = initializeBrowserTabStripView(activity, appStore, settings)
 
-        if (context.components.settings.microsurveyFeatureEnabled) {
+        if (settings.microsurveyFeatureEnabled) {
             listenForMicrosurveyMessage(context)
         }
 
@@ -493,7 +499,7 @@ abstract class BaseBrowserFragment :
                 ToolbarsIntegration(
                     fullScreenFeature = { fullScreenFeature.get() },
                     webAppHideToolbarFeature = { hideToolbarFeature.get() },
-                    settings = context.components.settings,
+                    settings = settings,
                     browserLayout = getSwipeRefreshLayout(),
                     engineView = getEngineView(),
                     toolbar = browserToolbar,
@@ -608,7 +614,7 @@ abstract class BaseBrowserFragment :
                     window = requireActivity().window,
                     store = store,
                     customTabId = customTabSessionId,
-                    isSecure = { !context.components.settings.shouldSecureModeBeOverridden && it.content.private },
+                    isSecure = { !settings.shouldSecureModeBeOverridden && it.content.private },
                     clearFlagOnStop = false,
                 ),
             owner = this,
@@ -650,7 +656,7 @@ abstract class BaseBrowserFragment :
                 context = context.applicationContext,
                 downloadLocation = {
                     DownloadLocationManager(
-                            context.components.settings,
+                            settings,
                             context.contentResolver,
                         )
                         .defaultLocation
@@ -843,7 +849,12 @@ abstract class BaseBrowserFragment :
                     },
             )
 
-        val bottomToolbarHeight = getBottomToolbarHeight(includeNavBarIfEnabled = customTabSessionId == null)
+        val bottomToolbarHeight =
+            getBottomToolbarHeight(
+                includeTabStripIfAvailable = customTabSessionId == null,
+                includeNavBarIfEnabled = customTabSessionId == null,
+                includeTabGroupsStrip = customTabSessionId == null,
+            )
 
         downloadFeature.onDownloadStopped = { downloadState, _, downloadJobStatus ->
             handleOnDownloadFinished(
@@ -1011,6 +1022,42 @@ abstract class BaseBrowserFragment :
             view = view,
         )
 
+        val isCoverEnabled = TabReloadCoverGating.isCoverEnabled(settings)
+        val isScrollAwareEnabled = TabReloadCoverGating.isScrollAwareEnabled(settings)
+        val isOnline = {
+            context.getSystemService<android.net.ConnectivityManager>()?.isOnline() ?: false
+        }
+
+        if (isCoverEnabled) {
+            tabReloadCoverFeature.set(
+                feature =
+                    TabReloadCoverFeature(
+                        store = requireComponents.core.store,
+                        browserScreenStore = browserScreenStore,
+                        thumbnailStorage = requireComponents.core.thumbnailStorage,
+                        coverView = binding.tabReloadCover,
+                        tabId = customTabSessionId,
+                        isOnline = isOnline,
+                    ),
+                owner = this,
+                view = view,
+            )
+        }
+
+        if (isScrollAwareEnabled) {
+            scrollAwareThumbnailFeature.set(
+                feature =
+                    ScrollAwareThumbnailFeature(
+                        store = requireComponents.core.store,
+                        lifecycleOwner = viewLifecycleOwner,
+                        thumbnailsFeature = { thumbnailsFeature.get() },
+                        isOnline = isOnline,
+                    ),
+                owner = this,
+                view = view,
+            )
+        }
+
         lastTabFeature.set(
             feature =
                 LastTabFeature(
@@ -1036,8 +1083,12 @@ abstract class BaseBrowserFragment :
                         getTopToolbarHeightValue = { includeTabStrip ->
                             this.getTopToolbarHeight(includeTabStrip)
                         },
-                        getBottomToolbarHeightValue = { includeNavBar ->
-                            this.getBottomToolbarHeight(includeNavBar)
+                        getBottomToolbarHeightValue = { includeTabStrip, includeNavBar ->
+                            this.getBottomToolbarHeight(
+                                includeTabStripIfAvailable = includeTabStrip,
+                                includeNavBarIfEnabled = includeNavBar,
+                                includeTabGroupsStrip = includeNavBar,
+                            )
                         },
                     )
                     .apply {
@@ -1244,7 +1295,10 @@ abstract class BaseBrowserFragment :
                 container = binding.browserLayout,
                 toolbarStore = toolbarStore,
                 settings = settings,
+                customTabSessionId = customTabSessionId,
                 hideWhenKeyboardShown = true,
+                tabStripContent = { buildTabStrip(appStore, settings) },
+                tabGroupsStripContent = { buildTabGroupsStrip() },
             )
 
         // set the summarize CFR binding only for regular, non-custom tabs
@@ -1274,12 +1328,27 @@ abstract class BaseBrowserFragment :
             settings = settings,
             customTabSession = customTabSessionId?.let { store.state.findCustomTab(it) },
             tabStripContent = buildTabStrip(appStore, settings),
+            tabGroupsStripContent = buildTabGroupsStrip(),
             searchSuggestionsContent = { modifier ->
                 (awesomeBarComposable ?: buildAwesomeBar(activity, toolbarStore, modifier)).SearchSuggestions()
             },
             navigationBarContent = browserNavigationBar?.asComposable(),
         )
     }
+
+    /** Build the TabStrip [View] for when the TabStrip is to be shown alone at the top of the screen. */
+    private fun initializeBrowserTabStripView(
+        context: Context,
+        appStore: AppStore,
+        settings: org.mozilla.fenix.utils.Settings,
+    ) =
+        if (customTabSessionId == null && settings.shouldShowTabStripAtTop && settings.shouldUseBottomToolbar) {
+            BrowserTabStrip(context, binding.browserLayout, settings) {
+                buildTabStrip(appStore, settings)()
+            }
+        } else {
+            null
+        }
 
     @VisibleForTesting
     internal fun shouldAddBlackScreen(): Boolean =
@@ -1314,6 +1383,7 @@ abstract class BaseBrowserFragment :
         FirefoxTheme {
             TabStrip(
                 showTabCounterButton = false,
+                hideWhenKeyboardShown = settings.shouldUseBottomTabStrip,
                 onAddTabClick = {
                     if (settings.enableHomepageAsNewTab) {
                         requireComponents.useCases.fenixBrowserUseCases.addNewHomepageTab(
@@ -1340,6 +1410,8 @@ abstract class BaseBrowserFragment :
             )
         }
     }
+
+    private fun buildTabGroupsStrip(): @Composable () -> Unit = { TabGroupsStrip() }
 
     private fun buildAwesomeBar(
         activity: HomeActivity,
@@ -1703,30 +1775,6 @@ abstract class BaseBrowserFragment :
         downloadDialog?.dismiss()
     }
 
-    @VisibleForTesting
-    @Suppress("ComplexCondition")
-    internal fun observeTabSource(
-        store: BrowserStore,
-        mainDispatcher: CoroutineDispatcher = Dispatchers.Main,
-    ) {
-        consumeFlow(store, mainDispatcher = mainDispatcher) { flow ->
-            flow
-                .mapNotNull { state ->
-                    state.selectedTab
-                }
-                .collect {
-                    if (
-                        !requireComponents.fenixOnboarding.userHasBeenOnboarded() &&
-                            it.content.loadRequest?.triggeredByRedirect != true &&
-                            it.source !is SessionState.Source.External &&
-                            it.content.url !in onboardingLinksList
-                    ) {
-                        requireComponents.fenixOnboarding.finish()
-                    }
-                }
-        }
-    }
-
     private fun handleTabSelected(selectedTab: TabSessionState, isCustomTabSession: Boolean) {
         if (!this.isRemoving && !isCustomTabSession) {
             updateThemeForSession(selectedTab)
@@ -1910,7 +1958,12 @@ abstract class BaseBrowserFragment :
         if (fullScreenFeature.get()?.isFullScreen == true) return 0 to 0
 
         val topToolbarHeight = getTopToolbarHeight(includeTabStripIfAvailable = customTabSessionId == null)
-        val bottomToolbarHeight = getBottomToolbarHeight(includeNavBarIfEnabled = customTabSessionId == null)
+        val bottomToolbarHeight =
+            getBottomToolbarHeight(
+                includeTabStripIfAvailable = customTabSessionId == null,
+                includeNavBarIfEnabled = customTabSessionId == null,
+                includeTabGroupsStrip = customTabSessionId == null,
+            )
 
         return topToolbarHeight to bottomToolbarHeight
     }
@@ -2010,6 +2063,8 @@ abstract class BaseBrowserFragment :
 
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     internal fun expandBrowserView() {
+        browserTabStrip?.gone()
+
         browserToolbar.apply {
             collapse()
             gone()
@@ -2041,6 +2096,7 @@ abstract class BaseBrowserFragment :
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     internal fun collapseBrowserView() {
         if (webAppToolbarShouldBeVisible) {
+            browserTabStrip?.visible()
             browserToolbar.visible()
             browserNavigationBar?.visible()
             _bottomToolbarContainerView?.toolbarContainerView?.isVisible = true
@@ -2071,7 +2127,12 @@ abstract class BaseBrowserFragment :
         val isFullscreen = fullScreenFeature.get()?.isFullScreen == true
         val shouldToolbarsBeHidden = isFullscreen || !webAppToolbarShouldBeVisible
         val topToolbarHeight = getTopToolbarHeight(includeTabStripIfAvailable = customTabSessionId == null)
-        val bottomToolbarHeight = getBottomToolbarHeight(includeNavBarIfEnabled = customTabSessionId == null)
+        val bottomToolbarHeight =
+            getBottomToolbarHeight(
+                includeTabStripIfAvailable = customTabSessionId == null,
+                includeNavBarIfEnabled = customTabSessionId == null,
+                includeTabGroupsStrip = customTabSessionId == null,
+            )
 
         initializeEngineView(
             topToolbarHeight = if (shouldToolbarsBeHidden) 0 else topToolbarHeight,
@@ -2100,6 +2161,7 @@ abstract class BaseBrowserFragment :
         _browserToolbar = null
         awesomeBarComposable = null
         browserNavigationBar = null
+        browserTabStrip = null
         blackScreenOverlay = null
         _binding = null
     }

@@ -27,6 +27,10 @@ import mozilla.components.browser.state.state.BrowserState
 import mozilla.components.browser.state.state.TabSessionState
 import mozilla.components.browser.state.state.createTab
 import mozilla.components.browser.state.store.BrowserStore
+import mozilla.components.feature.tabgroups.storage.data.TabGroup
+import mozilla.components.feature.tabgroups.storage.data.TabGroupData
+import mozilla.components.feature.tabgroups.storage.fakes.FakeTabGroupRepository
+import mozilla.components.feature.tabgroups.storage.repository.TabGroupRepository
 import mozilla.components.feature.tabs.TabsUseCases
 import mozilla.components.feature.tabs.TabsUseCases.MoveTabsUseCase
 import mozilla.components.feature.tabs.TabsUseCases.RemoveTabsUseCase
@@ -36,10 +40,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mozilla.fenix.components.usecases.FenixBrowserUseCases
-import org.mozilla.fenix.tabgroups.fakes.FakeTabGroupRepository
-import org.mozilla.fenix.tabgroups.storage.data.TabGroup
-import org.mozilla.fenix.tabgroups.storage.data.TabGroupData
-import org.mozilla.fenix.tabgroups.storage.repository.TabGroupRepository
 import org.mozilla.fenix.tabstray.data.TabData
 import org.mozilla.fenix.tabstray.data.TabGroupTheme
 import org.mozilla.fenix.tabstray.data.TabsTrayItem
@@ -185,6 +185,7 @@ class TabStorageMiddlewareTest {
                     title = "test group",
                     theme = "Red",
                     lastModified = 0L,
+                    tabIds = emptyList(),
                 )
             val expectedGroup =
                 createTabGroup(
@@ -328,6 +329,7 @@ class TabStorageMiddlewareTest {
                 title = "test group",
                 theme = "Red",
                 lastModified = 0L,
+                tabIds = listOf(groupedTab.id, selectedGroupedTab.id),
             )
         val expectedGroupTabs =
             listOf(
@@ -384,6 +386,7 @@ class TabStorageMiddlewareTest {
                     title = "test group",
                     theme = "Red",
                     lastModified = 0L,
+                    tabIds = emptyList(),
                 )
             val expectedTabList =
                 listOf(
@@ -554,12 +557,14 @@ class TabStorageMiddlewareTest {
                 title = "title",
                 theme = "Red",
                 lastModified = 0L,
+                tabIds = emptyList(),
             )
         val newerTabGroup =
             TabGroup(
                 title = "title",
                 theme = "Red",
                 lastModified = 10L,
+                tabIds = emptyList(),
             )
         val expectedTabGroups =
             listOf(
@@ -617,12 +622,14 @@ class TabStorageMiddlewareTest {
                 title = "Travel 2025",
                 theme = "Red",
                 lastModified = 123L,
+                tabIds = emptyList(),
             )
         val olderGroup =
             TabGroup(
                 title = "Travel 2020",
                 theme = "Blue",
                 lastModified = 10L,
+                tabIds = emptyList(),
             )
         val expectedTabGroupState =
             TabsTrayState.TabGroupState(
@@ -757,6 +764,7 @@ class TabStorageMiddlewareTest {
                 title = expectedTitle,
                 theme = expectedTheme.name,
                 lastModified = fakeDateTimeProvider.currentTimeMillis(),
+                tabIds = listOf(sourceTab.id, destinationTab.id),
             ),
             storedGroup,
         )
@@ -821,6 +829,7 @@ class TabStorageMiddlewareTest {
                     title = expectedTitle,
                     theme = expectedTheme.name,
                     lastModified = fakeDateTimeProvider.currentTimeMillis(),
+                    tabIds = selectedTabs.map { it.id },
                 ),
                 storedGroup,
             )
@@ -869,6 +878,7 @@ class TabStorageMiddlewareTest {
                     title = expectedTitle,
                     theme = expectedTheme.name,
                     lastModified = fakeDateTimeProvider.currentTimeMillis(),
+                    tabIds = emptyList(),
                 ),
                 storedGroup,
             )
@@ -938,6 +948,7 @@ class TabStorageMiddlewareTest {
                 title = "Old name",
                 theme = TabGroupTheme.Red.name,
                 lastModified = 0L,
+                tabIds = emptyList(),
             )
         val repository = createRepository(initialTabGroups = listOf(existingGroup))
         val store =
@@ -972,6 +983,7 @@ class TabStorageMiddlewareTest {
                     title = expectedTitle,
                     theme = expectedTheme.name,
                     lastModified = fakeDateTimeProvider.currentTimeMillis(),
+                    tabIds = emptyList(),
                 )
             ),
             repository.tabGroupDataFlow.first().tabGroups,
@@ -1015,6 +1027,7 @@ class TabStorageMiddlewareTest {
                 title = title,
                 theme = theme.name,
                 lastModified = 0L,
+                tabIds = emptyList(),
             )
 
         val repository = FakeTabGroupRepository(initialTabGroupData = TabGroupData(tabGroups = listOf(storedGroup)))
@@ -1064,6 +1077,7 @@ class TabStorageMiddlewareTest {
                 title = "Group 1",
                 theme = TabGroupTheme.Red.name,
                 lastModified = 0L,
+                tabIds = listOf(firstTab.id, secondTab.id),
             )
 
         val repository =
@@ -1112,12 +1126,14 @@ class TabStorageMiddlewareTest {
                 title = "Tab Group 1",
                 theme = TabGroupTheme.Red.name,
                 lastModified = 0L,
+                tabIds = emptyList(),
             )
         val tabGroup2 =
             TabGroup(
                 title = "Tab Group 2",
                 theme = TabGroupTheme.Blue.name,
                 lastModified = 1L,
+                tabIds = emptyList(),
             )
         val repository =
             FakeTabGroupRepository(initialTabGroupData = TabGroupData(tabGroups = listOf(tabGroup1, tabGroup2)))
@@ -1151,6 +1167,7 @@ class TabStorageMiddlewareTest {
                 theme = TabGroupTheme.Red.name,
                 closed = true,
                 lastModified = 0L,
+                tabIds = emptyList(),
             )
         val displayGroup =
             createTabGroup(
@@ -1203,6 +1220,7 @@ class TabStorageMiddlewareTest {
                     title = "title",
                     theme = "Red",
                     lastModified = 0L,
+                    tabIds = emptyList(),
                 )
             val expectedState =
                 TabsTrayState(
@@ -1244,6 +1262,7 @@ class TabStorageMiddlewareTest {
                     title = "Name",
                     theme = TabGroupTheme.Red.name,
                     lastModified = 0L,
+                    tabIds = emptyList(),
                 )
             val store =
                 createStore(
@@ -1294,6 +1313,7 @@ class TabStorageMiddlewareTest {
                     title = "Name",
                     theme = TabGroupTheme.Red.name,
                     lastModified = 0L,
+                    tabIds = emptyList(),
                 )
             val tabGroupData =
                 List(size = 3) {
@@ -1301,6 +1321,7 @@ class TabStorageMiddlewareTest {
                         title = "Group $it",
                         theme = TabGroupTheme.Red.name,
                         lastModified = 0L,
+                        tabIds = emptyList(),
                     )
                 }
             val interstitialTabGroups = tabGroupData.map {
@@ -1385,6 +1406,7 @@ class TabStorageMiddlewareTest {
                         title = "Group $it",
                         theme = TabGroupTheme.Red.name,
                         lastModified = 0L,
+                        tabIds = emptyList(),
                     )
                 }
             val interstitialTabGroups = tabGroupData.map {
@@ -1461,6 +1483,7 @@ class TabStorageMiddlewareTest {
                     title = "Name",
                     theme = TabGroupTheme.Red.name,
                     lastModified = 0L,
+                    tabIds = emptyList(),
                 )
             val store =
                 createStore(
@@ -1488,7 +1511,7 @@ class TabStorageMiddlewareTest {
                     hasTabDataLoaded = true,
                 )
 
-            store.dispatch(TabGroupAction.TabAddedToGroup(tabId = tab.id, groupId = existingGroup.id))
+            store.dispatch(TabGroupAction.TabAddedToExistingTabGroup(tabId = tab.id, groupId = existingGroup.id))
 
             runCurrent()
             advanceUntilIdle()
@@ -1509,6 +1532,7 @@ class TabStorageMiddlewareTest {
                     title = "test group",
                     theme = "Red",
                     lastModified = 0L,
+                    tabIds = emptyList(),
                 )
             val expectedGroup =
                 createTabGroup(
@@ -2215,6 +2239,7 @@ class TabStorageMiddlewareTest {
                     title = "Name",
                     theme = TabGroupTheme.Red.name,
                     lastModified = 0L,
+                    tabIds = emptyList(),
                 )
             val tabAdded = tabs.last()
             val store =
@@ -2234,7 +2259,7 @@ class TabStorageMiddlewareTest {
             runCurrent()
             advanceUntilIdle()
 
-            store.dispatch(TabGroupAction.TabAddedToGroup(tabId = tabAdded.id, groupId = existingGroup.id))
+            store.dispatch(TabGroupAction.TabAddedToExistingTabGroup(tabId = tabAdded.id, groupId = existingGroup.id))
 
             runCurrent()
             advanceUntilIdle()
@@ -2253,6 +2278,7 @@ class TabStorageMiddlewareTest {
                     title = "Name",
                     theme = TabGroupTheme.Red.name,
                     lastModified = 0L,
+                    tabIds = emptyList(),
                 )
             val tabsAdded = tabs.takeLast(5)
             val store =
@@ -2292,6 +2318,7 @@ class TabStorageMiddlewareTest {
                 theme = TabGroupTheme.Red.name,
                 lastModified = 0L,
                 closed = true,
+                tabIds = emptyList(),
             )
         val displayGroup =
             createTabGroup(
@@ -2327,6 +2354,7 @@ class TabStorageMiddlewareTest {
                 theme = TabGroupTheme.Red.name,
                 lastModified = 0L,
                 closed = false,
+                tabIds = emptyList(),
             )
         val displayGroup =
             createTabGroup(
@@ -2380,6 +2408,7 @@ class TabStorageMiddlewareTest {
                     title = title,
                     theme = theme.name,
                     lastModified = 0L,
+                    tabIds = emptyList(),
                 )
 
             val repository = FakeTabGroupRepository(initialTabGroupData = TabGroupData(tabGroups = listOf(storedGroup)))
@@ -2427,6 +2456,7 @@ class TabStorageMiddlewareTest {
                     title = title,
                     theme = theme.name,
                     lastModified = 0L,
+                    tabIds = emptyList(),
                 )
 
             val repository = FakeTabGroupRepository(initialTabGroupData = TabGroupData(tabGroups = listOf(storedGroup)))
@@ -2464,12 +2494,14 @@ class TabStorageMiddlewareTest {
                     title = "Tab Group 1",
                     theme = TabGroupTheme.Red.name,
                     lastModified = 0L,
+                    tabIds = emptyList(),
                 )
             val tabGroup2 =
                 TabGroup(
                     title = "Tab Group 2",
                     theme = TabGroupTheme.Blue.name,
                     lastModified = 1L,
+                    tabIds = emptyList(),
                 )
             val repository =
                 FakeTabGroupRepository(initialTabGroupData = TabGroupData(tabGroups = listOf(tabGroup1, tabGroup2)))
@@ -2507,6 +2539,7 @@ class TabStorageMiddlewareTest {
                     title = "Name",
                     theme = TabGroupTheme.Red.name,
                     lastModified = 0L,
+                    tabIds = emptyList(),
                 )
             val store =
                 createStore(
@@ -2554,6 +2587,7 @@ class TabStorageMiddlewareTest {
                 title = "Group 1",
                 theme = TabGroupTheme.Red.name,
                 lastModified = 0L,
+                tabIds = emptyList(),
             )
         val sourceGroupTabs =
             listOf(
@@ -2566,6 +2600,7 @@ class TabStorageMiddlewareTest {
                 title = "Group 2",
                 theme = TabGroupTheme.Blue.name,
                 lastModified = 0L,
+                tabIds = emptyList(),
             )
         val destinationGroupTabs =
             listOf(
@@ -2641,6 +2676,7 @@ class TabStorageMiddlewareTest {
                 title = "Name",
                 theme = TabGroupTheme.Red.name,
                 lastModified = 0L,
+                tabIds = emptyList(),
             )
         val store =
             createStore(
@@ -2697,6 +2733,7 @@ class TabStorageMiddlewareTest {
                 title = "Name",
                 theme = TabGroupTheme.Red.name,
                 lastModified = 0L,
+                tabIds = emptyList(),
             )
         val store =
             createStore(
@@ -2754,6 +2791,7 @@ class TabStorageMiddlewareTest {
                     title = "Name",
                     theme = TabGroupTheme.Red.name,
                     lastModified = 0L,
+                    tabIds = emptyList(),
                 )
             val targetTab = tabs.last()
             val store =
@@ -2791,6 +2829,7 @@ class TabStorageMiddlewareTest {
                 title = "Name",
                 theme = TabGroupTheme.Red.name,
                 lastModified = 0L,
+                tabIds = emptyList(),
             )
         val store =
             createStore(
@@ -2829,6 +2868,7 @@ class TabStorageMiddlewareTest {
                 title = "Name",
                 theme = TabGroupTheme.Red.name,
                 lastModified = 0L,
+                tabIds = emptyList(),
             )
         val store =
             createStore(
@@ -2867,6 +2907,7 @@ class TabStorageMiddlewareTest {
                 title = "Name",
                 theme = TabGroupTheme.Red.name,
                 lastModified = 0L,
+                tabIds = emptyList(),
             )
         val store =
             createStore(
@@ -3104,6 +3145,7 @@ class TabStorageMiddlewareTest {
                     title = "Name",
                     theme = TabGroupTheme.Red.name,
                     lastModified = 0L,
+                    tabIds = emptyList(),
                 )
             val store =
                 createStore(
@@ -3142,6 +3184,7 @@ class TabStorageMiddlewareTest {
                     title = "Name",
                     theme = TabGroupTheme.Red.name,
                     lastModified = 0L,
+                    tabIds = emptyList(),
                 )
             val store =
                 createStore(
@@ -3180,6 +3223,7 @@ class TabStorageMiddlewareTest {
                     title = "Name",
                     theme = TabGroupTheme.Red.name,
                     lastModified = 0L,
+                    tabIds = emptyList(),
                 )
             val store =
                 createStore(
@@ -3218,12 +3262,14 @@ class TabStorageMiddlewareTest {
                     title = "Group 1",
                     theme = TabGroupTheme.Red.name,
                     lastModified = 0L,
+                    tabIds = emptyList(),
                 )
             val otherStoredGroup =
                 TabGroup(
                     title = "Group 2",
                     theme = TabGroupTheme.Blue.name,
                     lastModified = 0L,
+                    tabIds = emptyList(),
                 )
             val store =
                 createStore(
@@ -3263,6 +3309,7 @@ class TabStorageMiddlewareTest {
                     title = "Group 1",
                     theme = TabGroupTheme.Red.name,
                     lastModified = 0L,
+                    tabIds = emptyList(),
                 )
             val store =
                 createStore(
@@ -3305,6 +3352,7 @@ class TabStorageMiddlewareTest {
                     title = "Group 1",
                     theme = TabGroupTheme.Red.name,
                     lastModified = 0L,
+                    tabIds = emptyList(),
                 )
             val store =
                 createStore(
@@ -3458,6 +3506,7 @@ class TabStorageMiddlewareTest {
                     theme = displayGroup.theme.name,
                     closed = false,
                     lastModified = displayGroup.lastModified,
+                    tabIds = tabs.map { it.id },
                 )
             ),
             restoredData.tabGroups,
@@ -3550,6 +3599,7 @@ class TabStorageMiddlewareTest {
             title = title,
             theme = TabGroupTheme.Red.name,
             lastModified = 0L,
+            tabIds = emptyList(),
         )
     }
 

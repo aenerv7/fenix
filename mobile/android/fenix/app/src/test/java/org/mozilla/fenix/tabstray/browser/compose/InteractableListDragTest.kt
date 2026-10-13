@@ -34,7 +34,7 @@ import org.mozilla.fenix.tabstray.browser.compose.interactable.InteractionState
 import org.mozilla.fenix.tabstray.browser.compose.interactable.ListInteractionState
 import org.mozilla.fenix.tabstray.browser.compose.interactable.createListInteractionState
 import org.mozilla.fenix.tabstray.browser.compose.interactable.detectListPressAndDrag
-import org.mozilla.fenix.tabstray.controller.NoOpTabInteractionHandler
+import org.mozilla.fenix.tabstray.controller.NoOpItemInteractionHandler
 import org.mozilla.fenix.tabstray.ui.tabitems.tabItemListInteractionAnimation
 import org.mozilla.fenix.theme.FirefoxTheme
 
@@ -134,7 +134,7 @@ class InteractableListDragTest {
                             listState = state,
                             ignoredItems = emptySet(),
                             liveReorderEnabled = false,
-                            tabInteractionHandler = NoOpTabInteractionHandler,
+                            itemInteractionHandler = NoOpItemInteractionHandler,
                         )
                     onState(state, interaction)
 

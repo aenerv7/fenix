@@ -6,8 +6,14 @@ package org.mozilla.fenix.tabstray.data
 
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
+import mozilla.components.browser.state.state.MediaSessionState
+import mozilla.components.browser.state.state.createTab as createTabSessionState
+import mozilla.components.compose.base.theme.layout.AcornWindowSize
+import mozilla.components.concept.engine.mediasession.MediaSession
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -144,5 +150,136 @@ class TabsTrayItemTest {
         assertEquals(tab.id, thumbnailImageData.tabId)
         assertEquals(tab.private, thumbnailImageData.isPrivate)
         assertEquals(tab.icon?.asImageBitmap(), thumbnailImageData.tabIcon)
+    }
+
+    @Test
+    fun `GIVEN the window is small and the group has 4 tabs WHEN expanding the group THEN fully expand the group`() {
+        val windowSize = AcornWindowSize.Small
+        val tabs = MutableList(size = 4) { createTab(url = "") }
+        val group = createTabGroup(tabs = tabs)
+
+        assertTrue(group.shouldFullyExpandOnFirstOpen(windowSize = windowSize))
+    }
+
+    @Test
+    fun `GIVEN the window is small and the group has 3 tabs WHEN expanding the group THEN partially expand the group`() {
+        val windowSize = AcornWindowSize.Small
+        val tabs = MutableList(size = 3) { createTab(url = "") }
+        val group = createTabGroup(tabs = tabs)
+
+        assertFalse(group.shouldFullyExpandOnFirstOpen(windowSize = windowSize))
+    }
+
+    @Test
+    fun `GIVEN the window is medium and the group has 3 tabs WHEN expanding the group THEN partially expand the group`() {
+        val windowSize = AcornWindowSize.Medium
+        val tabs = MutableList(size = 3) { createTab(url = "") }
+        val group = createTabGroup(tabs = tabs)
+
+        assertFalse(group.shouldFullyExpandOnFirstOpen(windowSize = windowSize))
+    }
+
+    @Test
+    fun `GIVEN the window is large and the group has 3 tabs WHEN expanding the group THEN partially expand the group`() {
+        val windowSize = AcornWindowSize.Large
+        val tabs = MutableList(size = 3) { createTab(url = "") }
+        val group = createTabGroup(tabs = tabs)
+
+        assertFalse(group.shouldFullyExpandOnFirstOpen(windowSize = windowSize))
+    }
+
+    @Test
+    fun `GIVEN the window is medium and the group has 8 tabs WHEN expanding the group THEN fully expand the group`() {
+        val windowSize = AcornWindowSize.Medium
+        val tabs = MutableList(size = 8) { createTab(url = "") }
+        val group = createTabGroup(tabs = tabs)
+
+        assertTrue(group.shouldFullyExpandOnFirstOpen(windowSize = windowSize))
+    }
+
+    @Test
+    fun `GIVEN the window is large and the group has 8 tabs WHEN expanding the group THEN fully expand the group`() {
+        val windowSize = AcornWindowSize.Large
+        val tabs = MutableList(size = 8) { createTab(url = "") }
+        val group = createTabGroup(tabs = tabs)
+
+        assertTrue(group.shouldFullyExpandOnFirstOpen(windowSize = windowSize))
+    }
+
+    @Test
+    fun `GIVEN a group with at least one tab with active media WHEN checking if the group has active media THEN return true`() {
+        val group =
+            createTabGroup(
+                tabs =
+                    listOf(
+                        createTab(url = "www.mozilla.org", isMediaActive = true),
+                        createTab(url = "www.wikipedia.org", isMediaActive = false),
+                    )
+            )
+
+        assertTrue(group.isMediaActive)
+    }
+
+    @Test
+    fun `GIVEN a group with no tabs with active media WHEN checking if the group has active media THEN return false`() {
+        val group =
+            createTabGroup(
+                tabs =
+                    listOf(
+                        createTab(url = "www.mozilla.org", isMediaActive = false),
+                        createTab(url = "www.wikipedia.org", isMediaActive = false),
+                    )
+            )
+
+        assertFalse(group.isMediaActive)
+    }
+
+    @Test
+    fun `GIVEN a TabSessionState with media playing WHEN creating a Tab THEN isMediaActive is true`() {
+        val mediaSessionState =
+            MediaSessionState(
+                controller = mockk(),
+                playbackState = MediaSession.PlaybackState.PLAYING,
+            )
+        val tabSessionState =
+            createTabSessionState(
+                url = "https://www.mozilla.org",
+                mediaSessionState = mediaSessionState,
+            )
+
+        val tab = TabsTrayItem.Tab(tabSessionState)
+
+        assertTrue(tab.isMediaActive)
+    }
+
+    @Test
+    fun `GIVEN a TabSessionState with media paused WHEN creating a Tab THEN isMediaActive is false`() {
+        val mediaSessionState =
+            MediaSessionState(
+                controller = mockk(),
+                playbackState = MediaSession.PlaybackState.PAUSED,
+            )
+        val tabSessionState =
+            createTabSessionState(
+                url = "https://www.mozilla.org",
+                mediaSessionState = mediaSessionState,
+            )
+
+        val tab = TabsTrayItem.Tab(tabSessionState)
+
+        assertFalse(tab.isMediaActive)
+    }
+
+    @Test
+    fun `GIVEN a TabSessionState with no media WHEN creating a Tab THEN isMediaActive is false`() {
+        val tabSessionState =
+            createTabSessionState(
+                url = "https://www.mozilla.org",
+                mediaSessionState = null,
+            )
+
+        val tab = TabsTrayItem.Tab(tabSessionState)
+
+        assertFalse(tab.isMediaActive)
     }
 }

@@ -33,7 +33,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mozilla.fenix.tabstray.TabsTrayTestTag
-import org.mozilla.fenix.tabstray.controller.TabInteractionHandler
+import org.mozilla.fenix.tabstray.controller.ItemInteractionHandler
 import org.mozilla.fenix.tabstray.data.TabsTrayItem
 import org.mozilla.fenix.tabstray.data.createTab
 import org.mozilla.fenix.tabstray.data.createTabGroup
@@ -273,7 +273,7 @@ class TabLayoutTest {
                             selectedItemIndex = selectedItemIndex,
                             selectionMode = TabsTrayState.Mode.Normal,
                             focusEnabled = true,
-                            tabInteractionHandler = fakeTabInteractionHandler(),
+                            itemInteractionHandler = fakeItemInteractionHandler(),
                             onTabClose = {},
                             onItemClick = {},
                             onItemLongClick = {},
@@ -340,7 +340,7 @@ class TabLayoutTest {
                             selectedItemIndex = 0,
                             selectionMode = selectionMode,
                             focusEnabled = true,
-                            tabInteractionHandler = fakeTabInteractionHandler(),
+                            itemInteractionHandler = fakeItemInteractionHandler(),
                             onTabClose = {},
                             onItemClick = {},
                             onItemLongClick = {},
@@ -402,7 +402,7 @@ class TabLayoutTest {
                             selectedItemIndex = tabs.lastIndex,
                             selectionMode = TabsTrayState.Mode.Normal,
                             focusEnabled = true,
-                            tabInteractionHandler = fakeTabInteractionHandler(),
+                            itemInteractionHandler = fakeItemInteractionHandler(),
                             onTabClose = { closedTab -> tabs = tabs.filterNot { it.id == closedTab.id } },
                             onItemClick = {},
                             onItemLongClick = {},
@@ -467,7 +467,7 @@ class TabLayoutTest {
             selectedItemIndex = 0,
             selectionMode = TabsTrayState.Mode.Normal,
             focusEnabled = true,
-            tabInteractionHandler = fakeTabInteractionHandler(),
+            itemInteractionHandler = fakeItemInteractionHandler(),
             modifier = modifier,
             trackersBlockedCount = 0,
             onTabClose = { _ -> },
@@ -484,8 +484,8 @@ class TabLayoutTest {
         )
     }
 
-    private fun fakeTabInteractionHandler() =
-        object : TabInteractionHandler {
+    private fun fakeItemInteractionHandler() =
+        object : ItemInteractionHandler {
             override fun onMove(sourceKey: String, targetKey: String?, placeAfter: Boolean) {
                 // no op
             }
@@ -522,7 +522,7 @@ class TabLayoutTest {
                         selectedItemIndex = 0,
                         selectionMode = TabsTrayState.Mode.Normal,
                         focusEnabled = true,
-                        tabInteractionHandler = fakeTabInteractionHandler(),
+                        itemInteractionHandler = fakeItemInteractionHandler(),
                         onTabClose = { _ -> },
                         onItemClick = { _ -> },
                         onItemLongClick = { _ -> },

@@ -7,7 +7,7 @@ Mozilla's general Firefox source documentation remains authoritative for the res
 
 ## Current fork customization summary
 
-The current upstream baseline is Firefox Android 157.0 (`FIREFOX-ANDROID_157_0_RELEASE`). The first
+The current upstream baseline is Firefox Android 158.0 (`FIREFOX-ANDROID_158_0_RELEASE`). The first
 upstream synchronization, including manual conflict resolution and the limited-time activity policy,
 is recorded in [FENIX_UPSTREAM_SYNC.md](FENIX_UPSTREAM_SYNC.md). Release-by-release user-facing notes
 are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
@@ -305,8 +305,8 @@ Release APKs must use the exact versionCode from the corresponding official upst
 same baseline and ABI. The checked-in `FENIX_UPSTREAM_VERSION_CODES.json` records those values;
 update it from the official Mozilla archive when changing `FENIX_UPSTREAM_RELEASE`. The release
 script passes the recorded value to Gradle and verifies the resulting APK manifest, so a build-time
-clock value cannot silently become the release versionCode. For the 157.0 baseline, the official
-arm64-v8a value is `2016186458`.
+clock value cannot silently become the release versionCode. For the 158.0 baseline, the official
+arm64-v8a value is `2016189050`.
 
 Do not add a fork revision offset: a fork build is a modified build of that upstream versionCode,
 and changing it would prevent normal downgrade or replacement workflows.

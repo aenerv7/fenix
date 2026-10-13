@@ -63,8 +63,8 @@ import mozilla.components.compose.base.snackbar.Snackbar
 import mozilla.components.ui.icons.R as iconsR
 import org.mozilla.fenix.R
 import org.mozilla.fenix.tabstray.TabsTrayTestTag
-import org.mozilla.fenix.tabstray.controller.NoOpTabInteractionHandler
-import org.mozilla.fenix.tabstray.controller.TabInteractionHandler
+import org.mozilla.fenix.tabstray.controller.ItemInteractionHandler
+import org.mozilla.fenix.tabstray.controller.NoOpItemInteractionHandler
 import org.mozilla.fenix.tabstray.data.TabGroupTheme
 import org.mozilla.fenix.tabstray.data.TabsTrayItem
 import org.mozilla.fenix.tabstray.data.createTab
@@ -84,7 +84,7 @@ import org.mozilla.fenix.theme.FirefoxTheme
  * @param onDeleteTabGroupClick Invoked when the user clicks on delete tab group.
  * @param onEditTabGroupClick Invoked when the user clicks to edit the [group].
  * @param onCloseTabGroupClick Invoked when the user clicks to close a tab group.
- * @param tabInteractionHandler Handler for tab interactions.
+ * @param itemInteractionHandler Handler for tab interactions.
  * @param selectionMode The current tab selection mode.
  * @param onItemLongClick Invoked when the user long clicks a tab.
  * @param selectionBanner The multi-select toolbar shown in a fixed overlay above the expanded group.
@@ -99,7 +99,7 @@ fun ExpandedTabGroup(
     group: TabsTrayItem.TabGroup,
     actions: ExpandedTabGroupActions,
     displayTabsInGrid: Boolean,
-    tabInteractionHandler: TabInteractionHandler,
+    itemInteractionHandler: ItemInteractionHandler,
     selectionMode: TabsTrayState.Mode = TabsTrayState.Mode.Normal,
     onItemLongClick: (TabsTrayItem) -> Unit = {},
     selectionBanner: @Composable (Boolean, (Boolean) -> Unit) -> Unit = { _, _ -> },
@@ -159,7 +159,7 @@ fun ExpandedTabGroup(
                 liveReorderEnabled = true,
                 selectedItemIndex = group.initialScrollIndex,
                 selectionMode = selectionMode,
-                tabInteractionHandler = tabInteractionHandler,
+                itemInteractionHandler = itemInteractionHandler,
                 modifier =
                     Modifier.padding(
                         start = FirefoxTheme.layout.space.dynamic200,
@@ -249,7 +249,7 @@ fun ExpandedTabGroup(
     onDeleteTabGroupClick: () -> Unit,
     onEditTabGroupClick: () -> Unit,
     onCloseTabGroupClick: () -> Unit,
-    tabInteractionHandler: TabInteractionHandler,
+    itemInteractionHandler: ItemInteractionHandler,
     selectionMode: TabsTrayState.Mode = TabsTrayState.Mode.Normal,
     onItemLongClick: (TabsTrayItem) -> Unit = {},
     selectionBanner: @Composable (Boolean, (Boolean) -> Unit) -> Unit = { _, _ -> },
@@ -271,7 +271,7 @@ fun ExpandedTabGroup(
                 onShareTabGroupClick = {},
             ),
         displayTabsInGrid = true,
-        tabInteractionHandler = tabInteractionHandler,
+        itemInteractionHandler = itemInteractionHandler,
         selectionMode = selectionMode,
         onItemLongClick = onItemLongClick,
         selectionBanner = selectionBanner,
@@ -408,7 +408,7 @@ private fun ExpandedTabGroupPreview(
                         onShareTabGroupClick = {},
                     ),
                 displayTabsInGrid = previewState.displayTabsInGrid,
-                tabInteractionHandler = NoOpTabInteractionHandler,
+                itemInteractionHandler = NoOpItemInteractionHandler,
             )
         }
     }

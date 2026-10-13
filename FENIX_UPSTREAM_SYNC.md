@@ -352,6 +352,72 @@ Windows (`NotADirectoryError`). Regenerate the two files directly with the mach 
 Python, passing forward-slash paths so that `generate.py` can derive the package name, and never by
 compiling Gecko for a release.
 
+## Firefox Android 158.0 synchronization
+
+The 158.0 update was prepared from the official `FIREFOX-ANDROID_158_0_RELEASE` tag
+(`3c71aeacdb29`) on the candidate branch `sync/firefox-android-158.0`, starting from the 157.0
+baseline. The upstream delta spans 15042 files.
+
+### Three-way merge instead of a patch application
+
+The delta was not applied with `git apply`. The upstream diff was fed to
+
+```text
+git merge-tree --write-tree --merge-base=FIREFOX-ANDROID_157_0_RELEASE HEAD FIREFOX-ANDROID_158_0_RELEASE
+```
+
+and the resulting tree became a merge commit whose second parent is the 158.0 tag. This removes the
+silent no-op hazard documented for the 156.0 synchronization: every file the fork did not touch takes
+upstream's new content, files the fork did touch receive the merge of both edits, and only files
+where the two sides change the same lines carry conflict markers. For this delta that is 31 files
+with 46 conflict blocks, all inside `mobile/android/fenix` plus the root `AGENTS.md`; the same delta
+through `git apply --reject` rejects 70 files, because a patch cannot merge hunks that a real
+three-way merge resolves.
+
+The candidate changes 15040 files against its Fenix parent, which is the upstream delta minus the
+fork's rename/delete pair for the Mozilla wordmark.
+
+### Upstream moves the fork adopts
+
+- Tab-group storage moved out of the app into the android-components module
+  `feature-tabgroups-storage`. The fork's imports become
+  `mozilla.components.feature.tabgroups.storage.{data,database,repository,fakes}`, and
+  `createTabGroupWithTabs` receives the tab ids inside `TabGroup(tabIds = …)`.
+- `TabInteractionHandler` became `ItemInteractionHandler`, `TabItemInteractionState` became
+  `ItemInteractionState`, and the tab item animations moved from `SharedTabItemUi.kt` into the new
+  `tabstray/ui/tabitems/TabItemAnimations.kt`.
+- `TabGroupMiddleware` moved to `org.mozilla.fenix.tabgroups.middleware`.
+- `TabGroupAction.TabAddedToGroup` became `TabAddedToExistingTabGroup`; upstream's
+  `TabAddedToNewTabGroup` is still an empty branch (bug 2069535).
+- Upstream renamed `Wordmark.kt` to `WordmarkAndLogo.kt` and reworked it. The fork keeps its own
+  rabbit wordmark and its deletion of the Mozilla one, so the upstream file stays deleted.
+- `MenuAction.Navigate.EditBookmark` gained `guidToEdit`, and upstream's new menu provider classes
+  are kept. The fork's removal of the passwords entry — the `MainMenu` library item, the
+  `onPasswordsMenuClick` parameter, `MenuAction.Navigate.Passwords`, and its navigation and
+  telemetry branches — is re-applied to the new structure.
+
+### Fork behaviour reapplied
+
+- `TabItemAnimations.kt` is new upstream code, so the fork's item animation policy had to be applied
+  to it again: `defaultGridItemAnimation` and `defaultListItemAnimation` pass `fadeOutSpec = null`
+  unconditionally, so a removed item leaves the layout instead of fading out detached from it.
+- The expanded group keeps its group-scoped multi-select, its `selectionBanner`/`selectionMenu`
+  overlays, the system Back handler that consumes Back while that toolbar is open, and the
+  always-visible add-new-tab action.
+- `TabStorageMiddleware` keeps the fork's storage actions for tabs removed from a group, tabs closed
+  from a group, and undo that restores tabs into their group.
+- The limited-time activity policy had nothing to remove: the delta adds no campaign, tournament, or
+  other fixed-term activity.
+- `values-zh-rCN` gained the 17 names that the 158.0 delta adds to `values/strings.xml`, translated
+  with the terminology already used in that file; it has no missing name and no duplicate name.
+
+### Release pins
+
+The release uses the pinned official 158.0 arm64-v8a GeckoView package recorded in
+`FENIX_UPSTREAM_GECKOVIEW.json`; local GeckoView compilation is prohibited because no Fenix-authored
+Gecko or native source changed. The exact official arm64-v8a versionCode is `2016189050`, and the
+official APK SHA-256 is `4E57F3D92B5F77FEAB700D454E8EFB5030279855A2BAE7DB1A14521AC60DF466`.
+
 ## Source-to-binary traceability
 
 If APKs are distributed, record their SHA-256 hashes and the exact Fenix tag in release notes. The
