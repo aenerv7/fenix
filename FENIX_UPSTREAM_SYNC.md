@@ -352,11 +352,48 @@ Windows (`NotADirectoryError`). Regenerate the two files directly with the mach 
 Python, passing forward-slash paths so that `generate.py` can derive the package name, and never by
 compiling Gecko for a release.
 
+## Firefox Android 157.0.1 synchronization
+
+The 157.0.1 update was prepared from the official `FIREFOX-ANDROID_157_0_1_RELEASE` tag on the
+candidate branch `sync/firefox-android-157.0.1`, starting from the 157.0 baseline. The upstream delta
+spans 343 files (54 added, 1 deleted, 288 modified).
+
+The delta applied with `git apply --3way` left conflicts in 9 `mobile/android/fenix`
+`values-*/strings.xml` files (`values-el`, `values-en-rCA`, `values-es-rCL`, `values-hu`,
+`values-lv`, `values-oc`, `values-tt`, `values-uk`, `values-zh-rCN`). Every hunk was resolved on the
+fork side, and the genuinely new upstream translations whose name exists in the fork's
+`values/strings.xml` were then appended. This keeps the fork's branding and its removed entries
+while matching the fork's string set. The candidate changes 344 files against its Fenix parent (the
+343 upstream changes plus `FENIX_UPSTREAM_RELEASE`).
+
+`values-zh-rCN` remains complete: no missing entry against `values/strings.xml` and no duplicate
+name. Upstream added translations only for existing strings in the other eight conflicted locales;
+it added and removed no English string in this patch release.
+
+The release uses the pinned official 157.0.1 arm64-v8a GeckoView package recorded in
+`FENIX_UPSTREAM_GECKOVIEW.json`; local GeckoView compilation is prohibited because no Fenix-authored
+Gecko or native source changed. The exact official arm64-v8a versionCode is `2016188626`.
+
 ## Firefox Android 158.0 synchronization
 
 The 158.0 update was prepared from the official `FIREFOX-ANDROID_158_0_RELEASE` tag
-(`3c71aeacdb29`) on the candidate branch `sync/firefox-android-158.0`, starting from the 157.0
-baseline. The upstream delta spans 15042 files.
+(`3c71aeacdb29`) on the candidate branch `sync/firefox-android-158.0`, starting from the 157.0 baseline
+that this clone still had. The upstream delta spans 15042 files from 157.0; from the 157.0.1 baseline
+that the remote branch reached in parallel it spans 14748 files.
+
+### Integrating the parallel 157.0.1 baseline
+
+The remote `fenix` branch gained its 157.0.1 synchronization (baseline commit, artifact pins,
+documentation, documentation gate record) while this clone was still on 157.0, so those commits were
+merged into the 158.0 branch instead of being replaced, and the release candidate is that merge:
+14763 files change against its first parent, the 157.0.1 baseline.
+
+The merge conflicted in 40 files. Version stamps and upstream files whose 157.0.1 change is contained
+in 158.0 take the 158.0 side. The 15 fenix `values-*/strings.xml` conflicts resolve to content
+identical to the 158.0 tree: every string name the 157.0.1 side carried was already present with the
+same text. `mobile/android/fenix` and `mobile/android/android-components` are therefore unchanged
+against the revision the release APK was built from, and the APK did not need a rebuild. The changelog,
+sync, and documentation-toolchain documents keep both baseline sections.
 
 ### Three-way merge instead of a patch application
 
@@ -374,8 +411,8 @@ with 46 conflict blocks, all inside `mobile/android/fenix` plus the root `AGENTS
 through `git apply --reject` rejects 70 files, because a patch cannot merge hunks that a real
 three-way merge resolves.
 
-The candidate changes 15040 files against its Fenix parent, which is the upstream delta minus the
-fork's rename/delete pair for the Mozilla wordmark.
+The candidate changes 15040 files against its Fenix parent, which is the upstream delta from 157.0
+minus the fork's rename/delete pair for the Mozilla wordmark.
 
 ### Upstream moves the fork adopts
 

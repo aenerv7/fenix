@@ -54,11 +54,16 @@
 
 #### 发布与验证
 
-- 上游增量 15042 个文件；候选提交相对 Fenix 父提交改动 15045 个文件。
+- 上游增量：158.0 相对 157.0 为 15042 个文件，相对上一个已发布基线 157.0.1 为 14748 个文件；候选提交
+  相对其第一个父提交（157.0.1 基线）改动 14763 个文件。
 - 本版改以三方合并（`git merge-tree --merge-base=FIREFOX-ANDROID_157_0_RELEASE`）落地上游增量，
   31 个文件、46 处冲突需要人工解决，其余文件自动合并；合并过程中被上游重写而丢失的 fork 代码
   （展开群组选择工具栏、`RenderExpandedTabGroup` 参数、`SharedTabItemUi` 动画、`TabsTrayItem`
   的 `shouldFullyExpandOnFirstOpen`）已全部核对并恢复。
+- 远端并行完成的 157.0.1 基线提交随后合并进来：40 个文件冲突中，版本戳与上游文件取 158.0 一侧，
+  15 个 fenix 本地化文件全部与 158.0 内容一致（应用源码未变），文档保留两个基线的章节。
+  `mobile/android/fenix` 与 `mobile/android/android-components` 相对构建时的修订没有任何改动，
+  因此已签名的 APK 不需要重建。
 - `fenix:spotlessKotlinCheck` 通过；`fenix:compileDebugKotlin` 与 `fenix:compileDebugUnitTestKotlin`
   通过；`fenix:assembleDebug` 通过。
 - `fenix:testDebugUnitTest`：6570 项，253 失败、1474 跳过。失败全部是已记录的 Windows 环境限制：230 项
@@ -76,9 +81,9 @@
 
 ### English
 
-Official upstream baseline: `FIREFOX-ANDROID_158_0_RELEASE` (upstream delta: 15042 files). This release
-replays the whole Fenix change set onto 158.0; the entries below are the **complete effective** change
-set against that baseline.
+Official upstream baseline: `FIREFOX-ANDROID_158_0_RELEASE` (upstream delta: 15042 files from 157.0, 14748
+files from the previously published 157.0.1 baseline). This release replays the whole Fenix change set
+onto 158.0; the entries below are the **complete effective** change set against that baseline.
 
 #### Branding and feature reduction
 
@@ -144,12 +149,18 @@ set against that baseline.
 
 #### Release and validation
 
-- Upstream delta: 15042 files. The candidate commit changes 15045 files against its Fenix parent.
+- Upstream delta: 15042 files from 157.0 and 14748 files from the previously published 157.0.1 baseline;
+  the candidate commit changes 14763 files against its first parent, the 157.0.1 baseline.
 - This baseline was merged with `git merge-tree --merge-base=FIREFOX-ANDROID_157_0_RELEASE` instead of
   `git apply`: 31 files and 46 conflict blocks needed a manual resolution. Fork code the merge lost
   because upstream had rewritten the same region (the expanded-group selection toolbar, the
   `RenderExpandedTabGroup` parameters, the `SharedTabItemUi` animations, and `TabsTrayItem`'s
   `shouldFullyExpandOnFirstOpen`) was restored after review.
+- The 157.0.1 baseline commits that landed on the remote in parallel are then merged in: of their 40
+  conflicted files, the version stamps and upstream files take the 158.0 side and all 15 fenix
+  localization files resolve to content identical to 158.0, so `mobile/android/fenix` and
+  `mobile/android/android-components` are unchanged against the revision the APK was built from and the
+  signed APK does not need a rebuild. The documentation documents keep both baseline sections.
 - `fenix:spotlessKotlinCheck` passes; `fenix:compileDebugKotlin` and
   `fenix:compileDebugUnitTestKotlin` pass; `fenix:assembleDebug` passes.
 - `fenix:testDebugUnitTest`: 6570 tests, 253 failed, 1474 skipped. Every failure is a recorded Windows
@@ -169,12 +180,12 @@ set against that baseline.
 - `.idsig` is retained locally for verification and re-signing and is not a GitHub Release asset; the
   Windows Glean native-library limitation still requires Linux or CI coverage.
 
-## 157.0-r1
+## 157.0.1-r1
 
 ### 中文
 
-官方上游基线：`FIREFOX-ANDROID_157_0_RELEASE`（上游增量 15460 个文件）。本版把整个 Fenix 改动集重放到
-157.0 之上；下列条目是相对该基线的**全部生效**改动，156.0.1 各修订版中被后续修订版回退的中间做法
+官方上游基线：`FIREFOX-ANDROID_157_0_1_RELEASE`（上游增量 343 个文件）。本版把整个 Fenix 改动集重放到
+157.0.1 之上；下列条目是相对该基线的**全部生效**改动，156.0.1 各修订版中被后续修订版回退的中间做法
 （r5/r6 的 pin 改动、r8 的 `enteringGroupId` 扩展）不再保留。
 
 #### 品牌与功能精简
@@ -187,7 +198,7 @@ set against that baseline.
 - 盾牌面板三种横幅状态改为纯文本左对齐，不再渲染上游狐狸插图；已防护状态的紫→橙渐变底板保留。
 - 从 UI、Android 自动填充服务与默认同步数据范围中移除密码、地址、信用卡和个人信息管理；系统自动
   填充提供方列表不再提供 Fenix；移除 Play 商店评分入口。
-- 上游本版删除了启动崩溃页的两个狐狸矢量，替换为非狐狸插图。
+- 上游基线删除了启动崩溃页的两个狐狸矢量，改用非狐狸插图。
 
 #### 标签页与标签页组
 
@@ -211,34 +222,35 @@ set against that baseline.
 
 #### 本地化与布局
 
-- `values-zh-rCN` 相对 `values/strings.xml` 为 0 缺失、无重复项；本版新增
-  `ip_protection_settings_title`（内置 VPN）与 `ip_protection_open_settings_snackbar_action`（设置），
-  沿用既有术语。
+- `values-zh-rCN` 相对 `values/strings.xml` 为 0 缺失、无重复项。上游 157.0.1 为 `values-el`、
+  `values-en-rCA`、`values-es-rCL`、`values-hu`、`values-lv`、`values-oc`、`values-tt`、`values-uk`
+  补齐了既有字符串的翻译，本版保留这些新增翻译与 fork 侧的品牌译法。`ip_protection_settings_title`
+  （内置 VPN）与 `ip_protection_open_settings_snackbar_action`（设置）沿用既有术语。
 - 调整群组多选工具栏、系统导航栏、亮暗主题与溢出菜单的布局、层级与动画。
 - 只构建 Fenix，不构建 Focus。
 
 #### 发布与验证
 
-- 上游增量 15460 个文件；候选分支相对 Fenix 父提交改动 15458 个文件（差额为 fork 已删除、上游仍在
-  修改的两个文件）。30 个文件被 `git apply --reject` 拒绝，其中 21 个含 38 处真实冲突，全部位于
-  `mobile/android/fenix`。
+- 上游增量 343 个文件；候选分支相对其 Fenix 父提交改动 344 个文件（343 个上游改动，另 1 个为
+  `FENIX_UPSTREAM_RELEASE` 基线文件）。`git apply --3way` 在 9 个 `mobile/android/fenix` 的
+  `values-*/strings.xml` 上保留冲突，已逐一按 fork 侧解决并补齐上游新增翻译。
 - `fenix:spotlessKotlinCheck` 通过；`fenix:assembleDebug` 通过。
-- `fenix:testDebugUnitTest`：6265 项，264 失败、1394 跳过。失败全部是已记录的 Windows 环境限制：241 项
-  为缺失 Windows megazord/JNA 原生库（`Could not initialize class com.sun.jna.Native`），其余为 Windows
-  专有的路径分隔符、Robolectric 临时目录与 DataStore 重命名差异。与本次改动直接相关的
-  `org.mozilla.fenix.tabstray.*`、`org.mozilla.fenix.tabgroups.*`、搜索建议路由、工具栏与导航测试共
-  892 项，0 失败（265 跳过）；这些跳过项仍需 Linux 或 CI 覆盖。
-- 仅发布 `arm64-v8a` APK，使用官方 157.0 多语言 GeckoView，严格沿用官方 `versionCode 2016186458`
-  和上游 `versionName 157.0`；未进行本地 GeckoView 编译或打包。
-- APK：`Fenix-157.0-r1-arm64-v8a-release.apk`，大小 `131938691` 字节，SHA-256：`C5B2CF4C73A7AA801003E193C6DC43386164F2900B22E47E9810CD1DBB058C15`。
-- 对应完整源码：[fenix-157.0-r1](https://github.com/aenerv7/fenix/tree/fenix-157.0-r1)。Fenix 是非官方独立修改版，不受 Mozilla 赞助或背书；维护与支持由本项目提供。保留 MPL 2.0 和第三方许可；Firefox 是 Mozilla Foundation 的商标。
+- `fenix:testDebugUnitTest`：6265 项，263 失败、1394 跳过。失败全部是已记录的 Windows 环境限制
+  （缺失 Windows megazord/JNA 原生库，以及 Windows 专有的路径分隔符、Robolectric 临时目录与
+  DataStore 重命名差异）；同一组失败特征（`SQLiteCantOpenDatabaseException` 36、
+  `Unable to rename` 5、`getPackageManager` 1、`expected:<myProvider>` 1、`markAsTriggered` 1）在
+  156.0.1-r13 基线上完全一致。
+- 仅发布 `arm64-v8a` APK，使用官方 157.0.1 多语言 GeckoView，严格沿用官方 `versionCode 2016188626`
+  和上游 `versionName 157.0.1`；未进行本地 GeckoView 编译或打包。
+- APK：`Fenix-157.0.1-r1-arm64-v8a-release.apk`，大小 `131950292` 字节，SHA-256：`DCFE95721D7994D9B4466A9D46214938D8C17AED1EAFDB7940EB40D1C0610097`。
+- 对应完整源码：[fenix-157.0.1-r1](https://github.com/aenerv7/fenix/tree/fenix-157.0.1-r1)。Fenix 是非官方独立修改版，不受 Mozilla 赞助或背书；维护与支持由本项目提供。保留 MPL 2.0 和第三方许可；Firefox 是 Mozilla Foundation 的商标。
 - `.idsig` 仅保留本地校验和重签名使用，不作为 GitHub Release 资产；Windows Glean 原生库限制仍需
   Linux 或 CI 覆盖。
 
 ### English
 
-Official upstream baseline: `FIREFOX-ANDROID_157_0_RELEASE` (upstream delta: 15460 files). This release
-replays the whole Fenix change set onto 157.0; the entries below are the **complete effective** change
+Official upstream baseline: `FIREFOX-ANDROID_157_0_1_RELEASE` (upstream delta: 343 files). This release
+replays the whole Fenix change set onto 157.0.1; the entries below are the **complete effective** change
 set against that baseline. Intermediate behaviour that a later `rN` reverted (r5/r6's pin changes, r8's
 `enteringGroupId` extension) is not retained.
 
@@ -255,7 +267,7 @@ set against that baseline. Intermediate behaviour that a later `rN` reverted (r5
 - Password, address, credit-card, and personal-information management are removed from the UI, from the
   Android autofill service, and from the default sync data set; Fenix is no longer offered as a system
   autofill provider, and the Play Store rating entry point is removed.
-- Upstream deleted the two fox vectors used by the startup crash screen in this baseline and replaced
+- The upstream baseline deleted the two fox vectors used by the startup crash screen and replaced
   them with non-fox illustrations.
 
 #### Tabs and tab groups
@@ -292,31 +304,32 @@ set against that baseline. Intermediate behaviour that a later `rN` reverted (r5
 
 #### Localization and layout
 
-- `values-zh-rCN` has no missing entry against `values/strings.xml` and no duplicate name; this baseline
-  adds `ip_protection_settings_title` (内置 VPN) and `ip_protection_open_settings_snackbar_action` (设置),
-  reusing the established terminology.
+- `values-zh-rCN` has no missing entry against `values/strings.xml` and no duplicate name. Upstream
+  157.0.1 added translations for existing strings in `values-el`, `values-en-rCA`, `values-es-rCL`,
+  `values-hu`, `values-lv`, `values-oc`, `values-tt`, and `values-uk`; this release keeps those new
+  translations alongside the fork's branding. `ip_protection_settings_title` (内置 VPN) and
+  `ip_protection_open_settings_snackbar_action` (设置) reuse the established terminology.
 - The group multi-select toolbar, system navigation bar, light and dark themes, and overflow menu layout,
   hierarchy, and animations are adjusted.
 - Only Fenix is built; Focus is not built.
 
 #### Release and validation
 
-- Upstream delta: 15460 files. The candidate changes 15458 files against its Fenix parent (the two-path
-  difference is the files the fork deleted that upstream still modifies). `git apply --reject` rejected
-  30 files, 21 of which held 38 real conflicts, all inside `mobile/android/fenix`.
+- Upstream delta: 343 files. The candidate changes 344 files against its Fenix parent (the 343 upstream
+  changes plus `FENIX_UPSTREAM_RELEASE`). `git apply --3way` kept conflicts in 9
+  `mobile/android/fenix` `values-*/strings.xml` files, each resolved on the fork side with the new
+  upstream translations added.
 - `fenix:spotlessKotlinCheck` passes; `fenix:assembleDebug` passes.
-- `fenix:testDebugUnitTest`: 6265 tests, 264 failed, 1394 skipped. Every failure is a recorded Windows
-  environment limitation: 241 are the missing Windows megazord/JNA native libraries (`Could not
-  initialize class com.sun.jna.Native`) and the rest are Windows-only path separator, Robolectric temp
-  directory, and DataStore rename differences. The suites that cover this change —
-  `org.mozilla.fenix.tabstray.*`, `org.mozilla.fenix.tabgroups.*`, search suggestion routing, toolbar,
-  and navigation — pass 892 tests with 0 failures (265 skipped); the skipped ones still need Linux or CI
-  coverage.
-- Publishes only the `arm64-v8a` APK using the official 157.0 multi-locale GeckoView and the exact
-  official `versionCode 2016186458` with upstream `versionName 157.0`; no local GeckoView compilation or
-  packaging was performed.
-- APK: `Fenix-157.0-r1-arm64-v8a-release.apk`, size `131938691` bytes, SHA-256: `C5B2CF4C73A7AA801003E193C6DC43386164F2900B22E47E9810CD1DBB058C15`.
-- Complete corresponding source: [fenix-157.0-r1](https://github.com/aenerv7/fenix/tree/fenix-157.0-r1). Fenix is an independent unofficial modified build, not sponsored or endorsed by Mozilla; this project provides maintenance and support. MPL 2.0 and third-party licenses are retained; Firefox is a trademark of the Mozilla Foundation.
+- `fenix:testDebugUnitTest`: 6265 tests, 263 failed, 1394 skipped. Every failure is a recorded Windows
+  environment limitation (the missing Windows megazord/JNA native libraries plus Windows-only path
+  separator, Robolectric temp directory, and DataStore rename differences); the 156.0.1-r13 baseline
+  shows the identical failure signatures (`SQLiteCantOpenDatabaseException` 36, `Unable to rename` 5,
+  `getPackageManager` 1, `expected:<myProvider>` 1, `markAsTriggered` 1).
+- Publishes only the `arm64-v8a` APK using the official 157.0.1 multi-locale GeckoView and the exact
+  official `versionCode 2016188626` with upstream `versionName 157.0.1`; no local GeckoView compilation
+  or packaging was performed.
+- APK: `Fenix-157.0.1-r1-arm64-v8a-release.apk`, size `131950292` bytes, SHA-256: `DCFE95721D7994D9B4466A9D46214938D8C17AED1EAFDB7940EB40D1C0610097`.
+- Complete corresponding source: [fenix-157.0.1-r1](https://github.com/aenerv7/fenix/tree/fenix-157.0.1-r1). Fenix is an independent unofficial modified build, not sponsored or endorsed by Mozilla; this project provides maintenance and support. MPL 2.0 and third-party licenses are retained; Firefox is a trademark of the Mozilla Foundation.
 - `.idsig` is retained locally for verification and re-signing and is not a GitHub Release asset; the
   Windows Glean native-library limitation still requires Linux or CI coverage.
 

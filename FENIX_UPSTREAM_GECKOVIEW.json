@@ -1,4 +1,16 @@
 {
+  "157.0.1": {
+    "arm64-v8a": {
+      "url": "https://archive.mozilla.org/pub/fenix/releases/157.0.1/android/fenix-157.0.1-android-arm64-v8a/fenix-157.0.1.multi.android-arm64-v8a.apk",
+      "apkSha256": "D39EF0841222D5734E7175672A5E3E34EF93C813CBD2C30842689FD0AEC27F25",
+      "certificateSha256": "A78B62A5165B4494B2FEAD9E76A280D22D937FEE6251AECE599446B2EA319B04",
+      "entries": {
+        "assets/omni.ja": "B256F15869C3E1F35FFAC1ED06DE8EC946215E3E3DCF1430CA99649D3A67BFA0",
+        "lib/arm64-v8a/libmozglue.so": "1B7C0259DA6CE2C7E37197328F4CF21A9F9155FA53FC2BBF1B0C2687DA7509E6",
+        "lib/arm64-v8a/libxul.so": "8266740E0D678493D3A1A9B83F3411BA73C919DE29800496F351945C343F1A69"
+      }
+    }
+  },
   "155.0.1": {
     "arm64-v8a": {
       "url": "https://archive.mozilla.org/pub/fenix/releases/155.0.1/android/fenix-155.0.1-android-arm64-v8a/fenix-155.0.1.multi.android-arm64-v8a.apk",

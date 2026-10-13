@@ -66,6 +66,16 @@ looks up `node` on `PATH` under the name `node.cmd`, and the repository-local to
 gap; `.mozbuild/` is ignored by Git, so it must be recreated on a fresh checkout before running the
 documentation gate.
 
+### 157.0.1 baseline run
+
+`mach doc docs --no-serve --no-open --outdir artifacts/docs-full-<timestamp>` completes the build and
+reports `Failures: 0` with `Known Failures: 295` (`build succeeded, 295 warnings`). The two Marionette
+docstring cross-reference failures recorded for the 157.0 baseline no longer appear. Every remaining
+diagnostic matches the upstream `docs/config.yml` allowlist, including the JSDoc type-expression
+diagnostics and the docutils substitution, indentation, and cross-reference warnings, so no new
+allowlist entry was added. The local `.mozbuild/node/node.cmd` shim described above was still
+required.
+
 ### 158.0 baseline run
 
 `mach doc docs --no-serve --no-open --outdir artifacts/docs-full-20261013-101112` completes with

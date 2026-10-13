@@ -317,7 +317,7 @@ same baseline and ABI. The checked-in `FENIX_UPSTREAM_VERSION_CODES.json` record
 update it from the official Mozilla archive when changing `FENIX_UPSTREAM_RELEASE`. The release
 script passes the recorded value to Gradle and verifies the resulting APK manifest, so a build-time
 clock value cannot silently become the release versionCode. For the 158.0 baseline, the official
-arm64-v8a value is `2016189050`.
+arm64-v8a value is `2016189050`; the 157.0.1 baseline used `2016188626`.
 
 Do not add a fork revision offset: a fork build is a modified build of that upstream versionCode,
 and changing it would prevent normal downgrade or replacement workflows.
@@ -360,14 +360,14 @@ For a narrow test class, append Gradle's test selector:
 Slow command output should be redirected to `artifacts/` and inspected there instead of piping the
 live process through output filters.
 
-### Windows native-test limitation in the 154.0.1, 155.0, 155.0.1, 156.0, 156.0.1, 157.0, and 158.0 baselines
+### Windows native-test limitation in the 154.0.1, 155.0, 155.0.1, 156.0, 156.0.1, 157.0, 157.0.1, and 158.0 baselines
 
 Some Fenix JVM test classes use `FenixGleanTestRule`, which loads Application Services through JNA.
 The upstream `full-megazord-libsForTests-154.0.1.jar` contains Linux and macOS megazord libraries but
 does not contain the required Windows native libraries. On native Windows, these classes fail during
 test-rule initialization with `UnsatisfiedLinkError` for `jnidispatch.dll`; their test bodies have not
 started at that point. The same limitation was observed when validating the 155.0, 155.0.1, 156.0,
-156.0.1, 157.0, and 158.0 baselines.
+156.0.1, 157.0, 157.0.1, and 158.0 baselines.
 
 Do not repeatedly clear Gradle caches or download only `jnidispatch.dll`: JNA is merely the first
 missing layer, and the Windows megazord is absent as well. Run affected Glean-backed unit tests in a
