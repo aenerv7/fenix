@@ -177,7 +177,7 @@ The arm64-v8a release uses the pinned official 158.0 GeckoView package through `
 the exact official versionCode `2016189050`; no local GeckoView build is permitted because no
 Fenix-authored Gecko, C++, Rust, or Gecko locale source changed. The signed APK is
 `Fenix-158.0-r1-arm64-v8a-release.apk`, 132934216 bytes, SHA-256
-`0E6DA8452F0EEB3EA6E0D1ADA198C1B0DC081BEC14E4656727D3FE5977A78370`. The Windows `FenixGleanTestRule`
+`F11BFE123353EB11C918DF2C0585D61A7F954B42E0AE63B321ED078A086661EE`. The Windows `FenixGleanTestRule`
 native-library limitation remains documented below; affected tests need Linux or CI coverage even
 when the Windows task completes by skipping them.
 
