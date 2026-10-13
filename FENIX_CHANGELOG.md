@@ -1,6 +1,6 @@
 # Fenix changes
 
-## 158.0-r1
+## 158.0-r2
 
 ### 中文
 
@@ -76,8 +76,8 @@
 - 仅发布 `arm64-v8a` APK，使用官方 158.0 多语言 GeckoView（99 个 locale，含 `zh-CN`），严格沿用官方
   `versionCode 2016189050` 和上游 `versionName 158.0`；未进行本地 GeckoView 编译或打包。
 - 文档门禁：`mach doc docs` 输出 `Failures: 0`、`Known Failures: 37`，无 `mobile/android` 相关失败。
-- APK：`Fenix-158.0-r1-arm64-v8a-release.apk`，大小 `132934216` 字节，SHA-256：`F11BFE123353EB11C918DF2C0585D61A7F954B42E0AE63B321ED078A086661EE`。
-- 对应完整源码：[fenix-158.0-r1](https://github.com/aenerv7/fenix/tree/fenix-158.0-r1)。Fenix 是非官方独立修改版，不受 Mozilla 赞助或背书；维护与支持由本项目提供。保留 MPL 2.0 和第三方许可；Firefox 是 Mozilla Foundation 的商标。
+- APK：`Fenix-158.0-r2-arm64-v8a-release.apk`，大小 `132934216` 字节，SHA-256：`3139EAF6595F5FD280AB43151C3DF1E631D28E4D16FB9FFA4FF69B381572CF09`。
+- 对应完整源码：[fenix-158.0-r2](https://github.com/aenerv7/fenix/tree/fenix-158.0-r2)。Fenix 是非官方独立修改版，不受 Mozilla 赞助或背书；维护与支持由本项目提供。保留 MPL 2.0 和第三方许可；Firefox 是 Mozilla Foundation 的商标。
 - `.idsig` 仅保留本地校验和重签名使用，不作为 GitHub Release 资产；Windows Glean 原生库限制仍需
   Linux 或 CI 覆盖。
 
@@ -181,8 +181,8 @@ onto 158.0; the entries below are the **complete effective** change set against 
   no local GeckoView compilation or packaging was performed.
 - Documentation gate: `mach doc docs` reports `Failures: 0` and `Known Failures: 37`, with no
   `mobile/android` failure.
-- APK: `Fenix-158.0-r1-arm64-v8a-release.apk`, size `132934216` bytes, SHA-256: `F11BFE123353EB11C918DF2C0585D61A7F954B42E0AE63B321ED078A086661EE`.
-- Complete corresponding source: [fenix-158.0-r1](https://github.com/aenerv7/fenix/tree/fenix-158.0-r1). Fenix is an independent unofficial modified build, not sponsored or endorsed by Mozilla; this project provides maintenance and support. MPL 2.0 and third-party licenses are retained; Firefox is a trademark of the Mozilla Foundation.
+- APK: `Fenix-158.0-r2-arm64-v8a-release.apk`, size `132934216` bytes, SHA-256: `3139EAF6595F5FD280AB43151C3DF1E631D28E4D16FB9FFA4FF69B381572CF09`.
+- Complete corresponding source: [fenix-158.0-r2](https://github.com/aenerv7/fenix/tree/fenix-158.0-r2). Fenix is an independent unofficial modified build, not sponsored or endorsed by Mozilla; this project provides maintenance and support. MPL 2.0 and third-party licenses are retained; Firefox is a trademark of the Mozilla Foundation.
 - `.idsig` is retained locally for verification and re-signing and is not a GitHub Release asset; the
   Windows Glean native-library limitation still requires Linux or CI coverage.
 

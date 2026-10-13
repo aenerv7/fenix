@@ -158,7 +158,7 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
 
 ### Current validation state
 
-The 158.0-r1 release updates the baseline to Firefox Android 158.0 and re-applies the whole Fenix
+The 158.0-r2 release updates the baseline to Firefox Android 158.0 and re-applies the whole Fenix
 change set on top of the upstream 158.0 delta. The upstream delta spans 15042 files, and the candidate
 commit changes 15045 files against its Fenix parent, which is how the update is verified rather than by
 the merge commit merely existing. The delta was merged with `git merge-tree` instead of `git apply`;
@@ -176,8 +176,8 @@ Robolectric SQLite path). `org.mozilla.fenix.tabstray.*` passes 731 tests with 0
 The arm64-v8a release uses the pinned official 158.0 GeckoView package through `-UseUpstreamGecko` and
 the exact official versionCode `2016189050`; no local GeckoView build is permitted because no
 Fenix-authored Gecko, C++, Rust, or Gecko locale source changed. The signed APK is
-`Fenix-158.0-r1-arm64-v8a-release.apk`, 132934216 bytes, SHA-256
-`F11BFE123353EB11C918DF2C0585D61A7F954B42E0AE63B321ED078A086661EE`. The Windows `FenixGleanTestRule`
+`Fenix-158.0-r2-arm64-v8a-release.apk`, 132934216 bytes, SHA-256
+`3139EAF6595F5FD280AB43151C3DF1E631D28E4D16FB9FFA4FF69B381572CF09`. The Windows `FenixGleanTestRule`
 native-library limitation remains documented below; affected tests need Linux or CI coverage even
 when the Windows task completes by skipping them.
 
