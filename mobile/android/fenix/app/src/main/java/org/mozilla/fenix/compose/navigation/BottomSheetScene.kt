@@ -199,6 +199,28 @@ class BottomSheetSceneStrategy<T : Any> : SceneStrategy<T> {
         private const val HANDLE_CONTENT_DESCRIPTION_KEY = "handle_content_description"
         private const val SHOW_BETA_LABEL_KEY = "show_beta_label"
         private const val SKIP_OPENING_ANIMATION_KEY = "skip_opening_animation"
+
+        /**
+         * Function to be called on the [NavEntry.metadata] of an expanded tab group sheet.
+         *
+         * The group sheet is either fully expanded or dismissed: it never rests at the partially expanded height, and
+         * Back is handled by the group itself instead of dismissing the sheet.
+         *
+         * @param handleContentDescription Content description for the bottom sheet's drag handle.
+         * @param skipOpeningAnimation Whether to display the bottom sheet without its opening animation.
+         */
+        @OptIn(ExperimentalMaterial3Api::class)
+        fun tabGroupSheet(
+            handleContentDescription: String,
+            skipOpeningAnimation: Boolean = false,
+        ): Map<String, Any> =
+            bottomSheet(
+                skipPartiallyExpanded = true,
+                handleContentDescription = handleContentDescription,
+                modalBottomSheetProperties = ModalBottomSheetProperties(shouldDismissOnBackPress = false),
+                showBetaLabel = true,
+                skipOpeningAnimation = skipOpeningAnimation,
+            )
     }
 }
 

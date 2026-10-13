@@ -135,9 +135,8 @@ class TabGroupFlowFragment : DialogFragment() {
 
             entry<TabGroupFlowDestination.ExpandedTabGroup>(
                 metadata = { destination ->
-                    BottomSheetSceneStrategy.bottomSheet(
+                    BottomSheetSceneStrategy.tabGroupSheet(
                         handleContentDescription = resources.getString(R.string.tab_group_sheet_dismiss_description),
-                        showBetaLabel = true,
                         skipOpeningAnimation = destination.group.shouldFullyExpandOnFirstOpen(windowSize = windowSize),
                     )
                 }

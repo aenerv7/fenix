@@ -414,9 +414,8 @@ class TabManagementFragment : Fragment() {
             }
             entry<TabManagerNavDestination.ExpandedTabGroup>(
                 metadata = { destination ->
-                    BottomSheetSceneStrategy.bottomSheet(
+                    BottomSheetSceneStrategy.tabGroupSheet(
                         handleContentDescription = resources.getString(R.string.tab_group_sheet_dismiss_description),
-                        showBetaLabel = true,
                         skipOpeningAnimation = destination.skipOpeningAnimation,
                     )
                 }

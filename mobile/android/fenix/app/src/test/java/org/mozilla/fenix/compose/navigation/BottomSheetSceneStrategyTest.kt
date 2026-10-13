@@ -5,6 +5,7 @@
 package org.mozilla.fenix.compose.navigation
 
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.Text
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.test.assertIsDisplayed
@@ -80,6 +81,22 @@ class BottomSheetSceneStrategyTest {
             )
 
         assertTrue(metadata[BottomSheetSceneStrategy.SKIP_PARTIALLY_EXPANDED_KEY] as Boolean)
+    }
+
+    @Test
+    fun `GIVEN a tab group sheet WHEN its metadata is built THEN the partially expanded state is skipped`() {
+        val metadata = BottomSheetSceneStrategy.tabGroupSheet(handleContentDescription = "Dismiss group")
+
+        assertTrue(metadata[BottomSheetSceneStrategy.SKIP_PARTIALLY_EXPANDED_KEY] as Boolean)
+    }
+
+    @Test
+    fun `GIVEN a tab group sheet WHEN its metadata is built THEN Back does not dismiss the sheet`() {
+        val metadata = BottomSheetSceneStrategy.tabGroupSheet(handleContentDescription = "Dismiss group")
+
+        val properties = metadata[BottomSheetSceneStrategy.BOTTOM_SHEET_KEY] as ModalBottomSheetProperties
+
+        assertEquals(false, properties.shouldDismissOnBackPress)
     }
 
     @Test

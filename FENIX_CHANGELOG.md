@@ -41,6 +41,8 @@
   `ItemInteractionHandler`/`ItemInteractionState`。
 - 底部弹窗仍使用 fork 的 `skipOpeningAnimation`（直接以展开状态创建 sheet，而不是上游的延时展开）；
   上游新增的两个调用点（群组流程与标签页托盘）已映射到该参数。
+- 标签页群组的底部弹窗只有全高与收起两种状态：`BottomSheetSceneStrategy.tabGroupSheet` 固定
+  `skipPartiallyExpanded = true`，弹窗不会停留在半高；系统返回键由群组自身处理，不会直接关闭弹窗。
 
 #### 本地化与布局
 
@@ -133,6 +135,10 @@ onto 158.0; the entries below are the **complete effective** change set against 
 - The bottom sheet keeps the fork's `skipOpeningAnimation`, which creates the sheet already expanded
   instead of expanding it after upstream's delay; upstream's two new call sites (the group flow and the
   tabs tray) are mapped onto that parameter.
+- The tab group bottom sheet has only two states, fully expanded and dismissed:
+  `BottomSheetSceneStrategy.tabGroupSheet` fixes `skipPartiallyExpanded = true`, so the sheet never
+  rests at the partially expanded height, and Back is handled by the group itself rather than
+  dismissing the sheet.
 
 #### Localization and layout
 
