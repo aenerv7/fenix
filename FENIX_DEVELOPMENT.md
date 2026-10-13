@@ -82,6 +82,14 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
 - Expanded groups reuse the All Tabs selection toolbar styling and content width. Long-pressing a
   group tab dispatches the group-scoped selection action, so the group toolbar appears without
   changing the global tab-tray navigation behavior.
+- The expanded-group bottom sheet has exactly two states: fully expanded and dismissed. It must never
+  rest at the partially expanded height, so its entry metadata comes from
+  `BottomSheetSceneStrategy.tabGroupSheet`, which fixes `skipPartiallyExpanded = true` and
+  `shouldDismissOnBackPress = false` for every group destination, including the tab group flow outside
+  the tabs tray. Do not inline those arguments at a call site: the 158.0 merge rebuilt
+  `TabManagementFragment` from upstream and silently dropped them, which brought the half-height state
+  back. `BottomSheetSceneStrategyTest` asserts both flags, and `TabGroupSheetBackTest` builds its sheet
+  from the same helper so the fixture cannot drift from production.
 - Back while a group-tab long-press selection toolbar is open is consumed by the expanded-group
   screen. It closes the toolbar and clears selection/local drag state once; it must not collapse the
   group or run the root back action a second time.
@@ -140,6 +148,11 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
 
 - Keep the exact upstream ABI-specific `versionCode`; the fork `rN` suffix is only release metadata
   shown in About Fenix. Changing `versionCode` would break normal overwrite and downgrade paths.
+- Any Fenix source change after a revision was published is a new `rN`: bump the revision and publish
+  its own release instead of re-uploading over the existing asset. The suffix reaches the APK through
+  `BuildConfig.FENIX_RELEASE_REVISION`, so the published binary and the revision it reports must match;
+  the release script derives the next `rN` from the local and remote tags and prints it as
+  `Release version:`. Downloading or re-signing an older asset is never a substitute for the rebuild.
 - Publish only the selected `arm64-v8a` APK for the current release workflow. `.idsig` files remain
   local verification/re-signing inputs and are not GitHub Release assets.
 - For Fenix-only changes, always import the pinned official multi-locale Fenix APK with

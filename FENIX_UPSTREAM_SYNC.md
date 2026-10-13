@@ -487,6 +487,17 @@ Two API divergences also need a decision rather than a merge:
 there cover the password and credit-card sync engines the fork removes, and they construct
 `BackgroundServices` with storage arguments the fork's constructor does not take.
 
+Named arguments the fork adds at a call site are the quietest loss of all: they leave no dangling
+reference, so the file compiles and the behaviour simply reverts. Rebuilding
+`tabstray/ui/TabManagementFragment.kt` from upstream dropped `skipPartiallyExpanded = true` and
+`modalBottomSheetProperties = ModalBottomSheetProperties(shouldDismissOnBackPress = false)` from the
+expanded-group sheet entry, which put the group sheet back into the partially expanded state that the
+fork removes. When a merge resolution rewrites a file from upstream, diff the fork's call sites in that
+file (`git diff HEAD^1 <candidate> -- <file>` plus the previous baseline) and check every named
+argument the fork had added. Keep such a set of arguments in one named helper rather than repeating it
+at each call site, and assert it in a unit test: the group sheet now goes through
+`BottomSheetSceneStrategy.tabGroupSheet`, covered by `BottomSheetSceneStrategyTest`.
+
 ### Toolchain updates the baseline forces
 
 `python/mozboot/mozboot/android.py` raises three pinned toolchain versions, and configure dies when the
