@@ -168,7 +168,7 @@ records the merge, the required toolchain updates, and the object-directory step
 
 Validation: `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`,
 `fenix:compileDebugUnitTestKotlin`, `fenix:assembleDebug`, and the arm64-v8a release build all pass,
-and the documentation gate reports `Failures: 0`. `fenix:testDebugUnitTest` runs 6570 tests with 253
+and the documentation gate reports `Failures: 0`. `fenix:testDebugUnitTest` runs 6572 tests with 253
 failures and 1474 skips; all 253 failures are the Windows environment limitations described below
 (missing JNA/megazord native libraries, download path separators, temporary-directory renames, and the
 Robolectric SQLite path). `org.mozilla.fenix.tabstray.*` passes 731 tests with 0 failures.

@@ -68,7 +68,7 @@
   因此已签名的 APK 不需要重建。
 - `fenix:spotlessKotlinCheck` 通过；`fenix:compileDebugKotlin` 与 `fenix:compileDebugUnitTestKotlin`
   通过；`fenix:assembleDebug` 通过。
-- `fenix:testDebugUnitTest`：6570 项，253 失败、1474 跳过。失败全部是已记录的 Windows 环境限制：230 项
+- `fenix:testDebugUnitTest`：6572 项，253 失败、1474 跳过。失败全部是已记录的 Windows 环境限制：230 项
   为缺失 Windows megazord/JNA 原生库（`Could not initialize class com.sun.jna.Native` 与
   `jnidispatch.dll not found`），10 项为下载条目的 Windows 路径分隔符差异，5 项为临时目录重命名差异，
   4 项为 Robolectric SQLite 数据库路径，其余为 MockK 上下文与遥测顺序差异。`org.mozilla.fenix.tabstray.*`
@@ -169,7 +169,7 @@ onto 158.0; the entries below are the **complete effective** change set against 
   signed APK does not need a rebuild. The documentation documents keep both baseline sections.
 - `fenix:spotlessKotlinCheck` passes; `fenix:compileDebugKotlin` and
   `fenix:compileDebugUnitTestKotlin` pass; `fenix:assembleDebug` passes.
-- `fenix:testDebugUnitTest`: 6570 tests, 253 failed, 1474 skipped. Every failure is a recorded Windows
+- `fenix:testDebugUnitTest`: 6572 tests, 253 failed, 1474 skipped. Every failure is a recorded Windows
   environment limitation: 230 are the missing Windows megazord/JNA native libraries
   (`Could not initialize class com.sun.jna.Native` and `jnidispatch.dll not found`), 10 are Windows path
   separators in download items, 5 are temporary-directory rename differences, 4 are the Robolectric
