@@ -1,5 +1,110 @@
 # Fenix changes
 
+## 158.0.1-r1
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_158_0_1_RELEASE`（上游增量 395 个文件）。本版把整个 Fenix 改动集重放到
+158.0.1 之上；下列条目是相对该基线的**全部生效**改动。
+
+#### 上游 158.0.1 的实际改动
+
+- 395 个上游文件中 309 个是 `values-*/strings.xml` 本地化更新；英文 `values/strings.xml` 与
+  `values/arrays.xml` 未变，因此没有需要新增翻译的条目。
+- Fenix 侧代码改动只有 Application Services 升到 158.0.1、新的 Merino manifest，以及
+  `initial_experiments.json` 的实验配置；GeckoView、Gecko、C++、Rust 源码无改动。
+- 10 个 fenix 本地化文件（fa、fy-rNL、hy-rAM、kk、lv、pl、pt-rBR、sk、uk、zh-rCN）在
+  `git apply --3way` 时冲突，全部按 fork 侧解决：冲突都是既有条目的重新翻译，fork 品牌与既有术语不变。
+
+#### 品牌、功能与标签页群组
+
+- 与 `158.0-r2` 相同，本版未回退其中任何一项：兔子品牌与 Fenix wordmark；密码、地址、信用卡与个人
+  信息管理仍从 UI、Android 自动填充服务与默认同步数据范围中移除；Play 商店评分入口不恢复。
+- 标签页群组保留群组作用域多选、选择工具栏与二级菜单、选择期间的系统返回键消费、始终可见的新建
+  标签页动作，以及只有全高与收起两种状态的群组底部弹窗；`TabStorageMiddleware` 继续处理移出群组、
+  关闭群组与撤销恢复。逐条说明见 `158.0-r2` 一节。
+
+#### 本地化与布局
+
+- `values-zh-rCN` 相对 `values/strings.xml` 为 0 缺失、无重复项；其他语言沿用上游的部分翻译集合。
+- 只构建 Fenix，不构建 Focus。
+
+#### 发布与验证
+
+- 候选分支相对其 Fenix 父提交改动 386 个文件（385 个上游改动 + `FENIX_UPSTREAM_RELEASE`）；10 个冲突
+  文件与父提交内容一致，因此不计入该数量。
+- `fenix:spotlessKotlinCheck`、`fenix:compileDebugKotlin`、`fenix:compileDebugUnitTestKotlin`、
+  `fenix:assembleDebug` 通过。
+- `fenix:testDebugUnitTest`：6572 项，253 失败、1474 跳过，与 158.0-r2 完全一致：230 项为缺失 Windows
+  megazord/JNA 原生库，12 项为 Windows 下载条目的路径分隔符与顺序差异，5 项为临时目录重命名差异，
+  4 项为 Robolectric SQLite 路径，另有 `PackageManager` 与 `markAsTriggered` 各 1 项。
+  `org.mozilla.fenix.tabstray.*` 731 项 0 失败（195 跳过）。
+- 文档门禁：`mach doc docs`（新输出目录 `artifacts/docs-full-20261020-160653`）输出 `Failures: 0`、
+  `Known Failures: 37`，与 158.0 基线一致。
+- APK：`Fenix-158.0.1-r1-arm64-v8a-release.apk`，大小 `133024328` 字节，SHA-256：
+  `C20493BA984E53A5978F9D390B0C90A10616AE236F2FDBDEC388327660DE1D75`。
+- 使用官方 158.0.1 多语言 GeckoView（99 个 locale，含 `zh-CN`），严格沿用官方 `versionCode 2016191346`
+  与上游 `versionName 158.0.1`；未进行本地 GeckoView 编译或打包。
+- 对应完整源码：[fenix-158.0.1-r1](https://github.com/aenerv7/fenix/tree/fenix-158.0.1-r1)。`.idsig` 仅本地
+  校验与重签名使用，不作为 Release 资产。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_158_0_1_RELEASE` (upstream delta: 395 files). This release
+replays the whole Fenix change set onto 158.0.1; the entries below are the **complete effective** change
+set against that baseline.
+
+#### What 158.0.1 actually changes
+
+- 309 of the 395 upstream files are `values-*/strings.xml` localization updates; the English
+  `values/strings.xml` and `values/arrays.xml` are unchanged, so no new translation is required.
+- The Fenix-side code change is limited to the Application Services bump to 158.0.1, the new Merino
+  manifest, and the `initial_experiments.json` experiment configuration; no GeckoView, Gecko, C++, or
+  Rust source changed.
+- Ten fenix locale files (fa, fy-rNL, hy-rAM, kk, lv, pl, pt-rBR, sk, uk, zh-rCN) conflicted under
+  `git apply --3way` and were resolved on the fork side: every conflict re-translates a name the fork
+  already carries, so the fork's branding and terminology are unchanged.
+
+#### Branding, features, and tab groups
+
+- Identical to `158.0-r2`, none of which this release reverts: the rabbit branding and the Fenix
+  wordmark; password, address, credit-card, and personal-information management stay removed from the
+  UI, from the Android autofill service, and from the default sync data set; the Play Store rating
+  entry point stays removed.
+- Tab groups keep the group-scoped multi-select, the selection toolbar and its secondary menu, the
+  system Back consumption while selection is active, the always-visible add-new-tab action, and the
+  two-state group bottom sheet; `TabStorageMiddleware` still handles tabs removed from a group, tabs
+  closed from a group, and the undo that restores them. The item-by-item description is in the
+  `158.0-r2` section.
+
+#### Localization and layout
+
+- `values-zh-rCN` has no missing entry against `values/strings.xml` and no duplicate name; the other
+  locales keep upstream's partially translated set.
+- Only Fenix is built; Focus is not built.
+
+#### Release and validation
+
+- The candidate changes 386 files against its Fenix parent (385 upstream files plus
+  `FENIX_UPSTREAM_RELEASE`); the ten conflicted locale files resolve to the parent's content and are
+  therefore not counted.
+- `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`, `fenix:compileDebugUnitTestKotlin`, and
+  `fenix:assembleDebug` pass.
+- `fenix:testDebugUnitTest`: 6572 tests, 253 failed, 1474 skipped, exactly as for 158.0-r2: 230 are the
+  missing Windows megazord/JNA native libraries, 12 are Windows download path-separator and ordering
+  differences, 5 are temporary-directory rename differences, 4 are the Robolectric SQLite path, and
+  `PackageManager` and `markAsTriggered` account for one each. `org.mozilla.fenix.tabstray.*` passes
+  731 tests with 0 failures (195 skipped).
+- Documentation gate: `mach doc docs` (new output directory `artifacts/docs-full-20261020-160653`)
+  reports `Failures: 0` and `Known Failures: 37`, matching the 158.0 baseline.
+- APK: `Fenix-158.0.1-r1-arm64-v8a-release.apk`, size `133024328` bytes, SHA-256:
+  `C20493BA984E53A5978F9D390B0C90A10616AE236F2FDBDEC388327660DE1D75`.
+- Uses the official 158.0.1 multi-locale GeckoView (99 locales including `zh-CN`) with the exact
+  official `versionCode 2016191346` and upstream `versionName 158.0.1`; no local GeckoView compilation
+  or packaging was performed.
+- Complete corresponding source: [fenix-158.0.1-r1](https://github.com/aenerv7/fenix/tree/fenix-158.0.1-r1).
+  The `.idsig` is retained locally for verification and re-signing and is not a release asset.
+
 ## 158.0-r2
 
 ### 中文

@@ -7,7 +7,7 @@ Mozilla's general Firefox source documentation remains authoritative for the res
 
 ## Current fork customization summary
 
-The current upstream baseline is Firefox Android 158.0 (`FIREFOX-ANDROID_158_0_RELEASE`). The first
+The current upstream baseline is Firefox Android 158.0.1 (`FIREFOX-ANDROID_158_0_1_RELEASE`). The first
 upstream synchronization, including manual conflict resolution and the limited-time activity policy,
 is recorded in [FENIX_UPSTREAM_SYNC.md](FENIX_UPSTREAM_SYNC.md). Release-by-release user-facing notes
 are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
@@ -171,26 +171,26 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
 
 ### Current validation state
 
-The 158.0-r2 release updates the baseline to Firefox Android 158.0 and re-applies the whole Fenix
-change set on top of the upstream 158.0 delta. The upstream delta spans 15042 files, and the candidate
-commit changes 15045 files against its Fenix parent, which is how the update is verified rather than by
-the merge commit merely existing. The delta was merged with `git merge-tree` instead of `git apply`;
-31 files with 46 conflict blocks needed a manual resolution, and the fork code the merge lost where
-upstream had rewritten the same region was restored. [FENIX_UPSTREAM_SYNC.md](FENIX_UPSTREAM_SYNC.md)
-records the merge, the required toolchain updates, and the object-directory steps.
+The 158.0.1-r1 release updates the baseline to Firefox Android 158.0.1 and replays the whole Fenix change
+set on top of the upstream 158.0.1 delta. The upstream delta spans 395 files from the 158.0 tag; the
+candidate commit changes 386 files against its Fenix parent (385 upstream files plus
+`FENIX_UPSTREAM_RELEASE`), which is how the update is verified rather than by the merge commit merely
+existing. The delta was applied with `git apply --3way`; its ten `values-*/strings.xml` conflicts were
+resolved on the fork side because the delta changes no English string. [FENIX_UPSTREAM_SYNC.md](FENIX_UPSTREAM_SYNC.md)
+records the merge and the release pins.
 
 Validation: `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`,
 `fenix:compileDebugUnitTestKotlin`, `fenix:assembleDebug`, and the arm64-v8a release build all pass,
-and the documentation gate reports `Failures: 0`. `fenix:testDebugUnitTest` runs 6572 tests with 253
-failures and 1474 skips; all 253 failures are the Windows environment limitations described below
-(missing JNA/megazord native libraries, download path separators, temporary-directory renames, and the
-Robolectric SQLite path). `org.mozilla.fenix.tabstray.*` passes 731 tests with 0 failures.
+and the documentation gate reports `Failures: 0` with `Known Failures: 37`. `fenix:testDebugUnitTest`
+runs 6572 tests with 253 failures and 1474 skips, the same totals as the 158.0 baseline; all 253
+failures are the Windows environment limitations described below. `org.mozilla.fenix.tabstray.*` passes
+731 tests with 0 failures.
 
-The arm64-v8a release uses the pinned official 158.0 GeckoView package through `-UseUpstreamGecko` and
-the exact official versionCode `2016189050`; no local GeckoView build is permitted because no
+The arm64-v8a release uses the pinned official 158.0.1 GeckoView package through `-UseUpstreamGecko` and
+the exact official versionCode `2016191346`; no local GeckoView build is permitted because no
 Fenix-authored Gecko, C++, Rust, or Gecko locale source changed. The signed APK is
-`Fenix-158.0-r2-arm64-v8a-release.apk`, 132934216 bytes, SHA-256
-`3139EAF6595F5FD280AB43151C3DF1E631D28E4D16FB9FFA4FF69B381572CF09`. The Windows `FenixGleanTestRule`
+`Fenix-158.0.1-r1-arm64-v8a-release.apk`, 133024328 bytes, SHA-256
+`C20493BA984E53A5978F9D390B0C90A10616AE236F2FDBDEC388327660DE1D75`. The Windows `FenixGleanTestRule`
 native-library limitation remains documented below; affected tests need Linux or CI coverage even
 when the Windows task completes by skipping them.
 
@@ -329,8 +329,9 @@ Release APKs must use the exact versionCode from the corresponding official upst
 same baseline and ABI. The checked-in `FENIX_UPSTREAM_VERSION_CODES.json` records those values;
 update it from the official Mozilla archive when changing `FENIX_UPSTREAM_RELEASE`. The release
 script passes the recorded value to Gradle and verifies the resulting APK manifest, so a build-time
-clock value cannot silently become the release versionCode. For the 158.0 baseline, the official
-arm64-v8a value is `2016189050`; the 157.0.1 baseline used `2016188626`.
+clock value cannot silently become the release versionCode. For the 158.0.1 baseline, the official
+arm64-v8a value is `2016191346`; the 158.0 baseline used `2016189050` and the 157.0.1 baseline used
+`2016188626`.
 
 Do not add a fork revision offset: a fork build is a modified build of that upstream versionCode,
 and changing it would prevent normal downgrade or replacement workflows.
@@ -373,14 +374,14 @@ For a narrow test class, append Gradle's test selector:
 Slow command output should be redirected to `artifacts/` and inspected there instead of piping the
 live process through output filters.
 
-### Windows native-test limitation in the 154.0.1, 155.0, 155.0.1, 156.0, 156.0.1, 157.0, 157.0.1, and 158.0 baselines
+### Windows native-test limitation in the 154.0.1, 155.0, 155.0.1, 156.0, 156.0.1, 157.0, 157.0.1, 158.0, and 158.0.1 baselines
 
 Some Fenix JVM test classes use `FenixGleanTestRule`, which loads Application Services through JNA.
 The upstream `full-megazord-libsForTests-154.0.1.jar` contains Linux and macOS megazord libraries but
 does not contain the required Windows native libraries. On native Windows, these classes fail during
 test-rule initialization with `UnsatisfiedLinkError` for `jnidispatch.dll`; their test bodies have not
 started at that point. The same limitation was observed when validating the 155.0, 155.0.1, 156.0,
-156.0.1, 157.0, 157.0.1, and 158.0 baselines.
+156.0.1, 157.0, 157.0.1, 158.0, and 158.0.1 baselines.
 
 Do not repeatedly clear Gradle caches or download only `jnidispatch.dll`: JNA is merely the first
 missing layer, and the Windows megazord is absent as well. Run affected Glean-backed unit tests in a

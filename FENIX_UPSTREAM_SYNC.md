@@ -526,6 +526,30 @@ fails with `PermissionError: [WinError 5] ... Scripts/python.exe`. Run one build
 `tools/fenix/mach-local.ps1` (for example `configure`) so the virtualenv is rebuilt under MozillaBuild's
 Python before Gradle is invoked again.
 
+## Firefox Android 158.0.1 synchronization
+
+The 158.0.1 update was prepared from the official `FIREFOX-ANDROID_158_0_1_RELEASE` tag
+(`9378fbc58660`) on the candidate branch `sync/firefox-android-158.0.1`, starting from the 158.0-r2
+tree. The upstream delta spans 395 files (8586 insertions, 7245 deletions) and is almost entirely
+localization. The Fenix-side code changes are an Application Services bump to 158.0.1, the new
+Merino manifest, and `initial_experiments.json`; no GeckoView, Gecko, C++, or Rust source changes.
+
+The delta was applied with `git apply --3way`. Ten fenix `values-*/strings.xml` files conflicted
+(`values-fa`, `values-fy-rNL`, `values-hy-rAM`, `values-kk`, `values-lv`, `values-pl`,
+`values-pt-rBR`, `values-sk`, `values-uk`, `values-zh-rCN`). The delta changes no English string in
+`values/strings.xml` or `values/arrays.xml`, so every conflict re-translates a name the fork already
+carries and was resolved on the fork side.
+
+The candidate changes 386 files against its Fenix parent: the 385 upstream files whose contents
+differ, plus `FENIX_UPSTREAM_RELEASE`. The ten conflicted locale files resolve to the fork's existing
+content, so they do not appear in that count. `values-zh-rCN` still has no missing entry against
+`values/strings.xml` and no duplicate name.
+
+The release uses the pinned official 158.0.1 arm64-v8a GeckoView package recorded in
+`FENIX_UPSTREAM_GECKOVIEW.json`; local GeckoView compilation is prohibited because no Fenix-authored
+Gecko or native source changed. The exact official arm64-v8a versionCode is `2016191346`, and the
+official APK SHA-256 is `A5F247C6729BBAE1F970AA7FEB58AB7CA55570241D4BF536A9B3DE602477CA11`.
+
 ## Source-to-binary traceability
 
 If APKs are distributed, record their SHA-256 hashes and the exact Fenix tag in release notes. The

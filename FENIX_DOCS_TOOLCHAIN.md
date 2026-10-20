@@ -85,6 +85,12 @@ diagnostics are the recorded categories: JSDoc relaxed-mode lexing of TypeScript
 MyST cross-reference mismatches in the generated JS and NSS pages, and python/taskgraph reference
 ambiguities. The repository-local `.mozbuild/node/node.cmd` shim was already present.
 
+### 158.0.1 baseline run
+
+`mach doc docs --no-serve --no-open --outdir artifacts/docs-full-20261020-160653` completes with
+`Failures: 0` and `Known Failures: 37`, the same count and diagnostic categories as the 158.0 run, so
+no new pattern was added to `docs/config.yml`.
+
 ## JSDoc compatibility debt
 
 The Firefox Android 155.0 tree emits JSDoc diagnostics for TypeScript-style type expressions such as
