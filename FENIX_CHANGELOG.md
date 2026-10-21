@@ -1,5 +1,71 @@
 # Fenix changes
 
+## 158.0.2-r1
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_158_0_2_RELEASE`（上游增量 7 个文件）。本版只同步上游 158.0.2，
+`158.0.1-r2` 的其余内容不变。
+
+#### 上游修复
+
+- 上游 158.0.2 修复 OneCRL 内置吊销列表的加载时机：`RemoteSecuritySettings.init()` 现在主动读取内置
+  OneCRL 记录并写入 `cert_storage`，不再等第一次 Remote Settings 同步。内置条目（本版为 eMudhra 的 6 张
+  中间证书）因此在首次启动后立即处于 `STATE_ENFORCE`，而不是等到下一次同步才生效。
+- 新增 `test_onecrl_loads_bundle.js`：等待 `remote-security-settings:onecrl-bundle-loaded` 通知，再断言
+  6 张 eMudhra 中间证书均已被吊销。
+- 四个版本戳文件（`browser/config/version.txt`、`browser/config/version_display.txt`、
+  `config/milestone.txt`、`mobile/android/version.txt`）随基线升到 158.0.2。
+- 本版未改动 `mobile/android/fenix` 下的任何源文件或资源；本版上游增量不含界面字符串，`values-zh-rCN`
+  相对 `values/strings.xml` 仍为 0 缺失、无重复项。
+
+#### 发布与验证
+
+- `fenix:spotlessKotlinCheck`、`fenix:compileDebugKotlin`、`fenix:assembleDebug` 通过；
+  `fenix:testDebugUnitTest`：6573 项，254 失败、1474 跳过；其中 253 项与 `158.0.1-r2` 的 Windows 环境限制
+  分类与数量一致，另 1 项为 `LensCameraFragmentTest` 的 join 中断计时测试，单独运行该类时通过。
+  `org.mozilla.fenix.tabstray.*` 共 732 项 0 失败（195 跳过）。
+- 文档门禁 `mach doc docs` 报 `Failures: 0`、`Known Failures: 37`，与 `158.0.1` 基线相同。
+- 仅发布 `arm64-v8a` APK，使用官方 158.0.2 多语言 GeckoView（99 个 locale，含 `zh-CN`），沿用官方
+  `versionCode 2016191570` 与上游 `versionName 158.0.2`；未进行本地 GeckoView 编译或打包。
+- APK `Fenix-158.0.2-r1-arm64-v8a-release.apk`：`133024328` 字节，SHA-256
+  `955D4D19B486DC9158D8346EDC0831B2969C6BE715FC43CBE0F8AEE2FD3984FD`。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_158_0_2_RELEASE` (upstream delta: 7 files). This release only
+synchronizes upstream 158.0.2; everything else is `158.0.1-r2`.
+
+#### Upstream fix
+
+- Upstream 158.0.2 fixes when the bundled OneCRL revocation list is loaded:
+  `RemoteSecuritySettings.init()` now reads the bundled OneCRL records itself and writes them into
+  `cert_storage` instead of waiting for the first Remote Settings sync. The bundled entries (six eMudhra
+  intermediates in this release) are therefore enforced right after the first start instead of at the
+  next sync.
+- Added `test_onecrl_loads_bundle.js`: it waits for the
+  `remote-security-settings:onecrl-bundle-loaded` notification and then asserts that all six eMudhra
+  intermediates are revoked.
+- The four version stamps (`browser/config/version.txt`, `browser/config/version_display.txt`,
+  `config/milestone.txt`, `mobile/android/version.txt`) move to 158.0.2 with the baseline.
+- No file under `mobile/android/fenix` changed; this upstream delta carries no interface string, so
+  `values-zh-rCN` still has no missing entry against `values/strings.xml` and no duplicate name.
+
+#### Release and validation
+
+- `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`, and `fenix:assembleDebug` pass;
+  `fenix:testDebugUnitTest`: 6573 tests, 254 failed, 1474 skipped; 253 are the Windows environment
+  limitations in the same categories and counts as `158.0.1-r2`, and one is the
+  `LensCameraFragmentTest` interrupted-join timing test, which passes when its class runs alone.
+  `org.mozilla.fenix.tabstray.*` passes 732 tests with 0 failures (195 skipped).
+- The documentation gate `mach doc docs` reports `Failures: 0` with `Known Failures: 37`, the same as the
+  `158.0.1` baseline.
+- Publishes only the `arm64-v8a` APK using the official 158.0.2 multi-locale GeckoView (99 locales
+  including `zh-CN`) with the official `versionCode 2016191570` and upstream `versionName 158.0.2`; no
+  local GeckoView compilation or packaging was performed.
+- APK `Fenix-158.0.2-r1-arm64-v8a-release.apk`: `133024328` bytes, SHA-256
+  `955D4D19B486DC9158D8346EDC0831B2969C6BE715FC43CBE0F8AEE2FD3984FD`.
+
 ## 158.0.1-r2
 
 ### 中文

@@ -91,6 +91,12 @@ ambiguities. The repository-local `.mozbuild/node/node.cmd` shim was already pre
 `Failures: 0` and `Known Failures: 37`, the same count and diagnostic categories as the 158.0 run, so
 no new pattern was added to `docs/config.yml`.
 
+### 158.0.2 baseline run
+
+`mach doc docs --no-serve --no-open --outdir artifacts/docs-full-20261021-095503` completes with
+`Failures: 0` and `Known Failures: 37`, again the same count and diagnostic categories as the 158.0 and
+158.0.1 runs, so no new pattern was added to `docs/config.yml`.
+
 ## JSDoc compatibility debt
 
 The Firefox Android 155.0 tree emits JSDoc diagnostics for TypeScript-style type expressions such as

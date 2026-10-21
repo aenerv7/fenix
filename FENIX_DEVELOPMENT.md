@@ -179,28 +179,28 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
 
 ### Current validation state
 
-The 158.0.1-r2 release fixes the list-layout tab drag translation; it carries the whole `158.0.1-r1`
-content. That release updates the baseline to Firefox Android 158.0.1 and replays the whole Fenix change
-set on top of the upstream 158.0.1 delta. The upstream delta spans 395 files from the 158.0 tag; the
-candidate commit changes 386 files against its Fenix parent (385 upstream files plus
-`FENIX_UPSTREAM_RELEASE`), which is how the update is verified rather than by the merge commit merely
-existing. The delta was applied with `git apply --3way`; its ten `values-*/strings.xml` conflicts were
-resolved on the fork side because the delta changes no English string. [FENIX_UPSTREAM_SYNC.md](FENIX_UPSTREAM_SYNC.md)
-records the merge and the release pins.
+The 158.0.2-r1 release synchronizes the official 158.0.2 baseline; it carries the whole `158.0.1-r2`
+content. The upstream delta spans seven files from the 158.0.1 tag: four version stamps plus the OneCRL
+startup fix in `RemoteSecuritySettings.sys.mjs` and its xpcshell test. No file under
+`mobile/android/fenix` changed, so no fork behaviour, string, or branding decision needed replaying. The
+candidate commit changes ten files against its Fenix parent (the seven upstream files plus
+`FENIX_UPSTREAM_RELEASE`, `FENIX_UPSTREAM_VERSION_CODES.json`, and `FENIX_UPSTREAM_GECKOVIEW.json`),
+which is how the update is verified rather than by the merge commit merely existing. The delta applied
+with `git apply --3way` without conflicts. [FENIX_UPSTREAM_SYNC.md](FENIX_UPSTREAM_SYNC.md) records the
+merge and the release pins.
 
-Validation: `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`,
-`fenix:compileDebugUnitTestKotlin`, `fenix:assembleDebug`, and the arm64-v8a release build all pass,
-and the documentation gate reports `Failures: 0` with `Known Failures: 37`. `fenix:testDebugUnitTest`
-runs 6573 tests with 253 failures and 1474 skips; all 253 failures are the Windows environment
-limitations described below, in the same categories and counts as the 158.0 and 158.0.1-r1 baselines.
-`org.mozilla.fenix.tabstray.*` passes 731 tests with 0 failures. The r2 drag fix is covered by
-`ReorderableListDragTest`, which fails on the r1 source and passes on r2.
+Validation: `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`, `fenix:assembleDebug`, and the
+arm64-v8a release build all pass, and the documentation gate reports `Failures: 0` with `Known
+Failures: 37`. `fenix:testDebugUnitTest` runs 6573 tests with 254 failures and 1474 skips; 253 are the
+Windows environment limitations described below, in the same categories and counts as the 158.0.1-r2
+baseline, and the remaining one is the `LensCameraFragmentTest` interrupted-join timing test, which
+passes when that class runs alone.
 
-The arm64-v8a release uses the pinned official 158.0.1 GeckoView package through `-UseUpstreamGecko` and
-the exact official versionCode `2016191346`; no local GeckoView build is permitted because no
-Fenix-authored Gecko, C++, Rust, or Gecko locale source changed. The r1 signed APK
-`Fenix-158.0.1-r1-arm64-v8a-release.apk` (133024328 bytes, SHA-256
-`C20493BA984E53A5978F9D390B0C90A10616AE236F2FDBDEC388327660DE1D75`) is superseded by
+The arm64-v8a release uses the pinned official 158.0.2 GeckoView package through `-UseUpstreamGecko` and
+the exact official versionCode `2016191570`; no local GeckoView build is permitted because no
+Fenix-authored Gecko, C++, Rust, or Gecko locale source changed. The signed APK
+`Fenix-158.0.2-r1-arm64-v8a-release.apk` (133024328 bytes, SHA-256
+`955D4D19B486DC9158D8346EDC0831B2969C6BE715FC43CBE0F8AEE2FD3984FD`) supersedes
 `Fenix-158.0.1-r2-arm64-v8a-release.apk`. The Windows `FenixGleanTestRule`
 native-library limitation remains documented below; affected tests need Linux or CI coverage even
 when the Windows task completes by skipping them.

@@ -550,6 +550,28 @@ The release uses the pinned official 158.0.1 arm64-v8a GeckoView package recorde
 Gecko or native source changed. The exact official arm64-v8a versionCode is `2016191346`, and the
 official APK SHA-256 is `A5F247C6729BBAE1F970AA7FEB58AB7CA55570241D4BF536A9B3DE602477CA11`.
 
+## Firefox Android 158.0.2 synchronization
+
+The 158.0.2 update was prepared from the official `FIREFOX-ANDROID_158_0_2_RELEASE` tag
+(`08d23041955657e661eef22c8fdc967735300233`) on the candidate branch `sync/firefox-android-158.0.2`,
+starting from the 158.0.1-r2 tree. The upstream delta spans seven files: the four version stamps
+(`browser/config/version.txt`, `browser/config/version_display.txt`, `config/milestone.txt`,
+`mobile/android/version.txt`) and the OneCRL startup fix in
+`security/manager/ssl/RemoteSecuritySettings.sys.mjs`, which loads the bundled revocation list at
+startup so the bundled eMudhra intermediate revocations are enforced before the first Remote Settings
+sync, together with its xpcshell test `test_onecrl_loads_bundle.js` and its manifest entry.
+
+The delta applied with `git apply --3way` without conflicts. No `mobile/android/fenix` file changed, so
+no fork behaviour had to be reapplied and no localization work was needed; `values-zh-rCN` is untouched.
+The candidate changes ten files against its Fenix parent: the seven upstream files plus
+`FENIX_UPSTREAM_RELEASE`, `FENIX_UPSTREAM_VERSION_CODES.json`, and `FENIX_UPSTREAM_GECKOVIEW.json`.
+
+The OneCRL fix is Gecko JavaScript, not C++, Rust, or Gecko locale source, so it ships through the
+pinned official 158.0.2 arm64-v8a GeckoView package recorded in `FENIX_UPSTREAM_GECKOVIEW.json`; local
+GeckoView compilation is prohibited because no Fenix-authored native source changed. The exact official
+arm64-v8a versionCode is `2016191570`, and the official APK SHA-256 is
+`46A588B9F33C261E8CDA9549426FC0118FDE517CB87087633C11000D3E8099D5`.
+
 ## Source-to-binary traceability
 
 If APKs are distributed, record their SHA-256 hashes and the exact Fenix tag in release notes. The
