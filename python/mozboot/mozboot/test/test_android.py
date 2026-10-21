@@ -2,10 +2,12 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+from pathlib import Path
+
 import pytest
 from mozunit import main
 
-from mozboot.android import ensure_gradle_jdk_installations
+from mozboot.android import ensure_gradle_jdk_installations, gradle_user_home
 
 KEY = "org.gradle.java.installations.paths"
 
@@ -130,6 +132,23 @@ def test_handles_spaces_around_equals(run, gradle_props, jdk17, jdk17_posix):
     paths = read_paths(gradle_props)
     assert "/usr/lib/jvm/java-17" in paths
     assert jdk17_posix in paths
+
+
+def test_gradle_user_home_honours_env(monkeypatch, tmp_path):
+    monkeypatch.setenv("GRADLE_USER_HOME", str(tmp_path / "gradle-home"))
+    assert gradle_user_home() == tmp_path / "gradle-home"
+
+
+def test_gradle_user_home_falls_back_to_home(monkeypatch):
+    monkeypatch.delenv("GRADLE_USER_HOME", raising=False)
+    assert gradle_user_home() == Path.home() / ".gradle"
+
+
+def test_writes_into_gradle_user_home(monkeypatch, tmp_path, jdk17, jdk17_posix):
+    gradle_home = tmp_path / "gradle-home"
+    monkeypatch.setenv("GRADLE_USER_HOME", str(gradle_home))
+    ensure_gradle_jdk_installations(jdk17)
+    assert read_paths(gradle_home / "gradle.properties") == [jdk17_posix]
 
 
 if __name__ == "__main__":

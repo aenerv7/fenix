@@ -229,6 +229,29 @@ The wrapper at `tools/fenix/mach-local.ps1` redirects developer state into the c
 
 These paths are ignored by Git.
 
+### Host isolation
+
+Every supported entry point keeps build state in those paths, so a build leaves nothing in the user
+profile:
+
+- `tools/fenix/mach-local.ps1` exports `GRADLE_USER_HOME`, `CARGO_HOME`, `RUSTUP_HOME`,
+  `ANDROID_HOME`, `ANDROID_USER_HOME`, `MOZBUILD_STATE_PATH`, `SCCACHE_DIR`, `TEMP`, and `TMP` for the
+  repository.
+- `gradlew` and `gradlew.bat` default `GRADLE_USER_HOME` to `.gradle/` when the caller has not set it,
+  so a direct wrapper invocation cannot populate `~/.gradle`.
+- `ensure_gradle_jdk_installations` in `python/mozboot` writes the `org.gradle.java.installations.paths`
+  property into the Gradle user home Gradle actually uses (`GRADLE_USER_HOME`, else `~/.gradle`), so
+  `mach bootstrap` keeps that property in `.gradle/gradle.properties`.
+- Fenix unit-test tasks set `java.io.tmpdir` to
+  `<objdir>/gradle/build/mobile/android/fenix/app/tmp/unit-tests` and point Robolectric at
+  `.gradle/robolectric` with `robolectric.offline` enabled, so tests do not write to `%TEMP%` or
+  populate `~/.m2`. Copy any newly required `android-all-instrumented-*.jar` into `.gradle/robolectric`
+  when a Robolectric SDK level changes.
+
+Android Studio does not read these variables. Set its Gradle user home to `.gradle/` and its Android
+SDK to `.mozbuild/android-sdk-windows` for this project, otherwise the IDE populates `~/.gradle` and
+`~/.android` on its own.
+
 ## Bootstrap
 
 On Windows, download MozillaBuild from Mozilla's official distribution and extract it to
@@ -427,6 +450,13 @@ artifact into a product failure; skipped tests still need Linux/CI coverage. Una
 lint, APK builds, emulator tests, and visual checks continue to run on Windows. Recheck this
 limitation after changing `FENIX_UPSTREAM_RELEASE`, because a newer official baseline may provide
 complete host-native test artifacts.
+
+Do not simulate an unwritable directory with a POSIX absolute path. `File("/non_existent_read_only_path")`
+resolves to `C:\non_existent_read_only_path` on Windows, where the directory is writable: the write
+succeeds, the assertion fails, and the capture JPEGs are left on the system drive.
+`LensCameraFragmentTest` uses a regular file as the cache directory instead, because no platform can
+create the image directory under a file, so the write-failure path holds everywhere and leaves nothing
+outside the object directory.
 
 ## Local signing
 

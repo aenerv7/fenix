@@ -176,6 +176,15 @@ android {
                 forkEvery = 80
                 maxHeapSize = "3072m"
                 minHeapSize = "1024m"
+                // Tests must not leave scratch files outside the object directory. Redirect the
+                // JVM temp directory, which tests also use as a stand-in for the cache directory.
+                def testTempDir = new File(project.layout.buildDirectory.get().asFile, "tmp/unit-tests")
+                testTempDir.mkdirs()
+                systemProperty "java.io.tmpdir", testTempDir.absolutePath
+                // Robolectric would otherwise populate ~/.m2 with android-all jars.
+                def robolectricDir = new File(gradle.gradleUserHomeDir, "robolectric")
+                systemProperty "robolectric.dependency.dir", robolectricDir.absolutePath
+                systemProperty "robolectric.offline", "true"
             }
             includeAndroidResources = true
             returnDefaultValues = true

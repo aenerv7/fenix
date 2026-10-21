@@ -925,15 +925,27 @@ def ensure_java(os_name: str, os_arch: str):
     return java_path
 
 
+def gradle_user_home() -> Path:
+    """Return the Gradle user home Gradle itself would use.
+
+    Gradle honours GRADLE_USER_HOME, and the Fenix wrappers point it at the repository so build
+    state stays inside the checkout. Android Studio uses ~/.gradle unless the project overrides it.
+    """
+    configured = os.environ.get("GRADLE_USER_HOME")
+    if configured:
+        return Path(configured)
+    return Path.home() / ".gradle"
+
+
 def ensure_gradle_jdk_installations(
     new_jdk_home: Path, gradle_props: Optional[Path] = None
 ):
-    """Update ~/.gradle/gradle.properties so Gradle can find the .mozbuild JDK.
+    """Update the Gradle user home gradle.properties so Gradle can find the .mozbuild JDK.
 
     gradle/gradle-daemon-jvm.properties tells Gradle and Android Studio
     which JDK major version to use for the daemon. Gradle looks for a
     matching JDK in the paths listed under org.gradle.java.installations.paths
-    in ~/.gradle/gradle.properties.
+    in the Gradle user home gradle.properties.
 
     This function keeps that property in sync with what bootstrap installs:
       - Adds the newly installed JDK to the list of installation paths.
@@ -949,7 +961,7 @@ def ensure_gradle_jdk_installations(
     the time, that's a mistake.
     """
     if gradle_props is None:
-        gradle_props = Path.home() / ".gradle" / "gradle.properties"
+        gradle_props = gradle_user_home() / "gradle.properties"
     key = "org.gradle.java.installations.paths"
     mozbuild_prefix = MOZBUILD_PATH.resolve().as_posix() + "/"
 

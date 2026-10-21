@@ -774,9 +774,12 @@ class LensCameraFragmentTest {
         every { fragment.handleResult(any()) } just Runs
 
         val mockContext: Context = mockk()
-        val readOnlyDir = File("/non_existent_read_only_path")
+        // A regular file cannot contain the lens image directory on any platform, so the capture
+        // write fails without relying on POSIX path semantics. A non-existent absolute path is
+        // readable and writable on Windows, where it also left the images on the drive.
+        val unwritableCacheDir = File.createTempFile("lens_cache", null)
         every { mockContext.applicationContext } returns mockContext
-        every { mockContext.cacheDir } returns readOnlyDir
+        every { mockContext.cacheDir } returns unwritableCacheDir
         every { mockContext.packageName } returns "org.mozilla.fenix"
         every { fragment.context } returns mockContext
 
@@ -796,6 +799,8 @@ class LensCameraFragmentTest {
 
         verify { fragment.handleResult(null) }
         verify { mockImage.close() }
+
+        unwritableCacheDir.delete()
     }
 
     @Test
