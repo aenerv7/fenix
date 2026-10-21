@@ -92,7 +92,9 @@ vendored:third_party/python/mozilla_version
 vendored:third_party/python/packaging
 vendored:third_party/python/pip
 vendored:third_party/python/pip_tools
-vendored:third_party/python/platformdirs
+# Vendored platformdirs 4.3.8 shadows the installed 4.13.0 for imports, while
+# pytest autoloads the 4.13.0 pytest_plugin entry point and fails to import it.
+pypi-optional:platformdirs==4.13.0:glean_parser cannot locate the user cache directory
 vendored:third_party/python/pyproject_hooks
 vendored:third_party/python/pyrsistent
 vendored:third_party/python/python-hglib
