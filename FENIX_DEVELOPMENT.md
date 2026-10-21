@@ -364,6 +364,31 @@ English section second. Use the headings `## 中文` and `## English`, and keep 
 change summary, validation results, supported ABI, and `.idsig` publication policy equivalent in
 both sections. Do not publish release notes that contain only one language.
 
+Collapse each language body into a `<details>` block so the release page stays short. Keep the two
+headings visible outside the fold, use `<summary>展开完整说明</summary>` for Chinese and
+`<summary>Expand full notes</summary>` for English, and leave a blank line after each `<summary>` so
+GitHub renders the Markdown inside the fold:
+
+```text
+## 中文
+
+<details>
+<summary>展开完整说明</summary>
+
+...complete Chinese section...
+
+</details>
+
+## English
+
+<details>
+<summary>Expand full notes</summary>
+
+...complete English section...
+
+</details>
+```
+
 GitHub Release history retains a single release: only the newest `fenix-<baseline>-rN` release and its
 matching tag survive. When publishing a new revision, verify the new release first, then remove every
 older release and tag, including those of other upstream baselines. Fenix changes accumulate as a

@@ -84,7 +84,8 @@ revision and its matching tag, and remove every older release and tag, including
 upstream baselines. Fenix changes accumulate as a rolling set, so attributing a change to a particular
 `rN` is not meaningful. The retained release's bilingual notes must describe every effective
 user-facing Fenix difference from the exact official baseline, not only the latest `rN` delta, and must
-omit intermediate behavior that was later reverted. This remote-release policy does not require deleting
+omit intermediate behavior that was later reverted; collapse the Chinese and the English body each into a
+`<details>` fold. This remote-release policy does not require deleting
 local APKs, `.idsig` files, notes, logs, or cross-release build caches. The full sequencing and
 validation rules are documented in [FENIX_DEVELOPMENT.md](../../FENIX_DEVELOPMENT.md).
 
