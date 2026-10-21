@@ -335,11 +335,10 @@ private fun TabsList(
             itemsIndexed(
                 items = state.tabs,
                 key = { _, item -> item.id },
-            ) { index, itemState ->
+            ) { _, itemState ->
                 ReorderableDragItemContainer(
                     state = reorderState,
                     key = itemState.id,
-                    position = index,
                 ) {
                     TabItem(
                         state = itemState,

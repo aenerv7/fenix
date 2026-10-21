@@ -1674,7 +1674,7 @@ private fun ReorderableTabList(
                 showTabGroupOnboarding = displayTabGroupOnboarding,
                 selectedItemIndex = selectedItemIndex,
                 onTabGroupOnboardingDismiss = onTabGroupOnboardingDismiss,
-            ) { _, position, shapeInfo, tab ->
+            ) { _, _, shapeInfo, tab ->
                 val selectionState =
                     TabsTrayItemSelectionState(
                         isFocused = tab.isFocused,
@@ -1687,7 +1687,6 @@ private fun ReorderableTabList(
                     is TabsTrayItem.Tab -> {
                         ReorderableDragItemContainer(
                             state = reorderState,
-                            position = position + if (header != null) 1 else 0,
                             key = tab.id,
                         ) {
                             TabListTabItem(
@@ -1708,7 +1707,6 @@ private fun ReorderableTabList(
                     is TabsTrayItem.TabGroup -> {
                         ReorderableDragItemContainer(
                             state = reorderState,
-                            position = position + if (header != null) 1 else 0,
                             key = tab.id,
                         ) {
                             TabGroupRow(

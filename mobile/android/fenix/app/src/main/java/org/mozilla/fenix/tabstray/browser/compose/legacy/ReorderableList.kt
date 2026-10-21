@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListItemInfo
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -23,10 +24,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.LocalPinnableContainer
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.zIndex
@@ -99,18 +104,50 @@ internal constructor(
 
     private var draggingItemCumulatedOffset by mutableFloatStateOf(0f)
     private var draggingItemInitialOffset by mutableFloatStateOf(0f)
+    private var draggingItemSlotOffset by mutableStateOf<Float?>(null)
     internal var moved by mutableStateOf(false)
     private val draggingItemOffset: Float
-        get() =
-            draggingItemLayoutInfo?.let { item ->
-                draggingItemInitialOffset + draggingItemCumulatedOffset - item.offset
-            } ?: 0f
+        get() = draggingItemInitialOffset + draggingItemCumulatedOffset - currentSlotOffset()
 
-    internal fun computeItemOffset(index: Int): Float {
-        val itemAtIndex =
-            listState.layoutInfo.visibleItemsInfo.firstOrNull { info -> info.index == index }
-                ?: return draggingItemOffset
-        return draggingItemInitialOffset + draggingItemCumulatedOffset - itemAtIndex.offset
+    /**
+     * The dragged item's current layout offset, in the list's own coordinates.
+     *
+     * A lazy layout stops reporting an item in `visibleItemsInfo` once the item has been dragged past the viewport
+     * edge, while the item itself keeps its slot and keeps moving with the scroll. Reading the slot from the item's own
+     * layout coordinates keeps the translation correct there; resolving it through the item's key rather than through
+     * an index keeps it correct while a live reorder moves the item to another slot.
+     */
+    private fun currentSlotOffset(): Float {
+        draggingItemSlotOffset?.let {
+            return it
+        }
+        draggingItemLayoutInfo?.let { item ->
+            draggingItemSlotOffset = item.offset.toFloat()
+            return item.offset.toFloat()
+        }
+        return draggingItemInitialOffset
+    }
+
+    internal fun computeItemOffset(): Float = draggingItemOffset
+
+    /** Records the list's layout coordinates, used to translate the dragged item's coordinates into list space. */
+    internal fun updateListCoordinates(coordinates: LayoutCoordinates) {
+        listLayoutCoordinates = coordinates
+    }
+
+    /**
+     * Records the dragged item's layout offset from its own coordinates. The item's translation is applied to an inner
+     * node, so these coordinates describe its slot in the layout and follow the scroll even once it is drawn past the
+     * viewport edge.
+     */
+    internal fun onDraggedItemPositioned(itemCoordinates: LayoutCoordinates) {
+        val listCoordinates = listLayoutCoordinates ?: return
+        val position = listCoordinates.localPositionOf(itemCoordinates, Offset.Zero)
+        draggingItemSlotOffset =
+            when (orientation) {
+                Orientation.Vertical -> position.y
+                Orientation.Horizontal -> position.x
+            }
     }
 
     private val draggingItemLayoutInfo: LazyListItemInfo?
@@ -118,6 +155,8 @@ internal constructor(
 
     internal var previousKeyOfDraggedItem by mutableStateOf<Any?>(null)
         private set
+
+    private var listLayoutCoordinates: LayoutCoordinates? = null
 
     internal var previousItemOffset = Animatable(0f)
         private set
@@ -133,6 +172,7 @@ internal constructor(
                 onLongPress(it)
             }
             draggingItemInitialOffset = it.offset.toFloat()
+            draggingItemSlotOffset = it.offset.toFloat()
             moved = !shouldLongPress
         }
     }
@@ -156,6 +196,7 @@ internal constructor(
         draggingItemCumulatedOffset = 0f
         draggingItemKey = null
         draggingItemInitialOffset = 0f
+        draggingItemSlotOffset = null
     }
 
     /**
@@ -171,6 +212,7 @@ internal constructor(
         draggingItemCumulatedOffset = 0f
         draggingItemKey = null
         draggingItemInitialOffset = 0f
+        draggingItemSlotOffset = null
         previousKeyOfDraggedItem = null
         moved = false
     }
@@ -234,42 +276,62 @@ internal constructor(
  *
  * @param state List reordering state.
  * @param key Key of the item to be displayed.
- * @param position Position in the list of the item to be displayed.
  * @param content Content of the item to be displayed.
  */
 @Composable
 fun LazyItemScope.ReorderableDragItemContainer(
     state: ListReorderState,
     key: Any,
-    position: Int,
     content: @Composable () -> Unit,
 ) {
-    val modifier =
+    val isDragged = key == state.draggingItemKey
+
+    // A dragged item that scrolls out of the viewport would otherwise be disposed in the middle of the gesture, which
+    // drops the card out from under the pointer.
+    val pinnableContainer = LocalPinnableContainer.current
+    DisposableEffect(isDragged) {
+        val handle = if (isDragged) pinnableContainer?.pin() else null
+        onDispose { handle?.release() }
+    }
+
+    val translation =
+        when (key) {
+            state.draggingItemKey -> state.computeItemOffset()
+            state.previousKeyOfDraggedItem -> state.previousItemOffset.value
+            else -> 0f
+        }
+
+    val outerModifier =
         when (key) {
             state.draggingItemKey -> {
-                Modifier.zIndex(1f).graphicsLayer {
-                    when (state.orientation) {
-                        Orientation.Vertical -> translationY = state.computeItemOffset(position)
-                        Orientation.Horizontal -> translationX = state.computeItemOffset(position)
-                    }
-                }
+                Modifier.zIndex(1f).onGloballyPositioned { state.onDraggedItemPositioned(it) }
             }
 
-            state.previousKeyOfDraggedItem -> {
-                Modifier.zIndex(1f).graphicsLayer {
-                    when (state.orientation) {
-                        Orientation.Vertical -> translationY = state.previousItemOffset.value
-                        Orientation.Horizontal -> translationX = state.previousItemOffset.value
-                    }
-                }
-            }
+            state.previousKeyOfDraggedItem -> Modifier.zIndex(1f)
 
-            else -> {
-                Modifier.zIndex(0f).animateItem(tween())
-            }
+            else -> Modifier.zIndex(0f).animateItem(tween())
         }
-    Box(modifier = modifier, propagateMinConstraints = true) {
-        content()
+
+    /*
+     * graphicsLayer translations are included in LayoutCoordinates measurements, so the translation is applied to an
+     * inner Box: the outer one keeps reporting the item's slot in the layout, which is what the drag translation is
+     * measured against.
+     */
+    Box(modifier = outerModifier) {
+        val innerModifier =
+            if (key == state.draggingItemKey || key == state.previousKeyOfDraggedItem) {
+                Modifier.graphicsLayer {
+                    when (state.orientation) {
+                        Orientation.Vertical -> translationY = translation
+                        Orientation.Horizontal -> translationX = translation
+                    }
+                }
+            } else {
+                Modifier
+            }
+        Box(modifier = innerModifier, propagateMinConstraints = true) {
+            content()
+        }
     }
 }
 
@@ -300,28 +362,29 @@ fun Modifier.detectListPressAndDrag(
     shouldLongPressToDrag: Boolean,
 ): Modifier =
     this then
-        Modifier.pointerInput(listState, shouldLongPressToDrag) {
-            if (shouldLongPressToDrag) {
-                detectDragGesturesAfterLongPress(
-                    onDragStart = { offset ->
-                        val offsetInOrientation =
-                            when (listState.layoutInfo.orientation) {
-                                Orientation.Vertical -> offset.y
-                                Orientation.Horizontal -> offset.x
-                            }
-                        reorderState.onTouchSlopPassed(offsetInOrientation, true)
-                    },
-                    onDrag = { change, dragAmount ->
-                        change.consume()
-                        val dragOffset =
-                            when (listState.layoutInfo.orientation) {
-                                Orientation.Vertical -> dragAmount.y
-                                Orientation.Horizontal -> dragAmount.x
-                            }
-                        reorderState.onDrag(dragOffset)
-                    },
-                    onDragEnd = reorderState::onDragInterrupted,
-                    onDragCancel = reorderState::onDragInterrupted,
-                )
+        Modifier.onGloballyPositioned { reorderState.updateListCoordinates(it) }
+            .pointerInput(listState, shouldLongPressToDrag) {
+                if (shouldLongPressToDrag) {
+                    detectDragGesturesAfterLongPress(
+                        onDragStart = { offset ->
+                            val offsetInOrientation =
+                                when (listState.layoutInfo.orientation) {
+                                    Orientation.Vertical -> offset.y
+                                    Orientation.Horizontal -> offset.x
+                                }
+                            reorderState.onTouchSlopPassed(offsetInOrientation, true)
+                        },
+                        onDrag = { change, dragAmount ->
+                            change.consume()
+                            val dragOffset =
+                                when (listState.layoutInfo.orientation) {
+                                    Orientation.Vertical -> dragAmount.y
+                                    Orientation.Horizontal -> dragAmount.x
+                                }
+                            reorderState.onDrag(dragOffset)
+                        },
+                        onDragEnd = reorderState::onDragInterrupted,
+                        onDragCancel = reorderState::onDragInterrupted,
+                    )
+                }
             }
-        }

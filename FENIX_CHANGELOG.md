@@ -1,5 +1,65 @@
 # Fenix changes
 
+## 158.0.1-r2
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_158_0_1_RELEASE`（上游增量 395 个文件）。本版只修复列表布局下的标签页
+拖拽定位，`158.0.1-r1` 的其余内容不变。
+
+#### 修复
+
+- 列表布局下长按拖拽标签页时，卡片可能不再停在手指位置，向上或向下偏移若干行。拖拽平移量原先用「长按
+  时记下的布局偏移 + 手指累计位移 − 该项**当前所在槽位**」，而槽位是按该项在组合时的索引去
+  `visibleItemsInfo` 里查的：实时重排把该项换到别的槽位后，那个索引仍指向它已经离开的位置，于是平移量
+  按错误的基准计算，卡片绘制位置偏离手指。
+- 现在槽位改为从被拖拽项自身的布局坐标读取（与网格一致）：平移量放在内层节点，外层节点保留真实槽位坐标，
+  因为 `graphicsLayer` 的平移会被计入 `LayoutCoordinates` 测量。索引参数 `position` 从此不再参与计算，
+  并从容器签名中移除。
+- 拖拽项同时加 `LocalPinnableContainer` 固定，避免它在拖出视口时被回收导致卡片消失；松手后释放。
+- 新增回归测试 `ReorderableListDragTest`：真实 `LazyColumn` + 真实容器与状态，逐帧拖拽并实时重排，
+  断言被拖拽项始终位于「起始位置 + 累计拖拽量」。修复前该测试找不到被拖拽项（卡片已不在原位绘制），
+  修复后通过。
+
+#### 发布与验证
+
+- `fenix:spotlessKotlinCheck`、`fenix:compileDebugKotlin`、`fenix:compileDebugUnitTestKotlin`、
+  `fenix:assembleDebug` 通过；`fenix:testDebugUnitTest` 结果与 `158.0.1-r1` 一致。
+- 仅发布 `arm64-v8a` APK，使用官方 158.0.1 多语言 GeckoView（99 个 locale，含 `zh-CN`），沿用官方
+  `versionCode 2016191346` 与上游 `versionName 158.0.1`；未进行本地 GeckoView 编译或打包。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_158_0_1_RELEASE` (upstream delta: 395 files). This release
+fixes tab drag positioning in the list layout only; everything else is `158.0.1-r1`.
+
+#### Fix
+
+- In the list layout, a long-press drag could stop following the pointer, with the card drawn a few rows
+  above or below it. The translation was computed as "layout offset captured at the long press + drag
+  distance so far − the item's **current slot**", and that slot was looked up in `visibleItemsInfo` by
+  the index the item's composition was created with. A live reorder moves the item to another slot while
+  that index still describes the slot it left, so the translation was measured against the wrong
+  reference.
+- The slot is now read from the dragged item's own layout coordinates, as the grid already does: the
+  translation is applied to an inner node and the outer node keeps reporting the real slot, because
+  `graphicsLayer` translations are included in `LayoutCoordinates` measurements. The `position` index
+  parameter no longer takes part in the calculation and is removed from the container signature.
+- The dragged item is now pinned through `LocalPinnableContainer`, so it is not disposed and lost when
+  it is dragged past the viewport edge; the pin is released when the drag ends.
+- Added the `ReorderableListDragTest` regression test: a real `LazyColumn` with the real container and
+  state, dragged frame by frame while the list reorders live, asserting that the dragged item stays at
+  "start position + drag distance so far". Before the fix the test cannot find the dragged item at all
+  because the card is no longer drawn where it belongs; after the fix it passes.
+
+#### Release and validation
+
+- `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`, `fenix:compileDebugUnitTestKotlin`, and
+  `fenix:assembleDebug` pass; `fenix:testDebugUnitTest` matches `158.0.1-r1`.
+- Publishes only the `arm64-v8a` APK using the official 158.0.1 multi-locale GeckoView (99 locales
+  including `zh-CN`) with the official `versionCode 2016191346` and upstream `versionName 158.0.1`; no
+  local GeckoView compilation or packaging was performed.
+
 ## 158.0.1-r1
 
 ### 中文

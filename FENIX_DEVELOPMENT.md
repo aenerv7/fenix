@@ -124,6 +124,14 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
   caches the offset it last read from `visibleItemsInfo` and subtracts it in the fallback; the grid caches
   the same value from the item's `onGloballyPositioned` coordinates. `InteractableListDragTest` covers the
   list case.
+- Both lists must read the dragged item's slot from live layout coordinates, not from a cached offset or
+  from an index. The release channel runs with drag and drop disabled, which selects the legacy
+  `ReorderableDragItemContainer`, and that path resolved the slot through the item index its composition
+  was created with. A live reorder moves the item to another slot while that index still describes the
+  slot it left, so the card was drawn up to several rows away from the pointer. The legacy container now
+  reports its own coordinates the same way the grid does, and its translation lives on an inner node so
+  the outer coordinates describe the slot: `graphicsLayer` translations are included in `LayoutCoordinates`
+  measurements. `ReorderableListDragTest` covers the legacy list.
 - Every list/grid interaction state must set its `moved` flag once the drag passes touch slop. All four
   states report it to the drag-start callback exactly once; without it `onExitLongPress` fires on every
   drag event and re-dispatches `TabDragStart` for the whole gesture.
@@ -171,7 +179,8 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
 
 ### Current validation state
 
-The 158.0.1-r1 release updates the baseline to Firefox Android 158.0.1 and replays the whole Fenix change
+The 158.0.1-r2 release fixes the list-layout tab drag translation; it carries the whole `158.0.1-r1`
+content. That release updates the baseline to Firefox Android 158.0.1 and replays the whole Fenix change
 set on top of the upstream 158.0.1 delta. The upstream delta spans 395 files from the 158.0 tag; the
 candidate commit changes 386 files against its Fenix parent (385 upstream files plus
 `FENIX_UPSTREAM_RELEASE`), which is how the update is verified rather than by the merge commit merely
@@ -182,15 +191,17 @@ records the merge and the release pins.
 Validation: `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`,
 `fenix:compileDebugUnitTestKotlin`, `fenix:assembleDebug`, and the arm64-v8a release build all pass,
 and the documentation gate reports `Failures: 0` with `Known Failures: 37`. `fenix:testDebugUnitTest`
-runs 6572 tests with 253 failures and 1474 skips, the same totals as the 158.0 baseline; all 253
-failures are the Windows environment limitations described below. `org.mozilla.fenix.tabstray.*` passes
-731 tests with 0 failures.
+runs 6573 tests with 253 failures and 1474 skips; all 253 failures are the Windows environment
+limitations described below, in the same categories and counts as the 158.0 and 158.0.1-r1 baselines.
+`org.mozilla.fenix.tabstray.*` passes 731 tests with 0 failures. The r2 drag fix is covered by
+`ReorderableListDragTest`, which fails on the r1 source and passes on r2.
 
 The arm64-v8a release uses the pinned official 158.0.1 GeckoView package through `-UseUpstreamGecko` and
 the exact official versionCode `2016191346`; no local GeckoView build is permitted because no
-Fenix-authored Gecko, C++, Rust, or Gecko locale source changed. The signed APK is
-`Fenix-158.0.1-r1-arm64-v8a-release.apk`, 133024328 bytes, SHA-256
-`C20493BA984E53A5978F9D390B0C90A10616AE236F2FDBDEC388327660DE1D75`. The Windows `FenixGleanTestRule`
+Fenix-authored Gecko, C++, Rust, or Gecko locale source changed. The r1 signed APK
+`Fenix-158.0.1-r1-arm64-v8a-release.apk` (133024328 bytes, SHA-256
+`C20493BA984E53A5978F9D390B0C90A10616AE236F2FDBDEC388327660DE1D75`) is superseded by
+`Fenix-158.0.1-r2-arm64-v8a-release.apk`. The Windows `FenixGleanTestRule`
 native-library limitation remains documented below; affected tests need Linux or CI coverage even
 when the Windows task completes by skipping them.
 
