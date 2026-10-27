@@ -31,7 +31,8 @@ import org.mozilla.fenix.R
  */
 class DefaultFenixSettingsIndexer(
     private val context: Context,
-    private val preferenceFileInformationList: List<PreferenceFileInformation> = defaultPreferenceFileInformationList,
+    private val preferenceFileInformationList: List<PreferenceFileInformation> =
+        defaultPreferenceFileInformationList(includeAutofillPreferences = true),
     private val additionalProviders: List<SettingsSearchProvider> = emptyList(),
     private val excludedPreferenceKeys: () -> Set<String> = { emptySet() },
 ) : SettingsIndexer {
@@ -349,8 +350,12 @@ class DefaultFenixSettingsIndexer(
         /**
          * All the preference xml files to load with information for the indexer. In a [List] of
          * [PreferenceFileInformation]s.
+         *
+         * @param includeAutofillPreferences Accepted for API compatibility; the fork has no autofill or saved logins
+         *   preference screens.
          */
-        val defaultPreferenceFileInformationList =
+        @Suppress("UNUSED_PARAMETER")
+        fun defaultPreferenceFileInformationList(includeAutofillPreferences: Boolean): List<PreferenceFileInformation> =
             listOf(
                 PreferenceFileInformation.GeneralPreferences,
                 PreferenceFileInformation.AccessibilityPreferences,

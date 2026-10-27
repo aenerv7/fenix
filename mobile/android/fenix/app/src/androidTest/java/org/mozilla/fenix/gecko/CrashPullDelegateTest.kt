@@ -4,8 +4,6 @@
 
 package org.mozilla.fenix.gecko
 
-import android.content.Context
-import io.mockk.mockk
 import kotlin.test.assertNotNull
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

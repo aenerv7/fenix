@@ -572,6 +572,60 @@ GeckoView compilation is prohibited because no Fenix-authored native source chan
 arm64-v8a versionCode is `2016191570`, and the official APK SHA-256 is
 `46A588B9F33C261E8CDA9549426FC0118FDE517CB87087633C11000D3E8099D5`.
 
+## Firefox Android 159.0 synchronization
+
+The 159.0 update was prepared from the official `FIREFOX-ANDROID_159_0_RELEASE` tag
+(`9a2dc53c369c`) on the candidate branch `sync/firefox-android-159.0`, starting from the 158.0.2-r1
+tree. The upstream delta spans 10858 files (1576 added, 683 deleted, 8540 modified).
+
+`git apply --3way` rejected the delta atomically, so the tree was built with
+
+```text
+git merge-tree --write-tree --merge-base=FIREFOX-ANDROID_158_0_2_RELEASE HEAD FIREFOX-ANDROID_159_0_RELEASE
+```
+
+and that tree (`0591d86`) became merge commit `b240a026`, whose second parent is the 159.0 tag. The
+candidate changes 10858 files against its Fenix parent, the same count as the upstream delta. 29 files
+conflicted: 19 carried conflict markers and 10 were delete/modify pairs for features the fork removes.
+
+Upstream changes the fork adopts, with its product policy reapplied:
+
+- Account settings sync controls were refactored to the `SyncEngineUiData` enum plus
+  `AccountSettingsSwitchPreference`, and the screen gained a legacy layout
+  (`account_settings_preferences_old_ui.xml`). The fork keeps only `HISTORY`, `BOOKMARKS`, and `TABS`;
+  the passwords, credit-card, and address entries and the PIN-warning path are removed from both
+  layouts and from the fragment, and `updateSyncedDataSectionDescription` only counts the remaining
+  engines.
+- The menu moved to per-item providers (`MenuItemProvidersFactory`, `FenixMenuItem`). The fork maps
+  `FenixMenuItem.Passwords` to an `EmptyMenuItemProvider` and removed the provider and its tests, so the
+  passwords entry cannot reappear through the new menu path.
+- `gradlew.bat` gained upstream's `goto exitWithErrorLevel` handling; the fork's `GRADLE_USER_HOME`
+  default is kept on the same command line.
+- `tools/moz.build` lists both `rb/test/python.toml` and `moztreedocs/test/python.toml` because the
+  merged tree carries both manifests.
+- `values-kmr` and `values-skr` keep the fork's Fenix wording for the conflicting strings and take the
+  upstream strings that the delta adds. `values-zh-rCN` is untouched because this delta adds no English
+  string.
+
+Fork behaviour reapplied:
+
+- The review prompt (`ReviewPromptMiddleware`, `ShowReviewPromptBinding`,
+  `CustomReviewPromptBottomSheetFragment`, `PlayStoreReviewPromptController` and their tests) and
+  `OpenPasswordManagerIntentProcessor` stay deleted.
+- `MenuBanner` keeps the fork's text-only banner instead of upstream's illustrated component banner.
+  Upstream removed `browser_menu_default_banner_dismiss_promotion`, so that English string is restored
+  locally; `values-zh-rCN` already carried its translation.
+- `SupportUtils` keeps the fork's project URLs. Its test keeps those assertions and adds upstream's
+  DNS-over-HTTPS local-provider assertion.
+- The autofill service registration that upstream added to `FenixApplication` is removed again.
+
+Release pins: the delta changes Gecko, so the baseline advances `CLOBBER` with the 2026-10-21 merge-day
+clobber and a debug build needs a full local Gecko rebuild. The release itself still uses the pinned
+official 159.0 arm64-v8a GeckoView package recorded in `FENIX_UPSTREAM_GECKOVIEW.json`; local GeckoView
+compilation remains prohibited because no Fenix-authored native source changed. The exact official
+arm64-v8a versionCode is `2016191882`, and the official APK SHA-256 is
+`F78E11ABC85C59DD7AAB03DD8F926AC62DF99731CCF62EC6EC937C18B3E33AA9`.
+
 ## Source-to-binary traceability
 
 If APKs are distributed, record their SHA-256 hashes and the exact Fenix tag in release notes. The

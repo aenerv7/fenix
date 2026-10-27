@@ -65,6 +65,8 @@ class HomeDeepLinkIntentProcessorTest {
                 showAddSearchWidgetPrompt = ::showAddSearchWidgetPrompt,
                 shareUseCases = shareUseCases,
             )
+
+        every { settings.isAutofillSupported } returns true
     }
 
     @Test

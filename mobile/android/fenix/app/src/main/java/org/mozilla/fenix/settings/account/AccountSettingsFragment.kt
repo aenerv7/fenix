@@ -8,22 +8,24 @@ import android.os.Bundle
 import android.text.InputFilter
 import android.text.format.DateUtils
 import android.view.View
+import androidx.annotation.StringRes
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.edit
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.preference.CheckBoxPreference
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
-import com.google.android.material.R as materialR
+import androidx.preference.TwoStatePreference
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import mozilla.appservices.syncmanager.SyncTelemetry
 import mozilla.components.concept.sync.AccountObserver
 import mozilla.components.concept.sync.ConstellationState
 import mozilla.components.concept.sync.DeviceConstellationObserver
+import mozilla.components.concept.sync.Profile
 import mozilla.components.concept.sync.SyncEngine
 import mozilla.components.lib.state.ext.consumeFrom
 import mozilla.components.lib.state.helpers.StoreProvider.Companion.fragmentStore
@@ -33,7 +35,6 @@ import mozilla.components.service.fxa.sync.SyncReason
 import mozilla.components.service.fxa.sync.SyncStatusObserver
 import mozilla.components.service.fxa.sync.getLastSynced
 import mozilla.components.service.fxa.sync.setLastSynced
-import mozilla.components.support.ktx.android.content.getColorFromAttr
 import mozilla.components.support.utils.ext.pixelSizeFor
 import mozilla.telemetry.glean.private.NoExtras
 import org.mozilla.fenix.GleanMetrics.SyncAccount
@@ -59,6 +60,9 @@ class AccountSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFr
     private lateinit var accountSettingsInteractor: AccountSettingsInteractor
     private val args by navArgs<AccountSettingsFragmentArgs>()
 
+    private val isNewUiEnabled: Boolean
+        get() = requireComponents.settings.accountSettingsNewUi
+
     // Navigate away from this fragment when we encounter auth problems or logout events.
     private val accountStateObserver =
         object : AccountObserver {
@@ -79,11 +83,30 @@ class AccountSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFr
                     }
                 }
             }
+
+            override fun onProfileUpdated(profile: Profile) {
+                if (!isNewUiEnabled) return
+                viewLifecycleOwner.lifecycleScope.launch {
+                    context?.let { accountPreferenceUpdater?.update(it, profile) }
+                }
+            }
         }
+
+    private val accountPreferenceUpdater by lazy {
+        if (isNewUiEnabled) {
+            AccountPreferenceUpdater(
+                requirePreference(R.string.pref_key_account),
+                lifecycleScope,
+                requireComponents.core.client,
+            )
+        } else {
+            null
+        }
+    }
 
     override fun onResume() {
         super.onResume()
-        showToolbar(getString(R.string.preferences_account_settings))
+        showToolbar(getString(R.string.preferences_account_and_sync_settings))
         args.preferenceToScrollTo?.let {
             scrollToPreferenceWithHighlight(it)
         }
@@ -124,6 +147,13 @@ class AccountSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFr
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (isNewUiEnabled) {
+            accountPreferenceUpdater?.update(
+                requireContext(),
+                accountManager.accountProfile(),
+            )
+        }
+
         @Suppress("DEPRECATION") // getLastSynced / setLastSynced is deprecated see bug 2067060
         accountSettingsStore =
             fragmentStore(
@@ -159,7 +189,14 @@ class AccountSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFr
 
     @Suppress("LongMethod", "CyclomaticComplexMethod")
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        setPreferencesFromResource(R.xml.account_settings_preferences, rootKey)
+        val isNewUiEnabled = requireComponents.settings.accountSettingsNewUi
+        val layout =
+            if (isNewUiEnabled) {
+                R.xml.account_settings_preferences
+            } else {
+                R.xml.account_settings_preferences_old_ui
+            }
+        setPreferencesFromResource(layout, rootKey)
     }
 
     override fun onDisplayPreferenceDialog(preference: Preference) {
@@ -200,13 +237,7 @@ class AccountSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFr
         val preferenceSyncNow = requirePreference<Preference>(R.string.pref_key_sync_now)
         preferenceSyncNow.apply {
             onPreferenceClickListener = getClickListenerForSyncNow()
-
-            icon?.let {
-                icon =
-                    it.mutate().apply {
-                        setTint(context.getColorFromAttr(materialR.attr.colorOnSurface))
-                    }
-            }
+            tintIcon()
 
             // Current sync state
             if (requireComponents.backgroundServices.accountManager.isSyncActive()) {
@@ -241,32 +272,61 @@ class AccountSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFr
         )
     }
 
+    /**
+     * UI configuration for a sync engine preference in account settings.
+     *
+     * Associates each [SyncEngine] the fork still syncs with its preference resource.
+     */
+    enum class SyncEngineUiData(
+        val engine: SyncEngine,
+        @StringRes val prefId: Int,
+    ) {
+        HISTORY(SyncEngine.History, R.string.pref_key_sync_history),
+        BOOKMARKS(SyncEngine.Bookmarks, R.string.pref_key_sync_bookmarks),
+        TABS(SyncEngine.Tabs, R.string.pref_key_sync_tabs),
+    }
+
     private fun setupSyncCategoriesPreferenceListeners() {
         // Make sure out sync engine checkboxes are up-to-date and disabled if currently syncing
         updateSyncEngineStates()
         setDisabledWhileSyncing(accountManager.isSyncActive())
 
-        fun SyncEngine.prefId(): Int =
-            when (this) {
-                SyncEngine.History -> R.string.pref_key_sync_history
-                SyncEngine.Bookmarks -> R.string.pref_key_sync_bookmarks
-                SyncEngine.Tabs -> R.string.pref_key_sync_tabs
-                else -> throw IllegalStateException("Accessing internal sync engines")
-            }
+        SyncEngineUiData.entries.forEach { engineUiData ->
+            requirePreference<TwoStatePreference>(engineUiData.prefId).apply {
+                tintIcon()
 
-        listOf(
-                SyncEngine.History,
-                SyncEngine.Bookmarks,
-                SyncEngine.Tabs,
-            )
-            .forEach {
-                requirePreference<CheckBoxPreference>(it.prefId()).apply {
-                    setOnPreferenceChangeListener { _, newValue ->
-                        updateSyncEngineState(it, newValue as Boolean)
-                        true
-                    }
+                setOnPreferenceChangeListener { _, newValue ->
+                    updateSyncEngineState(engineUiData.engine, newValue as Boolean)
+                    true
                 }
             }
+        }
+    }
+
+    private fun updateSyncedDataSectionDescription() {
+        val syncEnginesStatus: Map<SyncEngine, Boolean> = SyncEnginesStorage(requireContext()).getStatus()
+
+        val isAnyEngineEnabled =
+            SyncEngineUiData.entries.any {
+                syncEnginesStatus.getOrElse(it.engine) { false }
+            }
+
+        val summary =
+            if (isAnyEngineEnabled || syncEnginesStatus.isEmpty()) {
+                R.string.preferences_sync_category_summary
+            } else {
+                R.string.preferences_sync_category_no_engine_selected_summary
+            }
+        requirePreference<PreferenceCategory>(R.string.preferences_sync_category).setSummary(summary)
+    }
+
+    private fun Preference.tintIcon() {
+        icon?.let {
+            icon =
+                it.mutate().apply {
+                    setTintList(AppCompatResources.getColorStateList(context, R.color.state_list_text_color))
+                }
+        }
     }
 
     /**
@@ -279,24 +339,21 @@ class AccountSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFr
     private fun updateSyncEngineState(engine: SyncEngine, newValue: Boolean) {
         viewLifecycleOwner.lifecycleScope.launch {
             requireContext().components.backgroundServices.accountManager.setEngineEnabled(engine, newValue)
+            updateSyncedDataSectionDescription()
         }
     }
 
     /** Updates the status of all [SyncEngine] states. */
     private fun updateSyncEngineStates() {
         val syncEnginesStatus = SyncEnginesStorage(requireContext()).getStatus()
-        requirePreference<CheckBoxPreference>(R.string.pref_key_sync_bookmarks).apply {
-            isEnabled = syncEnginesStatus.containsKey(SyncEngine.Bookmarks)
-            isChecked = syncEnginesStatus.getOrElse(SyncEngine.Bookmarks) { true }
+
+        SyncEngineUiData.entries.forEach { engineUiData ->
+            requirePreference<TwoStatePreference>(engineUiData.prefId).apply {
+                isEnabled = syncEnginesStatus.containsKey(engineUiData.engine)
+                isChecked = syncEnginesStatus.getOrElse(engineUiData.engine) { true }
+            }
         }
-        requirePreference<CheckBoxPreference>(R.string.pref_key_sync_history).apply {
-            isEnabled = syncEnginesStatus.containsKey(SyncEngine.History)
-            isChecked = syncEnginesStatus.getOrElse(SyncEngine.History) { true }
-        }
-        requirePreference<CheckBoxPreference>(R.string.pref_key_sync_tabs).apply {
-            isEnabled = syncEnginesStatus.containsKey(SyncEngine.Tabs)
-            isChecked = syncEnginesStatus.getOrElse(SyncEngine.Tabs) { true }
-        }
+        updateSyncedDataSectionDescription()
     }
 
     /** Manual sync triggered by the user. This also checks account authentication and refreshes the device list. */

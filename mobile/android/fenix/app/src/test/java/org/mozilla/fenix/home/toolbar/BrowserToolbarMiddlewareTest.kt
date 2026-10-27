@@ -75,7 +75,6 @@ import org.junit.runner.RunWith
 import org.mozilla.fenix.GleanMetrics.Events
 import org.mozilla.fenix.NavGraphDirections
 import org.mozilla.fenix.R
-import org.mozilla.fenix.browser.BrowserFragmentDirections
 import org.mozilla.fenix.browser.browsingmode.BrowsingMode.Normal
 import org.mozilla.fenix.browser.browsingmode.BrowsingMode.Private
 import org.mozilla.fenix.browser.browsingmode.BrowsingModeManager
@@ -96,6 +95,7 @@ import org.mozilla.fenix.components.usecases.FenixBrowserUseCases
 import org.mozilla.fenix.ext.components
 import org.mozilla.fenix.ext.nav
 import org.mozilla.fenix.helpers.FenixGleanTestRule
+import org.mozilla.fenix.home.HomeFragmentDirections
 import org.mozilla.fenix.home.toolbar.BrowserToolbarMiddleware.HomeToolbarAction
 import org.mozilla.fenix.home.toolbar.DisplayActions.FakeClicked
 import org.mozilla.fenix.home.toolbar.DisplayActions.MenuClicked
@@ -526,16 +526,33 @@ class BrowserToolbarMiddlewareTest {
 
     @Test
     fun `WHEN clicking the menu button THEN open the menu`() {
-        val navController: NavController = mockk(relaxed = true)
+        val navController = navControllerShowingHome()
         val (_, toolbarStore) = buildMiddlewareAndAddToStore(navController = navController)
         val menuButton = toolbarStore.state.displayState.browserActionsEnd[1] as ActionButtonRes
 
         toolbarStore.dispatch(menuButton.onClick as BrowserToolbarEvent)
 
         verify {
-            navController.nav(
-                R.id.homeFragment,
-                BrowserFragmentDirections.actionGlobalMenuDialogFragment(accesspoint = MenuAccessPoint.Browser),
+            navController.navigate(
+                HomeFragmentDirections.actionGlobalMenuDialogFragment(accesspoint = MenuAccessPoint.Home),
+                null,
+            )
+        }
+    }
+
+    @Test
+    fun `GIVEN menu customization is enabled WHEN clicking the menu button THEN open the customizable menu`() {
+        every { testContext.components.settings.isMenuCustomizationEnabled } returns true
+        val navController = navControllerShowingHome()
+        val (_, toolbarStore) = buildMiddlewareAndAddToStore(navController = navController)
+        val menuButton = toolbarStore.state.displayState.browserActionsEnd[1] as ActionButtonRes
+
+        toolbarStore.dispatch(menuButton.onClick as BrowserToolbarEvent)
+
+        verify {
+            navController.navigate(
+                HomeFragmentDirections.actionHomeFragmentToMenuFragment(accessPoint = MenuAccessPoint.Home),
+                null,
             )
         }
     }
@@ -1554,6 +1571,9 @@ class BrowserToolbarMiddlewareTest {
                 )
             }
         }
+
+    private fun navControllerShowingHome(): NavController =
+        mockk(relaxed = true) { every { currentDestination } returns mockk { every { id } returns R.id.homeFragment } }
 
     private fun buildMiddlewareAndAddToStore(
         uiContext: Context = testContext,

@@ -73,6 +73,7 @@ PYTHON_UNITTEST_MANIFESTS += [
     "fuzzing/smoke/python.toml",
     "lint/test/python.toml",
     "moztreedocs/test/python.toml",
+    "rb/test/python.toml",
     "tryselect/test/python.toml",
     "update-packaging/test/python.toml",
 ]

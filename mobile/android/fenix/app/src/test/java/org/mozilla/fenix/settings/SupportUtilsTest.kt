@@ -47,6 +47,14 @@ class SupportUtilsTest {
             SupportUtils.WHATS_NEW_URL,
         )
         assertEquals(
+            "https://support.mozilla.org/1/mobile/1.6/Android/en-US/configure-dns-over-https-protection-levels-firefox-android#w_what-is-a-local-provider",
+            SupportUtils.getSumoURLForTopic(
+                mockContext("1.6"),
+                SupportUtils.SumoTopic.DNS_OVER_HTTPS_LOCAL_PROVIDER,
+                Locale.Builder().setLanguage("en").setRegion("US").build(),
+            ),
+        )
+        assertEquals(
             "https://github.com/aenerv7/fenix",
             SupportUtils.PROJECT_GITHUB_URL,
         )
@@ -63,6 +71,13 @@ class SupportUtilsTest {
             SupportUtils.getGenericSumoURLForTopic(
                 SupportUtils.SumoTopic.HELP,
                 Locale.Builder().setLanguage("en").setRegion("GB").build(),
+            ),
+        )
+        assertEquals(
+            "https://support.mozilla.org/en-US/kb/configure-dns-over-https-protection-levels-firefox-android#w_what-is-a-local-provider",
+            SupportUtils.getGenericSumoURLForTopic(
+                SupportUtils.SumoTopic.DNS_OVER_HTTPS_LOCAL_PROVIDER,
+                Locale.Builder().setLanguage("en").setRegion("US").build(),
             ),
         )
         assertEquals(

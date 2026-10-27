@@ -150,10 +150,10 @@ class MenuTelemetryMiddleware<S : State, A : Action>(private val accessPoint: Me
                     )
                 )
 
-            is MenuAction.MenuBanner ->
+            is MenuAction.DefaultBrowserMenuBannerClicked ->
                 Events.browserMenuAction.record(Events.BrowserMenuActionExtra(item = "menu_banner"))
 
-            MenuAction.DismissMenuBanner ->
+            MenuAction.DefaultBrowserMenuBannerDismissed ->
                 Events.browserMenuAction.record(Events.BrowserMenuActionExtra(item = "dismiss_menu_banner"))
 
             MenuAction.CustomizeReaderView -> ReaderMode.appearance.record(NoExtras())
@@ -199,6 +199,12 @@ class MenuTelemetryMiddleware<S : State, A : Action>(private val accessPoint: Me
                 Events.browserMenuAction.record(Events.BrowserMenuActionExtra(item = "installed_addon_details"))
             }
 
+            is MenuAction.WebExtensionActionClicked -> {
+                Events.browserMenuAction.record(
+                    Events.BrowserMenuActionExtra(item = "web_extension_browser_action_clicked")
+                )
+            }
+
             is MenuAction.Navigate.WebCompatReporter -> {
                 Events.browserMenuAction.record(Events.BrowserMenuActionExtra(item = "report_broken_site"))
             }
@@ -222,6 +228,7 @@ class MenuTelemetryMiddleware<S : State, A : Action>(private val accessPoint: Me
             is MenuAction.InitializeSummarizationMenuState,
             is MenuAction.UpdateIPProtectionMenuState,
             is MenuAction.OnMoreMenuClicked,
+            is MenuAction.OnExtensionsMenuClicked,
             is MenuAction.Navigate.IPProtectionSettings -> Unit
         }
     }

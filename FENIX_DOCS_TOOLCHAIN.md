@@ -97,6 +97,12 @@ no new pattern was added to `docs/config.yml`.
 `Failures: 0` and `Known Failures: 37`, again the same count and diagnostic categories as the 158.0 and
 158.0.1 runs, so no new pattern was added to `docs/config.yml`.
 
+### 159.0 baseline run
+
+`mach doc docs --no-serve --no-open --outdir artifacts/docs-full-20261027-230453` completes with
+`Failures: 0` and `Known Failures: 37`, unchanged across the 158.0 series, so no new pattern was added
+to `docs/config.yml`.
+
 ## JSDoc compatibility debt
 
 The Firefox Android 155.0 tree emits JSDoc diagnostics for TypeScript-style type expressions such as

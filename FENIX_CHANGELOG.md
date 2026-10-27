@@ -1,5 +1,103 @@
 # Fenix changes
 
+## 159.0-r1
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_159_0_RELEASE`（`9a2dc53c369c`，上游增量 10858 个文件：新增 1576、
+删除 683、修改 8540）。`git apply --3way` 原子失败，改用 `git merge-tree` 生成合并树；29 个文件冲突
+（19 个带冲突标记，10 个是 fork 已删除功能的上游改动）。
+
+#### 采纳的上游改动
+
+- 账户设置的同步开关重构为 `SyncEngineUiData` 枚举加 `AccountSettingsSwitchPreference`，并新增旧版
+  布局 `account_settings_preferences_old_ui.xml`。fork 只保留历史、书签、标签页三个引擎，密码、
+  信用卡、地址开关及 PIN 警告流程从两套布局与 fragment 中移除。
+- 菜单改为按项提供者（`MenuItemProvidersFactory`、`FenixMenuItem`）。`FenixMenuItem.Passwords`
+  映射到 `EmptyMenuItemProvider`，原提供者与其测试删除，密码入口不会经新菜单路径复现。
+- `gradlew.bat` 采用上游的错误码处理，同时保留 fork 的 `GRADLE_USER_HOME` 默认值。
+- `values-kmr`、`values-skr` 冲突字符串保留 fork 的 Fenix 措辞，并补入上游新增条目；本版上游增量
+  不含英文界面字符串，`values-zh-rCN` 无需改动。
+
+#### 保留的 fork 行为
+
+- 评论提示（`ReviewPromptMiddleware`、`ShowReviewPromptBinding`、
+  `CustomReviewPromptBottomSheetFragment`、`PlayStoreReviewPromptController` 及其测试）与
+  `OpenPasswordManagerIntentProcessor` 保持删除。
+- `MenuBanner` 仍是 fork 的纯文本横幅；上游删除了 `browser_menu_default_banner_dismiss_promotion`，
+  本地恢复该英文字符串，`values-zh-rCN` 已有对应翻译。
+- `SupportUtils` 保留 fork 的项目链接，其测试新增上游的 DNS-over-HTTPS 本地提供者断言。
+- `FenixApplication` 中上游新增的自动填充服务注册再次移除。
+
+#### 发布与验证
+
+- `fenix:spotlessKotlinCheck`、`fenix:compileDebugKotlin`、`fenix:compileDebugUnitTestKotlin` 通过；
+  arm64-v8a release 构建通过（99 个 locale、v2/v3 签名、官方 `versionCode 2016191882`、
+  `versionName 159.0`）。
+- 159.0 携带 2026-10-21 的 merge-day `CLOBBER`，本地 debug 构建需要完整 Gecko 重建；本版因此跳过
+  `assembleDebug`，release 仍使用固定的官方 GeckoView 包，未本地编译 Gecko。
+- `fenix:testDebugUnitTest`（以 `-x machBuildFaster -x machStagePackage -x machConfigure` 运行）：
+  6878 项，265 失败、1602 跳过。262 项为 Windows 环境限制：242 项缺失 megazord/JNA 原生库、11 项
+  下载条目路径分隔符与顺序差异、5 项临时目录重命名差异、4 项 Robolectric SQLite 路径；其余 3 项为
+  既有的 `markAsTriggered`、未捕获异常与 `PackageManager` 限制。`org.mozilla.fenix.tabstray.*` 共
+  732 项 0 失败（195 跳过）。
+- APK `Fenix-159.0-r1-arm64-v8a-release.apk`：`131402558` 字节，SHA-256
+  `F7F476570A9D24CD08109A0D3024114B6C949C56CD199F989CCE8494DFB6E2AF`。
+- 文档门禁 `mach doc docs`（`artifacts/docs-full-20261027-230453`）报 `Failures: 0`、
+  `Known Failures: 37`。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_159_0_RELEASE` (`9a2dc53c369c`, upstream delta: 10858
+files — 1576 added, 683 deleted, 8540 modified). `git apply --3way` rejected the delta atomically, so the
+merge tree came from `git merge-tree`; 29 files conflicted (19 with conflict markers, 10 delete/modify
+pairs for features the fork removes).
+
+#### Upstream changes adopted
+
+- Account settings sync controls were refactored to the `SyncEngineUiData` enum plus
+  `AccountSettingsSwitchPreference`, with a new legacy layout
+  `account_settings_preferences_old_ui.xml`. The fork keeps only history, bookmarks, and tabs; the
+  passwords, credit-card, and address switches and the PIN-warning path are removed from both layouts
+  and from the fragment.
+- The menu moved to per-item providers (`MenuItemProvidersFactory`, `FenixMenuItem`).
+  `FenixMenuItem.Passwords` maps to `EmptyMenuItemProvider`, and the old provider and its tests are
+  deleted, so the passwords entry cannot return through the new menu path.
+- `gradlew.bat` takes upstream's exit-code handling and keeps the fork's `GRADLE_USER_HOME` default.
+- `values-kmr` and `values-skr` keep the fork's Fenix wording for the conflicting strings and take the
+  upstream strings the delta adds; this delta carries no English string, so `values-zh-rCN` is unchanged.
+
+#### Fork behaviour retained
+
+- The review prompt (`ReviewPromptMiddleware`, `ShowReviewPromptBinding`,
+  `CustomReviewPromptBottomSheetFragment`, `PlayStoreReviewPromptController` and their tests) and
+  `OpenPasswordManagerIntentProcessor` stay deleted.
+- `MenuBanner` stays the fork's text-only banner; upstream removed
+  `browser_menu_default_banner_dismiss_promotion`, so that English string is restored locally and
+  `values-zh-rCN` already carried its translation.
+- `SupportUtils` keeps the fork's project URLs, and its test adds upstream's DNS-over-HTTPS local
+  provider assertion.
+- The autofill service registration upstream added to `FenixApplication` is removed again.
+
+#### Release and validation
+
+- `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`, and `fenix:compileDebugUnitTestKotlin` pass;
+  the arm64-v8a release build passes (99 locales, v2/v3 signatures, official `versionCode 2016191882`,
+  `versionName 159.0`).
+- 159.0 carries the 2026-10-21 merge-day `CLOBBER`, so a local debug build needs a full Gecko rebuild;
+  `assembleDebug` was therefore skipped, and the release still uses the pinned official GeckoView
+  package without compiling Gecko locally.
+- `fenix:testDebugUnitTest` (run with `-x machBuildFaster -x machStagePackage -x machConfigure`): 6878
+  tests, 265 failed, 1602 skipped. 262 are Windows environment limitations: 242 missing
+  megazord/JNA native libraries, 11 download path-separator and ordering differences, 5
+  temporary-directory rename differences, and 4 Robolectric SQLite paths; the other 3 are the known
+  `markAsTriggered`, uncaught-exception, and `PackageManager` limitations.
+  `org.mozilla.fenix.tabstray.*` passes 732 tests with 0 failures (195 skipped).
+- APK `Fenix-159.0-r1-arm64-v8a-release.apk`: `131402558` bytes, SHA-256
+  `F7F476570A9D24CD08109A0D3024114B6C949C56CD199F989CCE8494DFB6E2AF`.
+- Documentation gate `mach doc docs` (`artifacts/docs-full-20261027-230453`) reports `Failures: 0` with
+  `Known Failures: 37`.
+
 ## 158.0.2-r1
 
 ### 中文
@@ -2345,3 +2443,4 @@ Upstream baseline: `FIREFOX-ANDROID_154_0_1_RELEASE`
 - Release APKs were locally signed and checked for package name, version, ABI, and signature.
 
 Release APKs and signing material are intentionally not stored in this source repository.
+

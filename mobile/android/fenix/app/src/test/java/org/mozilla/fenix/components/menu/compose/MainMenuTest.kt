@@ -6,6 +6,7 @@ package org.mozilla.fenix.components.menu.compose
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import mozilla.components.compose.base.theme.Theme
@@ -26,6 +27,9 @@ class MainMenuTest {
     private val customizeHomepageLabel: String
         get() = testContext.getString(R.string.browser_menu_customize_homepage)
 
+    private val passwordsLabel: String
+        get() = testContext.getString(R.string.browser_menu_passwords)
+
     @Test
     fun `WHEN the access point is Home THEN the customize homepage menu item is displayed`() {
         setMainMenuContent(accessPoint = MenuAccessPoint.Home)
@@ -38,6 +42,13 @@ class MainMenuTest {
         setMainMenuContent(accessPoint = MenuAccessPoint.Browser)
 
         composeTestRule.onNodeWithText(customizeHomepageLabel, useUnmergedTree = true).assertDoesNotExist()
+    }
+
+    @Test
+    fun `WHEN passwords are not shown THEN the passwords menu item is not displayed`() {
+        setMainMenuContent(accessPoint = MenuAccessPoint.Browser)
+
+        composeTestRule.onNodeWithContentDescription(passwordsLabel, useUnmergedTree = true).assertDoesNotExist()
     }
 
     private fun setMainMenuContent(accessPoint: MenuAccessPoint) {
