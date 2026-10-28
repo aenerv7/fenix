@@ -1,5 +1,61 @@
 # Fenix changes
 
+## 159.0-r4
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_159_0_RELEASE`。本版只修复 androidTest 编译，APK 行为与 `159.0-r3`
+相同。
+
+#### 修复
+
+- 159.0 合并后，fork 的旧 efficiency 导航测试框架与上游新增的 `generation` 包并存；旧框架引用已不存在
+  的 `NavigationRegistry`，导致 androidTest 自合并以来无法编译。删除旧框架及其示例测试，保留上游的
+  `generation` 框架。
+- 去掉 `SettingsSelectors` 里重复的 `ACCESSIBILITY_BUTTON`、`CUSTOMIZE_BUTTON`、`AUTOFILL_BUTTON`
+  声明，补回被测试引用的 `PASSWORDS_BUTTON` 与 `AUTOFILL_BUTTON` 选择器。
+- `HomeScreenRobot` 补齐缺失的 `MatcherHelper` 导入，并在 `MatcherHelper` 增加
+  `itemWithResIdAndTextAndIndex`、`itemWithResIdAndTextContainingText`。
+- `CrashPullDelegateTest` 不再使用 androidTest 不可用的 mockk，改用
+  `EngineSession.TrackingProtectionPolicy.none()`；删除 fork 不再提供的 cookie banner 测试；`ToolbarTest` 的
+  `mozVerifyElementsByGroup` 传入真实分组。
+
+#### 发布与验证
+
+- `fenix:spotlessKotlinCheck`、`fenix:compileDebugKotlin`、`fenix:compileDebugUnitTestKotlin` 与
+  `fenix:compileDebugAndroidTestKotlin` 通过；arm64-v8a release 构建通过（99 个 locale、v2/v3 签名、
+  官方 `versionCode 2016191882`、`versionName 159.0`）。
+- APK `Fenix-159.0-r4-arm64-v8a-release.apk`：`131040142` 字节，SHA-256
+  `B59A89EAD0E621AC0D4A201A9CC76D55DF91F25EF20E93D12B8751DB1C060260`。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_159_0_RELEASE`. This release only fixes androidTest
+compilation; the APK behaviour matches `159.0-r3`.
+
+#### Fix
+
+- The 159.0 merge left the fork's old efficiency navigation test framework next to upstream's new
+  `generation` package. The old tree referenced a `NavigationRegistry` class that no longer exists, so
+  androidTest had not compiled since the merge. Delete the superseded tree and its example tests, and
+  keep upstream's `generation` framework.
+- Remove the duplicate `ACCESSIBILITY_BUTTON`, `CUSTOMIZE_BUTTON`, and `AUTOFILL_BUTTON` declarations in
+  `SettingsSelectors`, and restore the `PASSWORDS_BUTTON` and `AUTOFILL_BUTTON` selectors the tests
+  reference.
+- Add the missing `MatcherHelper` imports in `HomeScreenRobot`, plus the
+  `itemWithResIdAndTextAndIndex` and `itemWithResIdAndTextContainingText` helpers in `MatcherHelper`.
+- `CrashPullDelegateTest` no longer uses mockk, which androidTest does not have, and passes
+  `TrackingProtectionPolicy.none()` instead; the cookie-banner test for a feature the fork no longer
+  ships is deleted; `ToolbarTest` passes a real selector group to `mozVerifyElementsByGroup`.
+
+#### Release and validation
+
+- `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`, `fenix:compileDebugUnitTestKotlin`, and
+  `fenix:compileDebugAndroidTestKotlin` pass, and the arm64-v8a release build passes (99 locales, v2/v3
+  signatures, official `versionCode 2016191882`, `versionName 159.0`).
+- APK `Fenix-159.0-r4-arm64-v8a-release.apk`: `131040142` bytes, SHA-256
+  `B59A89EAD0E621AC0D4A201A9CC76D55DF91F25EF20E93D12B8751DB1C060260`.
+
 ## 159.0-r3
 
 ### 中文
@@ -2539,4 +2595,5 @@ Upstream baseline: `FIREFOX-ANDROID_154_0_1_RELEASE`
 - Release APKs were locally signed and checked for package name, version, ABI, and signature.
 
 Release APKs and signing material are intentionally not stored in this source repository.
+
 

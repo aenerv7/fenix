@@ -200,10 +200,10 @@ megazord/JNA, 11 download path ordering, 5 directory rename, 4 Robolectric SQLit
 The arm64-v8a release uses the pinned official 159.0 GeckoView package through `-UseUpstreamGecko` and
 the exact official versionCode `2016191882`; no local GeckoView build is permitted because no
 Fenix-authored Gecko, C++, Rust, or Gecko locale source changed. The signed APK
-`Fenix-159.0-r3-arm64-v8a-release.apk` (131040142 bytes, SHA-256
-`DA667B88B9DE583D5D921BF62644F1377326388B3EB83255C19C4DD5DF006A25`) supersedes
-`Fenix-159.0-r2-arm64-v8a-release.apk`; r2 narrows the app icon picker to the rabbit variants and r3
-deletes the unused Firefox icon artwork.
+`Fenix-159.0-r4-arm64-v8a-release.apk` (131040142 bytes, SHA-256
+`B59A89EAD0E621AC0D4A201A9CC76D55DF91F25EF20E93D12B8751DB1C060260`) supersedes
+`Fenix-159.0-r3-arm64-v8a-release.apk`; r2 narrows the app icon picker to the rabbit variants, r3
+deletes the unused Firefox icon artwork, and r4 restores androidTest compilation.
 The Windows `FenixGleanTestRule`
 native-library limitation remains documented below; affected tests need Linux or CI coverage even
 when the Windows task completes by skipping them.
@@ -499,4 +499,5 @@ git status --short --untracked-files=all
 
 Confirm that no key stores, password files, APKs, SDKs, AVDs, logs, or generated object directories
 appear in the staged changes.
+
 
