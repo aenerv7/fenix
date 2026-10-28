@@ -123,30 +123,6 @@ object SettingsSelectors : SelectorContainer {
             groups = setOf(Group.GENERAL_SETTINGS_SECTION),
         )
 
-    val ACCESSIBILITY_BUTTON =
-        Selector(
-            strategy = SelectorStrategy.ESPRESSO_BY_TEXT,
-            value = "Accessibility",
-            description = "the Accessibility button",
-            groups = setOf(Group.GENERAL_SETTINGS_SECTION),
-        )
-
-    val AUTOFILL_BUTTON =
-        Selector(
-            strategy = SelectorStrategy.ESPRESSO_BY_TEXT,
-            value = "Autofill",
-            description = "the Autofill button",
-            groups = setOf(Group.GENERAL_SETTINGS_SECTION),
-        )
-
-    val CUSTOMIZE_BUTTON =
-        Selector(
-            strategy = SelectorStrategy.UIAUTOMATOR_WITH_TEXT,
-            value = "Customize",
-            description = "the Customize button",
-            groups = setOf(Group.GENERAL_SETTINGS_SECTION),
-        )
-
     val TABS_DEFAULT_SUMMARY =
         Selector(
             strategy = SelectorStrategy.UIAUTOMATOR_WITH_TEXT,
@@ -179,27 +155,6 @@ object SettingsSelectors : SelectorContainer {
             groups = setOf(Group.GENERAL_SETTINGS_SECTION),
         )
 
-    val PASSWORDS_BUTTON =
-        Selector(
-            strategy = SelectorStrategy.UIAUTOMATOR_WITH_TEXT,
-            value = getStringResource(R.string.preferences_passwords_logins_and_passwords_2),
-            description = "the Passwords button",
-            groups = setOf(Group.GENERAL_SETTINGS_SECTION),
-        )
-
-    // UiAutomator, not Espresso: the "Autofill" label is applied at runtime (the credit_cards row retitled in
-    // SettingsFragment) and the list is still settling right after the Settings transition. An Espresso text click
-    // captures the row's coordinates then taps, so a shift mid-settle lands the tap on the adjacent "Passwords" row;
-    // UiAutomator waits for the "Autofill" text to exist and clicks the node by identity. Exact match (not contains)
-    // so it ignores the "Autofill in..." rows on the Passwords screen. Mirrors PASSWORDS_BUTTON.
-    val AUTOFILL_BUTTON =
-        Selector(
-            strategy = SelectorStrategy.UIAUTOMATOR_WITH_TEXT,
-            value = getStringResource(R.string.preferences_autofill),
-            description = "the Autofill button",
-            groups = setOf(Group.GENERAL_SETTINGS_SECTION),
-        )
-
     val ACCESSIBILITY_BUTTON =
         Selector(
             strategy = SelectorStrategy.UIAUTOMATOR_WITH_TEXT,
@@ -208,6 +163,21 @@ object SettingsSelectors : SelectorContainer {
             groups = setOf(Group.GENERAL_SETTINGS_SECTION),
         )
 
+    val PASSWORDS_BUTTON =
+        Selector(
+            strategy = SelectorStrategy.UIAUTOMATOR_WITH_TEXT,
+            value = getStringResource(R.string.preferences_passwords_logins_and_passwords_2),
+            description = "the Passwords button",
+            groups = setOf(Group.GENERAL_SETTINGS_SECTION),
+        )
+
+    val AUTOFILL_BUTTON =
+        Selector(
+            strategy = SelectorStrategy.UIAUTOMATOR_WITH_TEXT,
+            value = getStringResource(R.string.preferences_autofill),
+            description = "the Autofill button",
+            groups = setOf(Group.GENERAL_SETTINGS_SECTION),
+        )
     val LANGUAGE_BUTTON =
         Selector(
             strategy = SelectorStrategy.ESPRESSO_BY_TEXT,

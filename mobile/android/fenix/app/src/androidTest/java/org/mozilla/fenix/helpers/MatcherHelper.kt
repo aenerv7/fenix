@@ -92,6 +92,16 @@ object MatcherHelper {
         return mDevice.findObject(UiSelector().resourceId(resourceId).text(text))
     }
 
+    fun itemWithResIdAndTextAndIndex(resourceId: String, text: String, index: Int): UiObject {
+        Log.i(TAG, "Looking for item with resource id: $resourceId, text: $text and index: $index")
+        return mDevice.findObject(UiSelector().resourceId(resourceId).text(text).index(index))
+    }
+
+    fun itemWithResIdAndTextContainingText(resourceId: String, text: String): UiObject {
+        Log.i(TAG, "Looking for item with resource id: $resourceId containing text: $text")
+        return mDevice.findObject(UiSelector().resourceId(resourceId).textContains(text))
+    }
+
     fun itemWithResIdContainingText(resourceId: String, text: String): UiObject {
         Log.i(TAG, "Looking for item with resource id: $resourceId and containing text: $text")
         return mDevice.findObject(UiSelector().resourceId(resourceId).textContains(text))

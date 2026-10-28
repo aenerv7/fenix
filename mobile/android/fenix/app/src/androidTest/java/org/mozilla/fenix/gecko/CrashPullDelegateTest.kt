@@ -4,6 +4,7 @@
 
 package org.mozilla.fenix.gecko
 
+import android.content.Context
 import kotlin.test.assertNotNull
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,13 +17,13 @@ import org.mozilla.fenix.helpers.TestHelper
 
 class CrashPullDelegateTest {
     private lateinit var context: Context
-    private lateinit var mockPolicy: EngineSession.TrackingProtectionPolicy
+    private lateinit var trackingProtectionPolicy: EngineSession.TrackingProtectionPolicy
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.Main)
 
     @Before
     fun setUp() {
         context = TestHelper.appContext
-        mockPolicy = mockk<EngineSession.TrackingProtectionPolicy>()
+        trackingProtectionPolicy = EngineSession.TrackingProtectionPolicy.none()
     }
 
     @Test
@@ -35,7 +36,7 @@ class CrashPullDelegateTest {
         runBlocking {
             scope
                 .launch {
-                    val runtime = GeckoProvider.getOrCreateRuntime(context, mockPolicy)
+                    val runtime = GeckoProvider.getOrCreateRuntime(context, trackingProtectionPolicy)
                     assertNotNull(runtime.crashPullDelegate)
                     runtime.crashPullDelegate?.onCrashPull(arrayOf("1", "2"))
                 }

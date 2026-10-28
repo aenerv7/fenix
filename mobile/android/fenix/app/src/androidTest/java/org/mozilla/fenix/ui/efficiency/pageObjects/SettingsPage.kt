@@ -64,11 +64,6 @@ class SettingsPage(composeRule: AndroidComposeTestRule<HomeActivityIntentTestRul
         )
         builder.register(
             from = pageName,
-            to = "SettingsAutofillPage",
-            steps = listOf(NavigationStep.Click(SettingsSelectors.AUTOFILL_BUTTON)),
-        )
-        builder.register(
-            from = pageName,
             to = "SettingsEnhancedTrackingProtectionPage",
             steps =
                 listOf(
@@ -76,6 +71,11 @@ class SettingsPage(composeRule: AndroidComposeTestRule<HomeActivityIntentTestRul
                     NavigationStep.Swipe(SettingsSelectors.ENHANCED_TRACKING_PROTECTION_BUTTON),
                     NavigationStep.Click(SettingsSelectors.ENHANCED_TRACKING_PROTECTION_BUTTON),
                 ),
+        )
+        builder.register(
+            from = pageName,
+            to = "SettingsAutofillPage",
+            steps = listOf(NavigationStep.Click(SettingsSelectors.AUTOFILL_BUTTON)),
         )
         builder.register(
             from = pageName,

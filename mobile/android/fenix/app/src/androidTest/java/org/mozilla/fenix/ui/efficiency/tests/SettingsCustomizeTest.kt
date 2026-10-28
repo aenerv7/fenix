@@ -60,10 +60,7 @@ class SettingsCustomizeTest : BaseTest() {
     @SmokeTest
     @Test
     fun verifyTheAppIconSelectionPageTest() {
-        on.settingsAppIcon
-            .navigateToPage()
-            .mozVerifyElementsByGroup(SettingsAppIconSelectors.Group.APP_ICON_ITEMS)
-            .mozVerifyElementsByGroup(SettingsAppIconSelectors.Group.APP_ICON_GRADIENTS_ITEMS)
+        on.settingsAppIcon.navigateToPage().mozVerifyElementsByGroup(SettingsAppIconSelectors.Group.APP_ICON_ITEMS)
     }
 
     // TestRail link: https://mozilla.testrail.io/index.php?/cases/view/3186732

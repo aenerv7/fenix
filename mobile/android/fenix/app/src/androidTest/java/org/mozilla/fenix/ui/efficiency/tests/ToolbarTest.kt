@@ -7,6 +7,7 @@ package org.mozilla.fenix.ui.efficiency.tests
 import org.junit.Ignore
 import org.junit.Test
 import org.mozilla.fenix.ui.efficiency.helpers.BaseTest
+import org.mozilla.fenix.ui.efficiency.selectors.ToolbarSelectors
 
 class ToolbarTest : BaseTest() {
 
@@ -21,6 +22,6 @@ class ToolbarTest : BaseTest() {
         on.toolbar.navigateToPage()
 
         // Then: the toolbar elements should load
-        on.toolbar.mozVerifyElementsByGroup("requiredForPage")
+        on.toolbar.mozVerifyElementsByGroup(ToolbarSelectors.Group.HOME_SCREEN_TOOLBAR)
     }
 }
