@@ -280,6 +280,7 @@
 
     <!-- Launcher Icon colors -->
     <color name="ic_launcher_background">#FDFDFD</color>
+    <color name="ic_launcher_background_dark">#111111</color>
 
     <!-- Private Browsing Mode Persistent Notification -->
     <color name="pbm_notification_color">@color/photonViolet70</color>

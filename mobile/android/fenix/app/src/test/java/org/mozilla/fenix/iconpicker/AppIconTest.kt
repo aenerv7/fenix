@@ -11,11 +11,11 @@ class AppIconTest {
 
     @Test
     fun `GIVEN a valid alias suffix WHEN fromString is invoked THEN matching enum is returned`() {
-        val input = "AppGradientSunset"
+        val input = "AppRabbitDark"
 
         val result = AppIcon.fromString(input)
 
-        assertEquals(AppIcon.AppGradientSunset, result)
+        assertEquals(AppIcon.AppRabbitDark, result)
     }
 
     @Test

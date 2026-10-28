@@ -11,7 +11,7 @@ class AppIconReducerTest {
     @Test
     fun `GIVEN Selected user action WHEN reducer is called THEN state is updated with the selected icon and the warning is displayed`() {
         val initialState = AppIconState()
-        val newIcon = AppIcon.AppRetro2004
+        val newIcon = AppIcon.AppRabbitDark
 
         assertEquals(null, initialState.userSelectedAppIcon)
 
@@ -24,7 +24,7 @@ class AppIconReducerTest {
     @Test
     fun `GIVEN Selected user action WHEN reducer is called THEN the current icon is not changed`() {
         val initialState = AppIconState()
-        val newIcon = AppIcon.AppRetro2004
+        val newIcon = AppIcon.AppRabbitDark
 
         assertEquals(AppIcon.AppDefault, initialState.currentAppIcon)
 
@@ -37,11 +37,11 @@ class AppIconReducerTest {
     fun `GIVEN Dismissed user action WHEN reducer is called THEN state resets the warning state to none and the user selected icon to null`() {
         val initialState =
             AppIconState(
-                userSelectedAppIcon = AppIcon.AppRetro2004,
-                warningDialogState = AppIconWarningDialog.Presenting(AppIcon.AppRetro2004),
+                userSelectedAppIcon = AppIcon.AppRabbitDark,
+                warningDialogState = AppIconWarningDialog.Presenting(AppIcon.AppRabbitDark),
             )
 
-        assertEquals(AppIcon.AppRetro2004, initialState.userSelectedAppIcon)
+        assertEquals(AppIcon.AppRabbitDark, initialState.userSelectedAppIcon)
 
         val result = appIconReducer(initialState, UserAction.Dismissed)
 
@@ -64,11 +64,11 @@ class AppIconReducerTest {
     fun `GIVEN DialogDismissed system action WHEN reducer is called THEN the warning dialog is hidden and the user selected icon is reset to null`() {
         val initialState =
             AppIconState(
-                userSelectedAppIcon = AppIcon.AppRetro2004,
-                warningDialogState = AppIconWarningDialog.Presenting(AppIcon.AppRetro2004),
+                userSelectedAppIcon = AppIcon.AppRabbitDark,
+                warningDialogState = AppIconWarningDialog.Presenting(AppIcon.AppRabbitDark),
             )
 
-        assertEquals(AppIcon.AppRetro2004, initialState.userSelectedAppIcon)
+        assertEquals(AppIcon.AppRabbitDark, initialState.userSelectedAppIcon)
 
         val result = appIconReducer(initialState, SystemAction.DialogDismissed)
 
@@ -78,7 +78,7 @@ class AppIconReducerTest {
 
     @Test
     fun `GIVEN Applied system action WHEN reducer is called THEN the new icon becomes the new current and the user selected icon resets to null and the dialog is hidden`() {
-        val newIcon = AppIcon.AppRetro2004
+        val newIcon = AppIcon.AppRabbitDark
         val currentIcon = AppIcon.AppDefault
         val dialogState = AppIconWarningDialog.Presenting(newIcon)
         val initialState =
@@ -101,7 +101,7 @@ class AppIconReducerTest {
 
     @Test
     fun `GIVEN UpdateFailed system action WHEN reducer is called THEN the user selected icon resets to null and the dialog is hidden and the snackbar is shown`() {
-        val newIcon = AppIcon.AppRetro2004
+        val newIcon = AppIcon.AppRabbitDark
         val currentIcon = AppIcon.AppDefault
         val dialogState = AppIconWarningDialog.Presenting(newIcon)
         val initialState =
@@ -135,7 +135,7 @@ class AppIconReducerTest {
     @Test
     fun `GIVEN SnackbarDismissed system action WHEN reducer is called THEN the snackbar is hidden`() {
         val currentIcon = AppIcon.AppDefault
-        val newIcon = AppIcon.AppRetro2004
+        val newIcon = AppIcon.AppRabbitDark
         val initialState =
             AppIconState(
                 currentAppIcon = currentIcon,

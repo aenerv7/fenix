@@ -23,7 +23,7 @@ class AppIconTelemetryMiddlewareTest {
     @Test
     fun `GIVEN user action Confirmed WHEN telemetry middleware gets invoked THEN record selection confirmed event`() {
         val currentIcon = AppIcon.AppDefault
-        val newIcon = AppIcon.AppRetro2004
+        val newIcon = AppIcon.AppRabbitDark
         val store = buildStore(currentIcon, newIcon)
 
         assertNull(AppIconSelection.appIconSelectionConfirmed.testGetValue())
@@ -41,7 +41,7 @@ class AppIconTelemetryMiddlewareTest {
     @Test
     fun `GIVEN system action SnackbarShown WHEN telemetry middleware gets invoked THEN record selection confirmed event`() {
         val currentIcon = AppIcon.AppDefault
-        val newIcon = AppIcon.AppRetro2004
+        val newIcon = AppIcon.AppRabbitDark
         val store = buildStore(currentIcon, newIcon)
 
         assertNull(AppIconSelection.errorSnackbarShown.testGetValue())
@@ -67,7 +67,7 @@ class AppIconTelemetryMiddlewareTest {
 
     private fun buildStore(
         currentAppIcon: AppIcon = AppIcon.AppDefault,
-        userSelectedAppIcon: AppIcon? = AppIcon.AppRetro2004,
+        userSelectedAppIcon: AppIcon? = AppIcon.AppRabbitDark,
     ) =
         AppIconStore(
             initialState =

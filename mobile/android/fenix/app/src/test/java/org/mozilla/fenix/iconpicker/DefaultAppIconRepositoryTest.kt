@@ -20,7 +20,7 @@ class DefaultAppIconRepositoryTest {
     @Test
     fun `GIVEN an alternative app icon is the launcher WHEN getCurrentLauncherAliasSuffix is called THEN the alternative app icon alias suffix is returned`() {
         val defaultIcon = AppIcon.AppDefault
-        val alternativeIcon = AppIcon.AppGradientNorthernLights
+        val alternativeIcon = AppIcon.AppRabbitDark
         val packageName = testContext.packageName
         val packageManager = testContext.packageManager
         val appIconRepository = DefaultAppIconRepository(DefaultPackageManagerWrapper(packageManager), packageName)
@@ -76,7 +76,7 @@ class DefaultAppIconRepositoryTest {
     @Test
     fun `GIVEN name starts with packageName dot WHEN getCurrentLauncherAliasSuffix is called THEN the alias suffix is returned`() {
         val packageName = testContext.packageName
-        val alias = AppIcon.AppGradientNorthernLights.aliasSuffix
+        val alias = AppIcon.AppRabbitDark.aliasSuffix
         val packageManagerWrapper = TestPackageManagerWrapper(fenixLauncherName = "$packageName.$alias")
         val repository = DefaultAppIconRepository(packageManagerWrapper, packageName)
 
@@ -100,7 +100,7 @@ class DefaultAppIconRepositoryTest {
     @Test
     fun `GIVEN name does not contain packageName WHEN getCurrentLauncherAliasSuffix is called THEN the original name is returned`() {
         val packageName = testContext.packageName
-        val alias = AppIcon.AppGradientNorthernLights.aliasSuffix
+        val alias = AppIcon.AppRabbitDark.aliasSuffix
         val packageManagerWrapper = TestPackageManagerWrapper(fenixLauncherName = alias)
         val repository = DefaultAppIconRepository(packageManagerWrapper, packageName)
 
@@ -112,7 +112,7 @@ class DefaultAppIconRepositoryTest {
     @Test
     fun `GIVEN similar but non-matching prefix WHEN getCurrentLauncherAliasSuffix is called THEN the original name is returned`() {
         val packageName = testContext.packageName
-        val oddName = "org.mozilla.fenixxx.AppGradientSunset"
+        val oddName = "org.mozilla.fenixxx.AppRabbitDark"
         val packageManagerWrapper = TestPackageManagerWrapper(fenixLauncherName = oddName)
         val repository = DefaultAppIconRepository(packageManagerWrapper, packageName)
 

@@ -398,7 +398,7 @@ private fun AppIconOptionPreview(@PreviewParameter(PreviewThemeProvider::class) 
 @Composable
 private fun AppIconOptionWithSubtitlePreview(@PreviewParameter(PreviewThemeProvider::class) theme: Theme) {
     FirefoxTheme(theme) {
-        AppIconOption(AppIcon.AppMomo, false) {}
+        AppIconOption(AppIcon.AppRabbitDark, false) {}
     }
 }
 
