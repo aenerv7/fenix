@@ -336,21 +336,14 @@
   <!-- Text displayed that links to website containing documentation about the "Limited Edition" wallpapers. -->
   <string name="wallpaper_learn_more">پین ہیل کبو</string>
   <!-- Title for the "Light" alternative app icon variant in the icon picker screen. -->
-  <string name="alternative_app_icon_option_light">رژنا</string>
   <!-- Title for the "Dark" alternative app icon variant in the icon picker screen. -->
   <string name="alternative_app_icon_option_dark">تہار</string>
   <!-- Title for the "Red" alternative app icon variant in the icon picker screen. -->
-  <string name="alternative_app_icon_option_red">خیسن</string>
   <!-- Title for the "Green" alternative app icon variant in the icon picker screen. -->
-  <string name="alternative_app_icon_option_green">گونکی</string>
   <!-- Title for the "Blue" alternative app icon variant in the icon picker screen. -->
-  <string name="alternative_app_icon_option_blue">خرن</string>
   <!-- Title for the "Sunrise" gradient alternative app icon variant in the icon picker screen. The app icon features a soft yellow-to-blue gradient background, resembling the colors of early morning light. -->
-  <string name="alternative_app_icon_option_gradient_sunrise">دے ٹک</string>
   <!-- Title for the "Sunset" gradient alternative app icon variant in the icon picker screen. The app icon has a rich red-to-purple gradient background, resembling the tones of a sunset sky. -->
-  <string name="alternative_app_icon_option_gradient_sunset">دے شیف</string>
   <!-- Title for the "Cool" themed alternative app icon variant in the icon picker screen. The app icon uses a warm orange-to-yellow gradient background with a sleek, modern twist on the Firefox logo, giving it a fresh and stylish appearance. -->
-  <string name="alternative_app_icon_option_cool">یخ</string>
   <!-- Dialog button text for confirming the possible app restart and new icon selection -->
   <string name="restart_warning_dialog_button_positive_2">نشان اے بدل کبو</string>
   <!-- Preference for syncing history -->

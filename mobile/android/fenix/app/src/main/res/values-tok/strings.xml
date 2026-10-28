@@ -466,13 +466,10 @@
   -->
   <string name="alternative_app_icon_option_default">ante ala</string>
   <!-- Title for the "Light" alternative app icon variant in the icon picker screen. -->
-  <string name="alternative_app_icon_option_light">walo</string>
   <!-- Title for the "Dark" alternative app icon variant in the icon picker screen. -->
   <string name="alternative_app_icon_option_dark">pimeja</string>
   <!-- Title for the "Red" alternative app icon variant in the icon picker screen. -->
-  <string name="alternative_app_icon_option_red">loje</string>
   <!-- Subtitle for the "Momo" themed alternative app icon variant in the icon picker screen. The app icon was created by artist @heyheymomodraws and features a unique hand-drawn style with a friendly fox. -->
-  <string name="alternative_app_icon_option_momo_subtitle">jan @heyheymomodraws li sitelen</string>
   <!--
     Add-ons general availability nimbus message
 

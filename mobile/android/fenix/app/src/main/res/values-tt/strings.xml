@@ -599,23 +599,15 @@
   -->
   <string name="alternative_app_icon_option_default">Төп</string>
   <!-- Title for the "Light" alternative app icon variant in the icon picker screen. -->
-  <string name="alternative_app_icon_option_light">Ачык</string>
   <!-- Title for the "Dark" alternative app icon variant in the icon picker screen. -->
   <string name="alternative_app_icon_option_dark">Караңгы</string>
   <!-- Title for the "Red" alternative app icon variant in the icon picker screen. -->
-  <string name="alternative_app_icon_option_red">Кызыл</string>
   <!-- Title for the "Green" alternative app icon variant in the icon picker screen. -->
-  <string name="alternative_app_icon_option_green">Яшел</string>
   <!-- Title for the "Blue" alternative app icon variant in the icon picker screen. -->
-  <string name="alternative_app_icon_option_blue">Зәңгәр</string>
   <!-- Title for the "Retro 2004" themed alternative app icon variant in the icon picker screen. This app icon uses the classic Firefox logo from 2004. -->
-  <string name="alternative_app_icon_option_retro_2004">Ретро 2004</string>
   <!-- Title for the "Pride" themed alternative app icon variant in the icon picker screen. The app icon incorporates a rainbow color scheme in support of the LGBTQ+ community. -->
-  <string name="alternative_app_icon_option_pride">Pride</string>
   <!-- Title for the "Momo" themed alternative app icon variant in the icon picker screen. The app icon was created by artist @heyheymomodraws and features a unique hand-drawn style with a friendly fox. -->
-  <string name="alternative_app_icon_option_momo">Момо</string>
   <!-- Title for the "Gradients" group of alternative app icon variants in the icon picker screen. This group contains icons with gradient backgrounds inspired by natural light conditions. -->
-  <string name="alternative_app_icon_group_gradients">Градиентлар</string>
   <!-- Dialog button text for cancelling app icon change -->
   <string name="restart_warning_dialog_button_negative">Баш тарту</string>
   <!--

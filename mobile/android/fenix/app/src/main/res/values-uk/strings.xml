@@ -685,9 +685,7 @@
   <!-- Customize prompt onboarding positive button. -->
   <string name="nova_onboarding_customize_prompt_positive_button" tools:ignore="UnusedResources">Почати налаштування</string>
   <!-- App icon onboarding title. -->
-  <string name="nova_onboarding_app_icon_prompt_title" tools:ignore="UnusedResources">Виберіть власну піктограму програми</string>
   <!-- App icon onboarding body. -->
-  <string name="nova_onboarding_app_icon_prompt_body" tools:ignore="UnusedResources">Надайте своїй домівці індивідуальності.</string>
   <!-- ==== End of Project "Nova" onboarding strings ==== -->
 
   <!--
@@ -1037,57 +1035,33 @@
   -->
   <string name="alternative_app_icon_option_default">Типово</string>
   <!-- Title for the "Light" alternative app icon variant in the icon picker screen. -->
-  <string name="alternative_app_icon_option_light">Світла</string>
   <!-- Title for the "Dark" alternative app icon variant in the icon picker screen. -->
   <string name="alternative_app_icon_option_dark">Темна</string>
   <!-- Title for the "Red" alternative app icon variant in the icon picker screen. -->
-  <string name="alternative_app_icon_option_red">Червона</string>
   <!-- Title for the "Green" alternative app icon variant in the icon picker screen. -->
-  <string name="alternative_app_icon_option_green">Зелена</string>
   <!-- Title for the "Blue" alternative app icon variant in the icon picker screen. -->
-  <string name="alternative_app_icon_option_blue">Блакитна</string>
   <!-- Title for the "Purple" alternative app icon variant in the icon picker screen. -->
-  <string name="alternative_app_icon_option_purple">Бузкова</string>
   <!-- Title for the "Purple Dark" alternative app icon variant in the icon picker screen. -->
-  <string name="alternative_app_icon_option_purple_dark">Темно-пурпурова</string>
   <!-- Title for the "Sunrise" gradient alternative app icon variant in the icon picker screen. The app icon features a soft yellow-to-blue gradient background, resembling the colors of early morning light. -->
-  <string name="alternative_app_icon_option_gradient_sunrise">Світанок</string>
   <!-- Title for the "Golden Hour" gradient alternative app icon variant in the icon picker screen. The app icon features a warm golden-to-pink gradient background, resembling the colors of the sunlight shortly before sunset. -->
-  <string name="alternative_app_icon_option_gradient_golden_hour">Золота година</string>
   <!-- Title for the "Sunset" gradient alternative app icon variant in the icon picker screen. The app icon has a rich red-to-purple gradient background, resembling the tones of a sunset sky. -->
-  <string name="alternative_app_icon_option_gradient_sunset">Захід сонця</string>
   <!-- Title for the "Blue Hour" gradient alternative app icon variant in the icon picker screen. The app icon has a cool blue gradient background, resembling the sky color around the time just after sunset or before sunrise. -->
-  <string name="alternative_app_icon_option_gradient_blue_hour">Блакитна година</string>
   <!-- Title for the "Twilight" gradient alternative app icon variant in the icon picker screen. The app icon has a purple-toned gradient background, resembling the sky color during twilight. -->
-  <string name="alternative_app_icon_option_gradient_twilight">Сутінки</string>
   <!-- Title for the "Midnight" gradient alternative app icon variant in the icon picker screen. The app icon features a dark gradient background, resembling the deep tones of the night sky. -->
-  <string name="alternative_app_icon_option_gradient_midnight">Північ</string>
   <!-- Title for the "Northern Lights" gradient alternative app icon variant in the icon picker screen. The app icon has a dynamic green, blue, and purple gradient background, resembling the aurora borealis. -->
-  <string name="alternative_app_icon_option_gradient_northern_lights">Північне сяйво</string>
   <!-- Title for the "Retro 2004" themed alternative app icon variant in the icon picker screen. This app icon uses the classic Firefox logo from 2004. -->
-  <string name="alternative_app_icon_option_retro_2004">Ретро 2004</string>
   <!-- Title for the "Pixelated" themed alternative app icon variant in the icon picker screen. This app icon features a pixel-art style, resembling retro 8-bit graphics. -->
-  <string name="alternative_app_icon_option_pixelated">Піксельна</string>
   <!-- Title for the "Minimal" themed alternative app icon variant in the icon picker screen. The app icon presents a simplified, flat and monochrome version of the Firefox logo. -->
-  <string name="alternative_app_icon_option_minimal">Мінімальна</string>
   <!-- Title for the "Pride" themed alternative app icon variant in the icon picker screen. The app icon incorporates a rainbow color scheme in support of the LGBTQ+ community. -->
-  <string name="alternative_app_icon_option_pride">Прайд</string>
   <!-- Title for the "Momo" themed alternative app icon variant in the icon picker screen. The app icon was created by artist @heyheymomodraws and features a unique hand-drawn style with a friendly fox. -->
-  <string name="alternative_app_icon_option_momo">Момо</string>
   <!-- Subtitle for the "Momo" themed alternative app icon variant in the icon picker screen. The app icon was created by artist @heyheymomodraws and features a unique hand-drawn style with a friendly fox. -->
-  <string name="alternative_app_icon_option_momo_subtitle">Створено @heyheymomodraws</string>
   <!-- Title for the "Cuddling" themed alternative app icon variant in the icon picker screen. The app icon features a playful design with an adorable aesthetic. -->
-  <string name="alternative_app_icon_option_cuddling">Обійми</string>
   <!-- Title for the "Flaming" themed alternative app icon variant in the icon picker screen. The app icon features a fiery design, with the Firefox logo surrounded by flames for a bold, energetic look. -->
-  <string name="alternative_app_icon_option_flaming">Полум’я</string>
   <!-- Title for the "Cool" themed alternative app icon variant in the icon picker screen. The app icon uses a warm orange-to-yellow gradient background with a sleek, modern twist on the Firefox logo, giving it a fresh and stylish appearance. -->
-  <string name="alternative_app_icon_option_cool">Крутий</string>
   <!-- Title for the "Solid colors" group of alternative app icon variants in the icon picker screen. This group contains icons with flat, uniform color backgrounds. -->
   <string name="alternative_app_icon_group_solid_colors">Суцільні кольори</string>
   <!-- Title for the "Gradients" group of alternative app icon variants in the icon picker screen. This group contains icons with gradient backgrounds inspired by natural light conditions. -->
-  <string name="alternative_app_icon_group_gradients">Градієнти</string>
   <!-- Title for the "Featured" group of alternative app icon variants in the icon picker screen. This group includes retro, pixel art, themed, and artist-created icons. -->
-  <string name="alternative_app_icon_group_featured">Відібрані</string>
   <!-- Title to show in alert when user selects an alternative app icon -->
   <string name="restart_warning_dialog_title">Змінити піктограму програми?</string>
   <!-- Message to warn users that applying an alternative app icon may require an app restart. Whether or not the app closes depends on what version of Android it is, so we use the word "may" instead of "will". %1$s is replaced by the brand name (e.g. Firefox). -->
