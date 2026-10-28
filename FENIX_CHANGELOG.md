@@ -1,5 +1,57 @@
 # Fenix changes
 
+## 159.0-r3
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_159_0_RELEASE`。本版只删除已无引用的 Firefox 图标资源，其余内容与
+`159.0-r2` 相同。
+
+#### 清理
+
+- 删除 52 个不再被引用的 drawable 与 mipmap：23 套 Firefox 图标的前景、背景与 adaptive icon。Momo
+  （@heyheymomodraws 创作）与 Cool 这类定制插画无法用兔子素材重建，因此随图标选择器一起移除。
+- 从 85 个 locale 的 `strings.xml` 删除对应选项字符串、`alternative_app_icon_group_featured`、
+  `alternative_app_icon_group_gradients` 与两条未使用的 onboarding 字符串；`values` 只保留默认、深色与
+  “纯色”分组。
+- androidTest 的 `SettingsAppIconSelectors` 与 `SettingsSubMenuCustomizeRobot` 收窄到两个选项。
+  androidTest 在 159.0 基线上本就有与 fork 删除功能相关的编译错误（`NavigationRegistry`、`Settings`
+  参数、`mockk` 等），本版未处理。
+
+#### 发布与验证
+
+- `fenix:spotlessKotlinCheck`、`fenix:compileDebugKotlin`、`fenix:compileDebugUnitTestKotlin` 通过，
+  arm64-v8a release 构建通过（99 个 locale、v2/v3 签名、官方 `versionCode 2016191882`、
+  `versionName 159.0`）。
+- APK `Fenix-159.0-r3-arm64-v8a-release.apk`：`131040142` 字节，SHA-256
+  `DA667B88B9DE583D5D921BF62644F1377326388B3EB83255C19C4DD5DF006A25`。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_159_0_RELEASE`. This release only removes unreferenced
+Firefox icon resources; everything else is `159.0-r2`.
+
+#### Cleanup
+
+- Removed 52 unreferenced drawables and mipmaps: the foregrounds, backgrounds, and adaptive icons of the
+  23 Firefox icon styles. Bespoke artwork such as Momo (by @heyheymomodraws) and Cool cannot be rebuilt
+  from the rabbit asset, so it goes away with the picker options.
+- Removed the matching option strings, `alternative_app_icon_group_featured`,
+  `alternative_app_icon_group_gradients`, and two unused onboarding strings from 85 locale
+  `strings.xml` files; `values` keeps only the default, dark, and solid-colors entries.
+- Narrowed the androidTest `SettingsAppIconSelectors` and `SettingsSubMenuCustomizeRobot` to the two
+  remaining options. androidTest already fails to compile on the 159.0 baseline because of fork-removed
+  features (`NavigationRegistry`, `Settings` parameters, `mockk`, and others); this release does not
+  address that.
+
+#### Release and validation
+
+- `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`, and `fenix:compileDebugUnitTestKotlin` pass,
+  and the arm64-v8a release build passes (99 locales, v2/v3 signatures, official
+  `versionCode 2016191882`, `versionName 159.0`).
+- APK `Fenix-159.0-r3-arm64-v8a-release.apk`: `131040142` bytes, SHA-256
+  `DA667B88B9DE583D5D921BF62644F1377326388B3EB83255C19C4DD5DF006A25`.
+
 ## 159.0-r2
 
 ### 中文
