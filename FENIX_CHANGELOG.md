@@ -1,5 +1,49 @@
 # Fenix changes
 
+## 159.0-r2
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_159_0_RELEASE`。本版只调整设置 → 定制里的应用图标选择器，其余内容与
+`159.0-r1` 相同。
+
+#### 修复
+
+- 图标选择器原先提供 23 种 Firefox 图标，默认项的预览用的还是 `ic_firefox`。现在只保留兔子图标：默认项
+  （浅色背景）与新增的深色背景项，二者都以 `ic_launcher_rabbit_foreground_scaled` 为前景，并各自对应一个
+  `activity-alias` 与 adaptive icon。
+- 其余 23 个 `activity-alias`、对应 mipmap 与选择器条目删除；`AppIcon` 枚举、仓库分组与测试同步收窄。
+
+#### 发布与验证
+
+- `fenix:spotlessKotlinCheck`、`fenix:compileDebugKotlin`、`fenix:compileDebugUnitTestKotlin` 通过，
+  `org.mozilla.fenix.iconpicker.*` 测试通过；arm64-v8a release 构建通过（99 个 locale、v2/v3 签名、
+  官方 `versionCode 2016191882`、`versionName 159.0`）。
+- APK `Fenix-159.0-r2-arm64-v8a-release.apk`：`131072910` 字节，SHA-256
+  `7010D4ED4F73F4CEF1240314FB16E2EFD497FA7974A6774D0271D37F1AC32B25`。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_159_0_RELEASE`. This release only changes the app icon
+picker in Settings → Customize; everything else is `159.0-r1`.
+
+#### Fix
+
+- The picker offered 23 Firefox icons, and its default preview used `ic_firefox`. Only the rabbit remains:
+  the default entry (light background) plus a new dark-background entry, both using
+  `ic_launcher_rabbit_foreground_scaled` as the foreground, each backed by an `activity-alias` and an
+  adaptive icon.
+- The other 23 `activity-alias` entries, their mipmaps, and their picker entries are removed; the
+  `AppIcon` enum, repository groups, and tests are narrowed to match.
+
+#### Release and validation
+
+- `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`, and `fenix:compileDebugUnitTestKotlin` pass,
+  the `org.mozilla.fenix.iconpicker.*` tests pass, and the arm64-v8a release build passes (99 locales,
+  v2/v3 signatures, official `versionCode 2016191882`, `versionName 159.0`).
+- APK `Fenix-159.0-r2-arm64-v8a-release.apk`: `131072910` bytes, SHA-256
+  `7010D4ED4F73F4CEF1240314FB16E2EFD497FA7974A6774D0271D37F1AC32B25`.
+
 ## 159.0-r1
 
 ### 中文
