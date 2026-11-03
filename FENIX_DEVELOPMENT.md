@@ -179,31 +179,32 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
 
 ### Current validation state
 
-The 159.0-r1 release synchronizes the official 159.0 baseline; it carries the whole `158.0.2-r1`
-content. The upstream delta spans 10858 files, and `git apply --3way` rejected it atomically, so the
-merge tree came from `git merge-tree --write-tree`. The candidate changes 10858 files against its
-Fenix parent, the same count as the upstream delta, which is how the update is verified rather than by
-the merge commit merely existing. 29 files conflicted and were resolved by keeping the fork's product
-policy while adopting the new account-settings and menu structures.
+The 159.0.1-r1 release synchronizes the official 159.0.1 baseline; it carries the whole `159.0-r4`
+content. The upstream delta spans 407 files, and `git apply --3way` rejected it, so the
+merge tree came from `git merge-tree --write-tree`. The candidate changes 325 files against its
+Fenix parent after 85 locale files resolved to fork content, which is how the update is verified rather than by
+the merge commit merely existing. 87 files conflicted and were resolved by keeping the fork's product
+policy while adopting upstream's detached-fragment guard.
 [FENIX_UPSTREAM_SYNC.md](FENIX_UPSTREAM_SYNC.md) records the merge and the release pins.
 
 Validation: `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`,
-`fenix:compileDebugUnitTestKotlin`, and the arm64-v8a release build pass, and the documentation gate
-reports `Failures: 0` with `Known Failures: 37`. The 159.0 baseline carries the 2026-10-21 merge-day
-`CLOBBER`, so `assembleDebug` would need a full local Gecko rebuild and was skipped; the release build
-uses the pinned official GeckoView package instead. `fenix:testDebugUnitTest` ran with
-`-x machBuildFaster -x machStagePackage -x machConfigure` for the same reason and reports 6878 tests
-with 265 failures and 1602 skips: 262 are the Windows environment limitations described below (242
-megazord/JNA, 11 download path ordering, 5 directory rename, 4 Robolectric SQLite), and 3 are the known
-`markAsTriggered`, uncaught-exception, and `PackageManager` limitations.
+`fenix:compileDebugUnitTestKotlin`, `fenix:compileDebugAndroidTestKotlin`, and the arm64-v8a release
+build pass, and the documentation gate reports `Failures: 0` with `Known Failures: 37`. The 159.0
+baseline carries the 2026-10-21 merge-day `CLOBBER`, so `assembleDebug` would need a full local Gecko
+rebuild and was skipped; the release build uses the pinned official GeckoView package instead.
+`fenix:testDebugUnitTest` ran with `-x machBuildFaster -x machStagePackage -x machConfigure` for the same
+reason and reports 6879 tests with 265 failures and 1603 skips: 262 are the Windows environment
+limitations described below (242 megazord/JNA, 11 download path ordering, 5 directory rename, 4
+Robolectric SQLite), and 3 are the known `markAsTriggered`, uncaught-exception, and `PackageManager`
+limitations.
 
-The arm64-v8a release uses the pinned official 159.0 GeckoView package through `-UseUpstreamGecko` and
-the exact official versionCode `2016191882`; no local GeckoView build is permitted because no
+The arm64-v8a release uses the pinned official 159.0.1 GeckoView package through `-UseUpstreamGecko` and
+the exact official versionCode `2016193994`; no local GeckoView build is permitted because no
 Fenix-authored Gecko, C++, Rust, or Gecko locale source changed. The signed APK
-`Fenix-159.0-r4-arm64-v8a-release.apk` (131040142 bytes, SHA-256
-`B59A89EAD0E621AC0D4A201A9CC76D55DF91F25EF20E93D12B8751DB1C060260`) supersedes
-`Fenix-159.0-r3-arm64-v8a-release.apk`; r2 narrows the app icon picker to the rabbit variants, r3
-deletes the unused Firefox icon artwork, and r4 restores androidTest compilation.
+`Fenix-159.0.1-r1-arm64-v8a-release.apk` (131130254 bytes, SHA-256
+`24533FB76F943D559A6C71EFC76DB143CF375B35AED23108D6290DD654650ADD`) supersedes
+`Fenix-159.0-r4-arm64-v8a-release.apk`. The 159.0 revisions narrowed the app icon picker to the rabbit
+variants, deleted the unused Firefox icon artwork, and restored androidTest compilation.
 The Windows `FenixGleanTestRule`
 native-library limitation remains documented below; affected tests need Linux or CI coverage even
 when the Windows task completes by skipping them.
@@ -499,5 +500,6 @@ git status --short --untracked-files=all
 
 Confirm that no key stores, password files, APKs, SDKs, AVDs, logs, or generated object directories
 appear in the staged changes.
+
 
 

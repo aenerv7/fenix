@@ -1,5 +1,67 @@
 # Fenix changes
 
+## 159.0.1-r1
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_159_0_1_RELEASE`（`6181e6b5f28a`，上游增量 407 个文件：367 修改、23
+新增、16 删除、1 重命名）。除版本戳外主要是本地化、tzdata、WebAuthn related-origin 与 `gfx`/`layout`
+修复。
+
+#### 合并
+
+- `git apply --3way` 原子失败，改用 `git merge-tree --write-tree`；87 个文件冲突：85 个
+  `values-*/strings.xml` 与 `TabManagementFragment.kt` 及其测试。
+- 本版增量不含英文界面字符串，85 个 locale 冲突都是 fork 已有字符串的重新翻译，全部按 fork 内容解决。
+- `TabManagementFragment` 采用上游的 detach 保护（`viewLifecycleOwnerLiveData.value ?: return`）并把
+  snackbar 投递到该 owner 的 scope；保留 fork 的 `parentFolder: BookmarkNode?` 参数，因为控制器仍传节点。
+  测试改为上游的 `assertNoUncaughtException` 写法，并补上 synced tab undo 用例。
+- 候选相对父提交变更 325 个文件：407 个上游文件中 85 个 locale 与 fork 一致、不计入，加上三个 pin 文件。
+
+#### 发布与验证
+
+- `fenix:spotlessKotlinCheck`、`fenix:compileDebugKotlin`、`fenix:compileDebugUnitTestKotlin`、
+  `fenix:compileDebugAndroidTestKotlin` 通过；arm64-v8a release 构建通过（99 个 locale、v2/v3 签名、
+  官方 `versionCode 2016193994`、`versionName 159.0.1`）。
+- `fenix:testDebugUnitTest`：6879 项，265 失败、1603 跳过；262 项为 Windows 环境限制（242 megazord/JNA、
+  11 下载路径、5 目录重命名、4 Robolectric SQLite），其余 3 项为既有的 `markAsTriggered`、未捕获异常与
+  `PackageManager` 限制。
+- 文档门禁 `mach doc docs`（`artifacts/docs-full-20261103-213200`）：`Failures: 0`，`Known Failures: 37`。
+- APK `Fenix-159.0.1-r1-arm64-v8a-release.apk`：`131130254` 字节，SHA-256
+  `24533FB76F943D559A6C71EFC76DB143CF375B35AED23108D6290DD654650ADD`。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_159_0_1_RELEASE` (`6181e6b5f28a`, upstream delta: 407
+files — 367 modified, 23 added, 16 deleted, one renamed). Apart from the version stamps it is
+localization, tzdata, WebAuthn related-origin, and `gfx`/`layout` fixes.
+
+#### Merge
+
+- `git apply --3way` rejected the delta, so the tree came from `git merge-tree --write-tree`; 87 files
+  conflicted: 85 `values-*/strings.xml` files plus `TabManagementFragment.kt` and its test.
+- The delta adds no English string, so all 85 locale conflicts are re-translations of strings the fork
+  already carries and resolve to the fork's content.
+- `TabManagementFragment` takes upstream's detached-fragment guard
+  (`viewLifecycleOwnerLiveData.value ?: return`) and posts the snackbar on that owner's scope; the fork
+  keeps its `parentFolder: BookmarkNode?` parameter because its controller still passes the node. The
+  test switches to upstream's `assertNoUncaughtException` form and gains the synced-tab undo case.
+- The candidate changes 325 files against its Fenix parent: 85 of the 407 upstream files stay identical
+  to the fork, plus the three pin files.
+
+#### Release and validation
+
+- `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`, `fenix:compileDebugUnitTestKotlin`, and
+  `fenix:compileDebugAndroidTestKotlin` pass, and the arm64-v8a release build passes (99 locales, v2/v3
+  signatures, official `versionCode 2016193994`, `versionName 159.0.1`).
+- `fenix:testDebugUnitTest`: 6879 tests, 265 failed, 1603 skipped; 262 are Windows environment
+  limitations (242 megazord/JNA, 11 download paths, 5 directory renames, 4 Robolectric SQLite) and the
+  other 3 are the known `markAsTriggered`, uncaught-exception, and `PackageManager` limitations.
+- Documentation gate `mach doc docs` (`artifacts/docs-full-20261103-213200`): `Failures: 0` with
+  `Known Failures: 37`.
+- APK `Fenix-159.0.1-r1-arm64-v8a-release.apk`: `131130254` bytes, SHA-256
+  `24533FB76F943D559A6C71EFC76DB143CF375B35AED23108D6290DD654650ADD`.
+
 ## 159.0-r4
 
 ### 中文

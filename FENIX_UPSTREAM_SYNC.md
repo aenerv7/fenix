@@ -626,6 +626,39 @@ compilation remains prohibited because no Fenix-authored native source changed. 
 arm64-v8a versionCode is `2016191882`, and the official APK SHA-256 is
 `F78E11ABC85C59DD7AAB03DD8F926AC62DF99731CCF62EC6EC937C18B3E33AA9`.
 
+## Firefox Android 159.0.1 synchronization
+
+The 159.0.1 update was prepared from the official `FIREFOX-ANDROID_159_0_1_RELEASE` tag
+(`6181e6b5f28a`) on the candidate branch `sync/firefox-android-159.0.1`, starting from the 159.0-r4
+tree. The upstream delta spans 407 files (367 modified, 23 added, 16 deleted, one rename). Apart from
+the version stamps it is localization, tzdata, WebAuthn related-origin, and `gfx`/`layout` fixes; no
+Fenix-authored source is involved.
+
+`git apply --3way` rejected the delta, so the tree came from `git merge-tree --write-tree` with the
+159.0 tag as the merge base. 87 files conflicted: 85 `values-*/strings.xml` files and
+`TabManagementFragment.kt` with its test.
+
+The locale conflicts are re-translations of strings the fork already carries, and this delta adds no
+English string, so every locale resolves to the fork's content. The candidate changes 325 files against
+its Fenix parent: the 407 upstream files minus those 85 locales, which stay identical to the fork, plus
+`FENIX_UPSTREAM_RELEASE`, `FENIX_UPSTREAM_VERSION_CODES.json`, and `FENIX_UPSTREAM_GECKOVIEW.json`.
+
+`TabManagementFragment` upstream fix guards the bookmark snackbar against a detached fragment:
+
+```kotlin
+val viewLifecycleOwner = viewLifecycleOwnerLiveData.value ?: return
+```
+
+and posts the snackbar on that owner's lifecycle scope. Upstream also changed the parameter to
+`parentFolderTitle: String?`; the fork keeps its `parentFolder: BookmarkNode?` API because its
+controller still passes the node, and adds the guard and the owner scope. The test switches to
+upstream's `assertNoUncaughtException` form and gains the synced-tab undo case.
+
+The release uses the pinned official 159.0.1 arm64-v8a GeckoView package recorded in
+`FENIX_UPSTREAM_GECKOVIEW.json`; local GeckoView compilation remains prohibited because no
+Fenix-authored native source changed. The exact official arm64-v8a versionCode is `2016193994`, and the
+official APK SHA-256 is `E607E581C5E6ED6D69B8192D3E3AB6404610635277BB7DC5C0787289489375DB`.
+
 ## Source-to-binary traceability
 
 If APKs are distributed, record their SHA-256 hashes and the exact Fenix tag in release notes. The
