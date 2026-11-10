@@ -579,13 +579,6 @@
   <string name="reader_mode_panel_listen_content_description">Lasīt skaļi</string>
   <!-- Content description for media player displayed in Reader Mode when the Listen to Page (Read Aloud) feature is selected -->
   <string name="reader_mode_panel_media_player_content_description">Informācijas nesēju atskaņotājs</string>
-<?xml version="1.0" encoding="utf-8"?>
-<!--
-  This Source Code Form is subject to the terms of the Mozilla Public
-  License, v. 2.0. If a copy of the MPL was not distributed with this
-  file, You can obtain one at http://mozilla.org/MPL/2.0/.
--->
-<resources xmlns:tools="http://schemas.android.com/tools">
   <!-- Placeholder text shown in the search bar before a user enters text for the default engine -->
   <string name="search_hint">Meklē vai ievadi adresi</string>
   <!-- Shorter placeholder text shown in the search bar when an additional action (voice search) is rendered alongside the hint. -->  <string name="search_hint_short">Meklēt</string>

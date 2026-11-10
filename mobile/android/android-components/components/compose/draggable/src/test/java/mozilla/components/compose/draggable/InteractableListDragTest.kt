@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-package org.mozilla.fenix.tabstray.browser.compose
+package mozilla.components.compose.draggable
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,9 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
@@ -23,28 +21,18 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import mozilla.components.compose.base.theme.Theme
-import mozilla.components.compose.base.utils.LocalUnderTest
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mozilla.fenix.tabstray.browser.compose.interactable.InteractableDragItemContainer
-import org.mozilla.fenix.tabstray.browser.compose.interactable.InteractionState
-import org.mozilla.fenix.tabstray.browser.compose.interactable.ListInteractionState
-import org.mozilla.fenix.tabstray.browser.compose.interactable.createListInteractionState
-import org.mozilla.fenix.tabstray.browser.compose.interactable.detectListPressAndDrag
-import org.mozilla.fenix.tabstray.controller.NoOpItemInteractionHandler
-import org.mozilla.fenix.tabstray.ui.tabitems.tabItemListInteractionAnimation
-import org.mozilla.fenix.theme.FirefoxTheme
 
-// Number of tab items rendered by the harness list.
+// Number of items rendered by the harness list.
 private const val ITEM_COUNT = 20
 
 // The harness list viewport height, in dp.
 private const val VIEWPORT_HEIGHT_DP = 400
 
-// Every harness tab item is this tall, in dp.
+// Every harness item is this tall, in dp.
 private const val ITEM_HEIGHT_DP = 80
 
 private const val ITEM_HEIGHT_PX = ITEM_HEIGHT_DP.toFloat()
@@ -62,7 +50,7 @@ private const val SCROLL_STEPS = 12
 private const val DRAGGED_INDEX = 10
 
 /**
- * Verifies how a dragged tab item renders in the list while the layout moves underneath it.
+ * Verifies how a dragged item renders while the layout moves underneath it.
  *
  * A dragged item that leaves the viewport is kept composed by its item pin and keeps drawing at the layout offset it
  * had when it left. The drag translation is what holds it at the pointer, so it must keep subtracting that offset, the
@@ -125,53 +113,48 @@ class InteractableListDragTest {
 
     @Composable
     private fun Harness(onState: (LazyListState, ListInteractionState) -> Unit) {
-        CompositionLocalProvider(LocalUnderTest provides true) {
-            FirefoxTheme(theme = Theme.Light) {
-                Surface {
-                    val state = rememberLazyListState()
-                    val interaction =
-                        createListInteractionState(
+        Box {
+            val state = rememberLazyListState()
+            val interaction =
+                createListInteractionState(
+                    listState = state,
+                    ignoredItems = emptySet(),
+                    liveReorderEnabled = false,
+                    itemInteractionHandler = NoOpItemInteractionHandler,
+                )
+            onState(state, interaction)
+
+            Box(
+                modifier =
+                    Modifier.size(width = 200.dp, height = VIEWPORT_HEIGHT_DP.dp)
+                        .detectListPressAndDrag(
                             listState = state,
-                            ignoredItems = emptySet(),
-                            liveReorderEnabled = false,
-                            itemInteractionHandler = NoOpItemInteractionHandler,
+                            interactionState = interaction,
+                            shouldLongPressToDrag = true,
                         )
-                    onState(state, interaction)
+            ) {
+                LazyColumn(state = state) {
+                    items(count = ITEM_COUNT, key = { tag(it) }) { index ->
+                        // The dragged item pins itself, as the list does, so it is not disposed when it is
+                        // scrolled out of the viewport.
+                        val pinnableContainer = LocalPinnableContainer.current
+                        val isDragged = interaction.draggedItem.key == tag(index)
+                        DisposableEffect(isDragged) {
+                            val handle = if (isDragged) pinnableContainer?.pin() else null
+                            onDispose { handle?.release() }
+                        }
 
-                    Box(
-                        modifier =
-                            Modifier.size(width = 200.dp, height = VIEWPORT_HEIGHT_DP.dp)
-                                .detectListPressAndDrag(
-                                    listState = state,
-                                    interactionState = interaction,
-                                    shouldLongPressToDrag = true,
-                                )
-                    ) {
-                        LazyColumn(state = state) {
-                            items(count = ITEM_COUNT, key = { tag(it) }) { index ->
-                                // The dragged item pins itself, as the tabs tray list does, so it is not
-                                // disposed when it is scrolled out of the viewport.
-                                val pinnableContainer = LocalPinnableContainer.current
-                                val isDragged = interaction.draggedItem.key == tag(index)
-                                DisposableEffect(isDragged) {
-                                    val handle = if (isDragged) pinnableContainer?.pin() else null
-                                    onDispose { handle?.release() }
-                                }
-
-                                InteractableDragItemContainer(
-                                    state = interaction,
-                                    key = tag(index),
-                                    position = index,
-                                ) { tabInteractionState ->
-                                    Box(
-                                        modifier =
-                                            Modifier.fillMaxWidth()
-                                                .height(ITEM_HEIGHT_DP.dp)
-                                                .tabItemListInteractionAnimation(tabInteractionState)
-                                                .testTag(tag(index))
-                                    )
-                                }
-                            }
+                        InteractableDragItemContainer(
+                            state = interaction,
+                            key = tag(index),
+                            position = index,
+                        ) {
+                            Box(
+                                modifier =
+                                    Modifier.fillMaxWidth()
+                                        .height(ITEM_HEIGHT_DP.dp)
+                                        .testTag(tag(index))
+                            )
                         }
                     }
                 }

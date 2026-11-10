@@ -27,7 +27,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mozilla.fenix.tabgroups.ExpandedTabGroup
 import org.mozilla.fenix.tabgroups.ExpandedTabGroupActions
-import org.mozilla.fenix.tabstray.controller.NoOpItemInteractionHandler
+import mozilla.components.compose.draggable.NoOpItemInteractionHandler
 import org.mozilla.fenix.tabstray.data.createTab
 import org.mozilla.fenix.tabstray.data.createTabGroup
 import org.mozilla.fenix.tabstray.redux.state.TabsTrayState.Mode

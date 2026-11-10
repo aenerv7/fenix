@@ -104,7 +104,6 @@ class MenuItemProvidersFactoryTest {
                 FenixMenuItem.History,
                 FenixMenuItem.Bookmarks,
                 FenixMenuItem.Downloads,
-                FenixMenuItem.Passwords,
                 FenixMenuItem.MozillaAccount,
                 FenixMenuItem.CustomizeHomepage,
                 FenixMenuItem.Settings,

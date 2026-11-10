@@ -134,12 +134,12 @@ class MarketingPageRemovalSupportTest {
                 )
                 add(
                     OnboardingPageUiData(
-                        type = OnboardingPageUiData.Type.NOTIFICATION_PERMISSION,
+                        type = OnboardingPageUiData.Type.TERMS_OF_SERVICE,
                         imageRes = 0,
-                        title = "notification title",
-                        description = "notification body",
-                        primaryButtonLabel = "notification primary button text",
-                        secondaryButtonLabel = "notification secondary button text",
+                        title = "terms title",
+                        description = "terms body",
+                        primaryButtonLabel = "terms primary button text",
+                        secondaryButtonLabel = "terms secondary button text",
                     )
                 )
             }
