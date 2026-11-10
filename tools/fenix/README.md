@@ -93,6 +93,19 @@ See [FENIX_DEVELOPMENT.md](../../FENIX_DEVELOPMENT.md) for setup, testing, emula
 instructions, including the Firefox Android 154.0.1 Windows/JNA unit-test limitation. Do not treat
 that native artifact failure as a reason to clear the repository-local Gradle cache repeatedly.
 
+## Repository cleanup
+
+Fenix-only releases read only `dist/geckoview`, the generated GeckoView sources under `mobile/`, and
+the configure state of each object directory. [clean-repo.ps1](clean-repo.ps1) drops the rest of a
+local Gecko build's output, plus the toolchains and caches that only local Gecko builds use:
+
+```powershell
+.\tools\fenix\clean-repo.ps1 -DryRun
+.\tools\fenix\clean-repo.ps1 -IncludeAvds
+```
+
+See "Reclaiming space" in [FENIX_DEVELOPMENT.md](../../FENIX_DEVELOPMENT.md) for what is kept.
+
 ## Official release synchronization
 
 Prepare a candidate branch against an exact Firefox Android stable release tag:

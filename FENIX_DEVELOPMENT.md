@@ -256,6 +256,24 @@ Android Studio does not read these variables. Set its Gradle user home to `.grad
 SDK to `.mozbuild/android-sdk-windows` for this project, otherwise the IDE populates `~/.gradle` and
 `~/.android` on its own.
 
+### Reclaiming space
+
+The upstream GeckoView flow reads only `dist/geckoview`, the generated GeckoView sources under
+`mobile/`, and the configure state of each object directory. The Gecko compile trees and the object
+directory's Gradle outputs are local-build state that a Fenix-only release never consumes.
+[tools/fenix/clean-repo.ps1](tools/fenix/clean-repo.ps1) drops that state, together with toolchains,
+caches, and logs used only by local Gecko builds or old releases:
+
+```powershell
+.\tools\fenix\clean-repo.ps1 -DryRun
+.\tools\fenix\clean-repo.ps1 -IncludeAvds
+```
+
+The next `-UseUpstreamGecko` release rebuilds the Gradle outputs. A debug build that stages Gecko
+binaries needs `./mach build` again, as described above. `-IncludeAvds` also drops
+`.mozbuild/android-device`, which `./mach bootstrap` recreates; `-GitGc` repacks the Git object
+store, which takes a long time and reclaims little on a shallow clone.
+
 ## Bootstrap
 
 On Windows, download MozillaBuild from Mozilla's official distribution and extract it to
