@@ -54,6 +54,15 @@ private const val DRAG_STEPS = 10
 // The index of the item the drag starts on.
 private const val DRAGGED_INDEX = 0
 
+// The item the fast drag starts on, once the list is scrolled.
+private const val SCROLLED_FIRST_INDEX = 10
+
+// The index of the item the fast drag starts on.
+private const val FAST_DRAGGED_INDEX = 12
+
+// A drag large enough to move the dragged tab into the slot above it, without leaving the viewport.
+private const val FAST_STEP_PX = 60f
+
 /**
  * Verifies where a dragged tab item renders in the list while the list reorders underneath it.
  *
@@ -77,6 +86,27 @@ class ReorderableListDragTest {
         drag(steps = DRAG_STEPS)
 
         assertEquals(startTop + DRAG_STEPS * DRAG_STEP_PX, itemBounds(key).top, 1f)
+    }
+
+    /**
+     * A drag event that reorders the tab moves the tab to another slot in the same frame that applies the drag. The
+     * translation must be measured when that frame is drawn: one measured during composition describes the previous
+     * layout, so the card is drawn a row away from the pointer. Fast drags hit this on every frame, which reads as the
+     * card running above the finger.
+     */
+    @Test
+    fun `GIVEN a drag that reorders the tab WHEN the frame is drawn THEN the tab is at the pointer`() {
+        setHarness()
+        scrollBy(delta = SCROLLED_FIRST_INDEX * ITEM_HEIGHT_DP.toFloat())
+        val key = items[FAST_DRAGGED_INDEX]
+        val startTop = itemBounds(key).top
+        startDrag(index = FAST_DRAGGED_INDEX)
+
+        composeTestRule.mainClock.autoAdvance = false
+        composeTestRule.runOnUiThread { reorderState.onDrag(offset = -FAST_STEP_PX) }
+        composeTestRule.mainClock.advanceTimeByFrame()
+
+        assertEquals(startTop - FAST_STEP_PX, itemBounds(key).top, 1f)
     }
 
     private fun setHarness() {
@@ -149,6 +179,21 @@ class ReorderableListDragTest {
                 reorderState.onDrag(offset = DRAG_STEP_PX)
             }
             composeTestRule.waitForIdle()
+        }
+    }
+
+    private fun scrollBy(delta: Float) {
+        listState.dispatchRawDelta(delta)
+        composeTestRule.waitForIdle()
+    }
+
+    private fun startDrag(index: Int) {
+        val item = listState.layoutInfo.visibleItemsInfo.first { it.index == index }
+        composeTestRule.runOnIdle {
+            reorderState.onTouchSlopPassed(
+                offset = item.offset + item.size / 2f,
+                shouldLongPress = false,
+            )
         }
     }
 

@@ -132,6 +132,13 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
   reports its own coordinates the same way the grid does, and its translation lives on an inner node so
   the outer coordinates describe the slot: `graphicsLayer` translations are included in `LayoutCoordinates`
   measurements. `ReorderableListDragTest` covers the legacy list.
+- Every container must read the drag translation when the layer is drawn, inside its `graphicsLayer`
+  block, never during composition. A drag event that reorders the tab moves it to another slot in the
+  same frame that applies the drag, so a composition-time value describes the previous layout and draws
+  the card a row away from the pointer; a fast drag repeats that error on every frame, and the card runs
+  away from the finger. The legacy list read it during composition while the grid and the interactable
+  list already read it in the block. `ReorderableListDragTest` draws one frame that reorders the tab and
+  asserts the card is at the pointer.
 - Every list/grid interaction state must set its `moved` flag once the drag passes touch slop. All four
   states report it to the drag-start callback exactly once; without it `onExitLongPress` fires on every
   drag event and re-dispatches `TabDragStart` for the whole gesture.

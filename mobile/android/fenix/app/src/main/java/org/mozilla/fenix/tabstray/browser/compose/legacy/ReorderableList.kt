@@ -293,13 +293,6 @@ fun LazyItemScope.ReorderableDragItemContainer(
         onDispose { handle?.release() }
     }
 
-    val translation =
-        when (key) {
-            state.draggingItemKey -> state.computeItemOffset()
-            state.previousKeyOfDraggedItem -> state.previousItemOffset.value
-            else -> 0f
-        }
-
     val outerModifier =
         when (key) {
             state.draggingItemKey -> {
@@ -320,9 +313,16 @@ fun LazyItemScope.ReorderableDragItemContainer(
         val innerModifier =
             if (key == state.draggingItemKey || key == state.previousKeyOfDraggedItem) {
                 Modifier.graphicsLayer {
+                    // Read the offset when the layer is drawn: the item's slot and the drag distance both change
+                    // within a frame, and a value read during composition is one layout behind.
+                    val offset =
+                        when (key) {
+                            state.draggingItemKey -> state.computeItemOffset()
+                            else -> state.previousItemOffset.value
+                        }
                     when (state.orientation) {
-                        Orientation.Vertical -> translationY = translation
-                        Orientation.Horizontal -> translationX = translation
+                        Orientation.Vertical -> translationY = offset
+                        Orientation.Horizontal -> translationX = offset
                     }
                 }
             } else {
