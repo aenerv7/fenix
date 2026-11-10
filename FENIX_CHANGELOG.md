@@ -1,5 +1,74 @@
 # Fenix changes
 
+## 159.0.1-r2
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_159_0_1_RELEASE`。本版只修复列表布局下的标签页拖拽定位，`159.0.1-r1`
+的其余内容不变。
+
+#### 修复
+
+- 发布渠道禁用拖放，列表布局因此走旧版 `ReorderableDragItemContainer`；它是四个拖拽容器里唯一在组合期
+  计算拖拽平移量的，网格与可交互列表都在 `graphicsLayer` 块内、绘制时读取。
+- 一次会触发实时重排的拖拽事件会在同一帧内把标签页换到另一个槽位，组合期取到的槽位因此描述上一帧布局，
+  卡片被画在离手指一个槽位的位置（向上拖拽时正偏上）。快速拖拽每帧重复该误差；拖出视口再拖回时单帧槽位
+  跳变量最大，卡片会明显甩开手指。
+- 平移量改在 `graphicsLayer` 块内读取；拖拽期间该项不再逐事件重组，只重绘图层。浏览器工具栏下方的标签
+  页条使用同一容器，一并修复。
+- 新增 `ReorderableListDragTest` 单帧用例：一帧内重排一行并断言卡片仍在手指处；修复前偏差恰为一个槽位
+  （80 px）。
+- 仓库工具新增 `tools/fenix/clean-repo.ps1`，只清理本地 Gecko 构建产物与缓存，不影响 APK。
+
+#### 发布与验证
+
+- `fenix:spotlessKotlinCheck`、`fenix:compileDebugKotlin`、`fenix:compileDebugAndroidTestKotlin` 与
+  arm64-v8a release 构建通过；`org.mozilla.fenix.tabstray.*` 与 `org.mozilla.fenix.browser.tabstrip.*`
+  单测全部通过。
+- `fenix:testDebugUnitTest`：6880 项，265 失败、1603 跳过；262 项为 Windows 环境限制（242 megazord/JNA、
+  11 下载路径、5 目录重命名、4 Robolectric SQLite），其余 3 项为既有的 `markAsTriggered`、未捕获异常与
+  `PackageManager` 限制。
+- 未改动 `docs/` 下的 Firefox 文档，文档门禁未重跑（上次结果 `Failures: 0`、`Known Failures: 37`）。
+- APK `Fenix-159.0.1-r2-arm64-v8a-release.apk`：`131130254` 字节，SHA-256
+  `130161A75FF195A13DB8472F1B61DA3A6FE12D2D0AE19C1824062D73F8D0AE9A`。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_159_0_1_RELEASE`. This release only fixes tab drag
+positioning in the list layout; everything else is `159.0.1-r1`.
+
+#### Fix
+
+- The release channel runs with drag and drop disabled, so the list layout uses the legacy
+  `ReorderableDragItemContainer`. It was the only one of the four drag containers that measured the drag
+  translation during composition; the grid and the interactable list read it inside the `graphicsLayer`
+  block, when the layer is drawn.
+- A drag event that reorders the tab moves it to another slot in the same frame that applies the drag, so
+  the slot read during composition describes the previous layout and the card is drawn a slot away from
+  the pointer (above it for an upward drag). Fast drags repeat the error every frame, and a drag that
+  leaves the viewport and comes back makes the biggest single-frame slot jump, so the card visibly runs
+  away from the finger.
+- The offset is now read inside the `graphicsLayer` block; the item no longer recomposes on every drag
+  event either, only its layer is redrawn. The tab strip under the toolbar uses the same container and is
+  fixed too.
+- Added the `ReorderableListDragTest` single-frame case: it reorders the tab within one frame and asserts
+  the card stays at the pointer; before the fix the error is exactly one slot (80 px).
+- New developer tool `tools/fenix/clean-repo.ps1`; it only drops local Gecko build output and caches and
+  does not affect the APK.
+
+#### Release and validation
+
+- `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`, `fenix:compileDebugAndroidTestKotlin`, and the
+  arm64-v8a release build pass; `org.mozilla.fenix.tabstray.*` and `org.mozilla.fenix.browser.tabstrip.*`
+  pass.
+- `fenix:testDebugUnitTest`: 6880 tests, 265 failed, 1603 skipped; 262 are Windows environment
+  limitations (242 megazord/JNA, 11 download paths, 5 directory renames, 4 Robolectric SQLite) and the
+  other 3 are the known `markAsTriggered`, uncaught-exception, and `PackageManager` limitations.
+- No file under `docs/` changed, so the documentation gate was not rerun (previous result:
+  `Failures: 0` with `Known Failures: 37`).
+- APK `Fenix-159.0.1-r2-arm64-v8a-release.apk`: `131130254` bytes, SHA-256
+  `130161A75FF195A13DB8472F1B61DA3A6FE12D2D0AE19C1824062D73F8D0AE9A`.
+
 ## 159.0.1-r1
 
 ### 中文

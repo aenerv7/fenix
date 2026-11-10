@@ -186,6 +186,12 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
 
 ### Current validation state
 
+The 159.0.1-r2 release fixes the list-layout tab drag translation and carries the whole `159.0.1-r1`
+content. `ReorderableDragItemContainer` measured `computeItemOffset()` while composing, so a frame that
+reorders the tab drew the card one slot away from the pointer. The read now happens inside the item's
+`graphicsLayer` block. `ReorderableListDragTest` asserts it on a single frame, which a `waitForIdle`
+assertion cannot: the next composition corrects the value.
+
 The 159.0.1-r1 release synchronizes the official 159.0.1 baseline; it carries the whole `159.0-r4`
 content. The upstream delta spans 407 files, and `git apply --3way` rejected it, so the
 merge tree came from `git merge-tree --write-tree`. The candidate changes 325 files against its
@@ -196,11 +202,13 @@ policy while adopting upstream's detached-fragment guard.
 
 Validation: `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`,
 `fenix:compileDebugUnitTestKotlin`, `fenix:compileDebugAndroidTestKotlin`, and the arm64-v8a release
-build pass, and the documentation gate reports `Failures: 0` with `Known Failures: 37`. The 159.0
-baseline carries the 2026-10-21 merge-day `CLOBBER`, so `assembleDebug` would need a full local Gecko
-rebuild and was skipped; the release build uses the pinned official GeckoView package instead.
+build pass, and `org.mozilla.fenix.tabstray.*` plus `org.mozilla.fenix.browser.tabstrip.*` pass. No file
+under `docs/` changed, so the documentation gate was not rerun (last result `Failures: 0` with
+`Known Failures: 37`).
+The 159.0 baseline carries the 2026-10-21 merge-day `CLOBBER`, so `assembleDebug` would need a full local
+Gecko rebuild and was skipped; the release build uses the pinned official GeckoView package instead.
 `fenix:testDebugUnitTest` ran with `-x machBuildFaster -x machStagePackage -x machConfigure` for the same
-reason and reports 6879 tests with 265 failures and 1603 skips: 262 are the Windows environment
+reason and reports 6880 tests with 265 failures and 1603 skips: 262 are the Windows environment
 limitations described below (242 megazord/JNA, 11 download path ordering, 5 directory rename, 4
 Robolectric SQLite), and 3 are the known `markAsTriggered`, uncaught-exception, and `PackageManager`
 limitations.
@@ -208,9 +216,9 @@ limitations.
 The arm64-v8a release uses the pinned official 159.0.1 GeckoView package through `-UseUpstreamGecko` and
 the exact official versionCode `2016193994`; no local GeckoView build is permitted because no
 Fenix-authored Gecko, C++, Rust, or Gecko locale source changed. The signed APK
-`Fenix-159.0.1-r1-arm64-v8a-release.apk` (131130254 bytes, SHA-256
-`24533FB76F943D559A6C71EFC76DB143CF375B35AED23108D6290DD654650ADD`) supersedes
-`Fenix-159.0-r4-arm64-v8a-release.apk`. The 159.0 revisions narrowed the app icon picker to the rabbit
+`Fenix-159.0.1-r2-arm64-v8a-release.apk` (131130254 bytes, SHA-256
+`130161A75FF195A13DB8472F1B61DA3A6FE12D2D0AE19C1824062D73F8D0AE9A`) supersedes
+`Fenix-159.0.1-r1-arm64-v8a-release.apk`. The 159.0 revisions narrowed the app icon picker to the rabbit
 variants, deleted the unused Firefox icon artwork, and restored androidTest compilation.
 The Windows `FenixGleanTestRule`
 native-library limitation remains documented below; affected tests need Linux or CI coverage even
