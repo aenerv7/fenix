@@ -302,7 +302,10 @@ class Core(
     }
 
     val geckoSitePermissionsStorage by lazyMonitored {
-        GeckoSitePermissionsStorage(geckoRuntime, OnDiskSitePermissionsStorage(context))
+        GeckoSitePermissionsStorage(
+            geckoRuntime,
+            OnDiskSitePermissionsStorage(context, coroutineScope = applicationScope),
+        )
     }
 
     val sessionStorage: SessionStorage by lazyMonitored {
@@ -315,6 +318,18 @@ class Core(
         } else {
             MozillaLocationService(context, client, BuildConfig.MLS_TOKEN)
         }
+    }
+
+    /**
+     * Retained so that its [mozilla.appservices.remotesettings.RemoteSettingsClient] stays reachable for the lifetime
+     * of the process. application-services only holds a weak reference to each client and skips collections whose
+     * client has been collected, so a short-lived repository would opt `search-telemetry-v2` out of syncing entirely.
+     */
+    val serpTelemetryRepository by lazyMonitored {
+        SerpTelemetryRepository(
+            collectionName = COLLECTION_NAME,
+            remoteSettingsService = context.components.remoteSettingsService.value,
+        )
     }
 
     /** The [BrowserStore] holds the global [BrowserState]. */
@@ -338,7 +353,7 @@ class Core(
                 ProfileMarkerMiddleware(markerName = "BrowserStore", profiler = engine.profiler),
                 LogMiddleware(tag = "BrowserStore", shouldIncludeDetailedData = { Config.channel.isDebug }),
                 LastAccessMiddleware(),
-                RecentlyClosedMiddleware(recentlyClosedTabsStorage, RECENTLY_CLOSED_MAX),
+                RecentlyClosedMiddleware(recentlyClosedTabsStorage, RECENTLY_CLOSED_MAX, applicationScope),
                 DownloadMiddleware(
                     applicationContext = context,
                     downloadServiceClass = DownloadService::class.java,
@@ -399,6 +414,7 @@ class Core(
                     tabGroupRepository = tabGroupRepository,
                     tabGroupLinkUseCases = tabGroupLinkUseCases,
                     isTabGroupingEnabled = { context.components.settings.tabGroupsEnabled },
+                    scope = applicationScope,
                 ),
             )
 
@@ -422,12 +438,7 @@ class Core(
                 icons.install(engine, this)
 
                 applicationScope.launch {
-                    val providerList =
-                        SerpTelemetryRepository(
-                                collectionName = COLLECTION_NAME,
-                                remoteSettingsService = context.components.remoteSettingsService.value,
-                            )
-                            .updateProviderList()
+                    val providerList = serpTelemetryRepository.updateProviderList()
                     // Install the "ads" WebExtension to get the links in an partner page.
                     adsTelemetry.install(engine, this@apply, providerList)
                     // Install the "cookies" WebExtension and tracks user interaction with SERPs.

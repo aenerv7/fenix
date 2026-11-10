@@ -188,6 +188,8 @@
     Content description (not visible, for screen readers etc.): Navigate backward (browsing history)
   -->
   <string name="browser_menu_back">后退</string>
+  <!-- Label for popup button that appears when long-pressing the main menu. Tapping it allows the user to customize the main menu layout. -->
+  <string name="customize_menu">自定义菜单</string>
   <!-- Content description (not visible, for screen readers etc.): Navigate forward (browsing history) -->
   <string name="browser_menu_forward">前进</string>
   <!-- Content description (not visible, for screen readers etc.): Refresh current website -->
@@ -714,6 +716,14 @@
   <string name="search_widget_text_long">网上搜索</string>
   <!-- Content description (not visible, for screen readers etc.): Voice search -->
   <string name="search_widget_voice">语音搜索</string>
+  <!-- Content description (not visible, for screen readers etc.): Button in the search widget that starts a search in a private tab -->
+  <string name="search_widget_private_search">隐私搜索</string>
+  <!-- Widget description in the widget picker screen for the search bar widget that includes buttons for private search and for voice search -->
+  <string name="search_bar_widget_description">带隐私搜索和语音搜索的搜索栏</string>
+  <!-- Widget description in the widget picker screen for the search bar widget that includes buttons for image search, private search and voice search -->
+  <string name="search_bar_with_lens_widget_description">带图像搜索、隐私搜索和语音搜索的搜索栏</string>
+  <!-- Widget description in the widget picker screen for the compact search bar widget -->
+  <string name="compact_search_bar_widget_description">紧凑型搜索栏</string>
   <!--
     Preferences
 
@@ -811,6 +821,8 @@
   <string name="preferences_override_sync_tokenserver">自定义同步服务器</string>
   <!-- Preference category for account information -->
   <string name="preferences_category_account">账户</string>
+  <!-- Preference category for sync controls. Sync can be translated, it's just short for ”Synchronization” in English. -->
+  <string name="preferences_category_sync_controls">同步</string>
   <!-- Preference for changing where the AddressBar is positioned -->
   <string name="preferences_toolbar_2">地址栏位置</string>
   <!-- Preference for changing toolbar layout -->
@@ -867,6 +879,8 @@
   <string name="preferences_search_synced_tabs">搜索同步的标签页</string>
   <!-- Preference for account settings -->
   <string name="preferences_account_settings">账户设置</string>
+  <!-- Preference for account and sync settings -->
+  <string name="preferences_account_and_sync_settings">账户与同步</string>
   <!-- Preference for enabling url autocomplete -->
   <string name="preferences_enable_autocomplete_urls">自动补全网址</string>
   <!-- Preference title for switch preference to show sponsored Firefox Suggest search suggestions -->
@@ -1124,6 +1138,12 @@
   <string name="preferences_sync_now">立即同步</string>
   <!-- Preference category for sync -->
   <string name="preferences_sync_category">选择要同步的项目</string>
+  <!-- Preference category for sync controls -->
+  <string name="preferences_category_sync">同步的数据</string>
+  <!-- Summary for the sync preference category. -->
+  <string name="preferences_sync_category_summary">管理所有已连接设备上同步的内容</string>
+  <!-- Summary for the sync preference category, when user has disabled all synchronisation items. -->
+  <string name="preferences_sync_category_no_engine_selected_summary">您没有同步任何内容。请选择要在各设备间保持同步的内容。</string>
   <!-- Preference for syncing history -->
   <string name="preferences_sync_history">历史记录</string>
   <!-- Preference for syncing bookmarks -->
@@ -1136,6 +1156,10 @@
   <string name="preferences_sign_out">退出登录</string>
   <!-- Preference displays and allows changing current FxA device name -->
   <string name="preferences_sync_device_name">设备名称</string>
+  <!-- Preference category for Device name -->
+  <string name="preferences_device_name_category">设备名称</string>
+  <!-- Label for the Preference that displays and allows changing current device name on Mozilla Account -->
+  <string name="preferences_sync_change_device_name">更改设备名称</string>
   <!-- Text shown when user enters empty device name -->
   <string name="empty_device_name_error">设备名不能为空。</string>
   <!-- Label indicating that sync is in progress -->
@@ -1338,6 +1362,8 @@
   <string name="library_desktop_bookmarks_unfiled">其他书签</string>
   <!-- Option in Library to open History page -->
   <string name="library_history">历史</string>
+  <!-- Content description (not visible, for screen readers etc.) for the check mark that replaces a site's icon in History and Recently closed tabs when the item is selected -->
+  <string name="library_item_selected_content_description">已选中</string>
   <!-- Settings Page Title -->
   <string name="settings_title">设置</string>
   <!-- Content description (not visible, for screen readers etc.): "Close button for library settings" -->
@@ -1669,6 +1695,9 @@
   <string name="close_tab_and_delete_group_confirmation_dialog_cancel">取消</string>
   <!-- Content description for the three dot button next to a tab group" -->
   <string name="tab_group_three_dot_button_content_description">更多选项</string>
+  <!-- Content description for the Expand button on the contracted menu for a tab group:
+    when tapped, tabs are displayed in an expanded grid or list view, taking up the full screen. -->
+  <string name="tab_groups_strip_expand_group_content_description">展开以全屏显示标签页</string>
   <!-- Text shown on the edit button for a tab group on the three dot menu -->
   <string name="tab_group_three_dot_menu_edit">编辑</string>
   <!-- Text shown on the ungroup button for a tab group on the three dot menu -->
@@ -2401,10 +2430,14 @@
   <string name="sync_send_tab_empty_state_title">没有已连接的设备</string>
   <!-- Send tab to synced devices: Empty state message - Displayed when the user has no synced devices -->
   <string name="sync_send_tab_empty_state_description" tools:ignore="BrandUsage">若要发送标签页，请登录至少一台其他设备上的 Firefox。</string>
+  <!-- Send tab to synced devices: Empty state link - Displayed when the user has no synced devices -->
+  <string name="sync_send_tab_empty_state_link">了解如何连接设备</string>
   <!-- Send tab to synced devices: Connectivity Error title -->
   <string name="sync_send_tab_error_connection_title">请检查互联网连接</string>
   <!-- Send tab to synced devices: Connectivity Error message - Suggested user action after internet connection has been established -->
   <string name="sync_send_tab_error_connection_text">然后尝试重新发送标签页。</string>
+  <!-- Send tab to synced devices: Connectivity Error button - When tapped, refreshes the list of connected devices. -->
+  <string name="sync_send_tab_error_connection_button">重试</string>
   <!--
     Notifications
 
@@ -2587,6 +2620,12 @@
   <string name="sign_in_create_account_text" tools:ignore="BrandUsage"><![CDATA[尚无账户？<u>立即创建</u>以在设备间同步 Fenix。]]></string>
   <!-- Text shown in confirmation dialog to sign out of account. %s is the name of the app (for example "Firefox"). -->
   <string name="sign_out_confirmation_message_2">%s 将停止与您的账户的同步，但不会删除您在这台设备上的任何上网数据。</string>
+  <!-- Title of the confirmation dialog shown when the user signs out of their account -->
+  <string name="sign_out_dialog_title">退出您的账户？</string>
+  <!-- Body of the confirmation dialog shown when the user signs out of their account -->
+  <string name="sign_out_dialog_message">同步的数据仍会保存在您的账户中。</string>
+  <!-- Text for the primary action button of the confirmation dialog shown when the user signs out of their account -->
+  <string name="sign_out_dialog_confirm_button">退出登录</string>
   <!-- Option to continue signing out of account shown in confirmation dialog to sign out of account -->
   <string name="sign_out_disconnect">断开连接</string>
   <!-- Option to cancel signing out shown in confirmation dialog to sign out of account -->
@@ -4471,6 +4510,16 @@
   <string name="lens_camera_mode_qr">扫码器</string>
   <!-- Toast shown when the user picks an image from the gallery in QR mode but no QR code is found in it -->
   <string name="lens_camera_qr_no_code_found">未在图像中找到二维码</string>
+  <!-- Status shown under an image picked from the gallery while it is being sent to Google Lens for a visual search -->
+  <string name="lens_camera_loading_status">正在查询</string>
+  <!-- Button shown under an image picked from the gallery while it is being sent to Google Lens. Tapping it stops the search and returns to the camera. -->
+  <string name="lens_camera_loading_cancel_button">取消</string>
+  <!-- Snackbar message shown when an image picked from the gallery could not be opened or read, so it was never sent to Google Lens. Shown after returning to the camera. -->
+  <string name="lens_camera_image_load_failed">无法加载此图像。请尝试其他图像。</string>
+  <!-- Snackbar message shown when an image picked from the gallery could not be searched because of a network problem or an error from Google Lens. Shown after returning to the camera, next to the lens_camera_upload_failed_retry_button action. -->
+  <string name="lens_camera_upload_failed">无法从 Google Lens 获取结果</string>
+  <!-- Action in the snackbar shown when an image picked from the gallery could not be searched with Google Lens. Tapping it searches the same image again. -->
+  <string name="lens_camera_upload_failed_retry_button">重试</string>
   <!-- Title of the bottom sheet shown the first time the user opens the Google Lens camera screen -->
   <string name="lens_opt_out_title">使用 Google 智能镜头搜索</string>
   <!-- Text of the link in the first-run Google Lens bottom sheet that opens the Search settings page -->
@@ -4525,6 +4574,8 @@
   <string name="firefox_labs_website_isolation_description" tools:ignore="UnusedResources">在网站之间增加一道屏障，帮助保护您跨标签页的数据。可能会影响性能、稳定性、网站兼容性以及浏览历史的保存方式。</string>
   <!-- Content description for accessibility (used by screen readers): Description for the button that triggers the start of a signature workflow on the PDF displayed on the screen. -->
   <string name="pdf_tools_sign_content_description">签署 PDF</string>
+  <!-- Content description for accessibility (used by screen readers): Description for the button that triggers the start of a signature workflow on the PDF displayed on the screen. -->
+  <string name="pdf_tools_sign_content_description_2">添加签名</string>
   <!-- Content description for accessibility (used by screen readers): Description of the button that downloads the PDF displayed on the screen to the user's device. -->
   <string name="pdf_tools_download_content_description">下载 PDF</string>
   <!-- Content description for accessibility (used by screen readers): Description for the button that opens the printing dialogue window for the PDF displayed on the screen. -->
@@ -4551,6 +4602,8 @@
   <string name="reader_mode_panel_content_description">阅读模式选项</string>
   <!-- Content description for the button in reader mode panel that turns on the read aloud feature (playback of content begins when button is pressed) -->
   <string name="reader_mode_panel_listen_content_description">朗读</string>
+  <!-- Content description for media player displayed in Reader Mode when the Listen to Page (Read Aloud) feature is selected -->
+  <string name="reader_mode_panel_media_player_content_description">媒体播放器</string>
   <string-array name="cookies_options_entries">
     <item>@string/preference_enhanced_tracking_protection_custom_cookies_5</item>
     <item>@string/preference_enhanced_tracking_protection_custom_cookies_1</item>

@@ -81,7 +81,10 @@ object HomeToolbarStoreBuilder {
                             settings = context.components.settings,
                             scope = lifecycleScope,
                         ),
-                        BrowserToolbarTelemetryMiddleware(),
+                        BrowserToolbarTelemetryMiddleware(
+                            appStore = appStore,
+                            settings = context.components.settings,
+                        ),
                     ),
             )
         }

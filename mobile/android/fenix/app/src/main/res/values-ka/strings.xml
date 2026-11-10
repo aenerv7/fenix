@@ -1266,6 +1266,9 @@
   <string name="preference_simple_toolbar">მარტივი</string>
   <!-- Preference for using expanded toolbar -->
   <string name="preference_expanded_toolbar">ჩამოშლილი</string>
+  <!-- Preference for changing where the search bar is positioned on the homepage, shown when the user has set the address bar to be displayed at the top of the screen -->  <string name="preferences_homepage_search_location">საწყის გვერდზე ძიების მდებარეობა</string>
+  <!-- Preference for showing the homepage search bar in the middle of the homepage -->  <string name="preference_homepage_search_location_middle">შუაში</string>
+  <!-- Preference for showing the homepage search bar at the top of the homepage (combined with the address bar, already displayed at the top) -->  <string name="preference_homepage_search_location_top">ზემოთ</string>
   <!-- New tab shortcut in toolbar customization -->
   <string name="toolbar_customize_shortcut_new_tab">ახალი ჩანართის გახსნა</string>
   <!-- Share shortcut in toolbar customization -->
@@ -2966,7 +2969,7 @@
   <!-- Title of warning dialog if users have no device authentication set up -->
   <string name="logins_warning_dialog_title_2">დაიცავით შენახული პაროლები</string>
   <!-- Message of warning dialog if users have no device authentication set up -->
-  <string name="logins_warning_dialog_message_2">დააყენეთ მოწყობილობის ჩასაკეტად მოსახაზი, PIN-კოდი ან პაროლი, ანგარიშის შენახულ მონაცემებთან უცხო პირთა წვდომის აღსაკვეთათ.</string>
+  <string name="logins_warning_dialog_message_2">დააყენეთ მოწყობილობის ჩასაკეტად მოსახაზი, PIN-კოდი ან პაროლი, შენახულ პაროლებთან წვდომის აღსაკვეთად სხვებისთვის, ვინც თქვენს მოწყობილობას იყენებს.</string>
   <!-- Negative button to ignore warning dialog if users have no device authentication set up -->
   <string name="logins_warning_dialog_later">მოგვიანებით</string>
   <!-- Positive button to send users to set up a pin of warning dialog if users have no device authentication set up -->
@@ -3212,11 +3215,19 @@
   <!-- Title of warning dialog if users have no device authentication set up -->
   <string name="credit_cards_warning_dialog_title_2">დაიცავით გადახდის შენახული საშუალებები</string>
   <!-- Message of warning dialog if users have no device authentication set up -->
-  <string name="credit_cards_warning_dialog_message_3">დააყენეთ მოწყობილობის ჩასაკეტად მოსახაზი, PIN-კოდი ან პაროლი, გადახდის შენახულ მონაცემებთან უცხო პირთა წვდომის აღსაკვეთათ.</string>
+  <string name="credit_cards_warning_dialog_message_3">დააყენეთ მოწყობილობის ჩასაკეტად მოსახაზი, PIN-კოდი ან პაროლი, გადახდის შენახულ მონაცემებთან წვდომის აღსაკვეთად სხვებისთვის, ვინც თქვენს მოწყობილობას იყენებს.</string>
   <!-- Positive button to send users to set up a pin of warning dialog if users have no device authentication set up -->
   <string name="credit_cards_warning_dialog_set_up_now">დაყენება ახლავე</string>
   <!-- Negative button to ignore warning dialog if users have no device authentication set up -->
   <string name="credit_cards_warning_dialog_later">მოგვიანებით</string>
+  <!-- Title of the dialog shown on Android Automotive OS (in cars) when users have no device authentication set up and try to access their saved passwords, payment methods, or sign in to their account -->
+  <string name="automotive_authentication_setup_dialog_title">დაიცავით საფრთხილო მონაცემები</string>
+  <!-- Message of the dialog shown on Android Automotive OS (in cars) when users have no device authentication set up and try to access their saved passwords, payment methods, or sign in to their account -->
+  <string name="automotive_authentication_setup_dialog_message">დააყენეთ მოწყობილობის ჩასაკეტად მოსახაზი, PIN-კოდი ან პაროლი, შენახულ საფრთხილო მონაცემებთან წვდომის აღსაკვეთად სხვებისთვის, ვინც თქვენს მანქანას მართავს.</string>
+  <!-- Primary button on the dialog shown on Android Automotive OS (in cars). Tapping it directs users to the device settings to set up a device lock -->
+  <string name="automotive_authentication_setup_dialog_set_up_now">დაყენება ახლავე</string>
+  <!-- Secondary button of the dialog shown on Android Automotive OS (in cars). Tapping closes the dialogue and cancels the action that triggered the dialogue. -->
+  <string name="automotive_authentication_setup_dialog_cancel">გაუქმება</string>
   <!-- Title of PIN verification dialog to direct users to re-enter their device credentials to access their credit cards -->
   <string name="credit_cards_biometric_prompt_message_pin">გახსენით მოწყობილობა</string>
   <!-- Message displayed in biometric prompt for authentication, before allowing users to use their stored payment method information -->
@@ -4494,6 +4505,8 @@
   <string name="lens_camera_loading_status">მოძიება</string>
   <!-- Button shown under an image picked from the gallery while it is being sent to Google Lens. Tapping it stops the search and returns to the camera. -->
   <string name="lens_camera_loading_cancel_button">გაუქმება</string>
+  <!-- Snackbar message shown when an image picked from the gallery or taken with the camera could not be opened or read, so it was never sent to Google Lens. Shown after returning to the camera. -->
+  <string name="lens_camera_image_load_failed_v2">ვერ ჩაიტვირთა ეს სურათი.</string>
   <!-- Snackbar message shown when an image picked from the gallery could not be opened or read, so it was never sent to Google Lens. Shown after returning to the camera. -->
   <string name="lens_camera_image_load_failed">ეს სურათი ვერ ჩაიტვირთა. სცადეთ სხვა.</string>
   <!-- Snackbar message shown when an image picked from the gallery could not be searched because of a network problem or an error from Google Lens. Shown after returning to the camera, next to the lens_camera_upload_failed_retry_button action. -->
@@ -4590,4 +4603,31 @@
   <string name="reader_mode_panel_listen_content_description">ხმამაღლა ამოკითხვა</string>
   <!-- Content description for media player displayed in Reader Mode when the Listen to Page (Read Aloud) feature is selected -->
   <string name="reader_mode_panel_media_player_content_description">მედიადამკვრელი</string>
+  <!--
+    Browser Fragment
+
+    Label for popup button that appears when long-pressing the main menu. Tapping it allows the user to customize the main menu layout.
+  -->  <string name="customize_menu">მენიუს მორგება</string>
+  <!-- Content description (not visible, for screen readers etc.): Button in the search widget that starts a search in a private tab -->  <string name="search_widget_private_search">პირადი ძიება</string>
+  <!-- Widget description in the widget picker screen for the search bar widget that includes buttons for private search and for voice search -->  <string name="search_bar_widget_description">ძიების ველი პირადი და ხმოვანი ძიებით</string>
+  <!-- Widget description in the widget picker screen for the search bar widget that includes buttons for image search, private search and voice search -->  <string name="search_bar_with_lens_widget_description">ძიების ველი სურათის, პირადი და ხმოვანი ძიებით</string>
+  <!-- Widget description in the widget picker screen for the compact search bar widget -->  <string name="compact_search_bar_widget_description">მჭიდრო საძიებო ველი</string>
+  <!--
+    Content description for the Expand button on the contracted menu for a tab group:
+    when tapped, tabs are displayed in an expanded grid or list view, taking up the full screen.
+  -->  <string name="tab_groups_strip_expand_group_content_description">გაშლა ჩანართების სრულ ეკრანზე გამოსაჩენად</string>
+  <!--
+    Privacy report notification
+
+    Name of the weekly privacy report notification channel. Displayed in the "App notifications" system settings for the app.
+  -->  <string name="notification_privacy_report_channel_name">პირადულობის ანგარიში</string>
+  <!-- Description of the weekly privacy report notification channel. Displayed in the "App notifications" system settings for the app. %1$s is the app name (e.g. Firefox) -->  <string name="notification_privacy_report_channel_description">%1$s გიჩვენებთ, რამდენი მეთვალყურე შეიზღუდა გვერდების თვალიერებისას.</string>
+  <!-- Body text for the weekly privacy report notification for when trackers have been blocked. %1$s is the app name (e.g. Firefox) -->  <string name="notification_privacy_report_body_has_trackers">განაგრძეთ თვალიერება. %1$s განაგრძობს შეზღუდვას.</string>
+  <!-- Headline text of the weekly privacy report notification for when no trackers have been blocked. %1$s is the app name (e.g. Firefox) -->  <string name="notification_privacy_report_headline_no_trackers">%1$s ზღუდავს მეთვალყურეებს გვერდების მონახულებისას. რომელთაც აქ იხილავთ.</string>
+  <!-- Snackbar (in-app pop-up notification) text to signal the VPN location has been reset due to the previously selected VPN location being no longer available. -->  <string name="ip_protection_location_selection_reset_snackbar">შერჩეული VPN-მდებარეობა მიუწვდომელია. გადართეთ სხვა სასურველ მდებარეობაზე.</string>
+  <!--
+    PDF viewer toolbar and buttons
+
+    Content description for accessibility (used by screen readers): Description for the button that triggers the start of a signature workflow on the PDF displayed on the screen.
+  -->  <string name="pdf_tools_sign_content_description_2">დაამატეთ ხელმოწერა</string>
 </resources>

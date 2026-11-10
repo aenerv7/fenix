@@ -183,8 +183,9 @@
   <!--
     Browser Fragment
 
-    Content description (not visible, for screen readers etc.): Navigate backward (browsing history)
+    Label for popup button that appears when long-pressing the main menu. Tapping it allows the user to customize the main menu layout.
   -->
+  <string name="customize_menu">Prilagodi meni</string>
   <string name="browser_menu_back">Nazaj</string>
   <!-- Content description (not visible, for screen readers etc.): Navigate forward (browsing history) -->
   <string name="browser_menu_forward">Naprej</string>
@@ -904,6 +905,10 @@
   <string name="preferences_open_links_in_apps_ask">Vprašaj pred odpiranjem</string>
   <!-- Preference for open links in third party apps never open in apps option -->
   <string name="preferences_open_links_in_apps_never">Nikoli</string>
+  <!-- Preference category header for media related open links in apps settings -->
+  <string name="preferences_media_category">Predstavnost</string>
+  <!-- Preference label for choosing whether links open in the YouTube app -->
+  <string name="preferences_open_links_in_youtube">Odpiraj povezave v aplikaciji YouTube</string>
   <!-- Preference category for file storage. -->
   <string name="preferences_category_file_storage">Shramba datotek</string>
   <!-- Preference title for downloads default location. -->
@@ -4622,4 +4627,20 @@
   <string name="reader_mode_panel_listen_content_description">Preberi naglas</string>
   <!-- Content description for media player displayed in Reader Mode when the Listen to Page (Read Aloud) feature is selected -->
   <string name="reader_mode_panel_media_player_content_description">Predvajalnik predstavnosti</string>
+  <!-- Content description (not visible, for screen readers etc.): Button in the search widget that starts a search in a private tab -->  <string name="search_widget_private_search">Zasebno iskanje</string>
+  <!-- Widget description in the widget picker screen for the search bar widget that includes buttons for private search and for voice search -->  <string name="search_bar_widget_description">Iskalna vrstica z zasebnim in glasovnim iskanjem</string>
+  <!-- Widget description in the widget picker screen for the search bar widget that includes buttons for image search, private search and voice search -->  <string name="search_bar_with_lens_widget_description">Iskalna vrstica s slikovnim, zasebnim in glasovnim iskanjem</string>
+  <!-- Text shown in the snackbar action button that lets the user retry an add-on operation that just failed. -->  <string name="addon_failure_retry_action">Poskusi znova</string>
+  <!--
+    Content description for the Expand button on the contracted menu for a tab group:
+    when tapped, tabs are displayed in an expanded grid or list view, taking up the full screen.
+  -->  <string name="tab_groups_strip_expand_group_content_description">Razširi za celozaslonski prikaz zavihkov</string>
+  <!-- Label shown next to the browser protection icon in the address bar when the browser VPN turns off -->  <string name="ip_protection_toolbar_pill_label_off">VPN izključen</string>
+  <!-- Accessibility description for the browser VPN pill in the address bar when the VPN has turned off -->  <string name="ip_protection_toolbar_pill_description_off">VPN je izključen.</string>
+  <!-- Snackbar (in-app pop-up notification) text to signal the VPN location has been reset due to the previously selected VPN location being no longer available. -->  <string name="ip_protection_location_selection_reset_snackbar">Izbrana lokacija VPN ni na voljo. Preklopljeno na priporočeno lokacijo.</string>
+  <!--
+    PDF viewer toolbar and buttons
+
+    Content description for accessibility (used by screen readers): Description for the button that triggers the start of a signature workflow on the PDF displayed on the screen.
+  -->  <string name="pdf_tools_sign_content_description_2">Dodaj podpis</string>
 </resources>
