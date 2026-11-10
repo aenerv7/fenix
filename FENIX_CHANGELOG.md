@@ -1,5 +1,220 @@
 # Fenix changes
 
+## 160.0-r1
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_160_0_RELEASE`（`2887d9de1f69`，上游增量 13018 个文件、809062 行新增、
+507862 行删除）。本版把 fork 的全部既有改动重放到该基线之上。
+
+#### 合并
+
+- `git apply --3way` 原子性拒绝该增量，改用 `git merge-tree --write-tree`（合并基为 159.0.1 标签）生成
+  合并树，合并提交的第二父为 160.0 标签；候选相对 fenix 父提交改动 13013 个文件。
+- 60 个冲突路径里多数不是内容冲突：fork 的 `values/strings.xml` 与 42 个 locale 文件是 CRLF，上游是 LF，
+  git 因而把每一行都当成双方改动（英文文件忽略空白只有 11 增 51 删，原始差异却是 8444 行）。按行尾归一化
+  后重新三方合并，只剩 30 个真实冲突，其中 5 个是二进制图；写回时逐个恢复该文件已提交的行尾风格，否则
+  整个文件都会被改写。
+- 上游把标签页拖拽 UI 移进 android-components 的 `components/compose/draggable`（含 `ItemInteractionHandler`、
+  `ItemInteractionState`、`Elevation` 与项动画）。fork 的拖拽平移量修复随之落到 `InteractableList.kt`：
+  `resetImmediately`、`resetForItemChange`、`computeItemOffset` 的布局偏移缓存，以及 `resetState` 中
+  `previousKeyOfDraggedItem` 的清理；上游删掉了 `ListInteractionState.itemSize`，改用 `draggedItem.size`。
+- 项动画迁到 `DraggableItemAnimations.kt`，fork 策略在新文件上重新落实：列表项与网格项动画均无条件
+  `fadeOutSpec = null`，被移除的项立即离开布局，不留脱离布局的残影。
+- `TabGroupMiddleware` 保留 fork 的 `tabGroupLinkUseCases` 与 `isTabGroupingEnabled`，并接受上游的
+  `scope = applicationScope`；`ExpandedTabGroup` 改从新包导入交互处理器，snackbar 导入保留。
+- 搜索小组件改写为 Glance；fork 的 `setIcon` 继续把 `ic_launcher_rabbit_foreground` 画进小组件，不恢复
+  图标选择器的仓库路径。
+- 自动填充服务注册、密码菜单提供者及其测试、`beta`/`release` 的 `AndroidManifest.xml`、四个小组件兔子
+  图片继续保持 fork 状态；`FenixMenuItem.Passwords` 仍映射到 `EmptyMenuItemProvider`。
+- 依赖拖拽包的测试改用新包名；`InteractableListDragTest` 随被测类迁入 android-components 模块，在该模块
+  通过，覆盖“拖拽项离开视口后仍按最后布局偏移绘制”的回归。
+- 上游删除了 onboarding 的“通知权限”页面类型，`MarketingPageRemovalSupportTest` 改用仍然存在的页面类型。
+
+#### 上游改动（用户可见）
+
+- 主菜单新增长按弹出“自定义菜单”。
+- 搜索小组件改为 Glance 实现：新增私有搜索按钮、紧凑搜索栏与含 Lens 的变体，并在小组件选择器中显示说明。
+- 标签页组条新增“展开以全屏显示标签页”按钮。
+- 历史与最近关闭页面新增选中勾选标记的无障碍描述。
+- 新增 Collections 到标签页组的迁移卡。
+- 移除 onboarding 的“添加搜索小组件”“通知权限”“工具栏位置与主题选择”页面及对应字符串。
+- 设置页新增 AI controls 入口，版本戳更新到 160.0。
+
+#### 品牌与功能精简
+
+- 正式版 launcher、圆形图标、adaptive icon 与主题图标使用兔子品牌；新标签页左上角与关于页显示
+  「兔子 + Fenix」wordmark；Fenix Labs、关于页、主屏搜索小组件与 Custom Tab 的 “Powered by Fenix”
+  菜单项使用 Fenix 品牌；默认浏览器提示不显示 Mozilla 美术资源。
+- 界面与 Gecko 内置品牌资源中的产品名统一为 Fenix；上游来源与许可说明中必要的 Firefox、Mozilla、
+  GeckoView 名称保留。
+- 盾牌面板三种横幅状态仍为纯文本左对齐，不渲染上游狐狸插图；已防护状态的紫→橙渐变底板保留。
+- 密码、地址、信用卡与个人信息管理仍从 UI、Android 自动填充服务与默认同步数据范围中移除：
+  `BackgroundServices` 只同步历史、书签与标签页，账号设置页不恢复密码/信用卡/地址复选框；系统自动
+  填充提供方列表中仍不提供 Fenix，Play 商店评分与评论提示入口仍未恢复。
+
+#### 标签页与标签页组
+
+- 展开群组保留完整功能集：群组作用域多选、复用全部标签页样式的选择工具栏与二级菜单、选择期间的系统
+  返回键消费、手动收起只折叠群组，以及始终可见的新建标签页动作。
+- 群组底部弹窗只有全高与收起两种状态：`BottomSheetSceneStrategy.tabGroupSheet` 固定
+  `skipPartiallyExpanded = true`，系统返回键由群组自身处理。
+- 群组内标签页的移出群组、关闭后清空群组、撤销恢复到原群组三条存储动作由 `TabStorageMiddleware` 处理；
+  显示项集合变化时无条件重置交互状态；拖拽越过 touch slop 后置 `moved`。
+- 群组页面产生的新标签默认留在当前群组，并提供「在标签页群组内打开」与「新建标签页组打开」长按菜单项；
+  URL 与搜索建议点击使用当前 `searchState.sourceTabId`。
+
+#### 本地化
+
+- `values/strings.xml` 在行尾归一化后无冲突合并：保留 fork 的 5 条新增（`about_fenix_revision`、
+  `browser_menu_default_banner_dismiss_promotion`、多选“移出群组”、两条“在标签页组中打开”），保留删除
+  未使用的图标变体，并接受上游新增字符串。
+- `values-zh-rCN` 为上游新增的 26 条字符串补全简体中文，位置紧随同类条目；相对 `values/strings.xml`
+  0 缺失、无重复。
+- 其余 14 个冲突 locale 按“同名条目保留 fork 措辞、上游新增条目补入”解决；其他语言沿用上游部分翻译集合，
+  逐条英文回退属预期行为。
+
+#### 发布与验证
+
+- 仅发布 `arm64-v8a` APK，使用官方 160.0 多语言 GeckoView，沿用官方 `versionCode 2016194410` 与上游
+  `versionName 160.0`；未进行本地 GeckoView 编译或打包。
+- `fenix:spotlessKotlinCheck`、`fenix:compileDebugKotlin`、`fenix:compileDebugUnitTestKotlin`、
+  `fenix:compileDebugAndroidTestKotlin` 与 arm64-v8a release 构建通过；`components:compose-draggable` 模块
+  测试（含迁入的 `InteractableListDragTest`）通过。
+- `fenix:testDebugUnitTest`：7043 项，271 失败、1739 跳过。失败全部是已记录的 Windows 环境限制：248 项
+  megazord/JNA 原生库缺失、11 项下载路径顺序、5 项目录重命名、4 项 Robolectric SQLite，其余 3 项为既有的
+  `markAsTriggered`、`getHashedIdentifier` 与 `PackageManager` 限制。本版另修正了两个测试适配问题
+  （`MenuItemProvidersFactoryTest` 的密码菜单项、`FenixOnboardingTest` 对真实 `SharedPreferences` 的桩），
+  定向验证通过。
+- 文档门禁 `mach doc docs --no-serve --no-open --outdir artifacts/docs-full-20261110-215727`：
+  `Failures: 0`、`Known Failures: 32`，未新增允许列表条目。
+- `160.0` 基线把 `CLOBBER` 推进到 2026-11-04 合并日，`fenix:assembleDebug` 需要重编本地 Gecko，故按既有
+  约定未运行；发布构建使用固定官方 GeckoView 包。
+- APK：`Fenix-160.0-r1-arm64-v8a-release.apk`，大小 `132568624` 字节，SHA-256：`388333DCBAB926B532C81847E28FF9D689EA0F55176C74A5AFFD38F4F5AE74EE`。
+- 对应完整源码：[fenix-160.0-r1](https://github.com/aenerv7/fenix/tree/fenix-160.0-r1)。Fenix 是非官方
+  独立修改版，不受 Mozilla 赞助或背书；保留 MPL 2.0 与第三方许可；Firefox 是 Mozilla Foundation 的商标。
+- `.idsig` 只保留在本地用于校验与重签名，不作为 GitHub Release 资产；Windows Glean 原生库限制仍需
+  Linux 或 CI 覆盖。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_160_0_RELEASE` (`2887d9de1f69`, upstream delta: 13018
+files, 809062 insertions, 507862 deletions). This release replays the fork's whole change set onto that
+baseline.
+
+#### Merge
+
+- `git apply --3way` rejected the delta atomically, so the tree came from `git merge-tree --write-tree`
+  with the 159.0.1 tag as the merge base; the merge commit's second parent is the 160.0 tag. The
+  candidate changes 13013 files against its Fenix parent.
+- Most of the 60 conflicted paths are not content conflicts: the fork's `values/strings.xml` and 42
+  locale files use CRLF while upstream's use LF, so git treats every line as changed on both sides (the
+  English file is 11 insertions and 51 deletions whitespace-insensitively but 8444 changed lines raw).
+  Merging line-ending-normalized copies leaves 30 real conflicts, five of them binary artwork. Each
+  result is converted back to the file's committed line-ending style; otherwise the whole file is
+  rewritten.
+- Upstream moved the draggable tab UI into android-components' `components/compose/draggable`
+  (`ItemInteractionHandler`, `ItemInteractionState`, `Elevation`, and the item animations). The fork's
+  drag-offset fix therefore moves into `InteractableList.kt`: `resetImmediately`, `resetForItemChange`,
+  the `computeItemOffset` layout-offset cache, and the `resetState` cleanup of `previousKeyOfDraggedItem`.
+  Upstream dropped `ListInteractionState.itemSize`, so the merged code uses `draggedItem.size`.
+- The item animations moved to `DraggableItemAnimations.kt`, where the fork policy is reapplied: both the
+  list and the grid animation pass `fadeOutSpec = null` unconditionally, so a removed item leaves the
+  layout instead of fading out detached from it.
+- `TabGroupMiddleware` keeps the fork's `tabGroupLinkUseCases` and `isTabGroupingEnabled` and gains
+  upstream's `scope = applicationScope`; `ExpandedTabGroup` imports the interaction handlers from the new
+  package and keeps its snackbar import.
+- The search widget is now a Glance implementation; the fork's `setIcon` keeps drawing
+  `ic_launcher_rabbit_foreground` and does not restore the icon-picker repository path.
+- The autofill service registration, the passwords menu provider and its test, the `beta` and `release`
+  `AndroidManifest.xml` files, and the four rabbit widget images keep the fork's state;
+  `FenixMenuItem.Passwords` still maps to `EmptyMenuItemProvider`.
+- Tests that used the draggable package now use the new one; `InteractableListDragTest` moves into the
+  android-components module with the class it covers and passes there, keeping the regression case for a
+  dragged item that leaves the viewport.
+- Upstream removed the onboarding notification-permission page type, so
+  `MarketingPageRemovalSupportTest` uses a page type that still exists.
+
+#### Upstream changes (user-visible)
+
+- Long-pressing the main menu opens "Customize menu".
+- The search widget is a Glance implementation with a private-search button, a compact search bar, and a
+  Lens variant, each described in the widget picker.
+- The tab group strip gains an "expand to show tabs in full screen" button.
+- History and recently closed tabs gain a selection check-mark description.
+- A Collections to tab groups migration card is added.
+- The onboarding add-search-widget, notification-permission, and toolbar/theme selection pages and their
+  strings are gone.
+- Settings gains an AI controls entry, and the version stamp is 160.0.
+
+#### Branding and feature reductions
+
+- The launcher, round icon, adaptive icon, and themed icon use the rabbit branding; the new tab and the
+  About page show the rabbit plus Fenix wordmark; Fenix Labs, the About page, the home-screen search
+  widget, and the Custom Tab "Powered by Fenix" item use Fenix branding; the default-browser prompt shows
+  no Mozilla artwork.
+- The product name is Fenix throughout the UI and Gecko's built-in brand resources; Firefox, Mozilla, and
+  GeckoView names remain where upstream provenance and licensing require them.
+- The three shield panel banner states stay text-only and left-aligned instead of drawing upstream's fox
+  illustrations; the protected state keeps its purple-to-orange gradient plate.
+- Passwords, addresses, credit cards, and personal information stay out of the UI, the Android autofill
+  service, and the default sync scope: `BackgroundServices` syncs only history, bookmarks, and tabs, the
+  account settings screen restores no passwords/credit-card/address switches, Fenix is not offered as a
+  system autofill provider, and the Play Store rating and review prompt entry points stay removed.
+
+#### Tabs and tab groups
+
+- Expanded groups keep the full feature set: group-scoped multi-select, the selection toolbar and menu
+  reusing the all-tabs styling, Back consumed by the group while that toolbar is open, manual dismissal
+  collapsing only the group, and an always-visible new-tab action.
+- The group bottom sheet has exactly two states: `BottomSheetSceneStrategy.tabGroupSheet` fixes
+  `skipPartiallyExpanded = true`, and system Back is handled by the group.
+- `TabStorageMiddleware` keeps the storage actions for tabs removed from a group, tabs closed from a
+  group, and undo restoring tabs into their group; any change to the displayed items resets the
+  interaction state, and a drag past touch slop sets `moved`.
+- Tabs opened from a group page stay in that group, with the "open link in tab group" and "open link in
+  new tab group" menu items; URL and search suggestion clicks use the current `searchState.sourceTabId`.
+
+#### Localization
+
+- `values/strings.xml` merged without conflicts once line endings were normalized: it keeps the fork's
+  five additions (`about_fenix_revision`, `browser_menu_default_banner_dismiss_promotion`, the multiselect
+  remove-from-group label, and the two open-link-in-group labels), keeps the unused icon variants
+  removed, and takes upstream's new strings.
+- `values-zh-rCN` gains Simplified Chinese for the 26 strings this baseline adds, next to their siblings;
+  it has no missing name against `values/strings.xml` and no duplicate.
+- The other 14 conflicted locales keep the fork's wording for names both sides translate and take
+  upstream's translation for the new names it carries; the remaining locales stay on upstream's partial
+  translation set, where per-string English fallback is expected.
+
+#### Release and validation
+
+- Only the `arm64-v8a` APK is published, using the official 160.0 multi-locale GeckoView with the
+  official `versionCode 2016194410` and upstream `versionName 160.0`; no local GeckoView was compiled or
+  packaged.
+- `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`, `fenix:compileDebugUnitTestKotlin`,
+  `fenix:compileDebugAndroidTestKotlin`, and the arm64-v8a release build pass; the
+  `components:compose-draggable` module tests, including the moved `InteractableListDragTest`, pass.
+- `fenix:testDebugUnitTest`: 7043 tests, 271 failed, 1739 skipped. Every failure is a recorded Windows
+  environment limitation: 248 megazord/JNA native-library failures, 11 download path ordering, 5
+  directory renames, 4 Robolectric SQLite, and the 3 known `markAsTriggered`, `getHashedIdentifier`, and
+  `PackageManager` cases. This release also fixes two test-adaptation problems
+  (`MenuItemProvidersFactoryTest`'s passwords item and `FenixOnboardingTest`'s stub over a real
+  `SharedPreferences`), each verified on its own.
+- The documentation gate `mach doc docs --no-serve --no-open --outdir
+  artifacts/docs-full-20261110-215727` reports `Failures: 0` with `Known Failures: 32`; no allowlist
+  entry was added.
+- The 160.0 baseline advances `CLOBBER` to the 2026-11-04 merge day, so `fenix:assembleDebug` would need
+  a full local Gecko rebuild and is not run, following the established convention; the release build uses
+  the pinned official GeckoView package.
+- APK: `Fenix-160.0-r1-arm64-v8a-release.apk`, `132568624` bytes, SHA-256:
+  `388333DCBAB926B532C81847E28FF9D689EA0F55176C74A5AFFD38F4F5AE74EE`.
+- Full source: [fenix-160.0-r1](https://github.com/aenerv7/fenix/tree/fenix-160.0-r1). Fenix is an
+  unofficial, independently maintained modification, not sponsored or endorsed by Mozilla; MPL 2.0 and
+  third-party licenses are retained; Firefox is a trademark of the Mozilla Foundation.
+- The `.idsig` stays local for verification and re-signing and is not a GitHub Release asset; the Windows
+  Glean native-library limitation still needs Linux or CI coverage.
+
 ## 159.0.1-r2
 
 ### 中文

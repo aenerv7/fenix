@@ -659,6 +659,98 @@ The release uses the pinned official 159.0.1 arm64-v8a GeckoView package recorde
 Fenix-authored native source changed. The exact official arm64-v8a versionCode is `2016193994`, and the
 official APK SHA-256 is `E607E581C5E6ED6D69B8192D3E3AB6404610635277BB7DC5C0787289489375DB`.
 
+## Firefox Android 160.0 synchronization
+
+The 160.0 update was prepared from the official `FIREFOX-ANDROID_160_0_RELEASE` tag (`2887d9de1f69`)
+on the candidate branch `sync/firefox-android-160.0`, starting from the 159.0.1-r2 tree. The upstream
+delta spans 13018 files (809062 insertions, 507862 deletions). `git apply --3way` rejected it
+atomically, so the tree came from `git merge-tree --write-tree` with the 159.0.1 tag as the merge
+base, and the candidate changes 13013 files against its Fenix parent.
+
+### Line endings, not content, caused most conflicts
+
+`git merge-tree` reported 60 conflicted paths, but most of them are not real conflicts: the fork's
+committed `mobile/android/fenix/app/src/main/res/values/strings.xml` and 42 locale files use CRLF,
+while upstream's copies use LF. Git treats every line as changed on both sides, so a whitespace-insensitive
+diff of the English file against 159.0.1 is 11 insertions and 51 deletions while the raw diff is 8444
+changed lines.
+
+Resolve those files by merging line-ending-normalized copies, not through the conflict-marked tree.
+`.tmp/eolmerge.ps1` extracts each of the three sides, converts them to LF, runs `git merge-file`, and
+reports the remaining conflicts; only 30 files still conflicted after normalization, of which five are
+binary artwork. Convert each result back to the file's committed line-ending style before staging:
+`.tmp/normalize-eol.ps1` compares every modified file with its `HEAD` blob and rewrites the worktree
+side, because `Set-Content` and `WriteAllLines` silently convert a LF file to CRLF on Windows. A
+staged diff that is much larger than `--ignore-cr-at-eol` reports means this step was skipped.
+
+### Upstream moves the fork adopts
+
+- The draggable tab UI moved from `org.mozilla.fenix.tabstray.browser.compose.interactable` into the
+  android-components module `components/compose/draggable`, including `ItemInteractionHandler`,
+  `ItemInteractionState`, `Elevation`, and the item animations (`DraggableItemAnimations.kt`). The
+  fork's drag-offset fix therefore moves into `InteractableList.kt` and must be reapplied there:
+  `resetImmediately`, `resetForItemChange`, the `draggedItemLayoutOffset` cache that
+  `computeItemOffset` subtracts when the dragged item has left the layout, and the
+  `resetState` guard that clears `previousKeyOfDraggedItem` when nothing is dragged. Upstream removed
+  `ListInteractionState.itemSize`; the merged code uses `draggedItem.size` and `mode.source.size`.
+- `TabGroupMiddleware` keeps the fork's `tabGroupLinkUseCases` and `isTabGroupingEnabled` parameters
+  and gains upstream's `scope = applicationScope` argument at the `Core` call site.
+- `TabItemAnimations.kt` loses `defaultGridItemAnimation` and `defaultListItemAnimation` because
+  upstream moved them to `DraggableItemAnimations.kt`. The fork's animation policy has to be applied
+  to the new file: both functions pass `fadeOutSpec = null` unconditionally so a removed item leaves
+  the layout instead of fading out detached from it.
+- The search widget moved to Glance (`widget/glance/*`, `SearchWidgets`, `SearchWidgetIntents`). The
+  fork keeps its own `setIcon`, which draws `ic_launcher_rabbit_foreground` instead of the selected
+  app icon, so the icon-picker imports do not come back.
+- `ExpandedTabGroup` imports `ItemInteractionHandler` and `NoOpItemInteractionHandler` from the new
+  android-components package and keeps the fork's snackbar import.
+
+### Fork behaviour reapplied
+
+- `FenixApplication` gains `queuePublishSearchBarWidgetPreviews` and never calls
+  `queueUpdateAutofillServiceState`; the autofill service stays unregistered.
+- `settings/logins/PasswordsMenuItemProvider.kt` and its test stay deleted; `FenixMenuItem.Passwords`
+  still maps to an `EmptyMenuItemProvider`.
+- The `beta` and `release` `AndroidManifest.xml` files the fork deletes stay deleted, including
+  upstream's `tools:ignore="Deprecated"` addition.
+- The four `fenix_search_widget.webp` widget images keep the fork's rabbit artwork.
+- `SettingsPage.kt` keeps the fork's removal of the page-summaries, AI-controls, and Google Play
+  rating navigation registrations.
+- `IntentReceiverActivityTest` keeps upstream's pairing-link cases and drops the password-manager
+  case, whose `passwordManagerIntentProcessor` no longer exists.
+- `TabLayoutTest` imports `ItemInteractionHandler` from android-components and keeps
+  `TabsTrayItem`, which its rewritten fixtures still use.
+
+### Localization
+
+`values/strings.xml` merged cleanly once line endings were normalized: it keeps the fork's five
+additions (`about_fenix_revision`, `browser_menu_default_banner_dismiss_promotion`, the multiselect
+"remove from group" label, and the two "open link in tab group" labels), its removal of the unused
+app-icon variants, and upstream's new strings, including the Glance widget descriptions, the library
+selection description, and the renamed `pdf_tools_sign_content_description_2`.
+
+`values-zh-rCN` was not conflicted but gains no upstream translation for the 26 names this baseline
+adds, so those were translated with the file's established terminology and inserted next to their
+siblings: the Glance widget descriptions, the sync category and device-name labels, the sign-out
+dialog, the Google Lens camera states, and `pdf_tools_sign_content_description_2`. The file has no
+missing name against `values/strings.xml` and no duplicate name. The 14 conflicted locales resolve to
+the fork's wording for names both sides translate, and take upstream's translation for the new names
+it actually carries.
+
+### Release pins and hazards
+
+The delta advances `CLOBBER` to the 2026-11-04 merge-day clobber, so a debug build needs a full local
+Gecko rebuild; the release uses the pinned official 160.0 arm64-v8a GeckoView package recorded in
+`FENIX_UPSTREAM_GECKOVIEW.json` through `-UseUpstreamGecko`, and local GeckoView compilation remains
+prohibited because no Fenix-authored Gecko, C++, Rust, or Gecko locale source changed. The exact
+official arm64-v8a versionCode is `2016194410`, and the official APK SHA-256 is
+`0D0C677A87633F9DD14B3DD1BCD7530874D59C7E2D042D1CD340F4FE215F692D`.
+
+The baseline changes Gradle, AGP, and the mach site pins. `python/sites/mach.txt` still requests
+`platformdirs==4.13.0` while the vendored copy is `4.14.5`, so the mach virtualenv logs
+`No solution found when resolving dependencies` and continues without the optional pin; Gradle tasks
+and `mach doc` still run.
+
 ## Source-to-binary traceability
 
 If APKs are distributed, record their SHA-256 hashes and the exact Fenix tag in release notes. The

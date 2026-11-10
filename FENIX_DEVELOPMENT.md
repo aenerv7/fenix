@@ -7,7 +7,7 @@ Mozilla's general Firefox source documentation remains authoritative for the res
 
 ## Current fork customization summary
 
-The current upstream baseline is Firefox Android 158.0.1 (`FIREFOX-ANDROID_158_0_1_RELEASE`). The first
+The current upstream baseline is Firefox Android 160.0 (`FIREFOX-ANDROID_160_0_RELEASE`). The first
 upstream synchronization, including manual conflict resolution and the limited-time activity policy,
 is recorded in [FENIX_UPSTREAM_SYNC.md](FENIX_UPSTREAM_SYNC.md). Release-by-release user-facing notes
 are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
@@ -185,6 +185,35 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
   reusable build caches.
 
 ### Current validation state
+
+The 160.0-r1 release synchronizes the official 160.0 baseline. The upstream delta spans 13018 files and
+the candidate changes 13013 files against its Fenix parent. `git apply --3way` rejected it atomically, so
+the tree came from `git merge-tree --write-tree`. The 60 conflicted paths are mostly line-ending noise:
+the fork's English and 42 locale files are CRLF while upstream's are LF, which makes git treat every line
+as changed on both sides. Merging line-ending-normalized copies leaves 30 real conflicts.
+[FENIX_UPSTREAM_SYNC.md](FENIX_UPSTREAM_SYNC.md) records the merge, the move of the draggable tab UI into
+android-components, and the release pins.
+
+Validation: `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`,
+`fenix:compileDebugUnitTestKotlin`, `fenix:compileDebugAndroidTestKotlin`, the
+`components:compose-draggable` module tests, and the arm64-v8a release build pass. The full documentation
+gate reports `Failures: 0` with `Known Failures: 32`. `fenix:testDebugUnitTest` reports 7043 tests with
+271 failures and 1739 skips, all in the Windows limitation categories below: 248 megazord/JNA, 11 download
+path ordering, 5 directory rename, 4 Robolectric SQLite, and the 3 known `markAsTriggered`,
+`getHashedIdentifier`, and `PackageManager` cases. The 160.0 baseline carries the 2026-11-04 merge-day
+`CLOBBER`, so `assembleDebug` would need a full local Gecko rebuild and was skipped; the release build
+uses the pinned official GeckoView package instead.
+
+The arm64-v8a release uses the pinned official 160.0 GeckoView package through `-UseUpstreamGecko` and the
+exact official versionCode `2016194410`; no local GeckoView build is permitted because no Fenix-authored
+Gecko, C++, Rust, or Gecko locale source changed. The signed APK
+`Fenix-160.0-r1-arm64-v8a-release.apk` (132568624 bytes, SHA-256
+`388333DCBAB926B532C81847E28FF9D689EA0F55176C74A5AFFD38F4F5AE74EE`) supersedes
+`Fenix-159.0.1-r2-arm64-v8a-release.apk`.
+
+The 160.0 baseline changes Gradle and AGP, so the build virtualenv must be recreated through
+`tools/fenix/mach-local.ps1 configure` before the first release build; otherwise `:machConfigure` fails
+with `PermissionError: [WinError 5]` on the virtualenv's `python.exe`.
 
 The 159.0.1-r2 release fixes the list-layout tab drag translation and carries the whole `159.0.1-r1`
 content. `ReorderableDragItemContainer` measured `computeItemOffset()` while composing, so a frame that
