@@ -22,12 +22,12 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlin.test.assertEquals
 import mozilla.components.compose.base.theme.Theme
 import mozilla.components.compose.base.utils.LocalUnderTest
+import mozilla.components.compose.draggable.NoOpItemInteractionHandler
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mozilla.fenix.tabgroups.ExpandedTabGroup
 import org.mozilla.fenix.tabgroups.ExpandedTabGroupActions
-import mozilla.components.compose.draggable.NoOpItemInteractionHandler
 import org.mozilla.fenix.tabstray.data.createTab
 import org.mozilla.fenix.tabstray.data.createTabGroup
 import org.mozilla.fenix.tabstray.redux.state.TabsTrayState.Mode
