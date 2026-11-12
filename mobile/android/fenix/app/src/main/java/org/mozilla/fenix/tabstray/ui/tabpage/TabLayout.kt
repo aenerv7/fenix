@@ -287,7 +287,10 @@ fun TabLayout(
             horizontalPadding = listHorizontalPadding,
             trackersBlockedCount = trackersBlockedCount,
             focusEnabled = focusEnabled,
-            dragAndDropEnabled = dragAndDropEnabled,
+            // The list always reorders in place, like the expanded group's tabs. Drag and drop grouping stays in the
+            // grid: its overlap gesture needs the dragged row to stay in the list, which the list layout no longer
+            // does. Groups can still be formed from the multi-select toolbar.
+            dragAndDropEnabled = false,
             reorderingEnabled = reorderingEnabled,
             onPrivacyReportTapped = onPrivacyReportTapped,
             displayTabGroupOnboarding = displayTabGroupOnboarding,
@@ -375,6 +378,7 @@ private fun TabList(
             onDeleteTabGroupClick = onDeleteTabGroupClick,
             onUngroupTabGroupClick = onUngroupTabGroupClick,
             onTabGroupOnboardingDismiss = onTabGroupOnboardingDismiss,
+            onTabGroupOnboardingShown = onTabGroupOnboardingShown,
             header = header,
             horizontalPadding = horizontalPadding,
             trackersBlockedCount = trackersBlockedCount,
@@ -1588,6 +1592,7 @@ private fun ReorderableTabList(
     focusEnabled: Boolean = true,
     reorderingEnabled: Boolean = true,
     onPrivacyReportTapped: (() -> Unit)? = null,
+    onTabGroupOnboardingShown: () -> Unit = {},
 ) {
     val state = rememberLazyListState()
     val tabListBottomPadding = dimensionResource(id = R.dimen.tab_tray_list_bottom_padding)
@@ -1602,6 +1607,15 @@ private fun ReorderableTabList(
     )
 
     var isInMultiSelectMode by remember { mutableStateOf(selectionMode is TabsTrayState.Mode.Select) }
+
+    val onboardingCardInView by remember {
+        derivedStateOf { state.layoutInfo.visibleItemsInfo.any { it.key == TAB_GROUP_ONBOARDING_ITEM_KEY } }
+    }
+    SideEffect(onboardingCardInView) {
+        if (onboardingCardInView) {
+            onTabGroupOnboardingShown()
+        }
+    }
 
     val reorderState =
         createListReorderState(
