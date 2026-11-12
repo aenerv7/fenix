@@ -105,10 +105,11 @@ internal constructor(
     private var draggingItemInitialOffset by mutableFloatStateOf(0f)
 
     /*
-     * Last slot reported by the item's coordinates. A plain field: it is read while the layer is drawn, and the layout
-     * info it falls back from is a snapshot state that invalidates the layer on every measure pass.
+     * Coordinates of the dragged item's slot. A plain field holding the live object: it is queried while the layer is
+     * drawn, which is what keeps the slot current for an item that left the viewport, and the layout info it falls
+     * back from is a snapshot state that invalidates the layer on every measure pass.
      */
-    private var draggingItemSlotOffset: Float? = null
+    private var draggingItemCoordinates: LayoutCoordinates? = null
     internal var moved by mutableStateOf(false)
     private val draggingItemOffset: Float
         get() = draggingItemInitialOffset + draggingItemCumulatedOffset - currentSlotOffset()
@@ -117,17 +118,30 @@ internal constructor(
      * The dragged item's current slot, in the list's own coordinates.
      *
      * The slot reported by the layout is the one this frame places the item at. The coordinates callback arrives after
-     * the layout, so a reorder or a scroll can still leave it describing the previous frame, which draws the card a row
-     * away from the pointer. The coordinates remain the fallback for an item that has left the viewport, because a lazy
-     * layout stops reporting it in `visibleItemsInfo` while the item itself keeps its slot and keeps moving with the
-     * scroll.
+     * the layout, so a reorder or a scroll can still leave a value captured in it describing the previous frame, which
+     * draws the card a row away from the pointer. Querying the coordinates themselves while the layer is drawn keeps
+     * them current; they cover an item that has left the viewport, where a lazy layout stops reporting it in
+     * `visibleItemsInfo` while the item itself keeps its slot and keeps moving with the scroll.
      */
     private fun currentSlotOffset(): Float {
         draggingItemLayoutInfo?.let { item ->
-            draggingItemSlotOffset = item.offset.toFloat()
             return item.offset.toFloat()
         }
-        return draggingItemSlotOffset ?: draggingItemInitialOffset
+        return draggingItemLocalOffset() ?: draggingItemInitialOffset
+    }
+
+    /** The dragged item's slot from its live coordinates, or null while they cannot be queried. */
+    private fun draggingItemLocalOffset(): Float? {
+        val itemCoordinates = draggingItemCoordinates ?: return null
+        val listCoordinates = listLayoutCoordinates ?: return null
+        if (!itemCoordinates.isAttached || !listCoordinates.isAttached) {
+            return null
+        }
+        val position = listCoordinates.localPositionOf(itemCoordinates, Offset.Zero)
+        return when (orientation) {
+            Orientation.Vertical -> position.y
+            Orientation.Horizontal -> position.x
+        }
     }
 
     internal fun computeItemOffset(): Float = draggingItemOffset
@@ -138,18 +152,12 @@ internal constructor(
     }
 
     /**
-     * Records the dragged item's layout offset from its own coordinates. The item's translation is applied to an inner
-     * node, so these coordinates describe its slot in the layout and follow the scroll even once it is drawn past the
-     * viewport edge.
+     * Records the dragged item's coordinates. The item's translation is applied to an inner node, so these coordinates
+     * describe its slot in the layout and follow the scroll even once it is drawn past the viewport edge. They are
+     * queried later, when a frame is drawn, because a position captured in this callback is a layout behind.
      */
     internal fun onDraggedItemPositioned(itemCoordinates: LayoutCoordinates) {
-        val listCoordinates = listLayoutCoordinates ?: return
-        val position = listCoordinates.localPositionOf(itemCoordinates, Offset.Zero)
-        draggingItemSlotOffset =
-            when (orientation) {
-                Orientation.Vertical -> position.y
-                Orientation.Horizontal -> position.x
-            }
+        draggingItemCoordinates = itemCoordinates
     }
 
     private val draggingItemLayoutInfo: LazyListItemInfo?
@@ -174,7 +182,6 @@ internal constructor(
                 onLongPress(it)
             }
             draggingItemInitialOffset = it.offset.toFloat()
-            draggingItemSlotOffset = it.offset.toFloat()
             moved = !shouldLongPress
         }
     }
@@ -198,7 +205,7 @@ internal constructor(
         draggingItemCumulatedOffset = 0f
         draggingItemKey = null
         draggingItemInitialOffset = 0f
-        draggingItemSlotOffset = null
+        draggingItemCoordinates = null
     }
 
     /**
@@ -214,7 +221,7 @@ internal constructor(
         draggingItemCumulatedOffset = 0f
         draggingItemKey = null
         draggingItemInitialOffset = 0f
-        draggingItemSlotOffset = null
+        draggingItemCoordinates = null
         previousKeyOfDraggedItem = null
         moved = false
     }

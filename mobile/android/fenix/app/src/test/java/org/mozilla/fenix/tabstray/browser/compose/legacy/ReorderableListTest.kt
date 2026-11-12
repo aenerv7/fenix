@@ -153,7 +153,7 @@ class ReorderableListTest {
     }
 
     @Test
-    fun `GIVEN the item has left the layout WHEN the drag continues THEN the offset uses the last coordinates`() {
+    fun `GIVEN the item has left the layout WHEN the frame is drawn THEN the offset follows its live coordinates`() {
         var visibleItems: List<LazyListItemInfo> = listOf(mockListItem(key = "key1", index = 0, size = 10, offset = 80))
         val reorderState =
             fakeListReorderState(
@@ -173,18 +173,28 @@ class ReorderableListTest {
                         }
                 }
             )
-        reorderState.updateListCoordinates(mockCoordinates(position = 120f))
+        var slot = 160f
+        reorderState.updateListCoordinates(
+            mockk {
+                every { isAttached } returns true
+                every { localPositionOf(any(), any()) } answers { Offset(0f, slot) }
+            }
+        )
         reorderState.onTouchSlopPassed(offset = 85f, shouldLongPress = false)
-        reorderState.onDraggedItemPositioned(mockk(relaxed = true))
+        // The coordinates callback sees the slot the item had when the callback ran.
+        reorderState.onDraggedItemPositioned(mockk { every { isAttached } returns true })
 
+        // The item leaves the viewport and the list keeps scrolling, so the next frame places it at 120.
         visibleItems = emptyList()
+        slot = 120f
         reorderState.onDrag(offset = -20f)
 
-        // The item is pinned at slot 120 and keeps drawing there, so the coordinates stay the reference.
+        // 80 (start slot) - 20 (drag) - 120 (slot when the frame is drawn); the captured 160 would give -100.
         assertEquals(-60f, reorderState.computeItemOffset(), 0.01f)
     }
 
     private fun mockCoordinates(position: Float): LayoutCoordinates = mockk {
+        every { isAttached } returns true
         every { localPositionOf(any(), any()) } returns Offset(0f, position)
     }
 

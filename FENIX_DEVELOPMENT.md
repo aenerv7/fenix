@@ -132,12 +132,12 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
   reports its own coordinates the same way the grid does, and its translation lives on an inner node so
   the outer coordinates describe the slot: `graphicsLayer` translations are included in `LayoutCoordinates`
   measurements. `ReorderableListDragTest` covers the legacy list.
-- While the dragged item is laid out, its slot must come from `visibleItemsInfo`, not from the
-  coordinates cached by `onGloballyPositioned`. Both describe the same placement, but the coordinates are
-  dispatched after the layout, so in the frame that a scroll or a reorder changes the slot they still
-  describe the previous one: the card is drawn one row away from the pointer and snaps back on the next
-  drag. The cached coordinates stay the fallback for an item that has left the viewport, where the lazy
-  layout stops reporting it. `ReorderableListTest` covers the precedence.
+- The dragged item's slot must be current when the frame is drawn. While the item is laid out, read it
+  from `visibleItemsInfo`. Once it has left the viewport the lazy layout stops reporting it, so read the
+  slot from the item's own `LayoutCoordinates` at draw time; do not capture a number in the
+  `onGloballyPositioned` callback, which is dispatched after the layout and therefore a layout behind.
+  A stale slot draws the card one row away from the pointer, most visibly while a fast drag makes the
+  list scroll under the card. `ReorderableListTest` covers both sources.
 - Every container must read the drag translation when the layer is drawn, inside its `graphicsLayer`
   block, never during composition. A drag event that reorders the tab moves it to another slot in the
   same frame that applies the drag, so a composition-time value describes the previous layout and draws

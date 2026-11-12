@@ -27,6 +27,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import mozilla.components.compose.base.theme.Theme
 import mozilla.components.compose.base.utils.LocalUnderTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -62,6 +63,9 @@ private const val FAST_DRAGGED_INDEX = 12
 
 // A drag large enough to move the dragged tab into the slot above it, without leaving the viewport.
 private const val FAST_STEP_PX = 60f
+
+// A drag past the top edge, far enough that the list scrolls the dragged tab out of the viewport.
+private const val OUT_OF_LAYOUT_STEP_PX = 200f
 
 /**
  * Verifies where a dragged tab item renders in the list while the list reorders underneath it.
@@ -107,6 +111,50 @@ class ReorderableListDragTest {
         composeTestRule.mainClock.advanceTimeByFrame()
 
         assertEquals(startTop - FAST_STEP_PX, itemBounds(key).top, 1f)
+    }
+
+    /**
+     * A dragged tab that the list scrolls past the viewport edge is pinned: it leaves `visibleItemsInfo` while it keeps
+     * its slot and keeps drawing there. Its slot therefore has to be read from its live coordinates when the frame is
+     * drawn; a slot captured in the `onGloballyPositioned` callback is a layout behind, so a scroll under the pinned
+     * card draws it one row away from the pointer.
+     */
+    @Test
+    fun `GIVEN the dragged tab has left the layout WHEN the list scrolls it THEN the tab stays at the pointer`() {
+        setHarness()
+        scrollBy(delta = SCROLLED_FIRST_INDEX * ITEM_HEIGHT_DP.toFloat())
+        val key = items[FAST_DRAGGED_INDEX]
+        val startTop = itemBounds(key).top
+        startDrag(index = FAST_DRAGGED_INDEX)
+
+        // The up drag scrolls the tab out of the viewport; the down drag brings the card back to the pointer while the
+        // tab stays pinned outside it.
+        dragBy(delta = -OUT_OF_LAYOUT_STEP_PX)
+        dragBy(delta = OUT_OF_LAYOUT_STEP_PX)
+        assertNull(listState.layoutInfo.visibleItemsInfo.firstOrNull { it.key == key })
+        assertEquals(startTop, itemBounds(key).top, 1f)
+
+        // The list keeps scrolling under the pinned tab while the pointer stays put.
+        composeTestRule.mainClock.autoAdvance = false
+        composeTestRule.runOnUiThread { listState.dispatchRawDelta(ITEM_HEIGHT_DP.toFloat()) }
+        composeTestRule.mainClock.advanceTimeByFrame()
+
+        assertEquals(startTop, itemBounds(key).top, 1f)
+    }
+
+    private fun startDrag(index: Int) {
+        val item = listState.layoutInfo.visibleItemsInfo.first { it.index == index }
+        composeTestRule.runOnIdle {
+            reorderState.onTouchSlopPassed(
+                offset = item.offset + item.size / 2f,
+                shouldLongPress = false,
+            )
+        }
+    }
+
+    private fun dragBy(delta: Float) {
+        composeTestRule.runOnIdle { reorderState.onDrag(offset = delta) }
+        composeTestRule.waitForIdle()
     }
 
     private fun setHarness() {
@@ -185,16 +233,6 @@ class ReorderableListDragTest {
     private fun scrollBy(delta: Float) {
         listState.dispatchRawDelta(delta)
         composeTestRule.waitForIdle()
-    }
-
-    private fun startDrag(index: Int) {
-        val item = listState.layoutInfo.visibleItemsInfo.first { it.index == index }
-        composeTestRule.runOnIdle {
-            reorderState.onTouchSlopPassed(
-                offset = item.offset + item.size / 2f,
-                shouldLongPress = false,
-            )
-        }
     }
 
     private fun itemBounds(key: String): Rect = composeTestRule.onNodeWithTag(key).fetchSemanticsNode().boundsInRoot
