@@ -1,5 +1,76 @@
 # Fenix changes
 
+## 160.0-r4
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_160_0_RELEASE`。本版把列表布局的拖拽卡片改为在手指处单独绘制，`160.0-r3`
+的其余内容不变。
+
+#### 修复
+
+- 列表布局原先平移被拖拽的列表项：卡片位置 = 该项的槽位 + 由槽位算出的修正量。滚动、实时重排、布局偏移都会
+  改变槽位，修正量慢一帧卡片就离开手指一行；快速拖到顶部让列表快速滚动时最明显。
+- 现在卡片不再属于列表，而在列表上方单独绘制，偏移只由手势决定（按下时的槽位 + 手指累计位移），与槽位、
+  滚动、重排无关。
+- 被拖拽的选项卡仍留在列表里作为隐藏占位（保留槽位、不绘制、不进入无障碍树），重排与落点逻辑不变；松手时
+  浮动卡片消失，列表项按原有回弹动画回到槽位。
+- 拖拽手势检测器移到同时容纳列表与卡片的容器，卡片不会挡住手势；卡片不可交互（不响应点击与滑动，不会取消
+  拖拽）。
+- `moved` 在整个手势期间保持置位：此前选项卡离开布局时会被清零，导致每次重新进入布局都重启卡片。
+- `ReorderableListTest` 新增用例覆盖「按住未移动无卡片、移动后卡片只跟手势、松手清空」；`TabLayoutTest`
+  覆盖列表布局的空闲渲染。
+
+#### 发布与验证
+
+- `fenix:spotlessKotlinCheck`、`fenix:compileDebugKotlin`、`fenix:compileDebugUnitTestKotlin`、
+  `fenix:compileDebugAndroidTestKotlin` 与 arm64-v8a release 构建通过；`org.mozilla.fenix.tabstray.*`
+  与 `org.mozilla.fenix.browser.tabstrip.*` 通过。
+- `fenix:testDebugUnitTest`：7050 项，271 失败、1739 跳过。失败全部是已记录的 Windows 环境限制：248 项
+  megazord/JNA 原生库缺失、11 项下载路径顺序、5 项目录重命名、4 项 Robolectric SQLite，其余 3 项为既有的
+  `markAsTriggered`、`getHashedIdentifier` 与 `PackageManager` 限制。
+- `docs/` 未改动，文档门禁沿用基线合并结果（`Failures: 0`、`Known Failures: 32`）。
+- APK `Fenix-160.0-r4-arm64-v8a-release.apk`：`132572720` 字节，SHA-256
+  `893C26B883DBF099E5780818AAEACBEBCF601038F5F25640C7475E0A9E1BE8F5`。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_160_0_RELEASE`. This release draws the list-layout drag card at the
+pointer instead of translating the list item; everything else is `160.0-r3`.
+
+#### Fix
+
+- The list used to translate the dragged list item: the card sat at the item's slot plus a correction computed
+  from that slot. Scrolling, live reorders and layout offsets all changed the slot, and a correction that lagged
+  one frame put the card a row away from the finger, worst when a fast drag to the top edge made the list scroll
+  quickly.
+- The card no longer belongs to the list. It is drawn above it at an offset taken from the gesture alone (the
+  slot at the touch point plus the accumulated pointer movement), independent of the slot, the scroll and the
+  reorders.
+- The dragged tab stays in the list as a hidden placeholder (it keeps the slot, does not draw and stays out of the
+  accessibility tree), so reordering and the drop target work as before; on release the floating card disappears
+  and the item animates back to its slot.
+- The drag detector moved to the container that holds both the list and the card, so the card cannot starve it of
+  pointer events; the card is non-interactive (no clicks, no swipes, so it cannot cancel the drag).
+- `moved` now stays set for the whole gesture. It used to be cleared when the tab left the layout, which
+  restarted the card every time the tab re-entered.
+- `ReorderableListTest` covers "no card while held, a card that follows only the pointer, cleared on release";
+  `TabLayoutTest` covers the idle list rendering.
+
+#### Release and validation
+
+- `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`, `fenix:compileDebugUnitTestKotlin`,
+  `fenix:compileDebugAndroidTestKotlin`, and the arm64-v8a release build pass;
+  `org.mozilla.fenix.tabstray.*` and `org.mozilla.fenix.browser.tabstrip.*` pass.
+- `fenix:testDebugUnitTest`: 7050 tests, 271 failed, 1739 skipped. Every failure is a recorded Windows
+  environment limitation: 248 megazord/JNA native-library failures, 11 download path ordering, 5 directory
+  renames, 4 Robolectric SQLite, and the 3 known `markAsTriggered`, `getHashedIdentifier`, and
+  `PackageManager` cases.
+- No file under `docs/` changed, so the documentation gate keeps the baseline merge result
+  (`Failures: 0`, `Known Failures: 32`).
+- APK `Fenix-160.0-r4-arm64-v8a-release.apk`: `132572720` bytes, SHA-256
+  `893C26B883DBF099E5780818AAEACBEBCF601038F5F25640C7475E0A9E1BE8F5`.
+
 ## 160.0-r3
 
 ### 中文

@@ -203,19 +203,19 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
 
 ### Current validation state
 
-The 160.0-r3 release completes the list-layout tab drag slot and carries the whole `160.0-r2` content. The
-slot has to be where the frame draws the item: `visibleItemsInfo` for an item that is laid out, and the
-item's own `LayoutCoordinates` queried at draw time for one that has left the viewport. Capturing the slot
-in the `onGloballyPositioned` callback instead is a layout behind, so a fast drag that scrolls the list
-under a pinned card drops it a row below the pointer. `ReorderableListTest` pins both sources and
-`ReorderableListDragTest` covers the pinned card.
+The 160.0-r4 release draws the dragged list tab as a floating card at the pointer and carries the whole
+`160.0-r3` content. The card's offset comes from the gesture alone (`ListReorderState.draggedItemTop`), the
+item stays in the list as a hidden placeholder that keeps its slot, and the drag detector sits on the
+container that holds both. Nothing about the item's placement reaches the card, so no scroll, reorder or
+layout offset can move it away from the finger. `ReorderableListTest` covers the card and `TabLayoutTest`
+the idle rendering.
 
 Validation: `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`,
 `fenix:compileDebugUnitTestKotlin`, `fenix:compileDebugAndroidTestKotlin`, the
 `components:compose-draggable` module tests, and the arm64-v8a release build pass, and
 `org.mozilla.fenix.tabstray.*` plus `org.mozilla.fenix.browser.tabstrip.*` pass. No file under `docs/`
 changed, so the documentation gate keeps the baseline merge result (`Failures: 0` with
-`Known Failures: 32`). `fenix:testDebugUnitTest` reports 7046 tests with 271 failures and 1739 skips,
+`Known Failures: 32`). `fenix:testDebugUnitTest` reports 7050 tests with 271 failures and 1739 skips,
 all in the Windows limitation categories below: 248 megazord/JNA, 11 download path ordering, 5 directory
 rename, 4 Robolectric SQLite, and the 3 known `markAsTriggered`, `getHashedIdentifier`, and
 `PackageManager` cases. The 160.0 baseline carries the 2026-11-04 merge-day `CLOBBER`, so
@@ -225,9 +225,9 @@ official GeckoView package instead.
 The arm64-v8a release uses the pinned official 160.0 GeckoView package through `-UseUpstreamGecko` and the
 exact official versionCode `2016194410`; no local GeckoView build is permitted because no Fenix-authored
 Gecko, C++, Rust, or Gecko locale source changed. The signed APK
-`Fenix-160.0-r3-arm64-v8a-release.apk` (132572720 bytes, SHA-256
-`EA697BC63AFAE7D2458ADFB946CE69DEA72EA2B8D4060E3AF64FB4142FC8E603`) supersedes
-`Fenix-160.0-r2-arm64-v8a-release.apk`.
+`Fenix-160.0-r4-arm64-v8a-release.apk` (132572720 bytes, SHA-256
+`893C26B883DBF099E5780818AAEACBEBCF601038F5F25640C7475E0A9E1BE8F5`) supersedes
+`Fenix-160.0-r3-arm64-v8a-release.apk`.
 
 The 160.0-r1 release synchronizes the official 160.0 baseline. The upstream delta spans 13018 files and
 the candidate changes 13013 files against its Fenix parent. `git apply --3way` rejected it atomically, so
