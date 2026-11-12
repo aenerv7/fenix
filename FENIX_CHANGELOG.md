@@ -1,5 +1,66 @@
 # Fenix changes
 
+## 160.0-r5
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_160_0_RELEASE`。本版让列表布局改用与标签页组相同的原地重排，`160.0-r4`
+的其余内容不变。
+
+#### 修复
+
+- 列表布局此前在启用拖放时（debug 构建始终启用）会切到 android-components 的可拖放列表；该实现平移列表项来移动
+  卡片，位置取决于该项的槽位，快速拖拽让列表在卡片下方滚动时卡片就会偏离手指。标签页组从不启用拖放，一直走原地
+  重排的列表，因此组内拖拽没有这个问题。
+- 现在所有列表式标签页都使用与标签页组相同的原地重排列表，卡片在列表上方单独绘制，偏移只由手势决定，滚动、重排
+  与布局偏移都影响不到它；被拖拽的选项卡保留为隐藏占位，重排与落点逻辑不变。
+- 代价：列表布局不再提供「拖动标签页覆盖到另一个标签页或组上以成组」，该手势只保留在网格布局；分组仍可通过长按
+  多选完成。
+- 原地重排列表现在也会上报「群组引导卡已展示」，此前只有可拖放列表会。
+
+#### 发布与验证
+
+- `fenix:spotlessKotlinCheck`、`fenix:compileDebugKotlin`、`fenix:compileDebugUnitTestKotlin`、
+  `fenix:compileDebugAndroidTestKotlin` 与 arm64-v8a release 构建通过；`org.mozilla.fenix.tabstray.*`、
+  `org.mozilla.fenix.browser.tabstrip.*` 与 `org.mozilla.fenix.tabgroups.*` 通过。
+- `fenix:testDebugUnitTest`：7050 项，271 失败、1739 跳过。失败全部是已记录的 Windows 环境限制：248 项
+  megazord/JNA 原生库缺失、11 项下载路径顺序、5 项目录重命名、4 项 Robolectric SQLite，其余 3 项为既有的
+  `markAsTriggered`、`getHashedIdentifier` 与 `PackageManager` 限制。
+- `docs/` 未改动，文档门禁沿用基线合并结果（`Failures: 0`、`Known Failures: 32`）。
+- APK `Fenix-160.0-r5-arm64-v8a-release.apk`：`132560432` 字节，SHA-256
+  `862B3146FDCE0C470D266D50E98E54BAE32A5516F87A9460A427FB55652D473D`。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_160_0_RELEASE`. This release moves the list layout onto the same
+in-place reorder as the tab group; everything else is `160.0-r4`.
+
+#### Fix
+
+- With drag and drop enabled - always true on debug builds - the list layout used the draggable list from
+  android-components. It moves the card by translating the list item, so the position depends on the item's slot
+  and drifts when a fast drag scrolls the list under the card. The tab group never enables drag and drop, keeps the
+  in-place reorder list, and does not drift.
+- Every list layout now uses the group's in-place reorder list: the card is drawn above the list at an offset taken
+  from the gesture alone, so scrolling, reorders and layout offsets cannot move it; the dragged tab stays as a
+  hidden placeholder and reordering and the drop target work as before.
+- Cost: the list layout no longer offers "drag a tab over another tab or a group to group it". That gesture stays in
+  the grid layout; groups can still be formed from the multi-select toolbar.
+- The in-place reorder list also reports the tab group onboarding card as shown; only the draggable list did.
+
+#### Release and validation
+
+- `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`, `fenix:compileDebugUnitTestKotlin`,
+  `fenix:compileDebugAndroidTestKotlin`, and the arm64-v8a release build pass; `org.mozilla.fenix.tabstray.*`,
+  `org.mozilla.fenix.browser.tabstrip.*`, and `org.mozilla.fenix.tabgroups.*` pass.
+- `fenix:testDebugUnitTest`: 7050 tests, 271 failed, 1739 skipped. Every failure is a recorded Windows
+  environment limitation: 248 megazord/JNA native-library failures, 11 download path ordering, 5 directory renames,
+  4 Robolectric SQLite, and the 3 known `markAsTriggered`, `getHashedIdentifier`, and `PackageManager` cases.
+- No file under `docs/` changed, so the documentation gate keeps the baseline merge result
+  (`Failures: 0`, `Known Failures: 32`).
+- APK `Fenix-160.0-r5-arm64-v8a-release.apk`: `132560432` bytes, SHA-256
+  `862B3146FDCE0C470D266D50E98E54BAE32A5516F87A9460A427FB55652D473D`.
+
 ## 160.0-r4
 
 ### 中文

@@ -132,6 +132,11 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
   reports its own coordinates the same way the grid does, and its translation lives on an inner node so
   the outer coordinates describe the slot: `graphicsLayer` translations are included in `LayoutCoordinates`
   measurements. `ReorderableListDragTest` covers the legacy list.
+- The list layout must always use the in-place reorder list (`ReorderableTabList`), the way the expanded group
+  does. Do not route it to the draggable list when drag and drop is enabled: that list translates the item, so
+  the card's position depends on the item's slot and drifts when a fast drag scrolls the list under it. Drag
+  and drop grouping, which needs the row to stay in the list, is grid-only; groups can still be formed from the
+  multi-select toolbar.
 - The tabs tray list must draw the dragged tab as a floating card above the list, positioned from the gesture
   alone (`ListReorderState.draggedItemTop`), with the item left in the list as a hidden placeholder that keeps
   its slot. Nothing then depends on the item's placement: no scroll, reorder or layout offset can move the card
@@ -203,31 +208,29 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
 
 ### Current validation state
 
-The 160.0-r4 release draws the dragged list tab as a floating card at the pointer and carries the whole
-`160.0-r3` content. The card's offset comes from the gesture alone (`ListReorderState.draggedItemTop`), the
-item stays in the list as a hidden placeholder that keeps its slot, and the drag detector sits on the
-container that holds both. Nothing about the item's placement reaches the card, so no scroll, reorder or
-layout offset can move it away from the finger. `ReorderableListTest` covers the card and `TabLayoutTest`
-the idle rendering.
+The 160.0-r5 release moves the list layout onto the group's in-place reorder list and carries the whole
+`160.0-r4` content. The draggable list was translating the item, so the card's position depended on the
+item's slot and drifted when a fast drag scrolled the list under it; the list now draws the card at the
+pointer, with the item left as a hidden placeholder. Drag and drop grouping is grid-only.
 
 Validation: `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`,
 `fenix:compileDebugUnitTestKotlin`, `fenix:compileDebugAndroidTestKotlin`, the
 `components:compose-draggable` module tests, and the arm64-v8a release build pass, and
-`org.mozilla.fenix.tabstray.*` plus `org.mozilla.fenix.browser.tabstrip.*` pass. No file under `docs/`
-changed, so the documentation gate keeps the baseline merge result (`Failures: 0` with
-`Known Failures: 32`). `fenix:testDebugUnitTest` reports 7050 tests with 271 failures and 1739 skips,
-all in the Windows limitation categories below: 248 megazord/JNA, 11 download path ordering, 5 directory
-rename, 4 Robolectric SQLite, and the 3 known `markAsTriggered`, `getHashedIdentifier`, and
-`PackageManager` cases. The 160.0 baseline carries the 2026-11-04 merge-day `CLOBBER`, so
-`assembleDebug` would need a full local Gecko rebuild and was skipped; the release build uses the pinned
-official GeckoView package instead.
+`org.mozilla.fenix.tabstray.*`, `org.mozilla.fenix.browser.tabstrip.*`, and `org.mozilla.fenix.tabgroups.*`
+pass. No file under `docs/` changed, so the documentation gate keeps the baseline merge result
+(`Failures: 0` with `Known Failures: 32`). `fenix:testDebugUnitTest` reports 7050 tests with 271 failures and
+1739 skips, all in the Windows limitation categories below: 248 megazord/JNA, 11 download path ordering, 5
+directory rename, 4 Robolectric SQLite, and the 3 known `markAsTriggered`, `getHashedIdentifier`, and
+`PackageManager` cases. The 160.0 baseline carries the 2026-11-04 merge-day `CLOBBER`, so `assembleDebug`
+would need a full local Gecko rebuild and was skipped; the release build uses the pinned official GeckoView
+package instead.
 
 The arm64-v8a release uses the pinned official 160.0 GeckoView package through `-UseUpstreamGecko` and the
 exact official versionCode `2016194410`; no local GeckoView build is permitted because no Fenix-authored
 Gecko, C++, Rust, or Gecko locale source changed. The signed APK
-`Fenix-160.0-r4-arm64-v8a-release.apk` (132572720 bytes, SHA-256
-`893C26B883DBF099E5780818AAEACBEBCF601038F5F25640C7475E0A9E1BE8F5`) supersedes
-`Fenix-160.0-r3-arm64-v8a-release.apk`.
+`Fenix-160.0-r5-arm64-v8a-release.apk` (132560432 bytes, SHA-256
+`862B3146FDCE0C470D266D50E98E54BAE32A5516F87A9460A427FB55652D473D`) supersedes
+`Fenix-160.0-r4-arm64-v8a-release.apk`.
 
 The 160.0-r1 release synchronizes the official 160.0 baseline. The upstream delta spans 13018 files and
 the candidate changes 13013 files against its Fenix parent. `git apply --3way` rejected it atomically, so
