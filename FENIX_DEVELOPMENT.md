@@ -124,14 +124,20 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
   caches the offset it last read from `visibleItemsInfo` and subtracts it in the fallback; the grid caches
   the same value from the item's `onGloballyPositioned` coordinates. `InteractableListDragTest` covers the
   list case.
-- Both lists must read the dragged item's slot from live layout coordinates, not from a cached offset or
-  from an index. The release channel runs with drag and drop disabled, which selects the legacy
+- Both lists must read the dragged item's slot from the live layout, not from an index. The release
+  channel runs with drag and drop disabled, which selects the legacy
   `ReorderableDragItemContainer`, and that path resolved the slot through the item index its composition
   was created with. A live reorder moves the item to another slot while that index still describes the
   slot it left, so the card was drawn up to several rows away from the pointer. The legacy container now
   reports its own coordinates the same way the grid does, and its translation lives on an inner node so
   the outer coordinates describe the slot: `graphicsLayer` translations are included in `LayoutCoordinates`
   measurements. `ReorderableListDragTest` covers the legacy list.
+- While the dragged item is laid out, its slot must come from `visibleItemsInfo`, not from the
+  coordinates cached by `onGloballyPositioned`. Both describe the same placement, but the coordinates are
+  dispatched after the layout, so in the frame that a scroll or a reorder changes the slot they still
+  describe the previous one: the card is drawn one row away from the pointer and snaps back on the next
+  drag. The cached coordinates stay the fallback for an item that has left the viewport, where the lazy
+  layout stops reporting it. `ReorderableListTest` covers the precedence.
 - Every container must read the drag translation when the layer is drawn, inside its `graphicsLayer`
   block, never during composition. A drag event that reorders the tab moves it to another slot in the
   same frame that applies the drag, so a composition-time value describes the previous layout and draws

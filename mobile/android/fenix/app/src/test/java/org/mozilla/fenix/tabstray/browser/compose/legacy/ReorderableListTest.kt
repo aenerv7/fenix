@@ -4,9 +4,12 @@
 
 package org.mozilla.fenix.tabstray.browser.compose.legacy
 
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.lazy.LazyListItemInfo
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.hapticfeedback.HapticFeedback
+import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.unit.IntSize
 import io.mockk.Runs
 import io.mockk.every
@@ -133,6 +136,59 @@ class ReorderableListTest {
     }
 
     @Test
+    fun `GIVEN the coordinates are a frame old WHEN the item is still laid out THEN the offset follows the layout slot`() {
+        val reorderState =
+            fakeListReorderState(
+                mockListState(mockItems = listOf(mockListItem(key = "key1", index = 0, size = 10, offset = 80)))
+            )
+        reorderState.updateListCoordinates(mockCoordinates(position = 160f))
+        reorderState.onTouchSlopPassed(offset = 85f, shouldLongPress = false)
+
+        // A reorder moved the item to slot 80, but the coordinates callback still reports the slot it left.
+        reorderState.onDraggedItemPositioned(mockk(relaxed = true))
+        reorderState.onDrag(offset = -20f)
+
+        // 80 (start slot) - 20 (drag) - 80 (live slot); the stale 160 would give -100.
+        assertEquals(-20f, reorderState.computeItemOffset(), 0.01f)
+    }
+
+    @Test
+    fun `GIVEN the item has left the layout WHEN the drag continues THEN the offset uses the last coordinates`() {
+        var visibleItems: List<LazyListItemInfo> = listOf(mockListItem(key = "key1", index = 0, size = 10, offset = 80))
+        val reorderState =
+            fakeListReorderState(
+                mockk {
+                    every { firstVisibleItemIndex } returns 0
+                    every { isScrollInProgress } returns false
+                    every { layoutInfo } returns
+                        mockk {
+                            every { visibleItemsInfo } answers { visibleItems }
+                            every { orientation } returns Orientation.Vertical
+                            every { viewportSize } returns IntSize(10, 100)
+                            every { viewportStartOffset } returns 0
+                            every { viewportEndOffset } returns 100
+                            every { totalItemsCount } returns 1
+                            every { mainAxisItemSpacing } returns 10
+                            every { beforeContentPadding } returns 0
+                        }
+                }
+            )
+        reorderState.updateListCoordinates(mockCoordinates(position = 120f))
+        reorderState.onTouchSlopPassed(offset = 85f, shouldLongPress = false)
+        reorderState.onDraggedItemPositioned(mockk(relaxed = true))
+
+        visibleItems = emptyList()
+        reorderState.onDrag(offset = -20f)
+
+        // The item is pinned at slot 120 and keeps drawing there, so the coordinates stay the reference.
+        assertEquals(-60f, reorderState.computeItemOffset(), 0.01f)
+    }
+
+    private fun mockCoordinates(position: Float): LayoutCoordinates = mockk {
+        every { localPositionOf(any(), any()) } returns Offset(0f, position)
+    }
+
+    @Test
     fun `WHEN the dragged item is removed THEN resetForItemChange clears the drag pin`() {
         val reorderState = fakeListReorderState(mockListState(mockItems = listOf(mockListItem(key = "key1"))))
 
@@ -187,6 +243,7 @@ class ReorderableListTest {
             every { layoutInfo } returns
                 mockk {
                     every { visibleItemsInfo } returns mockItems
+                    every { orientation } returns Orientation.Vertical
                     every { viewportSize } returns IntSize(10, 10)
                     every { firstVisibleItemIndex } returns firstVisibleIndex
                     every { totalItemsCount } returns totalItems

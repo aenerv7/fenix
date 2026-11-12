@@ -103,28 +103,31 @@ internal constructor(
 
     private var draggingItemCumulatedOffset by mutableFloatStateOf(0f)
     private var draggingItemInitialOffset by mutableFloatStateOf(0f)
-    private var draggingItemSlotOffset by mutableStateOf<Float?>(null)
+
+    /*
+     * Last slot reported by the item's coordinates. A plain field: it is read while the layer is drawn, and the layout
+     * info it falls back from is a snapshot state that invalidates the layer on every measure pass.
+     */
+    private var draggingItemSlotOffset: Float? = null
     internal var moved by mutableStateOf(false)
     private val draggingItemOffset: Float
         get() = draggingItemInitialOffset + draggingItemCumulatedOffset - currentSlotOffset()
 
     /**
-     * The dragged item's current layout offset, in the list's own coordinates.
+     * The dragged item's current slot, in the list's own coordinates.
      *
-     * A lazy layout stops reporting an item in `visibleItemsInfo` once the item has been dragged past the viewport
-     * edge, while the item itself keeps its slot and keeps moving with the scroll. Reading the slot from the item's own
-     * layout coordinates keeps the translation correct there; resolving it through the item's key rather than through
-     * an index keeps it correct while a live reorder moves the item to another slot.
+     * The slot reported by the layout is the one this frame places the item at. The coordinates callback arrives after
+     * the layout, so a reorder or a scroll can still leave it describing the previous frame, which draws the card a row
+     * away from the pointer. The coordinates remain the fallback for an item that has left the viewport, because a lazy
+     * layout stops reporting it in `visibleItemsInfo` while the item itself keeps its slot and keeps moving with the
+     * scroll.
      */
     private fun currentSlotOffset(): Float {
-        draggingItemSlotOffset?.let {
-            return it
-        }
         draggingItemLayoutInfo?.let { item ->
             draggingItemSlotOffset = item.offset.toFloat()
             return item.offset.toFloat()
         }
-        return draggingItemInitialOffset
+        return draggingItemSlotOffset ?: draggingItemInitialOffset
     }
 
     internal fun computeItemOffset(): Float = draggingItemOffset
