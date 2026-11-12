@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -57,16 +58,20 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.LocalPinnableContainer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.semantics.CollectionItemInfo
 import androidx.compose.ui.semantics.CustomAccessibilityAction
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.collectionInfo
 import androidx.compose.ui.semantics.collectionItemInfo
 import androidx.compose.ui.semantics.customActions
@@ -75,8 +80,10 @@ import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import kotlin.math.max
+import kotlin.math.roundToInt
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import mozilla.components.compose.base.RadioCheckmark
@@ -1635,116 +1642,213 @@ private fun ReorderableTabList(
         }
     }
 
+    // The dragged card is drawn above the list at the pointer, so the list can scroll and reorder under it without
+    // moving it. It only appears once the drag passes touch slop; before that the tab is still held in place.
+    val floatingCardTop = reorderState.floatingCardTop
+    val floatingTab =
+        if (floatingCardTop == null) {
+            null
+        } else {
+            tabs.firstOrNull { it.id == reorderState.draggingItemKey }
+        }
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter,
     ) {
-        LazyColumn(
+        Box(
             modifier =
                 modifier
                     .width(FirefoxTheme.layout.size.containerMaxWidth)
                     .padding(horizontal = horizontalPadding)
-                    .background(MaterialTheme.colorScheme.surface)
-                    .semantics {
-                        testTag = TabsTrayTestTag.TAB_LIST
-                    }
+                    .clipToBounds()
                     .detectListPressAndDrag(
                         listState = state,
                         reorderState = reorderState,
                         shouldLongPressToDrag = reorderingEnabled && !isInMultiSelectMode,
-                    ),
-            state = state,
-            verticalArrangement = Arrangement.spacedBy(FirefoxTheme.layout.space.static25),
-            contentPadding = PaddingValues(bottom = tabListBottomPadding),
-        ) {
-            header?.let {
-                item(key = HEADER_ITEM_KEY) {
-                    header()
-                }
-            }
-
-            tabListItems(
-                tabs = tabs,
-                showTabGroupOnboarding = displayTabGroupOnboarding,
-                selectedItemIndex = selectedItemIndex,
-                onTabGroupOnboardingDismiss = onTabGroupOnboardingDismiss,
-            ) { _, _, shapeInfo, tab ->
-                val selectionState =
-                    TabsTrayItemSelectionState(
-                        isFocused = tab.isFocused,
-                        multiSelectEnabled = isInMultiSelectMode,
-                        isSelected = selectionMode.contains(tab),
-                        focusEnabled = focusEnabled,
                     )
-                val shouldClickListen = reorderState.draggingItemKey != tab.id
-                when (tab) {
-                    is TabsTrayItem.Tab -> {
-                        ReorderableDragItemContainer(
-                            state = reorderState,
-                            key = tab.id,
-                        ) {
-                            TabListTabItem(
-                                tab = tab,
-                                modifier =
-                                    Modifier.tabListItemShapeStyling(
-                                        tabShapeInfo = shapeInfo,
-                                        selectionState = selectionState,
-                                    ),
-                                selectionState = selectionState,
-                                shouldClickListen = shouldClickListen,
-                                onCloseClick = onTabClose,
-                                onClick = onItemClick,
-                            )
-                        }
-                    }
-
-                    is TabsTrayItem.TabGroup -> {
-                        ReorderableDragItemContainer(
-                            state = reorderState,
-                            key = tab.id,
-                        ) {
-                            TabGroupRow(
-                                tabGroup = tab,
-                                onClick = { onItemClick(tab) },
-                                modifier =
-                                    Modifier.tabListItemShapeStyling(
-                                            tabShapeInfo = shapeInfo,
-                                            selectionState = selectionState,
-                                        )
-                                        .background(
-                                            if (selectionState.isSelected) {
-                                                MaterialTheme.colorScheme.primaryContainer
-                                            } else {
-                                                MaterialTheme.colorScheme.surfaceBright
-                                            }
-                                        ),
-                                trailingContent = {
-                                    if (selectionState.multiSelectEnabled) {
-                                        RadioCheckmark(
-                                            isSelected = selectionState.isSelected,
-                                            modifier = Modifier.padding(end = FirefoxTheme.layout.space.dynamic200),
-                                        )
-                                    } else {
-                                        TabGroupMenuButton(
-                                            includeCloseOption = true,
-                                            includeUngroupOption = true,
-                                            onDeleteTabGroupClick = { onDeleteTabGroupClick(tab) },
-                                            onEditTabGroupClick = { onEditTabGroupClick(tab) },
-                                            onCloseTabGroupClick = { onCloseTabGroupClick(tab) },
-                                            onShareTabGroupClick = { onShareTabGroupClick(tab) },
-                                            onUngroupTabGroupClick = { onUngroupTabGroupClick(tab) },
-                                        )
-                                    }
-                                },
-                                trailingContentColor = MaterialTheme.colorScheme.secondary,
-                                shouldClickListen = shouldClickListen,
-                            )
-                        }
+        ) {
+            LazyColumn(
+                modifier =
+                    Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface).semantics {
+                        testTag = TabsTrayTestTag.TAB_LIST
+                    },
+                state = state,
+                verticalArrangement = Arrangement.spacedBy(FirefoxTheme.layout.space.static25),
+                contentPadding = PaddingValues(bottom = tabListBottomPadding),
+            ) {
+                header?.let {
+                    item(key = HEADER_ITEM_KEY) {
+                        header()
                     }
                 }
+
+                tabListItems(
+                    tabs = tabs,
+                    showTabGroupOnboarding = displayTabGroupOnboarding,
+                    selectedItemIndex = selectedItemIndex,
+                    onTabGroupOnboardingDismiss = onTabGroupOnboardingDismiss,
+                ) { _, _, shapeInfo, tab ->
+                    val selectionState =
+                        TabsTrayItemSelectionState(
+                            isFocused = tab.isFocused,
+                            multiSelectEnabled = isInMultiSelectMode,
+                            isSelected = selectionMode.contains(tab),
+                            focusEnabled = focusEnabled,
+                        )
+                    val shouldClickListen = reorderState.draggingItemKey != tab.id
+                    ReorderableDragItemContainer(
+                        state = reorderState,
+                        key = tab.id,
+                    ) {
+                        TabListRow(
+                            tab = tab,
+                            shapeInfo = shapeInfo,
+                            selectionState = selectionState,
+                            shouldClickListen = shouldClickListen,
+                            // The card is not in the list, so its item must not respond to swipes either.
+                            swipingEnabled = floatingTab?.id != tab.id,
+                            onTabClose = onTabClose,
+                            onItemClick = onItemClick,
+                            onEditTabGroupClick = onEditTabGroupClick,
+                            onCloseTabGroupClick = onCloseTabGroupClick,
+                            onShareTabGroupClick = onShareTabGroupClick,
+                            onDeleteTabGroupClick = onDeleteTabGroupClick,
+                            onUngroupTabGroupClick = onUngroupTabGroupClick,
+                            // The tab being dragged is drawn by the floating card. Its item keeps the slot occupied so
+                            // the list does not reflow, but must not draw or expose the tab a second time.
+                            modifier =
+                                if (floatingTab?.id == tab.id) {
+                                    Modifier.alpha(0f).clearAndSetSemantics {}
+                                } else {
+                                    Modifier
+                                },
+                        )
+                    }
+                }
+
+                trackersBlockedContent(trackersBlockedCount, onPrivacyReportTapped)
             }
 
-            trackersBlockedContent(trackersBlockedCount, onPrivacyReportTapped)
+            if (floatingCardTop != null && floatingTab != null) {
+                val cardTop = floatingCardTop
+                val draggedIndex = tabs.indexOfFirst { it.id == floatingTab.id }.coerceAtLeast(0)
+                TabListRow(
+                    tab = floatingTab,
+                    shapeInfo =
+                        getTabShapeInfo(
+                            firstItemIndex = 0,
+                            lastItemIndex = tabs.lastIndex,
+                            itemIndex = draggedIndex,
+                            size = tabs.size,
+                        ),
+                    selectionState =
+                        TabsTrayItemSelectionState(
+                            isFocused = floatingTab.isFocused,
+                            multiSelectEnabled = isInMultiSelectMode,
+                            isSelected = selectionMode.contains(floatingTab),
+                            focusEnabled = focusEnabled,
+                        ),
+                    shouldClickListen = false,
+                    swipingEnabled = false,
+                    onTabClose = onTabClose,
+                    onItemClick = onItemClick,
+                    onEditTabGroupClick = onEditTabGroupClick,
+                    onCloseTabGroupClick = onCloseTabGroupClick,
+                    onShareTabGroupClick = onShareTabGroupClick,
+                    onDeleteTabGroupClick = onDeleteTabGroupClick,
+                    onUngroupTabGroupClick = onUngroupTabGroupClick,
+                    modifier =
+                        Modifier.offset { IntOffset(0, cardTop.roundToInt()) }
+                            .testTag(TabsTrayTestTag.DRAGGED_TAB_CARD),
+                )
+            }
+        }
+    }
+}
+
+/**
+ * One row of the tabs tray list: a tab item or a tab group row with the styling of its position in the list.
+ *
+ * @param modifier Applied outside the row styling, so a caller can move or hide the whole row.
+ * @param swipingEnabled Whether the tab can be swiped away.
+ */
+@Suppress("LongParameterList")
+@Composable
+private fun TabListRow(
+    tab: TabsTrayItem,
+    shapeInfo: TabListShapeInfo,
+    selectionState: TabsTrayItemSelectionState,
+    shouldClickListen: Boolean,
+    onTabClose: (TabsTrayItem.Tab) -> Unit,
+    onItemClick: (TabsTrayItem) -> Unit,
+    onEditTabGroupClick: (TabsTrayItem.TabGroup) -> Unit,
+    onCloseTabGroupClick: (TabsTrayItem.TabGroup) -> Unit,
+    onShareTabGroupClick: (TabsTrayItem.TabGroup) -> Unit,
+    onDeleteTabGroupClick: (TabsTrayItem.TabGroup) -> Unit,
+    onUngroupTabGroupClick: (TabsTrayItem.TabGroup) -> Unit,
+    modifier: Modifier = Modifier,
+    swipingEnabled: Boolean = true,
+) {
+    when (tab) {
+        is TabsTrayItem.Tab -> {
+            TabListTabItem(
+                tab = tab,
+                modifier =
+                    modifier.then(
+                        Modifier.tabListItemShapeStyling(
+                            tabShapeInfo = shapeInfo,
+                            selectionState = selectionState,
+                        )
+                    ),
+                selectionState = selectionState,
+                shouldClickListen = shouldClickListen,
+                swipingEnabled = swipingEnabled,
+                onCloseClick = onTabClose,
+                onClick = onItemClick,
+            )
+        }
+
+        is TabsTrayItem.TabGroup -> {
+            TabGroupRow(
+                tabGroup = tab,
+                onClick = { onItemClick(tab) },
+                modifier =
+                    modifier
+                        .then(
+                            Modifier.tabListItemShapeStyling(
+                                tabShapeInfo = shapeInfo,
+                                selectionState = selectionState,
+                            )
+                        )
+                        .background(
+                            if (selectionState.isSelected) {
+                                MaterialTheme.colorScheme.primaryContainer
+                            } else {
+                                MaterialTheme.colorScheme.surfaceBright
+                            }
+                        ),
+                trailingContent = {
+                    if (selectionState.multiSelectEnabled) {
+                        RadioCheckmark(
+                            isSelected = selectionState.isSelected,
+                            modifier = Modifier.padding(end = FirefoxTheme.layout.space.dynamic200),
+                        )
+                    } else {
+                        TabGroupMenuButton(
+                            includeCloseOption = true,
+                            includeUngroupOption = true,
+                            onDeleteTabGroupClick = { onDeleteTabGroupClick(tab) },
+                            onEditTabGroupClick = { onEditTabGroupClick(tab) },
+                            onCloseTabGroupClick = { onCloseTabGroupClick(tab) },
+                            onShareTabGroupClick = { onShareTabGroupClick(tab) },
+                            onUngroupTabGroupClick = { onUngroupTabGroupClick(tab) },
+                        )
+                    }
+                },
+                trailingContentColor = MaterialTheme.colorScheme.secondary,
+                shouldClickListen = shouldClickListen,
+            )
         }
     }
 }

@@ -50,6 +50,7 @@ internal object TabsTrayTestTag {
 
     // Tab items
     const val TAB_ITEM_ROOT = "$TABS_TRAY.tabItem"
+    const val DRAGGED_TAB_CARD = "$TAB_ITEM_ROOT.draggedCard"
     const val TAB_ITEM_CLOSE = "$TAB_ITEM_ROOT.close"
     const val TAB_ITEM_THUMBNAIL = "$TAB_ITEM_ROOT.thumbnail"
     const val TAB_ITEM_MEDIA_INDICATOR = "$TAB_ITEM_ROOT.mediaIndicator"

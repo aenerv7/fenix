@@ -18,6 +18,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import mozilla.components.compose.draggable.ItemInteractionHandler
@@ -155,24 +156,7 @@ class ReorderableListTest {
     @Test
     fun `GIVEN the item has left the layout WHEN the frame is drawn THEN the offset follows its live coordinates`() {
         var visibleItems: List<LazyListItemInfo> = listOf(mockListItem(key = "key1", index = 0, size = 10, offset = 80))
-        val reorderState =
-            fakeListReorderState(
-                mockk {
-                    every { firstVisibleItemIndex } returns 0
-                    every { isScrollInProgress } returns false
-                    every { layoutInfo } returns
-                        mockk {
-                            every { visibleItemsInfo } answers { visibleItems }
-                            every { orientation } returns Orientation.Vertical
-                            every { viewportSize } returns IntSize(10, 100)
-                            every { viewportStartOffset } returns 0
-                            every { viewportEndOffset } returns 100
-                            every { totalItemsCount } returns 1
-                            every { mainAxisItemSpacing } returns 10
-                            every { beforeContentPadding } returns 0
-                        }
-                }
-            )
+        val reorderState = fakeListReorderState(mockLiveListState { visibleItems })
         var slot = 160f
         reorderState.updateListCoordinates(
             mockk {
@@ -193,9 +177,77 @@ class ReorderableListTest {
         assertEquals(-60f, reorderState.computeItemOffset(), 0.01f)
     }
 
+    @Test
+    fun `WHEN the tab is dragged THEN the card top follows the pointer and not the layout`() {
+        var visibleItems: List<LazyListItemInfo> = listOf(mockListItem(key = "key1", index = 0, size = 10, offset = 80))
+        val reorderState = fakeListReorderState(mockLiveListState { visibleItems })
+        reorderState.onTouchSlopPassed(offset = 85f, shouldLongPress = false)
+        reorderState.onDrag(offset = -20f)
+
+        // The list scrolls the tab two rows down; the drawn card must not move with it.
+        visibleItems = listOf(mockListItem(key = "key1", index = 0, size = 10, offset = 100))
+        reorderState.onDrag(offset = -10f)
+
+        // 80 (start slot) - 20 - 10, measured from the pointer only.
+        assertEquals(50f, reorderState.draggedItemTop, 0.01f)
+    }
+
+    @Test
+    fun `GIVEN the item leaves the layout WHEN the drag continues THEN the drag start is reported once`() {
+        var visibleItems: List<LazyListItemInfo> = listOf(mockListItem(key = "key1", index = 0, size = 10, offset = 80))
+        val handler = mockk<ItemInteractionHandler>(relaxed = true)
+        val reorderState = fakeListReorderState(mockLiveListState { visibleItems }, handler)
+        reorderState.onTouchSlopPassed(offset = 85f, shouldLongPress = true)
+
+        reorderState.onDrag(offset = -20f)
+        visibleItems = emptyList()
+        reorderState.onDrag(offset = -20f)
+        reorderState.onDrag(offset = -20f)
+
+        verify(exactly = 1) { handler.onDragStart(sourceKey = "key1", preserveSelectMode = true) }
+        assertTrue(reorderState.moved)
+    }
+
+    @Test
+    fun `GIVEN a held tab WHEN the drag moves THEN the floating card appears at the pointer`() {
+        var visibleItems: List<LazyListItemInfo> = listOf(mockListItem(key = "key1", index = 0, size = 10, offset = 80))
+        val reorderState = fakeListReorderState(mockLiveListState { visibleItems })
+        reorderState.onTouchSlopPassed(offset = 85f, shouldLongPress = true)
+
+        // A tab that is only held in place is still drawn by the list.
+        assertNull(reorderState.floatingCardTop)
+
+        reorderState.onDrag(offset = -30f)
+        assertEquals(50f, reorderState.floatingCardTop)
+
+        // The list scrolls the tab down; the card is measured from the pointer and must not move with it.
+        visibleItems = listOf(mockListItem(key = "key1", index = 0, size = 10, offset = 160))
+        assertEquals(50f, reorderState.floatingCardTop)
+
+        reorderState.onDragInterrupted()
+        assertNull(reorderState.floatingCardTop)
+    }
+
     private fun mockCoordinates(position: Float): LayoutCoordinates = mockk {
         every { isAttached } returns true
         every { localPositionOf(any(), any()) } returns Offset(0f, position)
+    }
+
+    /** A list state whose visible items can change between drag events, like a list that scrolls under the tab. */
+    private fun mockLiveListState(items: () -> List<LazyListItemInfo>): LazyListState = mockk {
+        every { firstVisibleItemIndex } returns 0
+        every { isScrollInProgress } returns false
+        every { layoutInfo } returns
+            mockk {
+                every { visibleItemsInfo } answers { items() }
+                every { orientation } returns Orientation.Vertical
+                every { viewportSize } returns IntSize(10, 100)
+                every { viewportStartOffset } returns 0
+                every { viewportEndOffset } returns 100
+                every { totalItemsCount } returns 1
+                every { mainAxisItemSpacing } returns 10
+                every { beforeContentPadding } returns 0
+            }
     }
 
     @Test

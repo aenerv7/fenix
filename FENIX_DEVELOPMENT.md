@@ -132,12 +132,21 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
   reports its own coordinates the same way the grid does, and its translation lives on an inner node so
   the outer coordinates describe the slot: `graphicsLayer` translations are included in `LayoutCoordinates`
   measurements. `ReorderableListDragTest` covers the legacy list.
+- The tabs tray list must draw the dragged tab as a floating card above the list, positioned from the gesture
+  alone (`ListReorderState.draggedItemTop`), with the item left in the list as a hidden placeholder that keeps
+  its slot. Nothing then depends on the item's placement: no scroll, reorder or layout offset can move the card
+  away from the finger, which is what the slot arithmetic could not guarantee. The drag detector belongs on the
+  list container that holds both the list and the card, so the card cannot starve it of pointer events, and the
+  card itself must not be interactive (`shouldClickListen = false`, `swipingEnabled = false`), or a swipe on it
+  would cancel the drag. A held tab that has not moved yet stays in the list: the card only replaces it once the
+  drag passes touch slop.
 - The dragged item's slot must be current when the frame is drawn. While the item is laid out, read it
   from `visibleItemsInfo`. Once it has left the viewport the lazy layout stops reporting it, so read the
   slot from the item's own `LayoutCoordinates` at draw time; do not capture a number in the
   `onGloballyPositioned` callback, which is dispatched after the layout and therefore a layout behind.
   A stale slot draws the card one row away from the pointer, most visibly while a fast drag makes the
-  list scroll under the card. `ReorderableListTest` covers both sources.
+  list scroll under the card. This path still carries the browser tab strip and the grid.
+  `ReorderableListTest` covers both sources.
 - Every container must read the drag translation when the layer is drawn, inside its `graphicsLayer`
   block, never during composition. A drag event that reorders the tab moves it to another slot in the
   same frame that applies the drag, so a composition-time value describes the previous layout and draws
@@ -145,9 +154,11 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
   away from the finger. The legacy list read it during composition while the grid and the interactable
   list already read it in the block. `ReorderableListDragTest` draws one frame that reorders the tab and
   asserts the card is at the pointer.
-- Every list/grid interaction state must set its `moved` flag once the drag passes touch slop. All four
-  states report it to the drag-start callback exactly once; without it `onExitLongPress` fires on every
-  drag event and re-dispatches `TabDragStart` for the whole gesture.
+- Every list/grid interaction state must set its `moved` flag once the drag passes touch slop, and must keep it
+  until the drag ends. All four states report it to the drag-start callback exactly once; without it
+  `onExitLongPress` fires on every drag event and re-dispatches `TabDragStart` for the whole gesture. Clearing it
+  while a pinned item is out of the layout re-fires the drag start and restarts the floating card when the tab
+  re-enters.
 - Neither tab item animation may use a fade-out spec. A removed item that fades is drawn at its old
   position, detached from the layout: it does not follow the scroll and has no touch target, so it
   remains visible as non-interactive content until some later update removes it. The grid item animation

@@ -503,9 +503,21 @@ class TabLayoutTest {
             }
         }
 
+    @Test
+    fun `GIVEN the list layout WHEN no drag is active THEN no floating card is drawn`() {
+        composeTestRule.setContent {
+            ComposableUnderTest(displayTabsInGrid = false, dragAndDropEnabled = false)
+        }
+
+        composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_LIST).assertExists()
+        composeTestRule.onAllNodesWithTag(TabsTrayTestTag.TAB_ITEM_ROOT)[0].assertIsDisplayed()
+        composeTestRule.onAllNodesWithTag(TabsTrayTestTag.DRAGGED_TAB_CARD).assertCountEquals(0)
+    }
+
     @Composable
     private fun ComposableUnderTest(
         displayTabsInGrid: Boolean,
+        dragAndDropEnabled: Boolean = true,
         displayTabGroupOnboarding: Boolean = false,
         header: (@Composable () -> Unit)? = null,
         trackersBlockedCount: Int? = null,
@@ -517,7 +529,7 @@ class TabLayoutTest {
                     TabLayout(
                         tabs = List(TAB_COUNT) { createTab(url = "www.mozilla.org") },
                         displayTabsInGrid = displayTabsInGrid,
-                        dragAndDropEnabled = true,
+                        dragAndDropEnabled = dragAndDropEnabled,
                         displayTabGroupOnboarding = displayTabGroupOnboarding,
                         selectedItemIndex = 0,
                         selectionMode = TabsTrayState.Mode.Normal,

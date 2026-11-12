@@ -115,6 +115,20 @@ internal constructor(
         get() = draggingItemInitialOffset + draggingItemCumulatedOffset - currentSlotOffset()
 
     /**
+     * The dragged card's top, in the list's viewport coordinates and measured from the pointer alone: the card is drawn
+     * at the finger rather than at its slot, so no layout offset can move it.
+     */
+    internal val draggedItemTop: Float
+        get() = draggingItemInitialOffset + draggingItemCumulatedOffset
+
+    /**
+     * Where the floating card is drawn while a drag is active, or null while the tab is only held in place. The card
+     * replaces the item drawing from the moment the drag starts moving.
+     */
+    internal val floatingCardTop: Float?
+        get() = if (draggingItemKey != null && moved) draggedItemTop else null
+
+    /**
      * The dragged item's current slot, in the list's own coordinates.
      *
      * The slot reported by the layout is the one this frame places the item at. The coordinates callback arrives after
@@ -230,9 +244,9 @@ internal constructor(
     internal fun onDrag(offset: Float) {
         draggingItemCumulatedOffset += offset
 
-        if (draggingItemLayoutInfo == null) {
-            moved = false
-        }
+        // A tab that leaves the viewport is pinned and keeps being dragged, so `moved` stays set for the whole gesture:
+        // clearing it here would report the drag start again, and restart the floating card, every time the tab
+        // re-enters the layout.
         val draggingItem = draggingItemLayoutInfo ?: return
 
         if (!moved && abs(draggingItemCumulatedOffset) > touchSlop) {
