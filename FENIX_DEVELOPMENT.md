@@ -192,6 +192,32 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
 
 ### Current validation state
 
+The 160.0-r2 release fixes the list-layout tab drag slot and carries the whole `160.0-r1` content. The
+legacy `ReorderableDragItemContainer` preferred the position cached by `onGloballyPositioned` and only
+fell back to the layout, but that callback is dispatched after the layout, so in the frame that a scroll
+or a reorder moved the item the cache still held the previous slot and the card was drawn one row away
+from the pointer. The slot now comes from `visibleItemsInfo` while the item is laid out, with the
+coordinates only for an item that has left the viewport. `ReorderableListTest` pins both cases.
+
+Validation: `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`,
+`fenix:compileDebugUnitTestKotlin`, `fenix:compileDebugAndroidTestKotlin`, the
+`components:compose-draggable` module tests, and the arm64-v8a release build pass, and
+`org.mozilla.fenix.tabstray.*` plus `org.mozilla.fenix.browser.tabstrip.*` pass. No file under `docs/`
+changed, so the documentation gate keeps the baseline merge result (`Failures: 0` with
+`Known Failures: 32`). `fenix:testDebugUnitTest` reports 7045 tests with 271 failures and 1739 skips,
+all in the Windows limitation categories below: 248 megazord/JNA, 11 download path ordering, 5 directory
+rename, 4 Robolectric SQLite, and the 3 known `markAsTriggered`, `getHashedIdentifier`, and
+`PackageManager` cases. The 160.0 baseline carries the 2026-11-04 merge-day `CLOBBER`, so
+`assembleDebug` would need a full local Gecko rebuild and was skipped; the release build uses the pinned
+official GeckoView package instead.
+
+The arm64-v8a release uses the pinned official 160.0 GeckoView package through `-UseUpstreamGecko` and the
+exact official versionCode `2016194410`; no local GeckoView build is permitted because no Fenix-authored
+Gecko, C++, Rust, or Gecko locale source changed. The signed APK
+`Fenix-160.0-r2-arm64-v8a-release.apk` (132568624 bytes, SHA-256
+`EB11C5F39DCC9B9FEB420BDA92A55DFADF69B91B9F869EC07D83B074944BF4B4`) supersedes
+`Fenix-160.0-r1-arm64-v8a-release.apk`.
+
 The 160.0-r1 release synchronizes the official 160.0 baseline. The upstream delta spans 13018 files and
 the candidate changes 13013 files against its Fenix parent. `git apply --3way` rejected it atomically, so
 the tree came from `git merge-tree --write-tree`. The 60 conflicted paths are mostly line-ending noise:
@@ -199,23 +225,6 @@ the fork's English and 42 locale files are CRLF while upstream's are LF, which m
 as changed on both sides. Merging line-ending-normalized copies leaves 30 real conflicts.
 [FENIX_UPSTREAM_SYNC.md](FENIX_UPSTREAM_SYNC.md) records the merge, the move of the draggable tab UI into
 android-components, and the release pins.
-
-Validation: `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`,
-`fenix:compileDebugUnitTestKotlin`, `fenix:compileDebugAndroidTestKotlin`, the
-`components:compose-draggable` module tests, and the arm64-v8a release build pass. The full documentation
-gate reports `Failures: 0` with `Known Failures: 32`. `fenix:testDebugUnitTest` reports 7043 tests with
-271 failures and 1739 skips, all in the Windows limitation categories below: 248 megazord/JNA, 11 download
-path ordering, 5 directory rename, 4 Robolectric SQLite, and the 3 known `markAsTriggered`,
-`getHashedIdentifier`, and `PackageManager` cases. The 160.0 baseline carries the 2026-11-04 merge-day
-`CLOBBER`, so `assembleDebug` would need a full local Gecko rebuild and was skipped; the release build
-uses the pinned official GeckoView package instead.
-
-The arm64-v8a release uses the pinned official 160.0 GeckoView package through `-UseUpstreamGecko` and the
-exact official versionCode `2016194410`; no local GeckoView build is permitted because no Fenix-authored
-Gecko, C++, Rust, or Gecko locale source changed. The signed APK
-`Fenix-160.0-r1-arm64-v8a-release.apk` (132568624 bytes, SHA-256
-`388333DCBAB926B532C81847E28FF9D689EA0F55176C74A5AFFD38F4F5AE74EE`) supersedes
-`Fenix-159.0.1-r2-arm64-v8a-release.apk`.
 
 The 160.0 baseline changes Gradle and AGP, so the build virtualenv must be recreated through
 `tools/fenix/mach-local.ps1 configure` before the first release build; otherwise `:machConfigure` fails

@@ -1,5 +1,70 @@
 # Fenix changes
 
+## 160.0-r2
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_160_0_RELEASE`。本版只修复列表布局下的标签页拖拽定位，`160.0-r1`
+的其余内容不变。
+
+#### 修复
+
+- 列表布局（发布渠道禁用拖放，因此走旧版 `ReorderableDragItemContainer`）原先优先用
+  `onGloballyPositioned` 缓存的位置计算槽位，只有缓存缺失时才查布局。该回调在布局之后派发，滚动或实时
+  重排改变槽位的那一帧里缓存仍是上一帧的槽位：卡片被画在离手指一行（80 px）的位置，下一次拖拽事件才
+  纠正；标签页多、需要长距离滚动时最明显。
+- 改为与网格、可交互列表一致：item 仍在布局中时直接读 `visibleItemsInfo` 的槽位，缓存坐标只在 item
+  已离开视口时兜底——此时 `visibleItemsInfo` 不再报告它，而它仍按原槽位继续绘制。
+- `ReorderableListTest` 新增两个用例固定该优先级：过期坐标不得覆盖布局槽位（修复前偏差一个槽位
+  80 px），pin 住的 item 仍回退到坐标。
+- 顺带修正 160.0 合并遗留的 import 顺序，`spotlessKotlinCheck` 恢复通过。
+
+#### 发布与验证
+
+- `fenix:spotlessKotlinCheck`、`fenix:compileDebugKotlin`、`fenix:compileDebugUnitTestKotlin`、
+  `fenix:compileDebugAndroidTestKotlin` 与 arm64-v8a release 构建通过；`org.mozilla.fenix.tabstray.*`
+  与 `org.mozilla.fenix.browser.tabstrip.*` 通过。
+- `fenix:testDebugUnitTest`：7045 项，271 失败、1739 跳过。失败全部是已记录的 Windows 环境限制：248 项
+  megazord/JNA 原生库缺失、11 项下载路径顺序、5 项目录重命名、4 项 Robolectric SQLite，其余 3 项为既有的
+  `markAsTriggered`、`getHashedIdentifier` 与 `PackageManager` 限制。
+- `docs/` 未改动，文档门禁沿用基线合并结果（`Failures: 0`、`Known Failures: 32`）。
+- APK `Fenix-160.0-r2-arm64-v8a-release.apk`：`132568624` 字节，SHA-256
+  `EB11C5F39DCC9B9FEB420BDA92A55DFADF69B91B9F869EC07D83B074944BF4B4`。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_160_0_RELEASE`. This release only fixes tab drag positioning in
+the list layout; everything else is `160.0-r1`.
+
+#### Fix
+
+- The list layout (the release channel disables drag and drop, so it uses the legacy
+  `ReorderableDragItemContainer`) preferred the position cached by `onGloballyPositioned` for the slot and
+  only consulted the layout when the cache was missing. That callback is dispatched after the layout, so in
+  the frame that a scroll or a live reorder changes the slot the cache still holds the previous one: the
+  card is drawn one row (80 px) away from the pointer until the next drag event corrects it, which is most
+  visible with long tab lists.
+- It now reads the slot from `visibleItemsInfo` while the item is laid out, like the grid and the
+  interactable list, and keeps the cached coordinates only for an item that has left the viewport, where the
+  layout stops reporting it while the item keeps drawing at its slot.
+- `ReorderableListTest` pins that precedence: stale coordinates no longer override the layout slot (80 px,
+  one row, before the fix), and a pinned item still falls back to the coordinates.
+- Also fixes the import order left by the 160.0 update, so `spotlessKotlinCheck` passes again.
+
+#### Release and validation
+
+- `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`, `fenix:compileDebugUnitTestKotlin`,
+  `fenix:compileDebugAndroidTestKotlin`, and the arm64-v8a release build pass;
+  `org.mozilla.fenix.tabstray.*` and `org.mozilla.fenix.browser.tabstrip.*` pass.
+- `fenix:testDebugUnitTest`: 7045 tests, 271 failed, 1739 skipped. Every failure is a recorded Windows
+  environment limitation: 248 megazord/JNA native-library failures, 11 download path ordering, 5 directory
+  renames, 4 Robolectric SQLite, and the 3 known `markAsTriggered`, `getHashedIdentifier`, and
+  `PackageManager` cases.
+- No file under `docs/` changed, so the documentation gate keeps the baseline merge result
+  (`Failures: 0`, `Known Failures: 32`).
+- APK `Fenix-160.0-r2-arm64-v8a-release.apk`: `132568624` bytes, SHA-256
+  `EB11C5F39DCC9B9FEB420BDA92A55DFADF69B91B9F869EC07D83B074944BF4B4`.
+
 ## 160.0-r1
 
 ### 中文
