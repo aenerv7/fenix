@@ -1,5 +1,68 @@
 # Fenix changes
 
+## 160.0-r6
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_160_0_RELEASE`。本版移除列表式标签页布局与「标签页布局」设置，
+`160.0-r5` 的其余内容不变。
+
+#### 变更
+
+- 标签页托盘只保留卡片（网格）布局：删除列表布局的整条渲染路径（列表拖拽、列表行样式、列表引导卡、
+  列表预览与相关测试），`TabLayout` 固定渲染 `TabGrid`，不再接收 `displayTabsInGrid`。
+- 删除「标签页布局」（列表 / 网格）设置项及其偏好；`Settings` 初始化时把遗留的 `pref_key_tab_view_grid`
+  强制写成 `true`，原先选择列表的安装升级后直接是卡片布局，不会因残留取值出错。
+- 标签页托盘的配置与状态同步收窄（`TabsTrayConfig`、`TabGroupFlowState` 不再携带布局选项），标签页组流程、
+  私密标签页、预览与测试调用点一并更新。
+- 「拖动标签页覆盖到另一个标签页或组以成组」原本只存在于列表布局，随列表移除；分组仍可通过长按多选完成。
+- 浏览器工具栏下方的标签页条仍使用原地重排列表，其拖拽逻辑与其测试保持不变。
+
+#### 发布与验证
+
+- `fenix:spotlessKotlinCheck`、`fenix:compileDebugKotlin`、`fenix:compileDebugUnitTestKotlin`、
+  `fenix:compileDebugAndroidTestKotlin` 与 arm64-v8a release 构建通过；`org.mozilla.fenix.tabstray.*`、
+  `org.mozilla.fenix.tabgroups.*` 与 `org.mozilla.fenix.browser.tabstrip.*` 通过。
+- `fenix:testDebugUnitTest`：7041 项，271 失败、1737 跳过。失败全部是已记录的 Windows 环境限制：248 项
+  megazord/JNA 原生库缺失、11 项下载路径顺序、5 项目录重命名、4 项 Robolectric SQLite，其余 3 项为既有的
+  `markAsTriggered`、`getHashedIdentifier` 与 `PackageManager` 限制；数量减少来自被删除的列表布局测试。
+- `docs/` 未改动，文档门禁沿用基线合并结果（`Failures: 0`、`Known Failures: 32`）。
+- APK `Fenix-160.0-r6-arm64-v8a-release.apk`：`132531760` 字节，SHA-256
+  `37A791E8A8D65BD91C53F2F8463E772DE135F3BFBB9ED863DB010C202518A1FB`。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_160_0_RELEASE`. This release removes the list layout and the
+"Tab layout" setting; everything else is `160.0-r5`.
+
+#### Changes
+
+- The tabs tray keeps only the grid layout: the whole list rendering path (list drag, list row styling, the list
+  onboarding card, the list previews and their tests) is deleted, `TabLayout` always renders `TabGrid`, and it no
+  longer takes `displayTabsInGrid`.
+- The "Tab layout" (list/grid) setting and its preference are removed; `Settings` forces the retired
+  `pref_key_tab_view_grid` to `true` when it is constructed, so an installation that had chosen the list starts on
+  the grid and a stale value cannot cause the old layout to come back.
+- The tabs tray configuration and state no longer carry the layout choice (`TabsTrayConfig`, `TabGroupFlowState`),
+  and the tab group flow, private tabs, previews and tests are updated.
+- "Drag a tab over another tab or a group to group it" only existed in the list layout and goes away with it;
+  groups can still be formed from the multi-select toolbar.
+- The browser tab strip keeps the in-place reorder list, its drag behaviour and its tests.
+
+#### Release and validation
+
+- `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`, `fenix:compileDebugUnitTestKotlin`,
+  `fenix:compileDebugAndroidTestKotlin`, and the arm64-v8a release build pass; `org.mozilla.fenix.tabstray.*`,
+  `org.mozilla.fenix.tabgroups.*`, and `org.mozilla.fenix.browser.tabstrip.*` pass.
+- `fenix:testDebugUnitTest`: 7041 tests, 271 failed, 1737 skipped. Every failure is a recorded Windows environment
+  limitation: 248 megazord/JNA native-library failures, 11 download path ordering, 5 directory renames, 4
+  Robolectric SQLite, and the 3 known `markAsTriggered`, `getHashedIdentifier`, and `PackageManager` cases. The
+  smaller count comes from the deleted list-layout tests.
+- No file under `docs/` changed, so the documentation gate keeps the baseline merge result
+  (`Failures: 0`, `Known Failures: 32`).
+- APK `Fenix-160.0-r6-arm64-v8a-release.apk`: `132531760` bytes, SHA-256
+  `37A791E8A8D65BD91C53F2F8463E772DE135F3BFBB9ED863DB010C202518A1FB`.
+
 ## 160.0-r5
 
 ### 中文
