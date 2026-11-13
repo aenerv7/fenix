@@ -315,7 +315,7 @@ class TabDrawerPage(composeRule: AndroidComposeTestRule<HomeActivityIntentTestRu
         tabGroupTitle: String,
         numberOfTabs: Int,
         tabGroupColor: String,
-        isListViewEnabled: Boolean,
+        isListViewEnabled: Boolean = false,
     ): TabDrawerPage {
         val selector =
             if (isListViewEnabled) {

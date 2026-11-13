@@ -79,7 +79,6 @@ class ExpandedTabGroupTest {
                         ExpandedTabGroup(
                             group = fakeTabGroup(),
                             actions = expandedTabGroupActions(),
-                            displayTabsInGrid = true,
                             itemInteractionHandler = NoOpItemInteractionHandler,
                         )
                     }
@@ -177,7 +176,6 @@ class ExpandedTabGroupTest {
                         ExpandedTabGroup(
                             group = fakeTabGroup(),
                             actions = expandedTabGroupActions(),
-                            displayTabsInGrid = true,
                             itemInteractionHandler = NoOpItemInteractionHandler,
                         )
                     }
@@ -202,7 +200,6 @@ class ExpandedTabGroupTest {
                         ExpandedTabGroup(
                             group = fakeTabGroup(tabs = mutableListOf(tab)),
                             actions = expandedTabGroupActions(),
-                            displayTabsInGrid = true,
                             itemInteractionHandler = NoOpItemInteractionHandler,
                         )
                     }
@@ -211,28 +208,6 @@ class ExpandedTabGroupTest {
         }
 
         composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_GRID).assertIsDisplayed()
-    }
-
-    @Test
-    fun verifyListView() {
-        val tab = createTab(url = "test tab")
-
-        composeTestRule.setContent {
-            CompositionLocalProvider(LocalUnderTest provides true) {
-                FirefoxTheme(theme = Theme.Light) {
-                    Surface {
-                        ExpandedTabGroup(
-                            group = fakeTabGroup(tabs = mutableListOf(tab)),
-                            actions = expandedTabGroupActions(),
-                            displayTabsInGrid = false,
-                            itemInteractionHandler = NoOpItemInteractionHandler,
-                        )
-                    }
-                }
-            }
-        }
-
-        composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_LIST).assertIsDisplayed()
     }
 
     @Test
@@ -247,7 +222,6 @@ class ExpandedTabGroupTest {
                         ExpandedTabGroup(
                             group = fakeTabGroup(tabs = mutableListOf(tab)),
                             actions = expandedTabGroupActions(onItemClick = { if (it == tab) itemClicked = true }),
-                            displayTabsInGrid = true,
                             itemInteractionHandler = NoOpItemInteractionHandler,
                         )
                     }
@@ -563,7 +537,6 @@ class ExpandedTabGroupTest {
                         ExpandedTabGroup(
                             group = fakeTabGroup(tabs = mutableListOf(tab)),
                             actions = expandedTabGroupActions(onTabClose = { if (it == tab) itemClosed = true }),
-                            displayTabsInGrid = true,
                             itemInteractionHandler = NoOpItemInteractionHandler,
                         )
                     }
@@ -587,7 +560,6 @@ class ExpandedTabGroupTest {
                         ExpandedTabGroup(
                             group = group,
                             actions = expandedTabGroupActions(onDeleteTabGroupClick = { deleteClicked = true }),
-                            displayTabsInGrid = true,
                             itemInteractionHandler = NoOpItemInteractionHandler,
                         )
                     }
@@ -612,7 +584,6 @@ class ExpandedTabGroupTest {
                         ExpandedTabGroup(
                             group = fakeTabGroup(),
                             actions = expandedTabGroupActions(onEditTabGroupClick = { editClicked = true }),
-                            displayTabsInGrid = true,
                             itemInteractionHandler = NoOpItemInteractionHandler,
                         )
                     }
@@ -637,7 +608,6 @@ class ExpandedTabGroupTest {
                         ExpandedTabGroup(
                             group = fakeTabGroup(),
                             actions = expandedTabGroupActions(onCloseTabGroupClick = { closeClicked = true }),
-                            displayTabsInGrid = true,
                             itemInteractionHandler = NoOpItemInteractionHandler,
                         )
                     }
@@ -662,7 +632,6 @@ class ExpandedTabGroupTest {
                         ExpandedTabGroup(
                             group = fakeTabGroup(),
                             actions = expandedTabGroupActions(onUngroupTabGroupClick = { ungroupClicked = true }),
-                            displayTabsInGrid = true,
                             itemInteractionHandler = NoOpItemInteractionHandler,
                         )
                     }
@@ -687,7 +656,6 @@ class ExpandedTabGroupTest {
                         ExpandedTabGroup(
                             group = fakeTabGroup(),
                             actions = expandedTabGroupActions(onAddNewTabClick = { addNewTabClicked = true }),
-                            displayTabsInGrid = true,
                             itemInteractionHandler = NoOpItemInteractionHandler,
                         )
                     }

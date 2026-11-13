@@ -180,32 +180,4 @@ class TabGroupFlowFragmentTest {
 
         assertFalse(state.config.homepageAsNewTabEnabled)
     }
-
-    @Test
-    fun `WHEN user's tabs is set to be in a grid in settings, THEN this is reflected in the fragment config`() {
-        val tabId = "TestTabId"
-        val settings = Settings(appContext = ApplicationProvider.getApplicationContext())
-        settings.gridTabView = true
-        val state =
-            fragment.createInitialState(
-                settings = settings,
-                args = TabGroupFlowFragmentArgs(entryPoint = TabGroupFlowEntryPoint.AddTabToGroup(tabId = tabId)),
-            )
-
-        assertTrue(state.config.displayTabsInGrid)
-    }
-
-    @Test
-    fun `WHEN user's tabs is set to be in a list in settings, THEN this is reflected in the fragment config`() {
-        val tabId = "TestTabId"
-        val settings = Settings(appContext = ApplicationProvider.getApplicationContext())
-        settings.gridTabView = false
-        val state =
-            fragment.createInitialState(
-                settings = settings,
-                args = TabGroupFlowFragmentArgs(entryPoint = TabGroupFlowEntryPoint.AddTabToGroup(tabId = tabId)),
-            )
-
-        assertFalse(state.config.displayTabsInGrid)
-    }
 }

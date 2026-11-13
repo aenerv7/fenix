@@ -170,7 +170,6 @@ data class TabsTrayState(
     /**
      * Configuration and feature flags for the Tabs Tray UI.
      *
-     * @property displayTabsInGrid Whether normal and private tabs are displayed in a grid (vs list).
      * @property tabGroupsEnabled Whether the Tab Groups feature is enabled.
      * @property tabGroupsDragAndDropEnabled: Whether drag and drop is enabled for Tab Groups.
      * @property tabGroupsOnboardingEnabled Whether the onboarding card for Tab Groups is enabled.
@@ -182,7 +181,6 @@ data class TabsTrayState(
      * @property collectionsEnabled Whether the Collections feature is enabled.
      */
     data class TabsTrayConfig(
-        val displayTabsInGrid: Boolean = false,
         val tabGroupsEnabled: Boolean = false,
         val tabGroupsDragAndDropEnabled: Boolean = false,
         val tabGroupsOnboardingEnabled: Boolean = false,

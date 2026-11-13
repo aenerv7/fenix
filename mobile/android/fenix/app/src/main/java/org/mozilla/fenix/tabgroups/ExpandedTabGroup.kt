@@ -98,7 +98,6 @@ import org.mozilla.fenix.theme.FirefoxTheme
 fun ExpandedTabGroup(
     group: TabsTrayItem.TabGroup,
     actions: ExpandedTabGroupActions,
-    displayTabsInGrid: Boolean,
     itemInteractionHandler: ItemInteractionHandler,
     selectionMode: TabsTrayState.Mode = TabsTrayState.Mode.Normal,
     onItemLongClick: (TabsTrayItem) -> Unit = {},
@@ -152,7 +151,6 @@ fun ExpandedTabGroup(
 
             TabLayout(
                 tabs = group.tabs,
-                displayTabsInGrid = displayTabsInGrid,
                 dragAndDropEnabled = false,
                 reorderingEnabled = true,
                 displayTabGroupOnboarding = false,
@@ -177,8 +175,6 @@ fun ExpandedTabGroup(
                 // layout
                 contentPadding =
                     PaddingValues(0.dp), // TabLayout should not have its own content padding inside this view
-                listHorizontalPadding =
-                    0.dp, // The list layout should not add its own horizontal padding inside this view
                 focusEnabled = true, // Drag and drop is not possible in this view, so focus should never be suppressed
             )
         }
@@ -270,7 +266,6 @@ fun ExpandedTabGroup(
                 onAddNewTabClick = {},
                 onShareTabGroupClick = {},
             ),
-        displayTabsInGrid = true,
         itemInteractionHandler = itemInteractionHandler,
         selectionMode = selectionMode,
         onItemLongClick = onItemLongClick,
@@ -407,7 +402,6 @@ private fun ExpandedTabGroupPreview(
                         onAddNewTabClick = {},
                         onShareTabGroupClick = {},
                     ),
-                displayTabsInGrid = previewState.displayTabsInGrid,
                 itemInteractionHandler = NoOpItemInteractionHandler,
             )
         }
@@ -427,7 +421,6 @@ private fun generateFakeTabsList(tabCount: Int = 10): MutableList<TabsTrayItem.T
 private data class ExpandedTabGroupPreviewState(
     val group: TabsTrayItem.TabGroup,
     val selectedTabId: String? = null,
-    val displayTabsInGrid: Boolean = true,
 )
 
 private class ExpandedTabGroupPreviewProvider : PreviewParameterProvider<ExpandedTabGroupPreviewState> {
@@ -502,8 +495,7 @@ private class ExpandedTabGroupPreviewProvider : PreviewParameterProvider<Expande
                         createTabGroup(
                             title = "Tab Group",
                             tabs = generateFakeTabsList(),
-                        ),
-                    displayTabsInGrid = false,
+                        )
                 ),
             ),
         )

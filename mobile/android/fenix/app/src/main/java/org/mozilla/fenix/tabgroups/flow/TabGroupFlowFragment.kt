@@ -154,11 +154,7 @@ class TabGroupFlowFragment : DialogFragment() {
             TabGroupFlowStore(
                 initialState =
                     restoredState?.copy(
-                        config =
-                            restoredState.config.copy(
-                                displayTabsInGrid = settings.gridTabView,
-                                homepageAsNewTabEnabled = settings.enableHomepageAsNewTab,
-                            )
+                        config = restoredState.config.copy(homepageAsNewTabEnabled = settings.enableHomepageAsNewTab)
                     ) ?: createInitialState(settings = settings, args = args),
                 middlewares = listOf(TabGroupFlowTelemetryMiddleware()),
             )
@@ -172,11 +168,7 @@ class TabGroupFlowFragment : DialogFragment() {
     ): TabGroupFlowState {
         return TabGroupFlowState(
             backStack = buildBackStack(args.entryPoint),
-            config =
-                TabGroupFlowState.Config(
-                    homepageAsNewTabEnabled = settings.enableHomepageAsNewTab,
-                    displayTabsInGrid = settings.gridTabView,
-                ),
+            config = TabGroupFlowState.Config(homepageAsNewTabEnabled = settings.enableHomepageAsNewTab),
         )
     }
 

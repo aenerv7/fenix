@@ -179,6 +179,15 @@ class Settings(
 
     override val preferences: SharedPreferences = appContext.getSharedPreferences(FENIX_PREFERENCES, MODE_PRIVATE)
 
+    init {
+        // The tabs tray has no list layout: force the retired choice to the grid so a stored "list" cannot come back
+        // through a later upstream merge that reintroduces the preference.
+        val tabViewGridKey = appContext.getPreferenceKey(R.string.pref_key_tab_view_grid)
+        if (!preferences.getBoolean(tabViewGridKey, true)) {
+            preferences.edit { putBoolean(tabViewGridKey, true) }
+        }
+    }
+
     /** Indicates if the recent saved bookmarks functionality should be visible. */
     var showBookmarksHomeFeature by
         booleanPreference(
@@ -922,12 +931,6 @@ class Settings(
             default = true,
         )
 
-    var gridTabView by
-        booleanPreference(
-            appContext.getPreferenceKey(R.string.pref_key_tab_view_grid),
-            default = true,
-        )
-
     var manuallyCloseTabs by
         booleanPreference(
             appContext.getPreferenceKey(R.string.pref_key_close_tabs_manually),
@@ -1148,7 +1151,7 @@ class Settings(
         LIST,
     }
 
-    fun getTabViewPingString() = if (gridTabView) TabView.GRID.name else TabView.LIST.name
+    fun getTabViewPingString() = TabView.GRID.name
 
     enum class TabTimout {
         ONE_DAY,

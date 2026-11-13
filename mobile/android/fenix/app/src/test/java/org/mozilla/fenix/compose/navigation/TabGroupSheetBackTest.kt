@@ -173,7 +173,6 @@ class TabGroupSheetBackTest {
                                     ExpandedTabGroup(
                                         group = group,
                                         actions = ExpandedTabGroupActions({}, {}, {}, {}, {}, {}, {}, {}),
-                                        displayTabsInGrid = true,
                                         itemInteractionHandler = NoOpItemInteractionHandler,
                                         selectionMode = mode.value,
                                         onExitSelectMode = { mode.value = Mode.Normal },

@@ -6,22 +6,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <androidx.preference.PreferenceCategory
         android:layout="@layout/preference_cat_style"
-        android:title="@string/preferences_tab_layout"
-        app:allowDividerAbove="false"
-        app:iconSpaceReserved="false">
-        <org.mozilla.fenix.settings.RadioButtonPreference
-            android:defaultValue="false"
-            android:key="@string/pref_key_tab_view_list_do_not_use"
-            android:title="@string/tab_view_list" />
-
-        <org.mozilla.fenix.settings.RadioButtonPreference
-            android:defaultValue="true"
-            android:key="@string/pref_key_tab_view_grid"
-            android:title="@string/tab_view_grid" />
-    </androidx.preference.PreferenceCategory>
-
-    <androidx.preference.PreferenceCategory
-        android:layout="@layout/preference_cat_style"
         android:title="@string/preferences_close_tabs"
         app:allowDividerAbove="true"
         app:iconSpaceReserved="false">

@@ -151,9 +151,6 @@ internal fun NormalTabsPage(
                         onCFRClick = onInactiveTabsCFRClick,
                         onCFRDismiss = onInactiveTabsCFRDismiss,
                     )
-                    if (!tabsTrayConfig.displayTabsInGrid) {
-                        Spacer(modifier = Modifier.height(FirefoxTheme.layout.space.static200))
-                    }
                 }
             }
 
@@ -163,7 +160,6 @@ internal fun NormalTabsPage(
 
         TabLayout(
             tabs = normalTabsState.items,
-            displayTabsInGrid = tabsTrayConfig.displayTabsInGrid,
             dragAndDropEnabled = tabsTrayConfig.tabGroupsDragAndDropEnabled,
             liveReorderEnabled = tabsTrayConfig.tabGroupsLiveReorderEnabled,
             displayTabGroupOnboarding = displayTabGroupOnboarding,

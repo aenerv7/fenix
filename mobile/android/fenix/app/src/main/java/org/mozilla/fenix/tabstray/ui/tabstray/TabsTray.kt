@@ -370,11 +370,7 @@ private fun TabsTrayPreview(
                             syncedTabs = tabTrayState.syncedTabs,
                             expandedSyncedTabs = tabTrayState.expandedSyncedTabs,
                         ),
-                    config =
-                        TabsTrayState.TabsTrayConfig(
-                            displayTabsInGrid = tabTrayState.displayTabsInGrid,
-                            showTabAutoCloseBanner = tabTrayState.showTabAutoCloseBanner,
-                        ),
+                    config = TabsTrayState.TabsTrayConfig(showTabAutoCloseBanner = tabTrayState.showTabAutoCloseBanner),
                     hasTabDataLoaded = true,
                 )
         )
@@ -478,7 +474,6 @@ private class TabsTrayStateParameterProvider : PreviewParameterProvider<TabsTray
         sequenceOf(
             // TabsTray Preview
             TabsTrayPreviewModel(
-                displayTabsInGrid = false,
                 selectedTabId = tabs[0].id,
                 normalTabs = tabs,
                 privateTabs =
@@ -530,7 +525,6 @@ private class TabsTrayStateParameterProvider : PreviewParameterProvider<TabsTray
  * preview all cases.
  */
 private data class TabsTrayPreviewModel(
-    val displayTabsInGrid: Boolean = true,
     val selectedPage: Page = Page.NormalTabs,
     val selectedTabId: String? = null,
     val mode: TabsTrayState.Mode = TabsTrayState.Mode.Normal,

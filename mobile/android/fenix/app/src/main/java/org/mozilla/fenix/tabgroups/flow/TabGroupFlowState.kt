@@ -33,14 +33,10 @@ data class TabGroupFlowState(
     /**
      * Configuration for the flow of Tab Groups outside the TabsTray.
      *
-     * @property displayTabsInGrid Whether the group's tabs are displayed in a grid (vs list).
      * @property homepageAsNewTabEnabled Whether the homepage as a new tab feature is enabled, which gates the ability
      *   to open new tabs within an expanded tab group.
      */
-    data class Config(
-        val displayTabsInGrid: Boolean = false,
-        val homepageAsNewTabEnabled: Boolean = false,
-    )
+    data class Config(val homepageAsNewTabEnabled: Boolean = false)
 }
 
 /** Returns an initial [TabGroupFormState] derived from [TabGroupFlowState]. */

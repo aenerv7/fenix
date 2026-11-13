@@ -64,31 +64,6 @@ class TabGroupOnboardingItemTest {
     }
 
     @Test
-    fun verifyOnboardingListItemVisible() {
-        val title = context.getString(R.string.tab_group_onboarding_item_title)
-        val description = context.getString(R.string.tab_group_onboarding_list_item_description)
-
-        composeTestRule.setContent {
-            FirefoxTheme(theme = Theme.Light) {
-                Surface {
-                    TabGroupOnboardingListItem(onDismiss = {})
-                }
-            }
-        }
-
-        composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_GROUP_ONBOARDING_LIST_ITEM).assertIsDisplayed()
-        composeTestRule
-            .onNodeWithTag(
-                TabsTrayTestTag.TAB_GROUP_ONBOARDING_ILLUSTRATION,
-                useUnmergedTree = true,
-            )
-            .assertIsDisplayed()
-        composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_GROUP_ONBOARDING_ITEM_DISMISS).assertIsDisplayed()
-        composeTestRule.onNodeWithText(title).assertIsDisplayed()
-        composeTestRule.onNodeWithText(description).assertIsDisplayed()
-    }
-
-    @Test
     fun verifyOnboardingGridItemDismiss() {
         var dismissed = false
 
@@ -108,43 +83,11 @@ class TabGroupOnboardingItemTest {
     }
 
     @Test
-    fun verifyOnboardingListItemDismissInvokesCallback() {
-        var dismissed = false
-
-        composeTestRule.setContent {
-            FirefoxTheme(theme = Theme.Light) {
-                Surface {
-                    TabGroupOnboardingListItem(onDismiss = { dismissed = true })
-                }
-            }
-        }
-
-        composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_GROUP_ONBOARDING_ITEM_DISMISS).performClick()
-
-        assertTrue(dismissed)
-    }
-
-    @Test
     fun verifyOnboardingGridItemDismissIsLabeled() {
         composeTestRule.setContent {
             FirefoxTheme(theme = Theme.Light) {
                 Surface {
                     TabGroupOnboardingGridItem(onDismiss = {})
-                }
-            }
-        }
-
-        composeTestRule
-            .onNode(hasContentDescription(dismissContentDescription) and hasClickAction())
-            .assertIsDisplayed()
-    }
-
-    @Test
-    fun verifyOnboardingListItemDismissIsLabeled() {
-        composeTestRule.setContent {
-            FirefoxTheme(theme = Theme.Light) {
-                Surface {
-                    TabGroupOnboardingListItem(onDismiss = {})
                 }
             }
         }
@@ -168,24 +111,7 @@ class TabGroupOnboardingItemTest {
         composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_GROUP_ONBOARDING_GRID_ITEM).assertDoesNotExist()
     }
 
-    @Test
-    fun verifyOnboardingDisplayedInList() {
-        setTabLayoutContent(displayTabGroupOnboarding = true, displayTabsInGrid = false)
-
-        composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_GROUP_ONBOARDING_LIST_ITEM).assertIsDisplayed()
-    }
-
-    @Test
-    fun verifyOnboardingNotDisplayedInList() {
-        setTabLayoutContent(displayTabGroupOnboarding = false, displayTabsInGrid = false)
-
-        composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_GROUP_ONBOARDING_LIST_ITEM).assertDoesNotExist()
-    }
-
-    private fun setTabLayoutContent(
-        displayTabGroupOnboarding: Boolean,
-        displayTabsInGrid: Boolean = true,
-    ) {
+    private fun setTabLayoutContent(displayTabGroupOnboarding: Boolean) {
         val tabs: List<TabsTrayItem> =
             listOf(
                 createTab(url = "www.mozilla.org"),
@@ -196,7 +122,6 @@ class TabGroupOnboardingItemTest {
                 Surface {
                     TabLayout(
                         tabs = tabs,
-                        displayTabsInGrid = displayTabsInGrid,
                         dragAndDropEnabled = true,
                         displayTabGroupOnboarding = displayTabGroupOnboarding,
                         selectedItemIndex = 0,

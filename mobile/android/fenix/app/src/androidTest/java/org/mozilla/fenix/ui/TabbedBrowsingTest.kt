@@ -565,35 +565,6 @@ class TabbedBrowsingTest {
             }
     }
 
-    // TestRail link: https://mozilla.testrail.io/index.php?/cases/view/3024942
-    @Converted(
-        replacedBy = ["org.mozilla.fenix.ui.efficiency.tests.TabbedBrowsingTest#verifyTabsTrayListViewTest"],
-        bug = 2079277,
-        since = "2026-10",
-    )
-    @Critical
-    @Test
-    fun verifyTabsTrayListViewTest() {
-        appContext.components.settings.gridTabView = false
-        appContext.components.settings.tabGroupsOnboardingEnabled = false
-
-        val webPages = mockWebServer.genericAssets
-
-        MockBrowserDataHelper.createTabItem(webPages[0].url.toString())
-        MockBrowserDataHelper.createTabItem(webPages[1].url.toString())
-        MockBrowserDataHelper.createTabItem(webPages[2].url.toString())
-        MockBrowserDataHelper.createTabItem(webPages[3].url.toString())
-
-        homeScreen(composeTestRule) {}
-            .openTabDrawer {
-                verifyNormalTabsList()
-                verifyOpenTabsOrder(title = webPages[0].title, position = 1, isListViewEnabled = true)
-                verifyOpenTabsOrder(title = webPages[1].title, position = 2, isListViewEnabled = true)
-                verifyOpenTabsOrder(title = webPages[2].title, position = 3, isListViewEnabled = true)
-                verifyOpenTabsOrder(title = webPages[3].title, position = 4, isListViewEnabled = true)
-            }
-    }
-
     // TestRail link: https://mozilla.testrail.io/index.php?/cases/view/1126911
     @Converted(
         replacedBy = ["org.mozilla.fenix.ui.efficiency.tests.TabbedBrowsingTest#verifyTabsTrayGridViewTest"],
@@ -603,7 +574,6 @@ class TabbedBrowsingTest {
     @Critical
     @Test
     fun verifyTabsTrayGridViewTest() {
-        appContext.components.settings.gridTabView = true
         appContext.components.settings.tabGroupsOnboardingEnabled = false
 
         val webPages = mockWebServer.genericAssets

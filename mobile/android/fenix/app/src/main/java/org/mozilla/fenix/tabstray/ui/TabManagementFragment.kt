@@ -432,7 +432,6 @@ class TabManagementFragment : Fragment() {
                     state = state,
                     args = args,
                     handleTabClick = handleTabClick,
-                    displayTabsInGrid = state.config.displayTabsInGrid,
                 )
             }
             entry<TabManagerNavDestination.DeleteTabGroupConfirmationDialog>(metadata = DialogSceneStrategy.dialog()) {
@@ -558,7 +557,6 @@ class TabManagementFragment : Fragment() {
         state: TabsTrayState,
         args: TabManagerNavDestination.ExpandedTabGroup,
         handleTabClick: (TabsTrayItem.Tab) -> Unit,
-        displayTabsInGrid: Boolean,
     ) {
         val expandedGroup by tabsTrayStore.observeTabGroup(tabGroup = args.group).collectAsState(initial = args.group)
         val expandedGroupDotColor = expandedGroup.theme.primary.toArgb()
@@ -594,7 +592,6 @@ class TabManagementFragment : Fragment() {
         ExpandedTabGroup(
             group = expandedGroup,
             actions = expandedGroupActions,
-            displayTabsInGrid = displayTabsInGrid,
             itemInteractionHandler = itemInteractionHandler,
             selectionMode = expandedGroupSelectionMode,
             onExitSelectMode = {
@@ -806,7 +803,6 @@ class TabManagementFragment : Fragment() {
                     restoredState?.copy(
                         config =
                             restoredState.config.copy(
-                                displayTabsInGrid = settings.gridTabView,
                                 homepageAsNewTabEnabled = settings.enableHomepageAsNewTab,
                                 tabGroupsEnabled = settings.tabGroupsEnabled,
                             )
@@ -885,7 +881,6 @@ class TabManagementFragment : Fragment() {
                     tabGroupsLiveReorderEnabled = settings.tabGroupsLiveReorderEnabled,
                     tabGroupsOnboardingEnabled = settings.tabGroupsOnboardingEnabled,
                     homepageAsNewTabEnabled = settings.enableHomepageAsNewTab,
-                    displayTabsInGrid = settings.gridTabView,
                     isInDebugMode = Config.channel.isDebug || requireComponents.settings.showSecretDebugMenuThisSession,
                     showTabAutoCloseBanner =
                         settings.shouldShowAutoCloseTabsBanner && settings.canShowCfr && settings.cfrPopupsEnabled,

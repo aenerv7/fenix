@@ -330,7 +330,6 @@ class TabbedBrowsingTest : BaseTest() {
     @Critical
     @Test
     fun verifyTabsTrayGridViewTest() {
-        appContext.components.settings.gridTabView = true
         appContext.components.settings.tabGroupsOnboardingEnabled = false
 
         val webPages = mockWebServer.genericAssets
@@ -346,28 +345,6 @@ class TabbedBrowsingTest : BaseTest() {
             .verifyOpenTabsOrder(position = 2, tabTitle = webPages[1].title)
             .verifyOpenTabsOrder(position = 3, tabTitle = webPages[2].title)
             .verifyOpenTabsOrder(position = 4, tabTitle = webPages[3].title)
-    }
-
-    // TestRail link: https://mozilla.testrail.io/index.php?/cases/view/3024942
-    @Critical
-    @Test
-    fun verifyTabsTrayListViewTest() {
-        appContext.components.settings.gridTabView = false
-        appContext.components.settings.tabGroupsOnboardingEnabled = false
-
-        val webPages = mockWebServer.genericAssets
-        MockBrowserDataHelper.createTabItem(webPages[0].url.toString())
-        MockBrowserDataHelper.createTabItem(webPages[1].url.toString())
-        MockBrowserDataHelper.createTabItem(webPages[2].url.toString())
-        MockBrowserDataHelper.createTabItem(webPages[3].url.toString())
-
-        on.tabDrawer
-            .navigateToPage()
-            .verifyNormalTabsList()
-            .verifyOpenTabsOrder(position = 1, tabTitle = webPages[0].title, isListViewEnabled = true)
-            .verifyOpenTabsOrder(position = 2, tabTitle = webPages[1].title, isListViewEnabled = true)
-            .verifyOpenTabsOrder(position = 3, tabTitle = webPages[2].title, isListViewEnabled = true)
-            .verifyOpenTabsOrder(position = 4, tabTitle = webPages[3].title, isListViewEnabled = true)
     }
 
     // TestRail link: https://mozilla.testrail.io/index.php?/cases/view/2443938
@@ -535,21 +512,10 @@ class TabbedBrowsingTest : BaseTest() {
     // Leak Canary: https://github.com/square/leakcanary/issues/2781
     @Test
     fun verifyMergeTabGroupsViaSelectionGridViewTest() {
-        appContext.components.settings.gridTabView = true
-        mergeTabGroupsViaSelection(isListViewEnabled = false)
+        mergeTabGroupsViaSelection()
     }
 
-    // TestRail link: https://mozilla.testrail.io/index.php?/cases/view/4034516
-    @Critical
-    @SkipLeaks(reasons = ["https://bugzilla.mozilla.org/show_bug.cgi?id=2079797"])
-    // Leak Canary: https://github.com/square/leakcanary/issues/2781
-    @Test
-    fun verifyMergeTabGroupsViaSelectionListViewTest() {
-        appContext.components.settings.gridTabView = false
-        mergeTabGroupsViaSelection(isListViewEnabled = true)
-    }
-
-    private fun mergeTabGroupsViaSelection(isListViewEnabled: Boolean) {
+    private fun mergeTabGroupsViaSelection() {
         appContext.components.settings.tabGroupsOnboardingEnabled = false
 
         val firstGroup = "Group one"
@@ -583,8 +549,8 @@ class TabbedBrowsingTest : BaseTest() {
         // Enter selection mode, select two of the three groups, and merge them into a new group.
         on.tabDrawer.mozClick(TabDrawerSelectors.THREE_DOT_BUTTON)
         on.tabDrawer.mozClick(TabDrawerSelectors.SELECT_TABS_BUTTON)
-        on.tabDrawer.selectTabGroupCard(firstGroup, numberOfTabs = 1, tabGroupColor = "Grey", isListViewEnabled)
-        on.tabDrawer.selectTabGroupCard(secondGroup, numberOfTabs = 1, tabGroupColor = "Blue", isListViewEnabled)
+        on.tabDrawer.selectTabGroupCard(firstGroup, numberOfTabs = 1, tabGroupColor = "Grey")
+        on.tabDrawer.selectTabGroupCard(secondGroup, numberOfTabs = 1, tabGroupColor = "Blue")
         on.tabDrawer.mergeSelectedTabGroupsIntoNewGroup(mergedGroup, "Green")
 
         // The merged group holds both tabs and shows in the tab groups tray; the merged-away groups are gone.

@@ -217,7 +217,6 @@ class SettingsGeneralTest {
                 verifySettingsOptionSummary("Tabs", "Close manually")
             }
             .openTabsSubMenu {
-                verifyTabLayoutOptions()
                 verifyCloseTabsOptions()
                 verifyTabOrganizationOptions()
                 verifySelectedCloseTabsOption("Never")

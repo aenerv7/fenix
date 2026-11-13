@@ -68,7 +68,6 @@ internal fun PrivateTabsPage(
         else -> {
             TabLayout(
                 tabs = state.tabs,
-                displayTabsInGrid = config.displayTabsInGrid,
                 itemInteractionHandler = itemInteractionHandler,
                 selectedItemIndex = state.selectedItemIndex,
                 selectionMode = Mode.Normal, // Multiselection is not supported in private tabs

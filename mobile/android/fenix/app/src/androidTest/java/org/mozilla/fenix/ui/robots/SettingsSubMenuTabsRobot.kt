@@ -25,18 +25,6 @@ import org.mozilla.fenix.helpers.isChecked
 /** Implementation of Robot Pattern for the settings Tabs sub menu. */
 class SettingsSubMenuTabsRobot {
 
-    fun verifyTabLayoutOptions() {
-        Log.i(TAG, "verifyTabLayoutOptions: Trying to verify that the \"Tab layout\" title is visible")
-        tabLayoutHeading().check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
-        Log.i(TAG, "verifyTabLayoutOptions: Verified that the \"Tab layout\" title is visible")
-        Log.i(TAG, "verifyTabLayoutOptions: Trying to verify that the \"List\" option is visible")
-        listToggle().check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
-        Log.i(TAG, "verifyTabLayoutOptions: Verified that the \"List\" option is visible")
-        Log.i(TAG, "verifyTabLayoutOptions: Trying to verify that the \"Grid\" option is visible")
-        gridToggle().check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
-        Log.i(TAG, "verifyTabLayoutOptions: Verified that the \"Grid\" option is visible")
-    }
-
     fun verifyCloseTabsOptions() {
         Log.i(TAG, "verifyCloseTabsOptions: Trying to verify that the \"Close tabs\" title is visible")
         closeTabsHeading().check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
@@ -104,12 +92,6 @@ class SettingsSubMenuTabsRobot {
         }
     }
 }
-
-private fun tabLayoutHeading() = onView(withText(R.string.preferences_tab_layout))
-
-private fun listToggle() = onView(withText("List"))
-
-private fun gridToggle() = onView(withText("Grid"))
 
 private fun closeTabsHeading() = onView(withText("Close tabs"))
 

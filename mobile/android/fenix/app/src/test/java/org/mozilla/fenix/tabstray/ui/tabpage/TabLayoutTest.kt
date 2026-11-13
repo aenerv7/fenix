@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.DeviceConfigurationOverride
 import androidx.compose.ui.test.WindowSize
 import androidx.compose.ui.test.assertCountEquals
-import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
@@ -146,10 +145,7 @@ class TabLayoutTest {
     fun `GIVEN the tab group onboarding card is shown in grid view WHEN onboarding is no longer displayed THEN the card is removed`() {
         var displayTabGroupOnboarding by mutableStateOf(true)
         composeTestRule.setContent {
-            ComposableUnderTest(
-                displayTabsInGrid = true,
-                displayTabGroupOnboarding = displayTabGroupOnboarding,
-            )
+            ComposableUnderTest(displayTabGroupOnboarding = displayTabGroupOnboarding)
         }
 
         composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_GROUP_ONBOARDING_GRID_ITEM).assertExists()
@@ -160,51 +156,11 @@ class TabLayoutTest {
     }
 
     @Test
-    fun `GIVEN the tab group onboarding card is shown in list view WHEN onboarding is no longer displayed THEN the card is removed`() {
-        var displayTabGroupOnboarding by mutableStateOf(true)
-        composeTestRule.setContent {
-            ComposableUnderTest(
-                displayTabsInGrid = false,
-                displayTabGroupOnboarding = displayTabGroupOnboarding,
-            )
-        }
-
-        composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_GROUP_ONBOARDING_LIST_ITEM).assertExists()
-
-        displayTabGroupOnboarding = false
-
-        composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_GROUP_ONBOARDING_LIST_ITEM).assertDoesNotExist()
-    }
-
-    @Test
     fun `GIVEN the tab groups onboarding card is shown in grid view THEN the shown callback fires once`() {
         var shownCount = 0
         var trackersBlockedCount by mutableStateOf<Int?>(null)
         composeTestRule.setContent {
             ComposableUnderTest(
-                displayTabsInGrid = true,
-                displayTabGroupOnboarding = true,
-                trackersBlockedCount = trackersBlockedCount,
-                onTabGroupOnboardingShown = { shownCount++ },
-            )
-        }
-
-        composeTestRule.waitForIdle()
-        assertEquals(1, shownCount)
-
-        // Changing an unrelated param recomposes TabLayout, so the keyed SideEffect should not re-fire
-        trackersBlockedCount = 5
-        composeTestRule.waitForIdle()
-        assertEquals(1, shownCount)
-    }
-
-    @Test
-    fun `GIVEN the tab groups onboarding card is shown in list view THEN the shown callback fires once`() {
-        var shownCount = 0
-        var trackersBlockedCount by mutableStateOf<Int?>(null)
-        composeTestRule.setContent {
-            ComposableUnderTest(
-                displayTabsInGrid = false,
                 displayTabGroupOnboarding = true,
                 trackersBlockedCount = trackersBlockedCount,
                 onTabGroupOnboardingShown = { shownCount++ },
@@ -225,7 +181,6 @@ class TabLayoutTest {
         var shownCount = 0
         composeTestRule.setContent {
             ComposableUnderTest(
-                displayTabsInGrid = true,
                 displayTabGroupOnboarding = false,
                 onTabGroupOnboardingShown = { shownCount++ },
             )
@@ -236,89 +191,16 @@ class TabLayoutTest {
     }
 
     @Test
-    fun `WHEN the selected tab becomes a tab group THEN the group is scrolled into view`() {
-        val selectedTab =
-            createTab(
-                id = "selected-tab",
-                title = "Selected tab",
-                url = "https://www.mozilla.org/selected",
-            )
-        val groupTab = createTab(id = "group-tab", url = "https://www.mozilla.org/group")
-        val group =
-            createTabGroup(
-                id = "target-group",
-                title = "Target group",
-                tabs = listOf(groupTab),
-            )
-        val standaloneTabs =
-            List(12) { index ->
-                createTab(
-                    id = "tab-$index",
-                    title = "Tab $index",
-                    url = "https://www.mozilla.org/$index",
-                )
-            }
-        var tabs by mutableStateOf<List<TabsTrayItem>>(listOf(group) + standaloneTabs + selectedTab)
-        var selectedItemIndex by mutableStateOf(tabs.lastIndex)
-
-        composeTestRule.setContent {
-            CompositionLocalProvider(LocalUnderTest provides true) {
-                FirefoxTheme(theme = Theme.Light) {
-                    Surface {
-                        TabLayout(
-                            tabs = tabs,
-                            displayTabsInGrid = false,
-                            dragAndDropEnabled = true,
-                            displayTabGroupOnboarding = false,
-                            selectedItemIndex = selectedItemIndex,
-                            selectionMode = TabsTrayState.Mode.Normal,
-                            focusEnabled = true,
-                            itemInteractionHandler = fakeItemInteractionHandler(),
-                            onTabClose = {},
-                            onItemClick = {},
-                            onItemLongClick = {},
-                            onDeleteTabGroupClick = {},
-                            onEditTabGroupClick = {},
-                            onCloseTabGroupClick = {},
-                            onUngroupTabGroupClick = {},
-                            onShareTabGroupClick = {},
-                            onTabGroupOnboardingDismiss = {},
-                            liveReorderEnabled = false,
-                        )
-                    }
-                }
-            }
-        }
-
-        composeTestRule.waitForIdle()
-        tabs = listOf(group.copy(tabs = group.tabs + selectedTab)) + standaloneTabs
-        selectedItemIndex = 0
-        composeTestRule.waitForIdle()
-
-        composeTestRule.onNodeWithTag("${TabsTrayTestTag.TAB_GROUP_ROOT}.${group.id}").assertIsDisplayed()
+    fun `WHEN the last top-level tab is closed THEN it is removed from the layout`() {
+        assertLastTopLevelTabIsRemoved()
     }
 
     @Test
-    fun `WHEN the last top-level tab is closed in list view THEN it is removed from the layout`() {
-        assertLastTopLevelTabIsRemoved(displayTabsInGrid = false)
+    fun `GIVEN several tabs are selected WHEN they enter a group THEN none of them stays in the layout`() {
+        assertGroupingSelectedTabsLeavesNoStaleTab()
     }
 
-    @Test
-    fun `WHEN the last top-level tab is closed in grid view THEN it is removed from the layout`() {
-        assertLastTopLevelTabIsRemoved(displayTabsInGrid = true)
-    }
-
-    @Test
-    fun `GIVEN several tabs are selected WHEN they enter a group THEN none of them stays in list view`() {
-        assertGroupingSelectedTabsLeavesNoStaleTab(displayTabsInGrid = false)
-    }
-
-    @Test
-    fun `GIVEN several tabs are selected WHEN they enter a group THEN none of them stays in grid view`() {
-        assertGroupingSelectedTabsLeavesNoStaleTab(displayTabsInGrid = true)
-    }
-
-    private fun assertGroupingSelectedTabsLeavesNoStaleTab(displayTabsInGrid: Boolean) {
+    private fun assertGroupingSelectedTabsLeavesNoStaleTab() {
         val tabA = createTab(id = "tab-a", url = "https://www.mozilla.org/a")
         val tabB = createTab(id = "tab-b", url = "https://www.mozilla.org/b")
         val tabC = createTab(id = "tab-c", url = "https://www.mozilla.org/c")
@@ -334,7 +216,6 @@ class TabLayoutTest {
                     Surface {
                         TabLayout(
                             tabs = tabs,
-                            displayTabsInGrid = displayTabsInGrid,
                             dragAndDropEnabled = true,
                             displayTabGroupOnboarding = false,
                             selectedItemIndex = 0,
@@ -375,13 +256,12 @@ class TabLayoutTest {
         composeTestRule.mainClock.autoAdvance = true
         composeTestRule.waitForIdle()
 
-        // The group card takes the place of the two grouped tabs, so only tab C is left as a tab item. In the
-        // grid the group card is itself tagged as a tab item root, in the list it is not.
-        val remainingTabItems = if (displayTabsInGrid) 2 else 1
-        composeTestRule.onAllNodesWithTag(TabsTrayTestTag.TAB_ITEM_ROOT).assertCountEquals(remainingTabItems)
+        // The group card takes the place of the two grouped tabs and is itself tagged as a tab item root, so only
+        // tab C is left besides it.
+        composeTestRule.onAllNodesWithTag(TabsTrayTestTag.TAB_ITEM_ROOT).assertCountEquals(2)
     }
 
-    private fun assertLastTopLevelTabIsRemoved(displayTabsInGrid: Boolean) {
+    private fun assertLastTopLevelTabIsRemoved() {
         val group =
             createTabGroup(
                 id = "group",
@@ -396,7 +276,6 @@ class TabLayoutTest {
                     Surface {
                         TabLayout(
                             tabs = tabs,
-                            displayTabsInGrid = displayTabsInGrid,
                             dragAndDropEnabled = true,
                             displayTabGroupOnboarding = false,
                             selectedItemIndex = tabs.lastIndex,
@@ -419,20 +298,12 @@ class TabLayoutTest {
             }
         }
 
-        val tabItemCountWithUngroupedTab = if (displayTabsInGrid) 2 else 1
-        val tabItemCountWithoutUngroupedTab = if (displayTabsInGrid) 1 else 0
-        composeTestRule.onAllNodesWithTag(TabsTrayTestTag.TAB_ITEM_ROOT).assertCountEquals(tabItemCountWithUngroupedTab)
-        if (displayTabsInGrid) {
-            composeTestRule.mainClock.autoAdvance = false
-        }
+        composeTestRule.onAllNodesWithTag(TabsTrayTestTag.TAB_ITEM_ROOT).assertCountEquals(2)
+        composeTestRule.mainClock.autoAdvance = false
         composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_ITEM_CLOSE).performClick()
-        if (displayTabsInGrid) {
-            composeTestRule.mainClock.advanceTimeByFrame()
-        }
+        composeTestRule.mainClock.advanceTimeByFrame()
         composeTestRule.waitForIdle()
-        composeTestRule
-            .onAllNodesWithTag(TabsTrayTestTag.TAB_ITEM_ROOT)
-            .assertCountEquals(tabItemCountWithoutUngroupedTab)
+        composeTestRule.onAllNodesWithTag(TabsTrayTestTag.TAB_ITEM_ROOT).assertCountEquals(1)
         composeTestRule.mainClock.autoAdvance = true
     }
 
@@ -461,7 +332,6 @@ class TabLayoutTest {
             }
         TabLayout(
             tabs = tabs,
-            displayTabsInGrid = true,
             dragAndDropEnabled = true,
             displayTabGroupOnboarding = true,
             selectedItemIndex = 0,
@@ -503,21 +373,8 @@ class TabLayoutTest {
             }
         }
 
-    @Test
-    fun `GIVEN the list layout WHEN no drag is active THEN no floating card is drawn`() {
-        composeTestRule.setContent {
-            ComposableUnderTest(displayTabsInGrid = false, dragAndDropEnabled = false)
-        }
-
-        composeTestRule.onNodeWithTag(TabsTrayTestTag.TAB_LIST).assertExists()
-        composeTestRule.onAllNodesWithTag(TabsTrayTestTag.TAB_ITEM_ROOT)[0].assertIsDisplayed()
-        composeTestRule.onAllNodesWithTag(TabsTrayTestTag.DRAGGED_TAB_CARD).assertCountEquals(0)
-    }
-
     @Composable
     private fun ComposableUnderTest(
-        displayTabsInGrid: Boolean,
-        dragAndDropEnabled: Boolean = true,
         displayTabGroupOnboarding: Boolean = false,
         header: (@Composable () -> Unit)? = null,
         trackersBlockedCount: Int? = null,
@@ -528,8 +385,7 @@ class TabLayoutTest {
                 Surface {
                     TabLayout(
                         tabs = List(TAB_COUNT) { createTab(url = "www.mozilla.org") },
-                        displayTabsInGrid = displayTabsInGrid,
-                        dragAndDropEnabled = dragAndDropEnabled,
+                        dragAndDropEnabled = true,
                         displayTabGroupOnboarding = displayTabGroupOnboarding,
                         selectedItemIndex = 0,
                         selectionMode = TabsTrayState.Mode.Normal,

@@ -50,13 +50,11 @@ internal object TabsTrayTestTag {
 
     // Tab items
     const val TAB_ITEM_ROOT = "$TABS_TRAY.tabItem"
-    const val DRAGGED_TAB_CARD = "$TAB_ITEM_ROOT.draggedCard"
     const val TAB_ITEM_CLOSE = "$TAB_ITEM_ROOT.close"
     const val TAB_ITEM_THUMBNAIL = "$TAB_ITEM_ROOT.thumbnail"
     const val TAB_ITEM_MEDIA_INDICATOR = "$TAB_ITEM_ROOT.mediaIndicator"
     const val TAB_GROUP_ONBOARDING_ITEM = "$TABS_TRAY.tabGroupOnboardingItem"
     const val TAB_GROUP_ONBOARDING_GRID_ITEM = "$TAB_GROUP_ONBOARDING_ITEM.grid"
-    const val TAB_GROUP_ONBOARDING_LIST_ITEM = "$TAB_GROUP_ONBOARDING_ITEM.list"
     const val TAB_GROUP_ONBOARDING_ILLUSTRATION = "$TAB_GROUP_ONBOARDING_ITEM.illustration"
     const val TAB_GROUP_ONBOARDING_ITEM_DISMISS = "$TAB_GROUP_ONBOARDING_ITEM.dismiss"
 
