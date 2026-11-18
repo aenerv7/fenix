@@ -174,6 +174,30 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
 
 ### Current validation state
 
+The 160.0.1-r1 release synchronizes the official 160.0.1 baseline and carries the whole `160.0-r6`
+content. The upstream delta spans 560 files, and `git apply --3way` rejected it, so all 114 conflicted
+paths are `values-*/strings.xml` locale files that resolve to the fork because the delta adds no English
+string; the candidate changes 449 files against its Fenix parent.
+[FENIX_UPSTREAM_SYNC.md](FENIX_UPSTREAM_SYNC.md) records the merge and the release pins.
+
+Validation: `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`, and the arm64-v8a release build
+pass. No file under `docs/` changed, so the documentation gate keeps the baseline merge result
+(`Failures: 0` with `Known Failures: 32`). `fenix:testDebugUnitTest` reports 7043 tests with 270
+failures and 1739 skips, all in the Windows limitation categories below: 248 megazord/JNA, 11 download
+path separators, 5 directory rename, 4 Robolectric SQLite, and the known `markAsTriggered` and
+`PackageManager` cases. The 160.0 baseline carries the 2026-11-04 merge-day `CLOBBER`, so
+`assembleDebug` would need a full local Gecko rebuild and was skipped; the release build uses the
+pinned official GeckoView package instead. The 160.0.1 baseline has the same build virtualenv
+requirement: run `tools/fenix/mach-local.ps1 configure` before the first release build, otherwise
+`:machConfigure` fails with `PermissionError: [WinError 5]`.
+
+The arm64-v8a release uses the pinned official 160.0.1 GeckoView package through `-UseUpstreamGecko`
+and the exact official versionCode `2016196674`; no local GeckoView build is permitted because no
+Fenix-authored Gecko, C++, Rust, or Gecko locale source changed. The signed APK
+`Fenix-160.0.1-r1-arm64-v8a-release.apk` (132539952 bytes, SHA-256
+`FC4D60444DA496F0170A8D29784938EB9114AC67CAF092C97FDC7E2EBA1C7A44`) supersedes
+`Fenix-160.0-r6-arm64-v8a-release.apk`.
+
 The 160.0-r6 release removes the tabs tray list layout and its setting; the tray always renders the grid. The
 list could not keep the dragged card under the pointer while the list scrolled, and four revisions of slot
 tracking did not fix it, so the layout and its drag path are gone. `Settings` forces the retired

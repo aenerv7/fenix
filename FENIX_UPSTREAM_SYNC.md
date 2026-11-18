@@ -751,6 +751,34 @@ The baseline changes Gradle, AGP, and the mach site pins. `python/sites/mach.txt
 `No solution found when resolving dependencies` and continues without the optional pin; Gradle tasks
 and `mach doc` still run.
 
+## Firefox Android 160.0.1 synchronization
+
+The 160.0.1 update was prepared from the official `FIREFOX-ANDROID_160_0_1_RELEASE` tag
+(`58fed86b1b68`) on the candidate branch `sync/firefox-android-160.0.1`, starting from the 160.0-r6
+tree. The upstream delta spans 560 files (552 modified, 8 added; 65467 insertions, 69313 deletions).
+It is tzdata, `gfx`/`gl`, WebGL, APZ, selection and media fixes, the neqo HTTP/3 glue, remote-settings
+dumps, version stamps, and locale re-translations; no Fenix-authored source is involved.
+
+`git apply --3way` rejected the delta, and 114 paths conflicted: every
+`mobile/android/fenix/app/src/main/res/values-*/strings.xml`, the same line-ending noise the 160.0
+merge had. The delta adds no English string, so each conflicted locale resolves to the fork's content
+and the candidate changes 449 files against its Fenix parent: the 560 upstream files minus the 114
+locale files that stay at fork content, plus `FENIX_UPSTREAM_RELEASE`,
+`FENIX_UPSTREAM_VERSION_CODES.json`, and `FENIX_UPSTREAM_GECKOVIEW.json`. `values-zh-rCN` is one of
+them and keeps no missing and no duplicate name against `values/strings.xml`.
+
+The upstream Fenix and android-components changes apply cleanly on top of the fork's behaviour:
+`FenixApplication` gains only the worker initialization exception handler and keeps the search-bar
+widget previews and the disabled autofill state; `GleanHelper` and `GleanMetricsService` register the
+Nimbus targeting-context ping; `OnboardingScreen` guards the impression against a missing page;
+`FilePicker`, `BrowserIcons`/`IconResourceComparator`, and `AppLinksUseCases` take the upstream fixes.
+
+The release uses the pinned official 160.0.1 arm64-v8a GeckoView package recorded in
+`FENIX_UPSTREAM_GECKOVIEW.json`; local GeckoView compilation remains prohibited because no
+Fenix-authored native source changed. The exact official arm64-v8a versionCode is `2016196674`, and
+the official APK SHA-256 is `1C811BBDC8D7488B9340D379889CF04105525596D21A7C596B3A664D833858EA`.
+No file under `docs/` changed, so the documentation gate keeps the baseline merge result.
+
 ## Source-to-binary traceability
 
 If APKs are distributed, record their SHA-256 hashes and the exact Fenix tag in release notes. The

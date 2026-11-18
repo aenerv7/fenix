@@ -1,5 +1,62 @@
 # Fenix changes
 
+## 160.0.1-r1
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_160_0_1_RELEASE`（`58fed86b1b68`）。本版同步官方 160.0.1 点版本，
+`160.0-r6` 的全部内容保持不变。
+
+#### 变更
+
+- 上游增量 560 个文件：tzdata、`gfx`/`gl` 与 WebGL、APZ 输入队列、Selection、媒体解码、neqo HTTP/3
+  等修复，远程设置数据刷新，版本戳更新到 160.0.1。
+- 采用的上游 Fenix 与组件修复：onboarding 页面缺失时跳过曝光统计、注册 Nimbus 目标上下文 ping、
+  `FilePicker` 与 `AppLinks` 异常处理、图标候选比较不再按 URL 提前判定相等。
+- 114 个 locale `values-*/strings.xml` 冲突按 fork 内容裁决（上游未新增英文串）；`values-zh-rCN`
+  相对 `values/strings.xml` 无缺失、无重复。
+- 版本号随基线为 `160.0.1`，上游 arm64-v8a versionCode 为 `2016196674`。
+
+#### 发布与验证
+
+- `fenix:spotlessKotlinCheck`、`fenix:compileDebugKotlin` 与 arm64-v8a release 构建通过；`assembleDebug`
+  因基线自带的 merge-day `CLOBBER` 需要完整本地 Gecko 重建而跳过，release 使用固定官方 GeckoView 包。
+- `fenix:testDebugUnitTest`：7043 项，270 失败、1739 跳过。失败全部是已记录的 Windows 环境限制：248 项
+  megazord/JNA 原生库缺失、11 项下载路径分隔符、5 项目录重命名、4 项 Robolectric SQLite，以及既有的
+  `markAsTriggered` 与 `PackageManager` 两项。
+- `docs/` 未改动，文档门禁沿用基线合并结果（`Failures: 0`、`Known Failures: 32`）。
+- APK `Fenix-160.0.1-r1-arm64-v8a-release.apk`：`132539952` 字节，SHA-256
+  `FC4D60444DA496F0170A8D29784938EB9114AC67CAF092C97FDC7E2EBA1C7A44`。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_160_0_1_RELEASE` (`58fed86b1b68`). This release follows the
+official 160.0.1 point release; everything in `160.0-r6` is unchanged.
+
+#### Changes
+
+- The upstream delta spans 560 files: tzdata, `gfx`/`gl` and WebGL, APZ input queue, Selection, media decoding,
+  and neqo HTTP/3 fixes, refreshed remote-settings data, and the version stamps moved to 160.0.1.
+- Adopted upstream Fenix and component fixes: skip the onboarding impression when the page is missing, register the
+  Nimbus targeting-context ping, `FilePicker` and `AppLinks` exception handling, and icon resources are no longer
+  treated as equal early by URL.
+- The 114 conflicted locale `values-*/strings.xml` files resolve to the fork's content because the delta adds no
+  English string; `values-zh-rCN` has no missing and no duplicate name against `values/strings.xml`.
+- The version is `160.0.1` and the upstream arm64-v8a versionCode is `2016196674`.
+
+#### Release and validation
+
+- `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`, and the arm64-v8a release build pass; `assembleDebug` is
+  skipped because the baseline merge-day `CLOBBER` needs a full local Gecko rebuild, and the release uses the pinned
+  official GeckoView package.
+- `fenix:testDebugUnitTest`: 7043 tests, 270 failed, 1739 skipped. Every failure is a recorded Windows environment
+  limitation: 248 megazord/JNA native-library failures, 11 download path separators, 5 directory renames, 4
+  Robolectric SQLite, and the known `markAsTriggered` and `PackageManager` cases.
+- No file under `docs/` changed, so the documentation gate keeps the baseline merge result (`Failures: 0`,
+  `Known Failures: 32`).
+- APK `Fenix-160.0.1-r1-arm64-v8a-release.apk`: `132539952` bytes, SHA-256
+  `FC4D60444DA496F0170A8D29784938EB9114AC67CAF092C97FDC7E2EBA1C7A44`.
+
 ## 160.0-r6
 
 ### 中文
