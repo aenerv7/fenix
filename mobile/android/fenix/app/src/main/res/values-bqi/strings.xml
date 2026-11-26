@@ -211,6 +211,10 @@
   <string name="browser_menu_no_extensions_installed_description">هنی هیچ وردنی فعال نؽڌ</string>
   <!-- The description of the browser menu appears when the user hasn't installed any extensions and there are recommended extensions. -->
   <string name="browser_menu_try_a_recommended_extension_description">وردنی یل پؽشنهاڌ بیڌه ن امتهووݩ کۊنین</string>
+  <!-- In the browser menu: Message under the Extensions menu item, displayed when one or more extensions have updates that require approving changes to their permission settings. %1$s is a comma-separated list of one or more extension names. -->
+  <string name="browser_menu_extensions_review_update_description">واجۊری ورۊ رسۊوی %1$s</string>
+  <!-- In the browser menu: Message under an extension name, displayed when the update requires approving changes to extension settings. -->
+  <string name="browser_menu_extension_review_update_description">سی ورۊ رسۊوی، سامووا ن واجۊری کۊنین</string>
   <!-- Browser menu button that opens account settings -->
   <string name="browser_menu_account_settings">دووسمندیا هساو</string>
   <!-- Browser menu button that opens the settings menu -->
@@ -299,6 +303,8 @@
   <string name="browser_menu_webcompat_reporter_2">گوزارش خراوی وبگه</string>
   <!-- Browser menu label for adding a tab to a tab group -->
   <string name="browser_menu_add_to_tab_group">ٱووردن و بونکۊ</string>
+  <!-- Browser menu label for moving a tab to a tab group -->
+  <string name="browser_menu_move_to_tab_group">جاگورو و بونکۊ</string>
   <!-- Browser menu label that is displayed when the current page has been translated by the translation feature. -->
   <string name="browser_menu_translated">ولرنیڌه</string>
   <!-- Browser menu label for the print feature -->
@@ -385,6 +391,10 @@
   <string name="ai_controls_voice_search_title">پیتینیڌن دونگی</string>
   <!-- Description for the voice search AI feature toggle -->
   <string name="ai_controls_voice_search_description">تبدیل دونگ و هؽل و دست سرویسا گوڌنی گۊگل ٱنجوم ابۊ.</string>
+  <!-- Title for the listen to page AI feature toggle -->
+  <string name="ai_controls_listen_to_page_title">گۊش داڌن و بلگه</string>
+  <!-- Description for the listen to page AI feature toggle -->
+  <string name="ai_controls_listen_to_page_description">دسگا ایسا گاشڌ هۊش مسنۊعی ن سی خوندن وا دونگ بولند و کار بگره. هؽل وو دونگ سیخومی امئنن.</string>
   <!-- Title for the block AI enhancements confirmation dialog -->
   <string name="ai_controls_block_dialog_title">مسدۊد کردن پؽشرفتا هۊش مسنۊعی؟</string>
   <!-- Body text for the block AI enhancements confirmation dialog. %1$s is the name of the app (for example "Firefox"). -->
@@ -612,6 +622,14 @@
   <string name="nova_onboarding_sync_subtitle">نشووکا، رزما وو مووردا دیر ن من هر دسگایی من ی تؽ ب یک زیڌن بگیرین. دووسمندیا سیخومی ایسا وا رزم ناهاڌن، ایمن وو موتمعن زفت ابۊن.</string>
   <!-- Sync onboarding button. -->
   <string name="nova_onboarding_sync_button">ناهاڌن پا هوم گوم کردن</string>
+  <!-- Title of onboarding pairing card. Displayed when installing Firefox for Android by using a pairing link from Firefox for Desktop. "Scan" refers to scanning the QR code displayed on the computer. -->
+  <string name="nova_onboarding_sync_pairing_title">سی تکمیل جوفت سازی وا کامپیتر، اسکن کۊنین</string>
+  <!-- Body of the onboarding pairing card. Provides troubleshooting instructions when the QR code is not being displayed on the pairing computer. The "firefox.com/pair" URL should not be translated or edited. Bold tags should be preserved. -->
+  <string name="nova_onboarding_sync_pairing_body"><![CDATA[کود QR نڌارین؟ من کامپیتر خوت و <b>firefox.com/pair</b> راو.]]></string>
+  <!-- Primary button of the onboarding pairing card. Opens the camera to scan the pairing QR code. -->
+  <string name="nova_onboarding_sync_pairing_scan_button">کود جوفت سازی ن اسکن کۊنین</string>
+  <!-- Secondary button of the onboarding pairing card. Opens the Mozilla account sign-in page. -->
+  <string name="nova_onboarding_sync_pairing_email_button">و من ٱووڌن وا ایمیل</string>
   <!-- Marketing onboarding title. -->
   <string name="nova_onboarding_marketing_title">و ایما من وورکل کردن اینترنتی بؽڌر هیاری بڌین</string>
   <!--
@@ -749,6 +767,8 @@
   <string name="preferences_search">پیتینیڌن</string>
   <!-- Preference for settings related to Search engines -->
   <string name="preferences_search_engines">موتورا پیتینیڌن</string>
+  <!-- Settings item that adds the Firefox search widget to the device's home screen (tapping it opens the confirmation dialogue) -->
+  <string name="preferences_search_widget_in_home_screen">ٱووردن ٱوزارک پیتینیڌن و بلگه ٱسلی</string>
   <!-- Settings item to add a search widget on the device's homescreen. -->
   <string name="preferences_add_search_widget_from_settings">ویجت بلگه هووه</string>
   <!-- Preference for settings related to Search engines suggestions -->
@@ -1137,6 +1157,12 @@
   <string name="preferences_sync_category">پسند چیایی ک اخۊین هوم گوم بۊن</string>
   <!-- Preference category for sync controls -->
   <string name="preferences_category_sync">داده یل هوم گوم وابیڌه</string>
+  <!-- Preference title for the toggle that allows user to turn sync on or off for the device they are on -->
+  <string name="preferences_enable_sync_title">هوم گوم کردن ای دسگا</string>
+  <!-- Preference summary for the toggle that turns sync on or off for the device, shown when sync is on. -->
+  <string name="preferences_enable_sync_summary_sync_enabled">داده یل ایسا لادراری گرؽڌه وابین وو من دسگایل هوم گوم وابیڌه من دسرس هڌ.</string>
+  <!-- Preference summary for the toggle that turns sync on or off for the device, shown when sync is off. It explains where synced data comes from. %1$s is the Firefox brand name. -->
+  <string name="preferences_enable_sync_summary_sync_disabled">هونی داده یل زفت وابیڌه من هساو %1$s ایسا ن و کار اگره.</string>
   <!-- Summary for the sync preference category. -->
   <string name="preferences_sync_category_summary">دؽوۉداری هوم گوم کردنا من پوی دسگایل منپیز وابیڌه ایسا</string>
   <!-- Summary for the sync preference category, when user has disabled all synchronisation items. -->
@@ -2488,6 +2514,12 @@
   <string name="snackbar_private_tab_closed">بلگه سیخومی بسته وابی</string>
   <!-- Text shown in snackbar to undo deleting a tab, top site or collection -->
   <string name="snackbar_deleted_undo">وورگندن</string>
+  <!-- Confirmation message displayed when user adds a page to a tab group. %1$s is the tab group's name. -->
+  <string name="snackbar_tab_added_to_group">ٱووردن موورد و %1$s</string>
+  <!-- Confirmation message displayed when user moves a page from one tab group to another. %1$s is the tab group's name. -->
+  <string name="snackbar_tab_moved_to_group">و %1$s جاگورو وابی</string>
+  <!-- Button text displayed with a confirmation message when the user adds or moves a page to a tab group. Tapping it displays the tab group. -->
+  <string name="snackbar_action_view">نما</string>
   <!--
     QR code scanner prompt which appears after scanning a code, but before navigating to it
     %1$s is the name of the app (for example "Firefox"), %2$s is the URL or text scanned
@@ -4621,4 +4653,23 @@
   <string name="reader_mode_panel_listen_content_description">وا دونگ بولند بخۊوین</string>
   <!-- Content description for media player displayed in Reader Mode when the Listen to Page (Read Aloud) feature is selected -->
   <string name="reader_mode_panel_media_player_content_description">پشک کوننده وارسگر</string>
+<string name="addon_remove_dialog_body">ای کار وردنی وو سامووا هو ن ز ای دسگا اوورداره.</string>
+<string name="addon_remove_dialog_cancel">لقو</string>
+<string name="addon_remove_dialog_confirm">پاک کردن</string>
+<string name="addon_remove_dialog_title">%1$s وورداشته بۊ؟</string>
+<string name="browser_menu_read_or_listen">نما خۊندنی، بلگه ن بخۊوین یا گۊش بدین</string>
+<string name="certificate_details_panel_secure_connection_title">منپیز ٱمن</string>
+<string name="customize_menu">سفارشی کردن نومگه</string>
+<string name="download_item_source_data">(داده)</string>
+<string name="ip_protection_location_selection_reset_snackbar">جاگه VPN پسند وابیڌه من دسرس نؽ. و جاگه پؽشنهاڌی جاگورو وابی.</string>
+<string name="notification_privacy_report_body_has_trackers">گشتن ن وا پؽش بوورین. %1$s همچونووݩ مسدۊد امهنن.</string>
+<string name="notification_privacy_report_channel_description">%1$s نشووݩ اده ک منجا گشتن ایسا، چند رڌجۊر مسدۊد وابیڌنه.</string>
+<string name="notification_privacy_report_channel_name">گوزارش هریم سیخومی</string>
+<string name="notification_privacy_report_headline_no_trackers">%1$s مجال گشتن ایسا، رڌجۊرا ن مسدۊد اکونه. هونووݩ ن ایچو ابینین.</string>
+<string name="pdf_tools_sign_content_description_2">ی امزا ازاف کۊنین</string>
+<string name="pdf_tools_signature_adding_content_description">ازاف کردن امزا</string>
+<string name="preferences_media_category">وارسگر</string>
+<string name="preferences_menu">نومگه</string>
+<string name="preferences_open_links_in_youtube">لینگا ن من برنومه YouTube بۊگۊشین</string>
+<string name="reader_mode_panel_content_description_2">گۊزینه یل نما خۊندنی</string>
 </resources>

@@ -4549,4 +4549,17 @@
 
     Content description for accessibility (used by screen readers): Description for the button that triggers the start of a signature workflow on the PDF displayed on the screen.
   -->  <string name="pdf_tools_sign_content_description_2">Dodaj potpis</string>
+<string name="addon_remove_dialog_body">Ovo će ukloniti proširenje i njegove postavke s ovog uređaja.</string>
+<string name="addon_remove_dialog_cancel">Odustani</string>
+<string name="addon_remove_dialog_confirm">Ukloni</string>
+<string name="addon_remove_dialog_title">Ukloniti %1$s?</string>
+<string name="ai_controls_listen_to_page_description">Tvoj uređaj može koristiti umjetnu inteligenciju za čitanje naglas. Tekst i zvuk ostaju privatni.</string>
+<string name="ai_controls_listen_to_page_title">Poslušaj stranicu</string>
+<string name="browser_menu_extension_review_update_description">Pregledaj postavke za aktualizaciju</string>
+<string name="browser_menu_extensions_review_update_description">Pregledaj aktualizaciju za %1$s</string>
+<string name="certificate_details_panel_secure_connection_title">Sigurna veza</string>
+<string name="preferences_enable_sync_summary_sync_disabled">Koristeći podatke spremljene na tvojem %1$s računu.</string>
+<string name="preferences_enable_sync_summary_sync_enabled">Tvoji podaci su sigurnosno kopirani i dostupni na sinkroniziranim uređajima.</string>
+<string name="preferences_enable_sync_title">Sinkroniziraj ovaj uređaj</string>
+<string name="preferences_menu">Izbornik</string>
 </resources>

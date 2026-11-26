@@ -4464,39 +4464,6 @@
   <!-- ==== End of Terms of use popup prompt. ==== -->
 
   <!--
-    Sports widget
-
-    Label shown on the sports widget scoreboard when a match is currently being played live.
-  -->
-  <string name="wrex_widget_match_live">EN\u00a0DIRECT</string>
-  <!-- Label shown on the sports widget match status badge when the start of a match has been delayed. -->
-  <string name="wrex_widget_match_delayed">Retardé</string>
-  <!-- Label shown on the sports widget match status badge when a match has been suspended after it started. -->
-  <string name="wrex_widget_match_suspended">Suspendu</string>
-  <!-- Label shown on the sports widget match status badge when a match has been postponed to a later date. -->
-  <string name="wrex_widget_match_postponed">Reporté</string>
-  <!-- Sports widget menu item to view the team's match results. -->
-  <string name="wrex_widget_results">Résultats</string>
-  <!-- Sports widget menu item to view the league standings table. -->
-  <string name="wrex_widget_standings">Classement</string>
-  <!-- Sports widget menu item to browse the team's wallpapers. -->
-  <string name="wrex_widget_wallpapers">Fonds d’écran</string>
-  <!-- Sports widget menu item to remove the widget from the homepage. -->
-  <string name="wrex_widget_remove_widget">Supprimer le widget</string>
-  <!-- Content description (for accessibility, not displayed) for the overflow (more options) menu button on the sports widget card. -->
-  <string name="wrex_widget_more_options_content_description">Options supplémentaires</string>
-  <!--
-    Content description (for accessibility, not displayed) used for the sports widget card header announcing a live match.
-    %s is the name of the competition the match belongs to (e.g. "FA Cup").
-  -->
-  <string name="wrex_widget_live_game_content_description">%s, match en direct</string>
-  <!--
-    Content description (for accessibility, not displayed) for a paginated item.
-    %1$s is the name of the competition the match belongs to (e.g. "FA Cup"),
-    %2$d is the current page number, and %3$d is the total number of pages.
-  -->
-  <string name="wrex_widget_page_position_content_description">%1$s, page %2$d sur %3$d</string>
-  <!--
     Privacy notice homepage banner
 
     A message we show the user on the homepage when there is a new version of the privacy notice. 'Firefox' is intentionally hardcoded.
@@ -4671,4 +4638,21 @@
 
     Content description for accessibility (used by screen readers): Description for the button that triggers the start of a signature workflow on the PDF displayed on the screen.
   -->  <string name="pdf_tools_sign_content_description_2">Ajouter une signature</string>
+<string name="addon_remove_dialog_body">L’extension et ses paramètres seront supprimés de cet appareil.</string>
+<string name="addon_remove_dialog_cancel">Annuler</string>
+<string name="addon_remove_dialog_confirm">Supprimer</string>
+<string name="addon_remove_dialog_title">Supprimer %1$s\u00a0?</string>
+<string name="ai_controls_listen_to_page_description">Votre appareil peut utiliser l’IA pour lire la page à voix haute. Le texte et l’audio restent confidentiels.</string>
+<string name="ai_controls_listen_to_page_title">Écouter la page</string>
+<string name="browser_menu_read_or_listen">Mode lecture, lire ou écouter la page</string>
+<string name="certificate_details_panel_secure_connection_title">Connexion sécurisée</string>
+<string name="download_item_source_data">(données)</string>
+<string name="lens_camera_image_load_failed_v2">Impossible de charger cette image.</string>
+<string name="pdf_tools_signature_adding_content_description">Ajout de la signature</string>
+<string name="preferences_enable_sync_summary_sync_disabled">Utilisation des données enregistrées dans votre compte %1$s.</string>
+<string name="preferences_enable_sync_summary_sync_enabled">Vos données sont sauvegardées et accessibles sur vos appareils synchronisés.</string>
+<string name="preferences_enable_sync_title">Synchroniser cet appareil</string>
+<string name="preferences_media_category">Multimédia</string>
+<string name="preferences_open_links_in_youtube">Ouvrir les liens dans l’application YouTube</string>
+<string name="reader_mode_panel_content_description_2">Options du mode lecture</string>
 </resources>

@@ -303,6 +303,8 @@
   <string name="browser_menu_webcompat_reporter_2">Nahlásit nefunkční stránku</string>
   <!-- Browser menu label for adding a tab to a tab group -->
   <string name="browser_menu_add_to_tab_group">Přidat do skupiny</string>
+  <!-- Browser menu label for moving a tab to a tab group -->
+  <string name="browser_menu_move_to_tab_group">Přesunout do skupiny</string>
   <!-- Browser menu label that is displayed when the current page has been translated by the translation feature. -->
   <string name="browser_menu_translated">Přeloženo</string>
   <!-- Browser menu label for the print feature -->
@@ -616,6 +618,14 @@
   <string name="nova_onboarding_sync_subtitle">Získejte záložky, hesla a další údaje na libovolném zařízení během okamžiku. Vaše osobní údaje zůstanou v bezpečí díky šifrování.</string>
   <!-- Sync onboarding button. -->
   <string name="nova_onboarding_sync_button">Spustit synchronizaci</string>
+  <!-- Title of onboarding pairing card. Displayed when installing Firefox for Android by using a pairing link from Firefox for Desktop. "Scan" refers to scanning the QR code displayed on the computer. -->
+  <string name="nova_onboarding_sync_pairing_title">Naskenováním dokončete párování s počítačem</string>
+  <!-- Body of the onboarding pairing card. Provides troubleshooting instructions when the QR code is not being displayed on the pairing computer. The "firefox.com/pair" URL should not be translated or edited. Bold tags should be preserved. -->
+  <string name="nova_onboarding_sync_pairing_body"><![CDATA[QR kód se nezobrazuje? Otevřete na počítači stránku <b>firefox.com/pair</b>.]]></string>
+  <!-- Primary button of the onboarding pairing card. Opens the camera to scan the pairing QR code. -->
+  <string name="nova_onboarding_sync_pairing_scan_button">Naskenovat párovací kód</string>
+  <!-- Secondary button of the onboarding pairing card. Opens the Mozilla account sign-in page. -->
+  <string name="nova_onboarding_sync_pairing_email_button">Přihlásit se e-mailem</string>
   <!-- Marketing onboarding title. -->
   <string name="nova_onboarding_marketing_title">Pomozte nám vytvořit lepší internet</string>
   <!--
@@ -2508,6 +2518,12 @@
   <string name="snackbar_private_tab_closed">Anonymní panel byl zavřen</string>
   <!-- Text shown in snackbar to undo deleting a tab, top site or collection -->
   <string name="snackbar_deleted_undo">ZPĚT</string>
+  <!-- Confirmation message displayed when user adds a page to a tab group. %1$s is the tab group's name. -->
+  <string name="snackbar_tab_added_to_group">Přidáno do skupiny %1$s</string>
+  <!-- Confirmation message displayed when user moves a page from one tab group to another. %1$s is the tab group's name. -->
+  <string name="snackbar_tab_moved_to_group">Přesunuto do skupiny %1$s</string>
+  <!-- Button text displayed with a confirmation message when the user adds or moves a page to a tab group. Tapping it displays the tab group. -->
+  <string name="snackbar_action_view">Zobrazit</string>
   <!--
     QR code scanner prompt which appears after scanning a code, but before navigating to it
     %1$s is the name of the app (for example "Firefox"), %2$s is the URL or text scanned
@@ -4702,4 +4718,23 @@
   <string name="reader_mode_panel_media_player_content_description">Přehrávač médií</string>
   <!-- Content description for the reader view button Reader view facilitates readability and has a Listen to Page feature. Button icon is a document with headphones, and is displayed next to the page URL when the feature is available. -->
   <string name="browser_menu_read_or_listen">Zobrazení čtečky, čtení nebo poslech stránky</string>
+<string name="addon_remove_dialog_body">Rozšíření i jeho nastavení budou z tohoto zařízení odstraněny.</string>
+<string name="addon_remove_dialog_cancel">Zrušit</string>
+<string name="addon_remove_dialog_confirm">Odebrat</string>
+<string name="addon_remove_dialog_title">Odebrat %1$s?</string>
+<string name="ai_controls_listen_to_page_description">Vaše zařízení může pomocí AI předčítat obsah. Text i zvuk zůstávají soukromé.</string>
+<string name="ai_controls_listen_to_page_title">Poslech stránky</string>
+<string name="certificate_details_panel_secure_connection_title">Zabezpečené připojení</string>
+<string name="customize_menu">Upravit nabídku</string>
+<string name="ip_protection_location_selection_reset_snackbar">Vybrané umístění VPN není k dispozici. Byla provedena změna na doporučené umístění.</string>
+<string name="notification_privacy_report_body_has_trackers">Pokračujte v prohlížení. %1$s bude pokračovat v blokování.</string>
+<string name="notification_privacy_report_channel_description">%1$s ukazuje, kolik sledovacích prvků zablokoval při vašem prohlížení.</string>
+<string name="notification_privacy_report_channel_name">Hlášení o soukromí</string>
+<string name="notification_privacy_report_headline_no_trackers">%1$s blokuje sledovací prvky při prohlížení. Uvidíte je zde.</string>
+<string name="pdf_tools_sign_content_description_2">Přidat podpis</string>
+<string name="preferences_enable_sync_summary_sync_disabled">Jsou využívána data uložená ve vašem účtu %1$s.</string>
+<string name="preferences_enable_sync_summary_sync_enabled">Vaše data jsou zálohována a k dispozici na synchronizovaných zařízeních.</string>
+<string name="preferences_enable_sync_title">Synchronizovat toto zařízení</string>
+<string name="preferences_media_category">Média</string>
+<string name="preferences_open_links_in_youtube">Otevírat odkazy v aplikaci YouTube</string>
 </resources>

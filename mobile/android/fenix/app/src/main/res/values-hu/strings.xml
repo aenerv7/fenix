@@ -4435,39 +4435,6 @@
   <!-- ==== End of Terms of use popup prompt. ==== -->
 
   <!--
-    Sports widget
-
-    Label shown on the sports widget scoreboard when a match is currently being played live.
-  -->
-  <string name="wrex_widget_match_live">ÉLŐ</string>
-  <!-- Label shown on the sports widget match status badge when the start of a match has been delayed. -->
-  <string name="wrex_widget_match_delayed">Késleltetve</string>
-  <!-- Label shown on the sports widget match status badge when a match has been suspended after it started. -->
-  <string name="wrex_widget_match_suspended">Felfüggesztve</string>
-  <!-- Label shown on the sports widget match status badge when a match has been postponed to a later date. -->
-  <string name="wrex_widget_match_postponed">Elhalasztva</string>
-  <!-- Sports widget menu item to view the team's match results. -->
-  <string name="wrex_widget_results">Eredmények</string>
-  <!-- Sports widget menu item to view the league standings table. -->
-  <string name="wrex_widget_standings">Helyezések</string>
-  <!-- Sports widget menu item to browse the team's wallpapers. -->
-  <string name="wrex_widget_wallpapers">Háttérképek</string>
-  <!-- Sports widget menu item to remove the widget from the homepage. -->
-  <string name="wrex_widget_remove_widget">Kisalkalmazás eltávolítása</string>
-  <!-- Content description (for accessibility, not displayed) for the overflow (more options) menu button on the sports widget card. -->
-  <string name="wrex_widget_more_options_content_description">További beállítások</string>
-  <!--
-    Content description (for accessibility, not displayed) used for the sports widget card header announcing a live match.
-    %s is the name of the competition the match belongs to (e.g. "FA Cup").
-  -->
-  <string name="wrex_widget_live_game_content_description">%s, élő játék</string>
-  <!--
-    Content description (for accessibility, not displayed) for a paginated item.
-    %1$s is the name of the competition the match belongs to (e.g. "FA Cup"),
-    %2$d is the current page number, and %3$d is the total number of pages.
-  -->
-  <string name="wrex_widget_page_position_content_description">%1$s, %2$d. / %3$d oldal</string>
-  <!--
     Privacy notice homepage banner
 
     A message we show the user on the homepage when there is a new version of the privacy notice. 'Firefox' is intentionally hardcoded.
@@ -4623,4 +4590,44 @@
   <string name="reader_mode_panel_listen_content_description">Felolvasás</string>
   <!-- Content description for media player displayed in Reader Mode when the Listen to Page (Read Aloud) feature is selected -->
   <string name="reader_mode_panel_media_player_content_description">Médialejátszó</string>
+<string name="addon_failure_retry_action">Újra</string>
+<string name="addon_remove_dialog_body">Ez eltávolítja a kiegészítőt és a beállításait az eszközről.</string>
+<string name="addon_remove_dialog_cancel">Mégse</string>
+<string name="addon_remove_dialog_confirm">Eltávolítás</string>
+<string name="addon_remove_dialog_title">Eltávolítja ezt: %1$s?</string>
+<string name="ai_controls_listen_to_page_description">Az eszköz mesterséges intelligenciát használhat a felolvasáshoz. A szöveg és a hang privát marad.</string>
+<string name="ai_controls_listen_to_page_title">Oldal meghallgatása</string>
+<string name="automotive_authentication_setup_dialog_cancel">Mégse</string>
+<string name="automotive_authentication_setup_dialog_message">Állítson be képernyőzármintát, PIN-kódot vagy jelszót az eszközén, hogy más ne férhessen hozzá a mentett bizalmas adataihoz, amikor valaki más vezeti az autóját.</string>
+<string name="automotive_authentication_setup_dialog_set_up_now">Beállítás most</string>
+<string name="automotive_authentication_setup_dialog_title">Helyezze biztonságba az érzékeny adatait</string>
+<string name="browser_menu_read_or_listen">Olvasó megjelenítése, oldal elolvasása vagy meghallgatása</string>
+<string name="certificate_details_panel_secure_connection_title">Biztonságos kapcsolat</string>
+<string name="custom_accessibility_action_reorder_tab_down">Lap mozgatása lefelé</string>
+<string name="custom_accessibility_action_reorder_tab_left">Lap mozgatása balra</string>
+<string name="custom_accessibility_action_reorder_tab_right">Lap mozgatása jobbra</string>
+<string name="custom_accessibility_action_reorder_tab_up">Lap mozgatása felfelé</string>
+<string name="customize_menu">Menü testreszabása</string>
+<string name="download_item_source_data">(adatok)</string>
+<string name="ip_protection_location_selection_reset_snackbar">A kiválasztott VPN-hely nem érhető el. Átváltva az ajánlott helyre.</string>
+<string name="ip_protection_location_unavailable_description">Nem érhető el</string>
+<string name="ip_protection_toolbar_pill_description_off">A VPN ki van kapcsolva.</string>
+<string name="ip_protection_toolbar_pill_label_off">VPN kikapcsolva</string>
+<string name="lens_camera_image_load_failed_v2">Nem sikerült betölteni ezt a képet.</string>
+<string name="notification_privacy_report_body_has_trackers">Folytassa a böngészést. A %1$s továbbra is blokkolni fog.</string>
+<string name="notification_privacy_report_channel_description">A %1$s megmutatja, hogy hány nyomkövető lett blokkolva böngészés közben.</string>
+<string name="notification_privacy_report_channel_name">Adatvédelmi jelentés</string>
+<string name="notification_privacy_report_headline_no_trackers">A %1$s böngészés közben blokkolja a követőket. Itt láthatja őket.</string>
+<string name="pdf_tools_sign_content_description_2">Aláírás hozzáadása</string>
+<string name="pdf_tools_signature_adding_content_description">Aláírás hozzáadása</string>
+<string name="preference_homepage_search_location_middle">Középen</string>
+<string name="preference_homepage_search_location_top">Felül</string>
+<string name="preference_oled_theme">Legsötétebb</string>
+<string name="preferences_enable_sync_summary_sync_disabled">A %1$s-fiókjában mentett adatok használata.</string>
+<string name="preferences_enable_sync_summary_sync_enabled">Az adatairól biztonsági mentés készül, és elérhető a szinkronizált eszközökön.</string>
+<string name="preferences_enable_sync_title">Eszköz szinkronizálása</string>
+<string name="preferences_homepage_search_location">A keresősáv helye a kezdőlapon</string>
+<string name="preferences_media_category">Média</string>
+<string name="preferences_open_links_in_youtube">Hivatkozások megnyitása a YouTube alkalmazásban</string>
+<string name="reader_mode_panel_content_description_2">Olvasó nézet beállításai</string>
 </resources>

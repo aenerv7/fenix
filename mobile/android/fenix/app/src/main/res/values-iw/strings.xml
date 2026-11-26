@@ -303,6 +303,8 @@
   <string name="browser_menu_webcompat_reporter_2">דיווח על אתר שבור</string>
   <!-- Browser menu label for adding a tab to a tab group -->
   <string name="browser_menu_add_to_tab_group">הוספה לקבוצה</string>
+  <!-- Browser menu label for moving a tab to a tab group -->
+  <string name="browser_menu_move_to_tab_group">העברה לקבוצה</string>
   <!-- Browser menu label that is displayed when the current page has been translated by the translation feature. -->
   <string name="browser_menu_translated">מתורגם</string>
   <!-- Browser menu label for the print feature -->
@@ -616,6 +618,14 @@
   <string name="nova_onboarding_sync_subtitle">קבלת הסימניות, הססמאות ועוד על כל מכשיר במהירות. הנתונים האישיים שלך נשארים בטוחים ומאובטחים באמצעות הצפנה.</string>
   <!-- Sync onboarding button. -->
   <string name="nova_onboarding_sync_button">התחלה בסנכרון</string>
+  <!-- Title of onboarding pairing card. Displayed when installing Firefox for Android by using a pairing link from Firefox for Desktop. "Scan" refers to scanning the QR code displayed on the computer. -->
+  <string name="nova_onboarding_sync_pairing_title">יש לסרוק כדי לסיים את הצימוד עם המחשב שלך</string>
+  <!-- Body of the onboarding pairing card. Provides troubleshooting instructions when the QR code is not being displayed on the pairing computer. The "firefox.com/pair" URL should not be translated or edited. Bold tags should be preserved. -->
+  <string name="nova_onboarding_sync_pairing_body"><![CDATA[אין קוד QR? יש לעבור אל <b>firefox.com/pair</b> במחשב שלך.]]></string>
+  <!-- Primary button of the onboarding pairing card. Opens the camera to scan the pairing QR code. -->
+  <string name="nova_onboarding_sync_pairing_scan_button">סריקת קוד הצימוד</string>
+  <!-- Secondary button of the onboarding pairing card. Opens the Mozilla account sign-in page. -->
+  <string name="nova_onboarding_sync_pairing_email_button">כניסה עם דוא״ל</string>
   <!-- Marketing onboarding title. -->
   <string name="nova_onboarding_marketing_title">עזרו לנו לבנות אינטרנט טוב יותר</string>
   <!--
@@ -2500,6 +2510,12 @@
   <string name="snackbar_private_tab_closed">הלשונית הפרטית נסגרה</string>
   <!-- Text shown in snackbar to undo deleting a tab, top site or collection -->
   <string name="snackbar_deleted_undo">ביטול</string>
+  <!-- Confirmation message displayed when user adds a page to a tab group. %1$s is the tab group's name. -->
+  <string name="snackbar_tab_added_to_group">נוסף אל %1$s</string>
+  <!-- Confirmation message displayed when user moves a page from one tab group to another. %1$s is the tab group's name. -->
+  <string name="snackbar_tab_moved_to_group">הועבר אל %1$s</string>
+  <!-- Button text displayed with a confirmation message when the user adds or moves a page to a tab group. Tapping it displays the tab group. -->
+  <string name="snackbar_action_view">הצגה</string>
   <!--
     QR code scanner prompt which appears after scanning a code, but before navigating to it
     %1$s is the name of the app (for example "Firefox"), %2$s is the URL or text scanned
@@ -4671,4 +4687,27 @@
   <string name="reader_mode_panel_listen_content_description">קריאה בקול</string>
   <!-- Content description for media player displayed in Reader Mode when the Listen to Page (Read Aloud) feature is selected -->
   <string name="reader_mode_panel_media_player_content_description">נגן מדיה</string>
+<string name="addon_remove_dialog_body">פעולה זו מסירה את ההרחבה ואת ההגדרות שלה ממכשיר זה.</string>
+<string name="addon_remove_dialog_cancel">ביטול</string>
+<string name="addon_remove_dialog_confirm">הסרה</string>
+<string name="addon_remove_dialog_title">להסיר את %1$s?</string>
+<string name="ai_controls_listen_to_page_description">ייתכן שהמכשיר שלך ישתמש בבינה מלאכותית כדי לקרוא בקול רם. הטקסט והשמע יישארו פרטיים.</string>
+<string name="ai_controls_listen_to_page_title">האזנה לעמוד</string>
+<string name="browser_menu_read_or_listen">תצוגת קריאה, לקרוא או להאזין לדף</string>
+<string name="certificate_details_panel_secure_connection_title">חיבור מאובטח</string>
+<string name="customize_menu">התאמה אישית של התפריט</string>
+<string name="download_item_source_data">(data)</string>
+<string name="ip_protection_location_selection_reset_snackbar">מיקום ה־VPN שנבחר אינו זמין. בוצעה החלפה למיקום המומלץ.</string>
+<string name="notification_privacy_report_body_has_trackers">אפשר להמשיך לגלוש. %1$s ימשיך לחסום.</string>
+<string name="notification_privacy_report_channel_description">‏%1$s מציג כמה רכיבי מעקב נחסמו תוך כדי שגלשת.</string>
+<string name="notification_privacy_report_channel_name">דוח פרטיות</string>
+<string name="notification_privacy_report_headline_no_trackers">‏%1$s חוסם רכיבי מעקב תוך כדי הגלישה. הם יופיעו כאן.</string>
+<string name="pdf_tools_sign_content_description_2">הוספת חתימה</string>
+<string name="pdf_tools_signature_adding_content_description">בתהליך הוספת חתימה</string>
+<string name="preferences_enable_sync_summary_sync_disabled">משתמש בנתונים שנשמרו בחשבון ה־%1$s שלך.</string>
+<string name="preferences_enable_sync_summary_sync_enabled">הנתונים שלך מגובים וזמינים במכשירים מסונכרנים.</string>
+<string name="preferences_enable_sync_title">סנכרון מכשיר זה</string>
+<string name="preferences_media_category">מדיה</string>
+<string name="preferences_open_links_in_youtube">פתיחת קישורים ביישומון של YouTube</string>
+<string name="reader_mode_panel_content_description_2">אפשרויות תצוגת קריאה</string>
 </resources>

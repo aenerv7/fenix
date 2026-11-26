@@ -4652,4 +4652,17 @@
   <!-- Body text for the weekly privacy report notification for when trackers have been blocked. %1$s is the app name (e.g. Firefox) -->  <string name="notification_privacy_report_body_has_trackers">Шолуды жалғастырыңыз. %1$s бұғаттауды жалғастырады.</string>
   <!-- Headline text of the weekly privacy report notification for when no trackers have been blocked. %1$s is the app name (e.g. Firefox) -->  <string name="notification_privacy_report_headline_no_trackers">%1$s сіз шолу жасаған кезде трекерлерді бұғаттайды. Оларды осы жерден көресіз.</string>
   <!-- Snackbar (in-app pop-up notification) text to signal the VPN location has been reset due to the previously selected VPN location being no longer available. -->  <string name="ip_protection_location_selection_reset_snackbar">Таңдалған VPN орналасуы қолжетімді емес. Ұсынылған орналасуға ауыстық.</string>
+<string name="addon_remove_dialog_body">Бұл әрекет кеңейтуді және оның параметрлерін бұл құрылғыдан өшіреді.</string>
+<string name="addon_remove_dialog_cancel">Бас тарту</string>
+<string name="addon_remove_dialog_confirm">Өшіру</string>
+<string name="addon_remove_dialog_title">%1$s өшіру керек пе?</string>
+<string name="ai_controls_listen_to_page_description">Сіздің құрылғыңыз дауыстап оқу үшін ЖИ пайдалануы мүмкін. Мәтін мен аудио жеке болып қала береді.</string>
+<string name="ai_controls_listen_to_page_title">Бетті тыңдау</string>
+<string name="browser_menu_extension_review_update_description">Жаңарту үшін параметрлерді қарап шығу</string>
+<string name="browser_menu_extensions_review_update_description">%1$s үшін жаңартуды қарап шығу</string>
+<string name="certificate_details_panel_secure_connection_title">Қауіпсіз байланыс</string>
+<string name="preferences_enable_sync_summary_sync_disabled">%1$s тіркелгіңізде сақталған деректер пайдаланылуда.</string>
+<string name="preferences_enable_sync_summary_sync_enabled">Сіздің деректеріңіздің сақтық көшірмесі жасалды және синхрондалған құрылғыларда қолжетімді.</string>
+<string name="preferences_enable_sync_title">Бұл құрылғыны синхрондау</string>
+<string name="preferences_menu">Мәзір</string>
 </resources>

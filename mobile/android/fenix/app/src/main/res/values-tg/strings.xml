@@ -1247,6 +1247,12 @@
   <!-- Preference for removing FxA account -->
   <string name="preferences_sync_remove_account">Барҳам додани ҳисоб</string>
   <!--
+    Settings sign-in promo card
+
+    Sign-in promo card: Title inviting the user to sign in
+  -->
+  <string name="sign_in_promo_title">Ворид шудан</string>
+  <!--
     Pairing Feature strings
 
     Instructions on how to access pairing
@@ -3211,6 +3217,10 @@
   <string name="credit_cards_warning_dialog_set_up_now">Ҳозир насб кунед</string>
   <!-- Negative button to ignore warning dialog if users have no device authentication set up -->
   <string name="credit_cards_warning_dialog_later">Дертар</string>
+  <!-- Primary button on the dialog shown on Android Automotive OS (in cars). Tapping it directs users to the device settings to set up a device lock -->
+  <string name="automotive_authentication_setup_dialog_set_up_now">Ҳозир насб кунед</string>
+  <!-- Secondary button of the dialog shown on Android Automotive OS (in cars). Tapping closes the dialogue and cancels the action that triggered the dialogue. -->
+  <string name="automotive_authentication_setup_dialog_cancel">Бекор кардан</string>
   <!-- Title of PIN verification dialog to direct users to re-enter their device credentials to access their credit cards -->
   <string name="credit_cards_biometric_prompt_message_pin">Қулфи дастгоҳи худро кушоед</string>
   <!-- Message displayed in biometric prompt for authentication, before allowing users to use their stored payment method information -->
@@ -3855,6 +3865,10 @@
   <string name="protection_panel_privacy_and_security_settings_2">Танзимоти махфият</string>
   <!-- Title text for the protection panel permissions section. -->
   <string name="protection_panel_permissions_title">Иҷозатҳо</string>
+  <!-- Certificate panel - Title of the section that contains the website's certificate information (issued to, issued by, etc.) as verified by Firefox (thus guaranteeing the HTTPS connection is secure) -->
+  <string name="certificate_details_panel_secure_connection_title">Пайвасти боэътимод</string>
+  <!-- Certificate panel - Label for the organization, locality and country the website's certificate was issued to -->
+  <string name="certificate_details_panel_issued_to_label">Гувоҳнома дода шуд ба:</string>
   <plurals name="trackers_blocked_panel_total_num_trackers_blocked_2">
     <!--
       Text for displaying the total number of trackers blocked in the trackers blocked panel.
@@ -4578,4 +4592,19 @@
   <string name="reader_mode_panel_listen_content_description">Бо овози баланд хонед</string>
   <!-- Content description for media player displayed in Reader Mode when the Listen to Page (Read Aloud) feature is selected -->
   <string name="reader_mode_panel_media_player_content_description">Плеери расонаӣ</string>
+<string name="addon_remove_dialog_cancel">Бекор кардан</string>
+<string name="addon_remove_dialog_confirm">Тоза кардан</string>
+<string name="addon_remove_dialog_title">«%1$s»-ро тоза мекунед?</string>
+<string name="download_item_source_data">(иттилоот)</string>
+<string name="notification_privacy_report_body_has_trackers">Тамошобиниро идома диҳед. «%1$s» амали манъкуниро идома медиҳад.</string>
+<string name="notification_privacy_report_channel_description">«%1$s» нишон медиҳад, ки ҳангоми тамошобинии шумо чанд васоити пайгирӣ манъ карда шудаанд.</string>
+<string name="notification_privacy_report_channel_name">Гузориш дар бораи махфият</string>
+<string name="notification_privacy_report_headline_no_trackers">Барномаи «%1$s» васоити пайгириро ҳангоми тамошобинӣ манъ мекунад. Шумо онҳоро дар ин ҷой мебинед.</string>
+<string name="pdf_tools_sign_content_description_2">Илова кардани имзо</string>
+<string name="pdf_tools_signature_adding_content_description">Дар ҳоли иловаи имзо</string>
+<string name="preferences_media_category">Расона</string>
+<string name="preferences_menu">Меню</string>
+<string name="preferences_open_links_in_youtube">Кушодани пайвандҳо дар барномаи «YouTube»</string>
+<string name="reader_mode_panel_content_description_2">Имконоти «Намоиши хонанда»</string>
+<string name="search_widget_private_search">Ҷустуҷӯи хусусӣ</string>
 </resources>

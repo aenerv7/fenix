@@ -91,13 +91,11 @@ class HomeSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragm
         }
 
         requirePreference<SwitchPreferenceCompat>(R.string.pref_key_recent_tabs).apply {
-            isVisible = fenixSettings.showHomepageRecentTabsSectionToggle
             isChecked = fenixSettings.showRecentTabsFeature
             onPreferenceChangeListener = createMetricPreferenceChangeListener("jump_back_in")
         }
 
         requirePreference<SwitchPreferenceCompat>(R.string.pref_key_customization_bookmarks).apply {
-            isVisible = fenixSettings.showHomepageBookmarksSectionToggle
             isChecked = fenixSettings.showBookmarksHomeFeature
             onPreferenceChangeListener = createMetricPreferenceChangeListener("bookmarks")
         }
@@ -135,7 +133,6 @@ class HomeSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragm
         }
 
         requirePreference<SwitchPreferenceCompat>(R.string.pref_key_history_metadata_feature).apply {
-            isVisible = fenixSettings.showHomepageRecentlyVisitedSectionToggle
             isChecked = fenixSettings.historyMetadataUIFeature
             onPreferenceChangeListener = createMetricPreferenceChangeListener("recently_visited")
         }

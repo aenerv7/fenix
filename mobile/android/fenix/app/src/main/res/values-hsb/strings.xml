@@ -4486,39 +4486,6 @@
   <!-- ==== End of Terms of use popup prompt. ==== -->
 
   <!--
-    Sports widget
-
-    Label shown on the sports widget scoreboard when a match is currently being played live.
-  -->
-  <string name="wrex_widget_match_live">LIVE</string>
-  <!-- Label shown on the sports widget match status badge when the start of a match has been delayed. -->
-  <string name="wrex_widget_match_delayed">Zapozdźeny</string>
-  <!-- Label shown on the sports widget match status badge when a match has been suspended after it started. -->
-  <string name="wrex_widget_match_suspended">Wotprajeny</string>
-  <!-- Label shown on the sports widget match status badge when a match has been postponed to a later date. -->
-  <string name="wrex_widget_match_postponed">Wotstorčeny</string>
-  <!-- Sports widget menu item to view the team's match results. -->
-  <string name="wrex_widget_results">Wuslědki</string>
-  <!-- Sports widget menu item to view the league standings table. -->
-  <string name="wrex_widget_standings">Stawy hry</string>
-  <!-- Sports widget menu item to browse the team's wallpapers. -->
-  <string name="wrex_widget_wallpapers">Pozadkowe wobrazy</string>
-  <!-- Sports widget menu item to remove the widget from the homepage. -->
-  <string name="wrex_widget_remove_widget">Asistent wotstronić</string>
-  <!-- Content description (for accessibility, not displayed) for the overflow (more options) menu button on the sports widget card. -->
-  <string name="wrex_widget_more_options_content_description">Dalše nastajenja</string>
-  <!--
-    Content description (for accessibility, not displayed) used for the sports widget card header announcing a live match.
-    %s is the name of the competition the match belongs to (e.g. "FA Cup").
-  -->
-  <string name="wrex_widget_live_game_content_description">%s, hra live</string>
-  <!--
-    Content description (for accessibility, not displayed) for a paginated item.
-    %1$s is the name of the competition the match belongs to (e.g. "FA Cup"),
-    %2$d is the current page number, and %3$d is the total number of pages.
-  -->
-  <string name="wrex_widget_page_position_content_description">%1$s, strona %2$d z %3$d</string>
-  <!--
     Privacy notice homepage banner
 
     A message we show the user on the homepage when there is a new version of the privacy notice. 'Firefox' is intentionally hardcoded.
@@ -4674,4 +4641,35 @@
   <string name="reader_mode_panel_listen_content_description">Wótře čitać</string>
   <!-- Content description for media player displayed in Reader Mode when the Listen to Page (Read Aloud) feature is selected -->
   <string name="reader_mode_panel_media_player_content_description">Medijowy wothrawak</string>
+<string name="addon_remove_dialog_body">To rozšěrjenje a jeho nastajenja z tutoho grata wotstronja.</string>
+<string name="addon_remove_dialog_cancel">Přetorhnyć</string>
+<string name="addon_remove_dialog_confirm">Wotstronić</string>
+<string name="addon_remove_dialog_title">%1$s wotstronić?</string>
+<string name="ai_controls_listen_to_page_description">Waš grat snadź KI wužiwa, zo by wótře čitał. Tekst a awdijo priwatnej wostawatej.</string>
+<string name="ai_controls_listen_to_page_title">Na stronu poskać</string>
+<string name="automotive_authentication_setup_dialog_cancel">Přetorhnyć</string>
+<string name="automotive_authentication_setup_dialog_message">Nastajće gratowy zawrjenski muster, PIN abo hesło, zo byšće přistupej k swojim składowanym sensibelnym datam zadźěwał, jeli něchtó druhi waš awto wodźi.</string>
+<string name="automotive_authentication_setup_dialog_set_up_now">Nětko konfigurować</string>
+<string name="automotive_authentication_setup_dialog_title">Zawěsćće swoje sensibelne daty</string>
+<string name="browser_menu_read_or_listen">Čitanski napohlad, stronu čitać abo na nju słuchać</string>
+<string name="certificate_details_panel_secure_connection_title">Wěsty zwisk</string>
+<string name="customize_menu">Meni přiměrić</string>
+<string name="download_item_source_data">(daty)</string>
+<string name="ip_protection_location_selection_reset_snackbar">Wubrane stejnišćo VPN k dispoziciji njeje. Je so k doporučenemu stejnišću přešło.</string>
+<string name="lens_camera_image_load_failed_v2">Tutón wobraz njeda so začitać.</string>
+<string name="notification_privacy_report_body_has_trackers">Přehladujće dale. %1$s budźe dale blokować.</string>
+<string name="notification_privacy_report_channel_description">%1$s pokazuje, kelko přesćěhowakow so blokuje, mjeztym zo sće přehladował.</string>
+<string name="notification_privacy_report_channel_name">Rozprawa priwatnosće</string>
+<string name="notification_privacy_report_headline_no_trackers">%1$s přesćěhowaki blokuje, hdyž přehladujeće. Budźeće je tu widźeć.</string>
+<string name="pdf_tools_sign_content_description_2">Signaturu přidać</string>
+<string name="pdf_tools_signature_adding_content_description">Signaturu přidać</string>
+<string name="preference_homepage_search_location_middle">Wosrjedź</string>
+<string name="preference_homepage_search_location_top">Horjeka</string>
+<string name="preferences_enable_sync_summary_sync_disabled">Składowane daty z wašeho konta %1$s so wužiwaja.</string>
+<string name="preferences_enable_sync_summary_sync_enabled">Waše daty su so zawěsćili a su na synchronizowanych gratach k dispoziciji.</string>
+<string name="preferences_enable_sync_title">Tutón grat synchronizować</string>
+<string name="preferences_homepage_search_location">Městno pytanja na startowej stronje</string>
+<string name="preferences_media_category">Medije</string>
+<string name="preferences_open_links_in_youtube">Wotkazy w nałoženju YouTube wočinić</string>
+<string name="reader_mode_panel_content_description_2">Nastajenja čitanskeho napohlada</string>
 </resources>

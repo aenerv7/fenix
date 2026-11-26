@@ -4621,4 +4621,30 @@
   <string name="reader_mode_panel_listen_content_description">Leger in alte voce</string>
   <!-- Content description for media player displayed in Reader Mode when the Listen to Page (Read Aloud) feature is selected -->
   <string name="reader_mode_panel_media_player_content_description">Reproductor multimedial</string>
+<string name="addon_remove_dialog_body">Isto remove le extension e su parametros de iste apparato.</string>
+<string name="addon_remove_dialog_cancel">Cancellar</string>
+<string name="addon_remove_dialog_confirm">Remover</string>
+<string name="addon_remove_dialog_title">Remover %1$s?</string>
+<string name="ai_controls_listen_to_page_description">Tu apparato pote usar IA pro leger in alte voce. Le texto e le audio remane private.</string>
+<string name="ai_controls_listen_to_page_title">Ascolta le pagina</string>
+<string name="browser_menu_extension_review_update_description">Revider configuration pro actualisar</string>
+<string name="browser_menu_extensions_review_update_description">Revider actualisation pro %1$s</string>
+<string name="browser_menu_read_or_listen">Modalitate lectura, leger o ascoltar le pagina</string>
+<string name="certificate_details_panel_secure_connection_title">Connexion secur</string>
+<string name="customize_menu">Personalisar menu</string>
+<string name="download_item_source_data">(datos)</string>
+<string name="ip_protection_location_selection_reset_snackbar">Position eligite del VPN indisponibile. Passate al position recommendate.</string>
+<string name="notification_privacy_report_body_has_trackers">Continua a navigar. %1$s continuara a blocar.</string>
+<string name="notification_privacy_report_channel_description">%1$s monstra quante traciatores era blocate dum tu navigava.</string>
+<string name="notification_privacy_report_channel_name">Reporto de confidentialitate</string>
+<string name="notification_privacy_report_headline_no_trackers">%1$s bloca traciatores quando tu naviga. Tu los videra ci.</string>
+<string name="pdf_tools_sign_content_description_2">Adder un firma</string>
+<string name="pdf_tools_signature_adding_content_description">Addition del firma</string>
+<string name="preferences_enable_sync_summary_sync_disabled">Usar datos salvate in tu conto %1$s.</string>
+<string name="preferences_enable_sync_summary_sync_enabled">Tu datos es salveguardate e disponibile sur le apparatos synchronisate.</string>
+<string name="preferences_enable_sync_title">Synchronisar iste apparato</string>
+<string name="preferences_media_category">Multimedia</string>
+<string name="preferences_menu">Menu</string>
+<string name="preferences_open_links_in_youtube">Aperir ligamines in le application YouTube</string>
+<string name="reader_mode_panel_content_description_2">Optiones del modalitate lectura</string>
 </resources>

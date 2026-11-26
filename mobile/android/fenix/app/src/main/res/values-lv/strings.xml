@@ -11,6 +11,8 @@
   <string name="bookmark_close_search_description">Doties atpakaļ un aizvērt meklēšanu</string>
   <!-- Placeholder text shown in search bar when using tabs search -->
   <string name="tab_search_hint">Meklēt cilnes</string>
+  <!-- Tab tray multi select title in app bar. %1$d is the number of tabs selected -->
+  <string name="tab_tray_multi_select_title">Atlasītas: %1$d</string>
   <!-- Label of button in create collection dialog for creating a new collection -->
   <string name="tab_tray_add_new_collection">Pievienot jaunu krājumu</string>
   <!-- Private browsing erase action "contextual feature recommendation" (CFR) -->
@@ -38,6 +40,14 @@
   <string name="browser_menu_page_badge_text">Jaunums</string>
   <!-- Browser menu label for adding a tab to a tab group -->
   <string name="browser_menu_add_to_tab_group">Pievienot kopai</string>
+  <!-- Browser menu label for moving a tab to a tab group -->
+  <string name="browser_menu_move_to_tab_group">Pārvietot uz kopu</string>
+  <!--
+    AI Controls settings
+
+    Title for the AI controls settings screen
+  -->
+  <string name="preferences_ai_controls">MI vadīklas</string>
   <!-- Link text for learning more about AI controls -->
   <string name="ai_controls_learn_more">Uzzināt vairāk</string>
   <!-- Title for the block AI enhancements toggle -->
@@ -63,12 +73,22 @@
   <string name="onboarding_redesign_tou_agree_and_continue_button_label" tools:ignore="UnusedResources">Turpināt</string>
   <!-- Onboarding label for 'Continue' button. -->
   <string name="onboarding_redesign_continue_button" tools:ignore="UnusedResources">Turpināt</string>
+  <!-- Set to default browser onboarding redesign title. -->
+  <string name="onboarding_redesign_set_default_browser_title" tools:ignore="UnusedResources">Iegūsti automātisku aizsardzību pret izsekošanu pēc noklusējuma</string>
   <!-- "Continue" onboarding button. -->
   <string name="nova_onboarding_continue_button">Turpināt</string>
   <!-- "Continue browsing" onboarding button. -->
   <string name="nova_onboarding_continue_browsing_button" tools:ignore="UnusedResources">Turpināt pārlūkošanu</string>
   <!-- "Set to default" onboarding button. -->
   <string name="nova_onboarding_set_to_default_button">Iestatīt kā noklusējuma pārlūku</string>
+  <!-- Title of onboarding pairing card. Displayed when installing Firefox for Android by using a pairing link from Firefox for Desktop. "Scan" refers to scanning the QR code displayed on the computer. -->
+  <string name="nova_onboarding_sync_pairing_title">Jānolasa, lai pabeigtu savienošanu pārī ar datoru</string>
+  <!-- Body of the onboarding pairing card. Provides troubleshooting instructions when the QR code is not being displayed on the pairing computer. The "firefox.com/pair" URL should not be translated or edited. Bold tags should be preserved. -->
+  <string name="nova_onboarding_sync_pairing_body"><![CDATA[Nav kvadrātkoda? Datorā jādodas uz <b>firefox.com/pair</b>.]]></string>
+  <!-- Primary button of the onboarding pairing card. Opens the camera to scan the pairing QR code. -->
+  <string name="nova_onboarding_sync_pairing_scan_button">Nolasīt pārī savienošanas kodu</string>
+  <!-- Secondary button of the onboarding pairing card. Opens the Mozilla account sign-in page. -->
+  <string name="nova_onboarding_sync_pairing_email_button">Pieteikties ar e-pasta adresi</string>
   <!-- Marketing onboarding body link text. -->
   <string name="nova_onboarding_marketing_body_link_text_1">Uzzināt vairāk</string>
   <!-- "Add search widget" onboarding button. 'Firefox' is intentionally hardcoded. -->
@@ -107,6 +127,8 @@
   <string name="preferences_downloads_no_folder_picker_available">Šajā ierīcē nav iespējams atvērt mapju atlasītāju.</string>
   <!-- Preference category for deleting or removing downloads -->
   <string name="preferences_category_delete_or_remove_downloads">Izdzēst vai noņemt lejupielādes</string>
+  <!-- Preference for enabling gecko engine logs -->
+  <string name="preferences_enable_gecko_logs">Iespējot Gecko žurnālus</string>
   <!--
     Add-on Permissions
 
@@ -133,10 +155,16 @@
   <string name="preferences_sync_category_summary">Pārvaldīt, kas tiek vienādots visās savienotājās ierīcēs</string>
   <!-- Summary for the sync preference category, when user has disabled all synchronisation items. -->
   <string name="preferences_sync_category_no_engine_selected_summary">Pašlaik nekas netiek vienādots. Jāizvēlas, ko vienādot starp ierīcēm.</string>
+  <!-- Preference for syncing passwords -->
+  <string name="preferences_sync_logins_2">Paroles</string>
   <!-- Preference category for Device name -->
   <string name="preferences_device_name_category">Ierīces nosaukums</string>
   <!-- Label for the Preference that displays and allows changing current device name on Mozilla Account -->
   <string name="preferences_sync_change_device_name">Mainīt ierīces nosaukumu</string>
+  <!-- Preference for syncing payment methods -->
+  <string name="preferences_sync_credit_cards_2">Maksājumu veidi</string>
+  <!-- Text displayed when there are no exceptions -->
+  <string name="exceptions_empty_message_description">Izņēmumi ļauj atspējot aizsardzību pret izsekošanu atlasītās vietnēs.</string>
   <!-- Text displayed when there are no exceptions, with learn more link that brings users to a tracking protection SUMO page -->
   <string name="exceptions_empty_message_learn_more_link">Uzzināt vairāk</string>
   <!-- Preference for changing where the search bar is positioned on the homepage, shown when the user has set the address bar to be displayed at the top of the screen -->
@@ -208,6 +236,10 @@
   <string name="add_private_tab">Pievienot privātu cilni</string>
   <!-- Text for the tab search bar placeholder -->
   <string name="tab_manager_search_bar_placeholder">Meklē savas cilnes</string>
+  <!-- Content description (not visible, for screen readers etc.): Bookmarks selected tabs. -->
+  <string name="tab_manager_multiselect_menu_item_bookmark_content_description">Pievienot atlasītās cilnes grāmatzīmēm</string>
+  <!-- Content description (not visible, for screen readers etc.): Closes selected tabs. -->
+  <string name="tab_manager_multiselect_menu_item_close_content_description">Aizvērt atlasītās cilnes</string>
   <!-- Text shown in the multiselect menu for adding selected tabs to collections. -->
   <string name="tab_manager_multiselect_menu_item_add_to_collection">Pievienot krājumam</string>
   <!-- Text shown in the multiselect menu for adding selected tabs to a tab group. -->
@@ -247,6 +279,17 @@
   <string name="bookmark_delete_folders_confirmation_dialog">Vai tiešām izdzēst atlasītos vienumus?</string>
   <!-- Screen title for adding a bookmarks folder -->
   <string name="bookmark_add_folder">Pievienot mapi</string>
+  <!-- Bookmark overflow menu edit button -->
+  <string name="bookmark_menu_edit_button">Labot</string>
+  <!--
+    Bookmark multi select title in app bar
+    %1$d is the number of bookmarks selected
+  -->
+  <string name="bookmarks_multi_select_title">Atlasītas: %1$d</string>
+  <!-- Bookmark editing screen title -->
+  <string name="edit_bookmark_fragment_title">Labot grāmatzīmi</string>
+  <!-- Bookmark folder editing screen title -->
+  <string name="edit_bookmark_folder_fragment_title">Labot mapi</string>
   <!-- Content description for the bookmark list new folder navigation bar button -->
   <string name="bookmark_add_new_folder_button_content_description">Pievienot jaunu mapi</string>
   <!-- Label that indicates that video and audio autoplay is only allowed over Wi-Fi -->
@@ -261,6 +304,18 @@
   <string name="quick_setting_option_autoplay_blocked">Liegt skaņu un video</string>
   <!-- Button to add new collection for the "select collection" step of the collection creator -->
   <string name="create_collection_add_new_collection">Pievienot jaunu krājumu</string>
+  <!-- Button to deselect all tabs in the "select tabs" step of the collection creator -->
+  <string name="create_collection_deselect_all">Noņemt atlasi visam</string>
+  <!--
+    Text to show users how many tabs they have selected in the "select tabs" step of the collection creator.
+    %d is a placeholder for the number of tabs selected.
+  -->
+  <string name="create_collection_save_to_collection_tabs_selected">Atlasītas cilnes: %d</string>
+  <!--
+    Text to show users they have one tab selected in the "select tabs" step of the collection creator.
+    %d is a placeholder for the number of tabs selected.
+  -->
+  <string name="create_collection_save_to_collection_tab_selected">Atlasītas cilnes: %d</string>
   <!-- Toast shown when the QR code is successfully saved to Downloads -->
   <string name="qr_code_download_success">Kvadrātkods saglabāts lejupielāžu mapē</string>
   <!-- Label for the button in the share dialog that sends the tab to the selected sync devices -->
@@ -316,6 +371,10 @@
   <string name="sign_out_dialog_confirm_button">Izrakstīties</string>
   <!-- Text displayed that links to website about enhanced tracking protection -->
   <string name="preference_enhanced_tracking_protection_explanation_learn_more">Uzzināt vairāk</string>
+  <!-- Accessibility text for the Standard protection information icon -->
+  <string name="preference_enhanced_tracking_protection_standard_info_button">Ko aiztur standarta aizsardzība pret izsekošanu</string>
+  <!-- Preference description for enhanced tracking protection for the strict protection settings -->
+  <string name="preference_enhanced_tracking_protection_strict_description_4">Spēcīgāka aizsardzība pret izsekošanu un ātrāka veiktspēja, bet dažas vietnes var nedarboties pareizi.</string>
   <!-- Learn more text for the enhanced tracking protection options to fix issues caused by tracker blocking -->
   <string name="preference_enhanced_tracking_protection_allow_list_learn_more">Uzzināt vairāk</string>
   <!--
@@ -326,6 +385,8 @@
   <string name="preference_enhanced_tracking_protection_allow_list_dialog_title">Vai tiešām izslēgt labojumus?</string>
   <!-- Content description for the "Add Site" button -->
   <string name="preference_doh_add_site_description">Pievienot vietni</string>
+  <!-- Bullet point 4 for "Default Protection" information page under "DNS over HTTPS" -->
+  <string name="preference_doh_default_protection_info_4">Izslēgt, ja ir aktīvas VPN, vecāku kontroles vai uzņēmuma nostājas</string>
   <!-- Add button text for provider textfield under "DNS over HTTPS" -->
   <string name="preference_doh_provider_custom_dialog_add">Pievienot</string>
   <!-- Text displayed that links to adding website domain for "DNS over HTTPS" exceptions. -->
@@ -334,6 +395,8 @@
   <string name="add_to_homescreen_title">Pievienot sākuma ekrānam</string>
   <!-- Add button text for the Add to Homescreen dialog -->
   <string name="add_to_homescreen_add">Pievienot</string>
+  <!-- Preference for managing the settings for logins and passwords in Fenix -->
+  <string name="preferences_passwords_logins_and_passwords_2">Paroles</string>
   <!-- Preference option for adding a password -->
   <string name="preferences_logins_add_login_2">Pievienot paroli</string>
   <!-- Content description, used by tools like screenreaders, to press on the add new login button. -->
@@ -360,12 +423,16 @@
   <string name="ip_protection_open_settings_snackbar_action">Iestatījumi</string>
   <!-- Description for an unavailable VPN location in the location list. -->
   <string name="ip_protection_location_unavailable_description">Nepieejams</string>
+  <!-- Preference and title for managing the settings for payment methods -->
+  <string name="preferences_credit_cards_2">Maksājumu veidi</string>
   <!-- Preference option for adding a card -->
   <string name="preferences_credit_cards_add_credit_card_2">Pievienot karti</string>
   <!-- Preference option for adding an address -->
   <string name="preferences_addresses_add_address">Pievienot adresi</string>
   <!-- Title of the "Add card" screen -->
   <string name="credit_cards_add_card">Pievienot karti</string>
+  <!-- Title of the "Edit card" screen -->
+  <string name="credit_cards_edit_card">Labot karti</string>
   <!-- Error message for card name on card validation -->
   <string name="credit_cards_name_on_card_validation_error_message_2">Jāpievieno vārds</string>
   <!-- Title of the dialog shown on Android Automotive OS (in cars) when users have no device authentication set up and try to access their saved passwords, payment methods, or sign in to their account -->
@@ -378,6 +445,8 @@
   <string name="automotive_authentication_setup_dialog_cancel">Atcelt</string>
   <!-- Title of the "Add address" screen -->
   <string name="addresses_add_address">Pievienot adresi</string>
+  <!-- Title of the "Edit address" screen -->
+  <string name="addresses_edit_address">Labot adresi</string>
   <!-- Title of the Add search engine screen -->
   <string name="search_engine_add_custom_search_engine_title">Pievienot meklētāju</string>
   <!-- Content description (not visible, for screen readers etc.): Title for the button that navigates to add new engine screen -->
@@ -392,6 +461,8 @@
   <string name="browser_menu_add_to_shortcuts">Pievienot īsceļiem</string>
   <!-- Message in delete confirmation dialog for password -->
   <string name="login_deletion_confirmation_2">Vai tiešām izdzēst šo paroli?</string>
+  <!-- The page title for editing a saved password. -->
+  <string name="edit_2">Labot paroli</string>
   <!-- The page title for adding new password. -->
   <string name="add_login_2">Pievienot paroli</string>
   <!-- Text displayed when user has disabled tab syncing in Firefox Sync Account -->
@@ -464,6 +535,8 @@
   <string name="debug_drawer_tab_tools_tab_creation_tool_button_text_private">Pievienot privātajām cilnēm</string>
   <!-- The continue button label -->
   <string name="micro_survey_continue_button_label" tools:ignore="UnusedResources">Turpināt</string>
+  <!-- The title of the button in the debug drawer for adding a new address. -->
+  <string name="debug_drawer_add_new_address">Pievienot jaunu adresi atlasītajai lokalizācijai</string>
   <!--
     Add-ons debug tools
 
@@ -654,4 +727,68 @@
 
     Content description for accessibility (used by screen readers): Description for the button that triggers the start of a signature workflow on the PDF displayed on the screen.
   -->  <string name="pdf_tools_sign_content_description_2">Pievienot parakstu</string>
+<string name="about_support">Atbalsts</string>
+<string name="addon_remove_dialog_body">Tas noņems no ierīces paplašinājumu un tā iestatījumus.</string>
+<string name="addon_remove_dialog_cancel">Atcelt</string>
+<string name="addon_remove_dialog_confirm">Noņemt</string>
+<string name="addon_remove_dialog_title">Noņemt %1$s?</string>
+<string name="ai_controls_listen_to_page_description">Ierīce var izmantot MI skaļai lasīšanai. Teksts un skaņa paliek privāti.</string>
+<string name="ai_controls_listen_to_page_title">Klausīties lapu</string>
+<string name="bookmark_empty_list_guest_cta">Pieteikties, lai vienādotu</string>
+<string name="browser_menu_passwords">Paroles</string>
+<string name="browser_menu_read_or_listen">Lasītāja skats, lasīt vai klausīties lapu</string>
+<string name="browser_menu_sign_back_in_to_sync">Pieteikties atkārtoti, lai vienādotu</string>
+<string name="browser_menu_sign_in">Pieteikties</string>
+<string name="certificate_details_panel_secure_connection_title">Drošs savienojums</string>
+<string name="clear_site_data">Notīrīt sīkdatnes un vietņu datus</string>
+<string name="delete_browsing_data_prompt_message_3">%s izdzēsīs atlasītos pārlūkošanas datus.</string>
+<string name="download_item_source_data">(dati)</string>
+<string name="download_multi_select_title">Atlasītas: %1$d</string>
+<string name="edit_login_button_content_description">Labot pieteikšanās vienumu</string>
+<string name="errorpage_httpsonly_message_summary">Tomēr ir arī iespējams, ka ir iesaistīts uzbrucējs. Ja apmeklēsi tīmekļvietni, nevajadzētu ievadīt jebkādu jūtīgu informāciju. Ja turpināsi, vietnei īslaicīgi tiks izslēgts tikai HTTPS režīms.</string>
+<string name="etp_redirect_trackers_description">Notīra sīkdatnes, kuras iestatījušas pārvirzīšanas uz zināmām izsekošanas tīmekļvietnēm.</string>
+<string name="experiments_snackbar">Iespējot telemetriju, lai nosūtītu datus.</string>
+<string name="history_multi_select_title">Atlasītas: %1$d</string>
+<string name="home_screen_shortcut_passwords">Paroles</string>
+<string name="login_detail_menu_edit_button">Labot</string>
+<string name="nova_onboarding_set_to_default_title_2">Atveriet visas savas saites ar iebūvēto privātumu</string>
+<string name="nova_onboarding_skip_button">Izlaist</string>
+<string name="onboarding_redesign_tou_subheader_two" tools:ignore="UnusedResources">Automātiska aizsardzība pret izsekošanu</string>
+<string name="pdf_tools_signature_adding_content_description">Pievieno parakstu</string>
+<string name="phone_feature_blocked_step_permissions"><![CDATA[2. Jāpiesit <b>Atļaujas</b>]]></string>
+<string name="preference_browser_feature_local_device_access">Ierīces lietotnes un pakalpojumi</string>
+<string name="preference_browser_feature_local_network_access">Vietējā tīkla ierīces</string>
+<string name="preference_enhanced_tracking_protection_custom_info_button">Ko aiztur pielāgotā aizsardzība pret izsekošanu</string>
+<string name="preference_enhanced_tracking_protection_strict_info_button">Ko aiztur stingrā aizsardzība pret izsekošanu</string>
+<string name="preference_etp_exceptions_icon_description">Uzlabotās aizsardzības pret izsekošanu izņēmumu izvēles ikona</string>
+<string name="preferences_category_permissions">Atļaujas</string>
+<string name="preferences_enable_sync_summary_sync_disabled">Izmanto kontā %1$s saglabātos datus.</string>
+<string name="preferences_enable_sync_summary_sync_enabled">Dati ir dublēti un pieejami vienādotajās ierīcēs.</string>
+<string name="preferences_enable_sync_title">Vienādot šo ierīci</string>
+<string name="preferences_https_only_in_all_tabs">Iespējot visās cilnēs</string>
+<string name="preferences_https_only_in_private_tabs">Iespējot tikai privātās cilnēs</string>
+<string name="preferences_media_category">Informācijas nesēji</string>
+<string name="preferences_open_links_in_youtube">Atvērt saites YouTube lietotnē</string>
+<string name="preferences_show_sponsored_suggestions_summary">Atbalsti %1$s ar apmaksātiem ieteikumiem, kas parādās laiku pa laikam</string>
+<string name="preferences_sign_in">Pieteikties</string>
+<string name="preferences_sync_sign_in_to_reconnect">Pieteikties, lai atkal savienotos</string>
+<string name="protection_panel_etp_toggle_disabled_description_2">Ir ieteicama aizsardzības pret izsekošanu ieslēgšana.</string>
+<string name="protection_panel_permissions_title">Atļaujas</string>
+<string name="reader_mode_panel_content_description_2">Lasītāja skata iespējas</string>
+<string name="search_engine_edit">Labot</string>
+<string name="search_engine_edit_custom_search_engine_title">Labot meklētāju</string>
+<string name="setup_checklist_task_account_sync">Pieteikties savā kontā</string>
+<string name="sign_in_with_camera">Pieteikties ar kameru</string>
+<string name="sync_connect_device_dialog" tools:ignore="BrandUsage">Lai nosūtītu cilni, jāpiesakās Firefox vismaz vienā citā ierīcē.</string>
+<string name="sync_sign_in">Pieteikties Sync</string>
+<string name="synced_tabs_sign_in_button">Pieteikties, lai vienādotu</string>
+<string name="tab_group_three_dot_menu_edit">Labot</string>
+<string name="tab_manager_empty_synced_tabs_page_description">Jāpiesakās, lai pārvaldītu vienādotās cilnes no visām savām ierīcēm.</string>
+<string name="tab_manager_empty_synced_tabs_page_sign_in_cta">Pieteikties</string>
+<string name="top_sites_edit_dialog_title">Labot īsceļu</string>
+<string name="top_sites_edit_top_site">Labot</string>
+<string name="webcompat_reporter_clear_reason_content_description">Notīrīt atlasīto iemeslu</string>
+<string name="webcompat_reporter_edit_url_dialog_title">Labot tīmekļvietnes URL</string>
+<string name="webcompat_reporter_etp_checkbox_text_2">Nosūtīt aizsardzības pret izsekošana aizturēto vienumu sarakstu</string>
+<string name="webcompat_reporter_reason_account2">Nevaru pieteikties vai reģistrēties</string>
 </resources>

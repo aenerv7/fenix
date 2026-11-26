@@ -4586,4 +4586,34 @@
   <string name="reader_mode_panel_listen_content_description">Read Aloud</string>
   <!-- Content description for media player displayed in Reader Mode when the Listen to Page (Read Aloud) feature is selected -->
   <string name="reader_mode_panel_media_player_content_description">Media Player</string>
+<string name="addon_failure_retry_action">Retry</string>
+<string name="automotive_authentication_setup_dialog_cancel">Cancel</string>
+<string name="automotive_authentication_setup_dialog_message">Set up a device lock pattern, PIN, or password to protect your saved sensitive data from being accessed if someone else is driving your car.</string>
+<string name="automotive_authentication_setup_dialog_set_up_now">Set up now</string>
+<string name="automotive_authentication_setup_dialog_title">Secure your sensitive data</string>
+<string name="browser_menu_extension_review_update_description">Review settings to update</string>
+<string name="browser_menu_extensions_review_update_description">Review update for %1$s</string>
+<string name="browser_menu_read_or_listen">Reader view, read or listen to page</string>
+<string name="custom_accessibility_action_reorder_tab_down">Move tab down</string>
+<string name="custom_accessibility_action_reorder_tab_left">Move tab left</string>
+<string name="custom_accessibility_action_reorder_tab_right">Move tab right</string>
+<string name="custom_accessibility_action_reorder_tab_up">Move tab up</string>
+<string name="customize_menu">Customize menu</string>
+<string name="download_item_source_data">(data)</string>
+<string name="homepage_shortcuts_show_all">Show all</string>
+<string name="homepage_shortcuts_show_less">Show less</string>
+<string name="ip_protection_location_unavailable_description">Unavailable</string>
+<string name="ip_protection_toolbar_pill_description_off">VPN is off.</string>
+<string name="ip_protection_toolbar_pill_label_off">VPN off</string>
+<string name="lens_camera_image_load_failed_v2">Couldn’t load this image.</string>
+<string name="pdf_tools_sign_content_description_2">Add a signature</string>
+<string name="pdf_tools_signature_adding_content_description">Adding signature</string>
+<string name="preference_homepage_search_location_middle">Middle</string>
+<string name="preference_homepage_search_location_top">Top</string>
+<string name="preference_oled_theme">Darkest</string>
+<string name="preferences_homepage_search_location">Homepage search location</string>
+<string name="preferences_media_category">Media</string>
+<string name="preferences_menu">Menu</string>
+<string name="preferences_open_links_in_youtube">Open links in YouTube app</string>
+<string name="reader_mode_panel_content_description_2">Reader View Options</string>
 </resources>

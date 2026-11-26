@@ -4453,4 +4453,27 @@
   <string name="firefox_labs_website_isolation_title" tools:ignore="UnusedResources">تور بېكەت ئايرىش</string>
   <!-- Description of the Firefox Labs Sandboxing experiment. -->
   <string name="firefox_labs_website_isolation_description" tools:ignore="UnusedResources">ئوخشاش بولمىغان بېكەت ئارىسىدا يەنە بىر قوشۇمچە توسۇق قوشۇپ بەتكۈچ ھالقىغان سانلىق مەلۇماتنى قوغداشقا ياردەم بېرىدۇ. بەلكىم ئۈنۈم، مۇقىملىق، تور بېكەت ماسلىشىشچانلىقى ۋە تور زىيارەت تارىخىنىڭ قانداق ساقلىنىشىغا تەسىر كۆرسىتىشى مۇمكىن.</string>
+<string name="addon_failure_retry_action">قايتا سىنا</string>
+<string name="custom_accessibility_action_reorder_tab_down">بەتكۈچنى ئاستىغا يۆتكە</string>
+<string name="custom_accessibility_action_reorder_tab_left">بەتكۈچنى سولغا يۆتكە</string>
+<string name="custom_accessibility_action_reorder_tab_right">بەتكۈچنى ئوڭغا يۆتكە</string>
+<string name="custom_accessibility_action_reorder_tab_up">بەتكۈچنى ئۈستىگە يۆتكە</string>
+<string name="homepage_shortcuts_show_all">ھەممىنى كۆرسەت</string>
+<string name="homepage_shortcuts_show_less">ئازراق كۆرسەت</string>
+<string name="ip_protection_location_unavailable_description">ئىشلەتكىلى بولمايدۇ</string>
+<string name="ip_protection_toolbar_pill_description_off">VPN تاقاق.</string>
+<string name="ip_protection_toolbar_pill_label_off">VPN تاقاق</string>
+<string name="notification_privacy_report_body_has_trackers">تور زىيارىتىنى داۋاملاشتۇرۇڭ. %1$s توسۇشنى داۋاملاشتۇرىدۇ.</string>
+<string name="notification_privacy_report_channel_description">%1$s تور زىيارىتى جەريانىدا قانچە ئىز قوغلىغۇچنىڭ توسۇلغانلىقىنى كۆرسىتىدۇ.</string>
+<string name="notification_privacy_report_channel_name">شەخسىيەت دوكلاتى</string>
+<string name="notification_privacy_report_headline_no_trackers">%1$s تور زىيارەت جەريانىدا ئىزلىغۇچنى توسىدۇ. ئۇلارنى بۇ جايدا كۆرىسىز.</string>
+<string name="pdf_tools_download_content_description">PDF چۈشۈر</string>
+<string name="pdf_tools_print_content_description">PDF نى باس</string>
+<string name="pdf_tools_share_content_description">PDFھەمبەھىر</string>
+<string name="pdf_tools_signature_add_button">قوش</string>
+<string name="pdf_tools_signature_clear_button">تازىلا</string>
+<string name="pdf_tools_signature_close_content_description">PDF ئىمزا كۆزنەكچىسىنى ياپىدۇ</string>
+<string name="pdf_tools_signature_placeholder">ئىمزا كىرگۈزۈلىدۇ</string>
+<string name="pdf_tools_signature_title">ئىمزا قوش</string>
+<string name="preference_oled_theme">قاپقاراڭغۇ</string>
 </resources>

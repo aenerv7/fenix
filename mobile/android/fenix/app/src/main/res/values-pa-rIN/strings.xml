@@ -4605,4 +4605,37 @@
   <string name="reader_mode_panel_listen_content_description">ਉੱਚੀ ਪੜ੍ਹੋ</string>
   <!-- Content description for media player displayed in Reader Mode when the Listen to Page (Read Aloud) feature is selected -->
   <string name="reader_mode_panel_media_player_content_description">ਮੀਡੀਆ ਪਲੇਅਰ</string>
+<string name="addon_remove_dialog_body">ਇਸ ਨਾਲ ਇਸ ਡਿਵਾਈਸ ਤੋਂ ਇਕਸਟੈਨਸ਼ਨ ਅਤੇ ਇਸ ਦੀਆਂ ਸੈਟਿੰਗਾਂ ਨੂੰ ਹਟਾਇਆ ਜਾਂਦਾ ਹੈ।</string>
+<string name="addon_remove_dialog_cancel">ਰੱਦ ਕਰੋ</string>
+<string name="addon_remove_dialog_confirm">ਹਟਾਓ</string>
+<string name="addon_remove_dialog_title">%1$s ਨੂੰ ਹਟਾਉਣਾ ਹੈ?</string>
+<string name="ai_controls_listen_to_page_description">ਤੁਹਾਡਾ ਡਿਵਾਈਸ ਉਚੀ ਆਵਾਜ਼ ਵਿੱਚ ਪੜ੍ਹਨ ਲਈ AI ਨੂੰ ਵਰਤ ਸਕਦਾ ਹੈ। ਲਿਖਤ ਅਤੇ ਆਡੀਓ ਪ੍ਰਾਈਵੇਟ ਹੀ ਰਹਿਣਗੇ।</string>
+<string name="ai_controls_listen_to_page_title">ਸਫ਼ੇ ਨੂੰ ਸੁਣੋ</string>
+<string name="automotive_authentication_setup_dialog_cancel">ਰੱਦ ਕਰੋ</string>
+<string name="automotive_authentication_setup_dialog_message">ਜੇ ਕੋਈ ਹੋਰ ਤੁਹਾਡੀ ਕਾਰ ਚਲਾ ਰਿਹਾ ਹੋਵੇ ਤਾਂ ਤੁਹਾਡੇ ਸੰਭਾਲੇ ਹੋਏ ਸੰਵੇਦਨਸ਼ੀਲ ਡਾਟੇ ਲਈ ਪਹੁੰਚ ਨੂੰ ਸੁਰੱਖਿਅਤ ਰੱਖਣ ਲਈ ਕੋਈ ਡਿਵਾਈਸ ਲਾਕ ਪੈਟਰਨ, ਪਿੰਨ ਜਾਂ ਪਾਸਵਰਡ ਸੈਟ ਕਰੋ।</string>
+<string name="automotive_authentication_setup_dialog_set_up_now">ਹੁਣੇ ਸੈਟ ਅੱਪ ਕਰੋ</string>
+<string name="automotive_authentication_setup_dialog_title">ਆਪਣੀ ਸੰਵੇਦਨਸ਼ੀਲ ਡਾਟੇ ਨੂੰ ਸੁਰੱਖਿਅਤ ਕਰੋ</string>
+<string name="browser_menu_extension_review_update_description">ਅੱਪਡੇਟ ਲਈ ਸੈਟਿੰਗਾਂ ਦੀ ਪੜਤਾਲ ਕਰੋ</string>
+<string name="browser_menu_extensions_review_update_description">%1$s ਲਈ ਅੱਪਡੇਟ ਦੀ ਪੜਤਾਲ ਕਰੋ</string>
+<string name="browser_menu_read_or_listen">ਪੜ੍ਹਾਕੂ ਝਲਕ, ਸਫ਼ੇ ਨੂੰ ਪੜ੍ਹੋ ਜਾਂ ਸੁਣੋ</string>
+<string name="certificate_details_panel_secure_connection_title">ਸੁਰੱਖਿਅਤ ਕਨੈਕਸ਼ਨ</string>
+<string name="customize_menu">ਮੇਨੂ ਨੂੰ ਕਸਟਮਾਈਜ਼ ਕਰੋ</string>
+<string name="download_item_source_data">(ਡਾਟਾ)</string>
+<string name="lens_camera_image_load_failed_v2">ਇਸ ਚਿੱਤਰ ਨੂੰ ਲੋਡ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ ਹੈ।</string>
+<string name="notification_privacy_report_body_has_trackers">ਬਰਾਊਜ਼ ਕਰਦੇ ਰਹੋ। %1$s ਪਾਬੰਦੀ ਲਾਉਂਦਾ ਰਹੇਗਾ।</string>
+<string name="notification_privacy_report_channel_description">%1$s ਦਿਖਾਉਂਦੀ ਹੈ ਕਿ ਤੁਹਾਡੇ ਵਲੋਂ ਬਰਾਊਜ਼ ਕਰਨ ਦੇ ਦੌਰਾਨ ਕਿੰਨੇ ਟਰੈਕਰਾਂ ਉੱਤੇ ਪਾਬੰਦੀ ਲਾਈ ਹੋ ਸਕਦੀ ਹੈ।</string>
+<string name="notification_privacy_report_channel_name">ਪਰਦੇਦਾਰੀ ਦੀ ਰਿਪੋਰਟ</string>
+<string name="notification_privacy_report_headline_no_trackers">ਜਦੋਂ ਤੁਸੀਂ ਬਰਾਊਜ਼ ਕਰਦੇ ਹੋ ਤਾਂ %1$s ਟਰੈਕਰਾਂ ਉੱਤੇ ਪਾਬੰਦੀ ਲਾਉਂਦਾ ਹੈ। ਤੁਸੀਂ ਉਹਨਾਂ ਨੂੁੰ ਇੱਥੇ ਵੇਖੋਗੇ।</string>
+<string name="pdf_tools_sign_content_description_2">ਦਸਤਖ਼ਤ ਨੂੰ ਜੋੜੋ</string>
+<string name="pdf_tools_signature_adding_content_description">ਦਸਤਖ਼ਤ ਜੋੜੇ ਜਾ ਰਹੇ ਹਨ</string>
+<string name="preference_homepage_search_location_middle">ਮੱਧ</string>
+<string name="preference_homepage_search_location_top">ਉੱਤੇ</string>
+<string name="preferences_enable_sync_summary_sync_disabled">ਤੁਹਾਡੇ %1$s ਖਾਤੇ ਵਿੱਚ ਸੰਭਾਲੇ ਡਾਟੇ ਦੀ ਵਰਤੋਂ ਕਰਕੇ।</string>
+<string name="preferences_enable_sync_summary_sync_enabled">ਤੁਹਾਡੇ ਡਾਟੇ ਦਾ ਬੈਕਅੱਪ ਲਿਆ ਗਿਆ ਹੈ ਅਤੇ ਸਿੰਕ ਕੀਤੇ ਡਿਵਾਈਸਾਂ ਲਈ ਮੌਜੂਦ ਹੈ।</string>
+<string name="preferences_enable_sync_title">ਇਹ ਡਿਵਾਈਸ ਸਿੰਕ ਕਰੋ</string>
+<string name="preferences_homepage_search_location">ਮੁੱਖ-ਸਫ਼ਾ ਖੋਜ ਟਿਕਾਣਾ</string>
+<string name="preferences_media_category">ਮੀਡਿਆ</string>
+<string name="preferences_menu">ਮੇਨੂ</string>
+<string name="preferences_open_links_in_youtube">ਲਿੰਕਾਂ ਨੂੰ YouTube ਐਪ ਵਿੱਚ ਖੋਲ੍ਹੋ</string>
+<string name="reader_mode_panel_content_description_2">ਪੜ੍ਹਨ ਢੰਗ ਚੋਣਾਂ</string>
 </resources>

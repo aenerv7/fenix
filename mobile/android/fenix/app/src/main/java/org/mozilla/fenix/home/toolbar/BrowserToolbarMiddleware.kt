@@ -82,8 +82,11 @@ import org.mozilla.fenix.ext.nav
 import org.mozilla.fenix.home.HomeFragmentDirections
 import org.mozilla.fenix.home.goBackFromHomepage
 import org.mozilla.fenix.home.goForwardFromHomepage
+import org.mozilla.fenix.home.privatebrowsing.controller.PrivateBrowsingController
 import org.mozilla.fenix.home.toolbar.DisplayActions.FakeClicked
 import org.mozilla.fenix.home.toolbar.DisplayActions.MenuClicked
+import org.mozilla.fenix.home.toolbar.DisplayActions.PrivateModeClicked
+import org.mozilla.fenix.home.toolbar.DisplayActions.StoriesClicked
 import org.mozilla.fenix.home.toolbar.DisplayActions.VoiceSearchClicked
 import org.mozilla.fenix.home.toolbar.NavigationInteractions.NavigateBackClicked
 import org.mozilla.fenix.home.toolbar.NavigationInteractions.NavigateBackLongClicked
@@ -114,6 +117,10 @@ internal sealed class DisplayActions : BrowserToolbarEvent {
     data object FakeClicked : DisplayActions()
 
     data object VoiceSearchClicked : DisplayActions()
+
+    data class StoriesClicked(override val source: Source) : DisplayActions()
+
+    data class PrivateModeClicked(override val source: Source) : DisplayActions()
 }
 
 internal sealed class TabCounterInteractions : BrowserToolbarEvent {
@@ -153,6 +160,7 @@ internal sealed class NavigationInteractions : BrowserToolbarEvent {
  * @param fenixBrowserUseCases [FenixBrowserUseCases] for loading URLs and opening new tabs.
  * @param navController [NavController] to use for navigating to other in-app destinations.
  * @param browsingModeManager [BrowsingModeManager] for querying the current browsing mode.
+ * @param privateBrowsingController [PrivateBrowsingController] for handling private browsing interactions.
  * @param settings [Settings] for accessing application settings.
  * @param translationsFeatureSettings Web content translations availability status.
  * @param isWideScreen Callback for checking if the screen is wide.
@@ -169,6 +177,7 @@ class BrowserToolbarMiddleware(
     private val tabGroupLinkUseCases: TabGroupLinkUseCases,
     private val navController: NavController,
     private val browsingModeManager: BrowsingModeManager,
+    private val privateBrowsingController: PrivateBrowsingController,
     private val settings: Settings,
     private val translationsFeatureSettings: TranslationsEnabledSettings,
     private val isWideScreen: () -> Boolean,
@@ -200,6 +209,7 @@ class BrowserToolbarMiddleware(
                     updateNavigationActions(store)
                 }
                 updateToolbarActionsBasedOnOrientation(store)
+                updateToolbarActionsBasedOnBrowsingMode(store)
                 updateTabsCount(store)
                 updateMenuHighlight(store)
                 observePageNavigationStatus(store)
@@ -263,6 +273,21 @@ class BrowserToolbarMiddleware(
             }
             is AddNewPrivateTab -> {
                 addNewTab(store, Private)
+                next(action)
+            }
+
+            is StoriesClicked -> {
+                navController.nav(
+                    R.id.homeFragment,
+                    HomeFragmentDirections.actionHomeFragmentToStoriesFragment(),
+                )
+                next(action)
+            }
+
+            is PrivateModeClicked -> {
+                privateBrowsingController.handlePrivateModeButtonClicked(
+                    BrowsingMode.fromBoolean(!browsingModeManager.mode.isPrivate)
+                )
                 next(action)
             }
 
@@ -459,6 +484,11 @@ class BrowserToolbarMiddleware(
 
     private fun buildStartBrowserActions(): List<Action> =
         listOf(
+                HomeToolbarActionConfig(HomeToolbarAction.Stories) {
+                    settings.isHomepageMiddleSearchEnabled &&
+                        settings.showPocketRecommendationsFeature &&
+                        !browsingModeManager.mode.isPrivate
+                },
                 HomeToolbarActionConfig(HomeToolbarAction.Back) {
                     isWideScreen() && settings.enableHomepageAsNewTab
                 },
@@ -475,6 +505,9 @@ class BrowserToolbarMiddleware(
         val shouldUseExpandedToolbar = settings.shouldUseExpandedToolbar
 
         return listOf(
+                HomeToolbarActionConfig(HomeToolbarAction.PrivateMode) {
+                    settings.isHomepageMiddleSearchEnabled
+                },
                 HomeToolbarActionConfig(HomeToolbarAction.TabCounter) {
                     !shouldUseExpandedToolbar || !isTallWindow || isWideWindow
                 },
@@ -569,6 +602,16 @@ class BrowserToolbarMiddleware(
         }
     }
 
+    private fun updateToolbarActionsBasedOnBrowsingMode(store: Store<BrowserToolbarState, BrowserToolbarAction>) {
+        appStore.observeWhileActive {
+            distinctUntilChangedBy { it.mode }
+                .collect {
+                    updateStartBrowserActions(store)
+                    updateEndBrowserActions(store)
+                }
+        }
+    }
+
     private fun updateToolbarActionsBasedOnOrientation(store: Store<BrowserToolbarState, BrowserToolbarAction>) {
         appStore.observeWhileActive {
             distinctUntilChangedBy { it.orientation }
@@ -644,6 +687,8 @@ class BrowserToolbarMiddleware(
     internal enum class HomeToolbarAction {
         TabCounter,
         Menu,
+        Stories,
+        PrivateMode,
         FakeBookmark,
         FakeShare,
         NewTab,
@@ -732,7 +777,7 @@ class BrowserToolbarMiddleware(
                         .filterNot { it is SupportedMenuNotifications.Summarize }
                         .any { it != SupportedMenuNotifications.OpenInApp }
                 ActionButtonRes(
-                    drawableResId = iconsR.drawable.mozac_ic_ellipsis_vertical_24,
+                    drawableResId = iconsR.drawable.mozac_ic_more_vertical_round_24,
                     contentDescription = R.string.content_description_menu,
                     highlighted = highlighted,
                     onClick = MenuClicked(source),
@@ -749,6 +794,26 @@ class BrowserToolbarMiddleware(
                 createFakeActionButtonRes(
                     drawableResId = iconsR.drawable.mozac_ic_share_android_24,
                     contentDescription = R.string.browser_menu_share,
+                )
+
+            HomeToolbarAction.Stories ->
+                ActionButtonRes(
+                    drawableResId = iconsR.drawable.mozac_ic_newsfeed_24,
+                    contentDescription = R.string.homepage_all_stories,
+                    onClick = StoriesClicked(source),
+                )
+
+            HomeToolbarAction.PrivateMode ->
+                ActionButtonRes(
+                    drawableResId = iconsR.drawable.mozac_ic_private_mode_24,
+                    contentDescription = R.string.content_description_private_browsing,
+                    state =
+                        if (browsingModeManager.mode.isPrivate) {
+                            ActionButton.State.ACTIVE
+                        } else {
+                            ActionButton.State.DEFAULT
+                        },
+                    onClick = PrivateModeClicked(source),
                 )
 
             HomeToolbarAction.NewTab,

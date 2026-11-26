@@ -141,6 +141,8 @@
   <string name="home_screen_shortcut_open_new_private_tab_2">Skedë e re private</string>
   <!-- Shortcut action to open Passwords screen -->
   <string name="home_screen_shortcut_passwords">Fjalëkalime</string>
+  <!-- Shortcut action to open uninstall survey -->
+  <string name="home_screen_shortcut_uninstall_survey">Të çinstalohet, pse?</string>
   <!--
     Recent Tabs
 
@@ -349,6 +351,8 @@
   <string name="ai_controls_banner_headline">Keni përherë një zgjedhje në %s</string>
   <!-- Link text for learning more about AI controls -->
   <string name="ai_controls_learn_more">Mësoni më tepër</string>
+  <!-- Title for the block AI enhancements toggle -->
+  <string name="ai_controls_block_ai_title">Blloko zgjerime IA</string>
   <!-- Link text to see what AI enhancements are and aren’t included -->
   <string name="ai_controls_see_whats_included">Shihni ç’përfshihet dhe s’përfshihet</string>
   <!-- Title for the translations AI feature toggle -->
@@ -1519,8 +1523,18 @@
   <string name="tab_group_three_dot_menu_close">Mbylle</string>
   <!-- Text shown on the Don't Ask Again checkbox button in the Ungroup tab group confirmation dialog. -->
   <string name="ungroup_tab_group_confirmation_dialog_dont_ask_again">Mos pyet sërish</string>
+  <!-- Text shown on the confirm button in the Ungroup tab group confirmation dialog. -->
+  <string name="ungroup_tab_group_confirmation_dialog_confirm">Hiqua grupin</string>
   <!-- Text shown on the cancel button in the Ungroup tab group confirmation dialog. -->
   <string name="ungroup_tab_group_confirmation_dialog_cancel">Anuloje</string>
+  <!-- Custom accessibility action to reorder a tab up rather than dragging. -->
+  <string name="custom_accessibility_action_reorder_tab_up">Ngjite skedën sipër</string>
+  <!-- Custom accessibility action to reorder a tab left rather than dragging. -->
+  <string name="custom_accessibility_action_reorder_tab_left">Shpjere skedën majtas</string>
+  <!-- Custom accessibility action to reorder a tab right rather than dragging. -->
+  <string name="custom_accessibility_action_reorder_tab_right">Shpjere skedën djathtas</string>
+  <!-- Custom accessibility action to reorder a tab down rather than dragging. -->
+  <string name="custom_accessibility_action_reorder_tab_down">Zbrite skedën poshtë</string>
   <!--
     Color labels for tab groups, used for accessibility and selection UI.
 
@@ -2142,6 +2156,8 @@
   <string name="qr_code_display_close">Mbylle</string>
   <!-- Label for the download button on the QR code display screen -->
   <string name="qr_code_display_download">Shkarkoje</string>
+  <!-- Toast shown when saving the QR code to Downloads fails -->
+  <string name="qr_code_download_failure">S’u arrit të ruhej kodi QR</string>
   <!-- Sub-header in the dialog to share a link to an app from the full list -->
   <string name="share_link_all_apps_subheader">Krejt veprimet</string>
   <!-- Sub-header in the dialog to share a link to an app from the most-recent sorted list -->
@@ -2158,6 +2174,8 @@
   <string name="sync_reconnect">Rilidhu për Njëkohësim</string>
   <!-- Label for the button in the share dialog that sends the tab to the selected sync devices -->
   <string name="sync_send_to_selected_devices">Dërgoje</string>
+  <!-- Content description announced when a device is selected in the share dialog -->
+  <string name="send_to_devices_device_selected_content_description">E përzgjedhur</string>
   <!-- Text displayed when sync is offline and cannot be accessed -->
   <string name="sync_offline">Jo në linjë</string>
   <!-- An option to connect additional devices -->
@@ -2783,6 +2801,8 @@
   <string name="ip_protection_toggle_label">VPN</string>
   <!-- Content description for the browser VPN settings screen top bar back button -->
   <string name="ip_protection_navigate_back_button_content_description">Shko mbrapsht</string>
+  <!-- Headline for the browser VPN promo card. %s is the name of the app (for example "Firefox"). -->
+  <string name="ip_protection_promo_headline">VPN e brendshme e %s-it</string>
   <!-- Link text that opens additional information about the browser VPN -->
   <string name="ip_protection_learn_more">Mësoni më tepër</string>
   <!-- Label for the monthly data allowance section on the browser VPN settings screen -->
@@ -4060,6 +4080,8 @@
     in English.
   -->
   <string name="firefox_labs_title" tools:ignore="BrandUsage">Firefox Labs</string>
+  <!-- Banner title text on the Firefox Labs screen. -->
+  <string name="firefox_labs_banner_title_2">Provoni veçoritë tona eksperimentale!</string>
   <!-- Button text on the Firefox Labs screen for restoring all toggles back to the default settings. The button will turn off any experimental features. -->
   <string name="firefox_labs_restore_default_button_text">Rikthe parazgjedhjet</string>
   <!-- The title used in a confirmation dialog on the Firefox Labs screen when toggling "on" or "off" an experimental feature that requires a restart. -->
@@ -4092,4 +4114,75 @@
   <string name="pdf_tools_signature_add_button">Shtoje</string>
   <!-- Content description for media player displayed in Reader Mode when the Listen to Page (Read Aloud) feature is selected -->
   <string name="reader_mode_panel_media_player_content_description">Lojtës Mediash</string>
+<string name="add_to_new_tab_group_content_description">Shtoni te grup i ri skedash</string>
+<string name="addon_remove_dialog_cancel">Anuloje</string>
+<string name="addon_remove_dialog_confirm">Hiqe</string>
+<string name="addon_remove_dialog_title">Të hiqet %1$s?</string>
+<string name="ai_controls_ai_powered_features">Veçori të bazuara në IA</string>
+<string name="automotive_authentication_setup_dialog_cancel">Anuloje</string>
+<string name="automotive_authentication_setup_dialog_set_up_now">Ujdiseni tani</string>
+<string name="bookmark_empty_list_root_title">Mbajini tok krejt faqerojtësit tuaj të parapëlqyer</string>
+<string name="certificate_details_panel_secure_connection_title">Lidhje e siguruar</string>
+<string name="compact_search_bar_widget_description">Shtyllë kompakte kërkimesh</string>
+<string name="context_menu_open_image_with_google_lens">Kërkoni me Google Lens</string>
+<string name="create_tab_group_content_description">Krijoni grup skedash</string>
+<string name="customize_menu">Përshtateni menunë</string>
+<string name="download_item_source_data">(të dhëna)</string>
+<string name="homepage_shortcuts_add_to_homepage">Shtoje te faqe hyrëse</string>
+<string name="ip_protection_location_fastest_description" tools:ignore="BrandUsage">Firefox-i gjen vendndodhjen më të shpejtë</string>
+<string name="ip_protection_location_picker_title" tools:ignore="UnusedResources">Zgjidhni vendndodhje VPN-je</string>
+<string name="ip_protection_locations_navigate_back_button_content_description">Shko mbrapsht</string>
+<string name="ip_protection_locations_title">Zgjidhni vendndodhje VPN-je</string>
+<string name="ip_protection_onboarding_card_headline">Provoni VPN-në e brendshme të %s-it</string>
+<string name="ip_protection_toolbar_pill_description">VPN-ja është aktive.</string>
+<string name="ip_protection_toolbar_pill_description_off">VPN-ja s’është aktive.</string>
+<string name="ip_protection_toolbar_pill_label">VPN on</string>
+<string name="ip_protection_toolbar_pill_label_off">VPN off</string>
+<string name="lens_camera_image_load_failed_v2">S’u ngarkua dot kjo figurë.</string>
+<string name="lens_camera_permission_denied">Leje e mohuar</string>
+<string name="lens_camera_qr_no_code_found">Te figura s’u gjet kod QR</string>
+<string name="library_item_selected_content_description">E përzgjedhur</string>
+<string name="local_network_access_allowed_summary">E lejuar</string>
+<string name="local_network_access_not_allowed_summary">E palejuar</string>
+<string name="pdf_tools_sign_content_description_2">Shtoni një nënshkrim</string>
+<string name="preferences_account_and_sync_settings">Llogari dhe njëkohësim</string>
+<string name="preferences_category_sync">Të dhëna të njëkohësuara</string>
+<string name="preferences_category_sync_controls">Njëkohësim</string>
+<string name="preferences_downloads_no_folder_picker_available">S’arrihet të hapet zgjedhës dosjesh në këtë pajisje.</string>
+<string name="preferences_enable_sync_summary_sync_enabled">Të dhënat tuaja janë kopjeruajtur dhe të përdorshme në pajisje të njëkohësuara.</string>
+<string name="preferences_enable_sync_title">Njëkohësoje këtë pajisje</string>
+<string name="preferences_inactive_tabs_toggle_title">Skeda jo aktive</string>
+<string name="preferences_local_network_access">Hyrje Në Rrjet Vendor / Pajisje Atypari</string>
+<string name="preferences_media_category">Media</string>
+<string name="preferences_menu">Menu</string>
+<string name="preferences_privacy_report">Raport privatësie</string>
+<string name="preferences_privacy_report_title">Aktivizo raport privatësie</string>
+<string name="preferences_tab_groups_description">Sistemojini skedat tuaj në grupe që mund t’i emërtoni dhe ruani.</string>
+<string name="preferences_tab_groups_title">Grupe skedash</string>
+<string name="preferences_tab_layout">Skemë skedash</string>
+<string name="preferences_tab_organization">Sistemim skedash</string>
+<string name="reader_mode_panel_listen_content_description">Lexim Me Zë</string>
+<string name="search_engine_use_default">Përdor të njëjtin motor kërkimesh si në shfletim të zakonshëm</string>
+<string name="sign_out_dialog_title">Të dilet nga llogaria juaj?</string>
+<string name="tab_group_onboarding_grid_item_description">Që të grupohen, tërhiqni një skedë deri te një tjetër.</string>
+<string name="tab_group_onboarding_item_title">Krijoni një grup skedash</string>
+<string name="tab_group_onboarding_list_item_description">Që të krijohet një grup, përzgjidhni skeda të shumta.</string>
+<string name="tab_tray_menu_select_all_tabs">Përzgjidhe krejt</string>
+<plurals name="tabs_header_tab_group_counter_title">
+    <!--
+      Title for the list of tab groups used by a11y services
+      The %1$d will be replaced by the number of opened tab groups
+    -->
+    <item quantity="one">%1$d grup skedash hapur. Që të këmbeni skeda, prekeni.</item>
+    <item quantity="other">%1$d grupe skedash hapur. Që të këmbeni skeda, prekeni.</item>
+  </plurals>
+<string name="translation_settings_control_description">Krejt përkthimet mbeten private në pajisjen tuaj.</string>
+<string name="uninstall_survey_button_label">Parashtro përshtypjet dhe çinstaloje</string>
+<string name="uninstall_survey_option_2_v2">Sajtet s’funksionojnë si duhet</string>
+<string name="uninstall_survey_option_3_v2">Mungojnë veçori që më duhen</string>
+<string name="uninstall_survey_option_6_v2">Shqetësime privatësie, ose sigurie</string>
+<string name="webcompat_reporter_description_error">Ju lutemi, jepni të paktën 10 shenja</string>
+<string name="webcompat_reporter_edit_url_dialog_title">Përpunoni URL sajti</string>
+<string name="webcompat_reporter_reason_notsupported_2">Shfletuesi s’mbulohet, ose bllokohet</string>
+<string name="webcompat_reporter_reason_site_is_deceptive">Ky sajt është i rrejshëm</string>
 </resources>

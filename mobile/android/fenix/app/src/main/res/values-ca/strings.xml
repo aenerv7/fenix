@@ -4347,4 +4347,28 @@
   <string name="firefox_labs_feature_conflict">Aquesta funció no està disponible per a provar-la.</string>
   <!-- Text displayed on the Firefox Labs screen when there are no Labs experimental features present. -->
   <string name="firefox_labs_no_labs_available_description">No hi ha cap funció experimental per a provar ara mateix</string>
+<string name="browser_menu_customize_homepage">Personalitza la pàgina d’inici</string>
+<string name="ip_protection_locations_navigate_back_button_content_description">Vés enrere</string>
+<string name="ip_protection_locations_title">Trieu la ubicació de la VPN</string>
+<string name="ip_protection_locations_unavailable_description">S\'ha canviat a la ubicació recomanada.</string>
+<string name="ip_protection_locations_unavailable_title">Les ubicacions no estan disponibles</string>
+<string name="lens_opt_out_description">Trieu una imatge o feu servir la càmera per a obtenir resultats amb el Google Lens.</string>
+<string name="lens_opt_out_not_now_button">Ara no</string>
+<string name="lens_opt_out_settings_link">Paràmetres del Google Lens</string>
+<string name="lens_opt_out_title">Cerca-ho amb el Google Lens</string>
+<string name="lens_opt_out_try_it_now_button">Proveu-ho ara</string>
+<string name="local_network_access_allowed_summary">Permès</string>
+<string name="local_network_access_not_allowed_summary">No permès</string>
+<string name="preferences_local_network_access">Accés a la xarxa local / Dispositius propers</string>
+<string name="tab_group_three_dot_button_content_description">Més opcions</string>
+<string name="tab_group_three_dot_menu_close">Tanca</string>
+<string name="tab_group_three_dot_menu_delete">Suprimeix</string>
+<string name="tab_group_three_dot_menu_edit">Edita</string>
+<string name="tab_group_three_dot_menu_ungroup">Desagrupa</string>
+<string name="ungroup_tab_group_confirmation_dialog_body">Les pestanyes romandran obertes en aquest dispositiu, però el grup s\'eliminarà.</string>
+<string name="ungroup_tab_group_confirmation_dialog_cancel">Cancel·la</string>
+<string name="ungroup_tab_group_confirmation_dialog_confirm">Desagrupa</string>
+<string name="ungroup_tab_group_confirmation_dialog_dont_ask_again">No m\'ho tornis a demanar</string>
+<string name="ungroup_tab_group_confirmation_dialog_title">Voleu desagrupar el grup de pestanyes?</string>
+<string name="webcompat_reporter_label_optional_description">Descriviu el problema detalladament per a ajudar-nos a investigar-lo (opcional)</string>
 </resources>

@@ -303,6 +303,8 @@
   <string name="browser_menu_webcompat_reporter_2">Adrodd ar wefan wedi torri</string>
   <!-- Browser menu label for adding a tab to a tab group -->
   <string name="browser_menu_add_to_tab_group">Ychwanegu at y grŵp</string>
+  <!-- Browser menu label for moving a tab to a tab group -->
+  <string name="browser_menu_move_to_tab_group">Symud i grŵp</string>
   <!-- Browser menu label that is displayed when the current page has been translated by the translation feature. -->
   <string name="browser_menu_translated">Cyfieithwyd</string>
   <!-- Browser menu label for the print feature -->
@@ -616,6 +618,14 @@
   <string name="nova_onboarding_sync_subtitle">Cipiwch nodau tudalen, cyfrineiriau, a mwy yn syth ar unrhyw ddyfais. Mae eich data personol yn aros yn ddiogel wedi\'i amgryptio.</string>
   <!-- Sync onboarding button. -->
   <string name="nova_onboarding_sync_button">Cychwyn cydweddu</string>
+  <!-- Title of onboarding pairing card. Displayed when installing Firefox for Android by using a pairing link from Firefox for Desktop. "Scan" refers to scanning the QR code displayed on the computer. -->
+  <string name="nova_onboarding_sync_pairing_title">Sganio i orffen paru gyda\'ch cyfrifiadur</string>
+  <!-- Body of the onboarding pairing card. Provides troubleshooting instructions when the QR code is not being displayed on the pairing computer. The "firefox.com/pair" URL should not be translated or edited. Bold tags should be preserved. -->
+  <string name="nova_onboarding_sync_pairing_body"><![CDATA[Dim cod QR? Ewch i <b>firefox.com/pair</b> ar eich cyfrifiadur.]]></string>
+  <!-- Primary button of the onboarding pairing card. Opens the camera to scan the pairing QR code. -->
+  <string name="nova_onboarding_sync_pairing_scan_button">Sganio\'r cod paru</string>
+  <!-- Secondary button of the onboarding pairing card. Opens the Mozilla account sign-in page. -->
+  <string name="nova_onboarding_sync_pairing_email_button">Mewngofnodi gydag e-bost</string>
   <!-- Marketing onboarding title. -->
   <string name="nova_onboarding_marketing_title">Helpwch ni i adeiladu rhyngrwyd gwell</string>
   <!--
@@ -2512,6 +2522,12 @@
   <string name="snackbar_private_tab_closed">Tab preifat wedi’i gau</string>
   <!-- Text shown in snackbar to undo deleting a tab, top site or collection -->
   <string name="snackbar_deleted_undo">DADWNEUD</string>
+  <!-- Confirmation message displayed when user adds a page to a tab group. %1$s is the tab group's name. -->
+  <string name="snackbar_tab_added_to_group">Wedi\'i ychwanegu at %1$s</string>
+  <!-- Confirmation message displayed when user moves a page from one tab group to another. %1$s is the tab group's name. -->
+  <string name="snackbar_tab_moved_to_group">Wedi symud i %1$s</string>
+  <!-- Button text displayed with a confirmation message when the user adds or moves a page to a tab group. Tapping it displays the tab group. -->
+  <string name="snackbar_action_view">Golwg</string>
   <!--
     QR code scanner prompt which appears after scanning a code, but before navigating to it
     %1$s is the name of the app (for example "Firefox"), %2$s is the URL or text scanned
@@ -4704,4 +4720,35 @@
   <string name="reader_mode_panel_listen_content_description">Darllen yn Uchel</string>
   <!-- Content description for media player displayed in Reader Mode when the Listen to Page (Read Aloud) feature is selected -->
   <string name="reader_mode_panel_media_player_content_description">Chwaraewr Cyfryngau</string>
+<string name="addon_remove_dialog_body">Mae hyn yn tynnu\'r estyniad a\'i osodiadau o\'r ddyfais hon.</string>
+<string name="addon_remove_dialog_cancel">Diddymu</string>
+<string name="addon_remove_dialog_confirm">Tynnu</string>
+<string name="addon_remove_dialog_title">Tynnu %1$s?</string>
+<string name="ai_controls_listen_to_page_description">Gall eich dyfais ddefnyddio AI i ddarllen yn uchel. Mae\'r testun a\'r sain yn aros yn breifat.</string>
+<string name="ai_controls_listen_to_page_title">Gwrandewch ar y dudalen</string>
+<string name="automotive_authentication_setup_dialog_cancel">Diddymu</string>
+<string name="automotive_authentication_setup_dialog_message">Gosodwch batrwm clo dyfais, PIN, neu gyfrinair i amddiffyn eich data sensitif wedi\'u cadw, rhag cael mynediad ato os yw rhywun arall yn gyrru\'ch car.</string>
+<string name="automotive_authentication_setup_dialog_set_up_now">Gosod nawr</string>
+<string name="automotive_authentication_setup_dialog_title">Diogelwch eich data sensitif</string>
+<string name="browser_menu_read_or_listen">Golwg Darllenydd, darllen neu wrando ar dudalen</string>
+<string name="certificate_details_panel_secure_connection_title">Cysylltiadau diogel</string>
+<string name="customize_menu">Cyfaddasu dewislen</string>
+<string name="download_item_source_data">(data)</string>
+<string name="ip_protection_location_selection_reset_snackbar">Nid yw\'r lleoliad VPN a ddewiswyd ar gael. Wedi newid i\'r lleoliad sy\'n cael ei argymell.</string>
+<string name="lens_camera_image_load_failed_v2">Methu llwytho\'r ddelwedd hon.</string>
+<string name="notification_privacy_report_body_has_trackers">Parhewch i bori. Bydd %1$s yn dal i rwystro.</string>
+<string name="notification_privacy_report_channel_description">Mae %1$s yn dangos faint o dracwyr gafodd eu rhwystro wrth i chi bori.</string>
+<string name="notification_privacy_report_channel_name">Adroddiad preifatrwydd</string>
+<string name="notification_privacy_report_headline_no_trackers">Mae %1$s yn rhwystro tracwyr wrth i chi bori. Byddwch yn eu gweld nhw yma.</string>
+<string name="pdf_tools_sign_content_description_2">Ychwanegu llofnod</string>
+<string name="pdf_tools_signature_adding_content_description">Ychwanegu llofnod</string>
+<string name="preference_homepage_search_location_middle">Canol</string>
+<string name="preference_homepage_search_location_top">Brig</string>
+<string name="preferences_enable_sync_summary_sync_disabled">Yn defnyddio data sydd wedi\'u cadw yn eich cyfrif %1$s.</string>
+<string name="preferences_enable_sync_summary_sync_enabled">Mae copi wrth gefn o\'ch data ac ar gael ar ddyfeisiau wedi\'u cydweddu.</string>
+<string name="preferences_enable_sync_title">Cydweddu\'r ddyfais hon</string>
+<string name="preferences_homepage_search_location">Lleoliad chwilio\'r tudalen gartref</string>
+<string name="preferences_media_category">Cyfrwng</string>
+<string name="preferences_open_links_in_youtube">Agor dolenni yn ap YouTube</string>
+<string name="reader_mode_panel_content_description_2">Dewisiadau Golwg Darllenydd</string>
 </resources>

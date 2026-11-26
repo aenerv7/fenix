@@ -4617,4 +4617,23 @@
   <string name="reader_mode_panel_listen_content_description">Læs højt</string>
   <!-- Content description for media player displayed in Reader Mode when the Listen to Page (Read Aloud) feature is selected -->
   <string name="reader_mode_panel_media_player_content_description">Medieafspiller</string>
+<string name="automotive_authentication_setup_dialog_cancel">Annuller</string>
+<string name="automotive_authentication_setup_dialog_message">Indstil en pinkode, en adgangskode eller et låsemønster på din enhed for at forhindre, at andre mennesker får adgang til dine gemte følsomme data, hvis de kører i din bil.</string>
+<string name="automotive_authentication_setup_dialog_set_up_now">Indstil nu</string>
+<string name="automotive_authentication_setup_dialog_title">Gør dine følsomme data sikre</string>
+<string name="browser_menu_extension_review_update_description">Gennemgå indstillinger for at opdatere</string>
+<string name="browser_menu_extensions_review_update_description">Gennemgå opdatering for %1$s</string>
+<string name="browser_menu_read_or_listen">Læservisning, læs eller lyt til side</string>
+<string name="customize_menu">Tilpas menu</string>
+<string name="download_item_source_data">(data)</string>
+<string name="lens_camera_image_load_failed_v2">Kunne ikke indlæse dette billede.</string>
+<string name="pdf_tools_sign_content_description_2">Tilføj en signatur</string>
+<string name="pdf_tools_signature_adding_content_description">Tilføjer signatur</string>
+<string name="preference_homepage_search_location_middle">Midten</string>
+<string name="preference_homepage_search_location_top">Top</string>
+<string name="preferences_homepage_search_location">Placering af søgefelt på startside</string>
+<string name="preferences_media_category">Medieindhold</string>
+<string name="preferences_menu">Menu</string>
+<string name="preferences_open_links_in_youtube">Åbn links i YouTube-appen</string>
+<string name="reader_mode_panel_content_description_2">Indstillinger for læsevisning</string>
 </resources>

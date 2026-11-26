@@ -4586,4 +4586,33 @@
 
     Content description for accessibility (used by screen readers): Description for the button that triggers the start of a signature workflow on the PDF displayed on the screen.
   -->  <string name="pdf_tools_sign_content_description_2">افزودن امضا</string>
+<string name="addon_remove_dialog_body">این کار افزونه و تنظیمات آن را از این دستگاه برمی‌دارد.</string>
+<string name="addon_remove_dialog_cancel">لغو</string>
+<string name="addon_remove_dialog_confirm">برداشتن</string>
+<string name="addon_remove_dialog_title">%1$s برداشته شود؟</string>
+<string name="ai_controls_listen_to_page_description">دستگاه شما ممکن است برای بلندخوانی از هوش مصنوعی استفاده کند. متن و صدا خصوصی می‌مانند.</string>
+<string name="ai_controls_listen_to_page_title">گوش دادن به صفحه</string>
+<string name="automotive_authentication_setup_dialog_cancel">لغو</string>
+<string name="automotive_authentication_setup_dialog_message">یک الگوی قفل دستگاه، PIN یا گذرواژه تنظیم کنید تا اگر شخص دیگری خودروی شما را می‌راند، به داده‌های حساس ذخیره‌شدهٔ شما دسترسی پیدا نکند.</string>
+<string name="automotive_authentication_setup_dialog_set_up_now">هم‌اکنون راه‌اندازی شود</string>
+<string name="automotive_authentication_setup_dialog_title">از داده‌های حساس خود محافظت کنید</string>
+<string name="browser_menu_extension_review_update_description">برای به‌روزرسانی، تنظیمات را بررسی کنید</string>
+<string name="browser_menu_extensions_review_update_description">بررسی به‌روزرسانی %1$s</string>
+<string name="browser_menu_read_or_listen">نمای مطالعه، خواندن یا گوش دادن به صفحه</string>
+<string name="certificate_details_panel_secure_connection_title">اتصال امن</string>
+<string name="compact_search_bar_widget_description">نوار جست‌وجوی فشرده</string>
+<string name="download_item_source_data">(داده)</string>
+<string name="lens_camera_image_load_failed_v2">بارگذاری این تصویر ممکن نشد.</string>
+<string name="pdf_tools_signature_adding_content_description">در حال افزودن امضا</string>
+<string name="preference_homepage_search_location_middle">وسط</string>
+<string name="preference_homepage_search_location_top">بالا</string>
+<string name="preferences_enable_sync_summary_sync_disabled">در حال استفاده از داده‌های ذخیره‌شده در حساب %1$s شما.</string>
+<string name="preferences_enable_sync_summary_sync_enabled">داده‌های شما پشتیبان‌گیری شده و در دستگاه‌های همگام‌شده در دسترس است.</string>
+<string name="preferences_enable_sync_title">همگام‌سازی این دستگاه</string>
+<string name="preferences_homepage_search_location">محل جست‌وجو در صفحهٔ اصلی</string>
+<string name="preferences_menu">منو</string>
+<string name="reader_mode_panel_content_description_2">گزینه‌های نمای مطالعه</string>
+<string name="search_bar_widget_description">نوار جست‌وجو با جست‌وجوی خصوصی و صوتی</string>
+<string name="search_bar_with_lens_widget_description">نوار جست‌وجو با جست‌وجوی تصویری، خصوصی و صوتی</string>
+<string name="tab_groups_strip_expand_group_content_description">باز کردن برای نمایش زبانه‌ها در تمام‌صفحه</string>
 </resources>

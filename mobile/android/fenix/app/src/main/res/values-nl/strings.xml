@@ -299,6 +299,8 @@
   <string name="browser_menu_webcompat_reporter_2">Niet-werkende website melden</string>
   <!-- Browser menu label for adding a tab to a tab group -->
   <string name="browser_menu_add_to_tab_group">Aan groep toevoegen</string>
+  <!-- Browser menu label for moving a tab to a tab group -->
+  <string name="browser_menu_move_to_tab_group">Verplaatsen naar groep</string>
   <!-- Browser menu label that is displayed when the current page has been translated by the translation feature. -->
   <string name="browser_menu_translated">Vertaald</string>
   <!-- Browser menu label for the print feature -->
@@ -612,6 +614,14 @@
   <string name="nova_onboarding_sync_subtitle">Haal bladwijzers, wachtwoorden en meer op elk apparaat in een handomdraai op. Uw persoonlijke gegevens blijven veilig met versleuteling.</string>
   <!-- Sync onboarding button. -->
   <string name="nova_onboarding_sync_button">Beginnen met synchroniseren</string>
+  <!-- Title of onboarding pairing card. Displayed when installing Firefox for Android by using a pairing link from Firefox for Desktop. "Scan" refers to scanning the QR code displayed on the computer. -->
+  <string name="nova_onboarding_sync_pairing_title">Scan om koppelen met uw computer te voltooien</string>
+  <!-- Body of the onboarding pairing card. Provides troubleshooting instructions when the QR code is not being displayed on the pairing computer. The "firefox.com/pair" URL should not be translated or edited. Bold tags should be preserved. -->
+  <string name="nova_onboarding_sync_pairing_body"><![CDATA[Geen QR-code? Ga op uw computer naar <b>firefox.com/pair</b>.]]></string>
+  <!-- Primary button of the onboarding pairing card. Opens the camera to scan the pairing QR code. -->
+  <string name="nova_onboarding_sync_pairing_scan_button">Koppelingscode scannen</string>
+  <!-- Secondary button of the onboarding pairing card. Opens the Mozilla account sign-in page. -->
+  <string name="nova_onboarding_sync_pairing_email_button">Aanmelden met e-mailadres</string>
   <!-- Marketing onboarding title. -->
   <string name="nova_onboarding_marketing_title">Help ons een beter internet te bouwen</string>
   <!--
@@ -2490,6 +2500,12 @@
   <string name="snackbar_private_tab_closed">Privétabblad gesloten</string>
   <!-- Text shown in snackbar to undo deleting a tab, top site or collection -->
   <string name="snackbar_deleted_undo">ONGEDAAN MAKEN</string>
+  <!-- Confirmation message displayed when user adds a page to a tab group. %1$s is the tab group's name. -->
+  <string name="snackbar_tab_added_to_group">Toegevoegd aan %1$s</string>
+  <!-- Confirmation message displayed when user moves a page from one tab group to another. %1$s is the tab group's name. -->
+  <string name="snackbar_tab_moved_to_group">Verplaatst naar %1$s</string>
+  <!-- Button text displayed with a confirmation message when the user adds or moves a page to a tab group. Tapping it displays the tab group. -->
+  <string name="snackbar_action_view">Tonen</string>
   <!--
     QR code scanner prompt which appears after scanning a code, but before navigating to it
     %1$s is the name of the app (for example "Firefox"), %2$s is the URL or text scanned
@@ -4656,4 +4672,28 @@
   <string name="reader_mode_panel_listen_content_description">Hardop voorlezen</string>
   <!-- Content description for media player displayed in Reader Mode when the Listen to Page (Read Aloud) feature is selected -->
   <string name="reader_mode_panel_media_player_content_description">Mediaspeler</string>
+<string name="addon_remove_dialog_body">Dit verwijdert de extensie en de bijbehorende instellingen van dit apparaat.</string>
+<string name="addon_remove_dialog_cancel">Annuleren</string>
+<string name="addon_remove_dialog_confirm">Verwijderen</string>
+<string name="addon_remove_dialog_title">%1$s verwijderen?</string>
+<string name="ai_controls_listen_to_page_description">Uw apparaat kan AI gebruiken om hardop te lezen. De tekst en het geluid blijven privé.</string>
+<string name="ai_controls_listen_to_page_title">Naar pagina luisteren</string>
+<string name="browser_menu_extension_review_update_description">Bij te werken instellingen beoordelen</string>
+<string name="browser_menu_extensions_review_update_description">Update voor %1$s beoordelen</string>
+<string name="browser_menu_read_or_listen">Lezerweergave, pagina lezen of beluisteren</string>
+<string name="certificate_details_panel_secure_connection_title">Beveiligde verbinding</string>
+<string name="customize_menu">Menu aanpassen</string>
+<string name="download_item_source_data">(data)</string>
+<string name="notification_privacy_report_body_has_trackers">Blijf surfen. %1$s blijft blokkeren.</string>
+<string name="notification_privacy_report_channel_description">%1$s toont hoeveel trackers er tijdens het navigeren zijn geblokkeerd.</string>
+<string name="notification_privacy_report_channel_name">Privacyrapport</string>
+<string name="notification_privacy_report_headline_no_trackers">%1$s blokkeert trackers terwijl u navigeert. U ziet ze hier.</string>
+<string name="pdf_tools_sign_content_description_2">Een ondertekening toevoegen</string>
+<string name="pdf_tools_signature_adding_content_description">Handtekening toevoegen</string>
+<string name="preferences_enable_sync_summary_sync_disabled">Opgeslagen gegevens worden in uw %1$s-account gebruikt.</string>
+<string name="preferences_enable_sync_summary_sync_enabled">Er is een reservekopie van uw gegevens gemaakt en deze zijn beschikbaar op gesynchroniseerde apparaten.</string>
+<string name="preferences_enable_sync_title">Dit apparaat synchroniseren</string>
+<string name="preferences_media_category">Media</string>
+<string name="preferences_open_links_in_youtube">Koppelingen in YouTube-app openen</string>
+<string name="reader_mode_panel_content_description_2">Lezerweergaveopties</string>
 </resources>

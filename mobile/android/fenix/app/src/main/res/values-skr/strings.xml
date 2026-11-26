@@ -4599,5 +4599,6 @@
   <string name="reader_mode_panel_listen_content_description">اُچی آواز نال پڑھو</string>
   <!-- Content description for media player displayed in Reader Mode when the Listen to Page (Read Aloud) feature is selected -->
   <string name="reader_mode_panel_media_player_content_description">میڈیا پلیئر</string>
+<string name="customize_menu">مینیو اپنی مرضی دا بݨاؤ</string>
 </resources>
 

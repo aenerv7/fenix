@@ -81,6 +81,17 @@ internal class HomeSettingsFragmentTest {
     }
 
     @Test
+    fun `GIVEN the homepage search bar is enabled WHEN accessing settings THEN the Jump back in, Bookmarks and Recently visited settings are visible`() {
+        every { appSettings.enableHomepageSearchBar } returns true
+
+        activateFragment()
+
+        assertTrue(getSwitchPreference(R.string.pref_key_recent_tabs).isVisible)
+        assertTrue(getSwitchPreference(R.string.pref_key_customization_bookmarks).isVisible)
+        assertTrue(getSwitchPreference(R.string.pref_key_history_metadata_feature).isVisible)
+    }
+
+    @Test
     fun `GIVEN the Pocket sponsored stories preference is false WHEN accessing settings THEN the setting for it is unchecked`() {
         every { appSettings.showPocketSponsoredStories } returns false
 
@@ -185,6 +196,9 @@ internal class HomeSettingsFragmentTest {
         homeSettingsFragment.findPreference(
             homeSettingsFragment.getPreferenceKey(R.string.pref_key_pocket_sponsored_stories)
         )!!
+
+    private fun getSwitchPreference(keyId: Int): SwitchPreferenceCompat =
+        homeSettingsFragment.findPreference(homeSettingsFragment.getPreferenceKey(keyId))!!
 
     private fun getPrivacyReportPreference(): SwitchPreferenceCompat =
         homeSettingsFragment.findPreference(homeSettingsFragment.getPreferenceKey(R.string.pref_key_privacy_report))!!

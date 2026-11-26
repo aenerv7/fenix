@@ -58,7 +58,6 @@ import org.mozilla.fenix.ext.components
 import org.mozilla.fenix.ext.maxActiveTime
 import org.mozilla.fenix.ext.recordEventInNimbus
 import org.mozilla.fenix.perf.StrictModeManager
-import org.mozilla.fenix.perf.lazyMonitored
 import org.mozilla.fenix.sync.SyncedTabsIntegration
 import org.mozilla.fenix.utils.Settings
 import org.mozilla.fenix.utils.getUndoDelay
@@ -122,7 +121,7 @@ class BackgroundServices(
             SyncEngine.Bookmarks,
             SyncEngine.Tabs,
         )
-    private val syncConfig by lazyMonitored {
+    private val syncConfig by lazy {
         SyncConfig(
             supportedEngines = supportedEngines,
             periodicSyncConfig = PeriodicSyncConfig(periodMinutes = 240), // four hours
@@ -135,7 +134,7 @@ class BackgroundServices(
      * [org.mozilla.fenix.components.accounts.FxaWebChannelIntegration] to communicate client capabilities with firefox
      * accounts (FxA)
      */
-    val fxaCapabilities: Set<FxaCapability> by lazyMonitored {
+    val fxaCapabilities: Set<FxaCapability> by lazy {
         buildSet {
             add(FxaCapability.ChooseWhatToSync)
             add(FxaCapability.PairingV2)
@@ -160,34 +159,34 @@ class BackgroundServices(
 
     val accountAbnormalities = AccountAbnormalities(context, crashReporter, strictMode)
 
-    val syncStore by lazyMonitored {
+    val syncStore by lazy {
         SyncStore(middleware = listOf(TelemetryMiddleware()))
     }
 
     private lateinit var syncStoreSupport: SyncStoreSupport
 
-    val accountManager by lazyMonitored {
+    val accountManager by lazy {
         makeAccountManager(context, serverConfig, deviceConfig, syncConfig, crashReporter)
     }
 
-    val syncedTabsStorage by lazyMonitored {
+    val syncedTabsStorage by lazy {
         SyncedTabsStorage(accountManager, context.components.core.store, remoteTabsStorage.value, maxActiveTime)
     }
-    val syncedTabsAutocompleteProvider by lazyMonitored {
+    val syncedTabsAutocompleteProvider by lazy {
         SyncedTabsAutocompleteProvider(syncedTabsStorage)
     }
-    val syncedTabsCommands by lazyMonitored {
+    val syncedTabsCommands by lazy {
         SyncedTabsCommands(accountManager, remoteTabsStorage.value).apply {
             register(SyncedTabsCommandsObserver(syncedTabsCommandsFlushScheduler))
         }
     }
-    val syncedTabsCommandsFlushScheduler by lazyMonitored {
+    val syncedTabsCommandsFlushScheduler by lazy {
         SyncedTabsCommandsFlushScheduler(
             context = context,
             flushDelay = settings.getUndoDelay().milliseconds + DEFAULT_SYNCED_TABS_COMMANDS_EXTRA_FLUSH_DELAY,
         )
     }
-    val closeSyncedTabsCommandReceiver by lazyMonitored {
+    val closeSyncedTabsCommandReceiver by lazy {
         CloseTabsCommandReceiver(context.components.core.store).apply {
             register(SyncedTabsClosedNotificationObserver(context, notificationManager))
         }
@@ -257,7 +256,7 @@ class BackgroundServices(
             }
 
     /** Provides notification functionality, manages notification channels. */
-    private val notificationManager by lazyMonitored {
+    private val notificationManager by lazy {
         NotificationManager(context)
     }
 }

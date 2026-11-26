@@ -4462,39 +4462,6 @@
   <!-- ==== End of Terms of use popup prompt. ==== -->
 
   <!--
-    Sports widget
-
-    Label shown on the sports widget scoreboard when a match is currently being played live.
-  -->
-  <string name="wrex_widget_match_live">ライブ</string>
-  <!-- Label shown on the sports widget match status badge when the start of a match has been delayed. -->
-  <string name="wrex_widget_match_delayed">遅延</string>
-  <!-- Label shown on the sports widget match status badge when a match has been suspended after it started. -->
-  <string name="wrex_widget_match_suspended">一時中断</string>
-  <!-- Label shown on the sports widget match status badge when a match has been postponed to a later date. -->
-  <string name="wrex_widget_match_postponed">延期</string>
-  <!-- Sports widget menu item to view the team's match results. -->
-  <string name="wrex_widget_results">結果</string>
-  <!-- Sports widget menu item to view the league standings table. -->
-  <string name="wrex_widget_standings">リーグ順位表</string>
-  <!-- Sports widget menu item to browse the team's wallpapers. -->
-  <string name="wrex_widget_wallpapers">壁紙</string>
-  <!-- Sports widget menu item to remove the widget from the homepage. -->
-  <string name="wrex_widget_remove_widget">ウィジェットを削除</string>
-  <!-- Content description (for accessibility, not displayed) for the overflow (more options) menu button on the sports widget card. -->
-  <string name="wrex_widget_more_options_content_description">他のオプション</string>
-  <!--
-    Content description (for accessibility, not displayed) used for the sports widget card header announcing a live match.
-    %s is the name of the competition the match belongs to (e.g. "FA Cup").
-  -->
-  <string name="wrex_widget_live_game_content_description">%s、試合中</string>
-  <!--
-    Content description (for accessibility, not displayed) for a paginated item.
-    %1$s is the name of the competition the match belongs to (e.g. "FA Cup"),
-    %2$d is the current page number, and %3$d is the total number of pages.
-  -->
-  <string name="wrex_widget_page_position_content_description">%1$s、ページ %2$d / %3$d</string>
-  <!--
     Privacy notice homepage banner
 
     A message we show the user on the homepage when there is a new version of the privacy notice. 'Firefox' is intentionally hardcoded.
@@ -4668,4 +4635,17 @@
   <string name="reader_mode_panel_media_player_content_description">メディアプレーヤー</string>
   <!-- Content description for the reader view button Reader view facilitates readability and has a Listen to Page feature. Button icon is a document with headphones, and is displayed next to the page URL when the feature is available. -->
   <string name="browser_menu_read_or_listen">リーダービューでページを読む、または聴く</string>
+<string name="addon_remove_dialog_body">この端末から拡張機能とその設定が削除されます。</string>
+<string name="addon_remove_dialog_cancel">キャンセル</string>
+<string name="addon_remove_dialog_confirm">削除</string>
+<string name="addon_remove_dialog_title">%1$s を削除しますか？</string>
+<string name="certificate_details_panel_secure_connection_title">安全な接続</string>
+<string name="customize_menu">メニューをカスタマイズ</string>
+<string name="notification_privacy_report_body_has_trackers">閲覧を続けてください。%1$s が引き続きブロックします。</string>
+<string name="notification_privacy_report_channel_description">閲覧中に %1$s がブロックしたトラッカーの数を表示します。</string>
+<string name="notification_privacy_report_channel_name">プライバシー報告</string>
+<string name="notification_privacy_report_headline_no_trackers">閲覧中に %1$s がブロックしたトラッカーがここに表示されます。</string>
+<string name="preferences_enable_sync_summary_sync_disabled">%1$s アカウントに保存されているデータを使用します。</string>
+<string name="preferences_enable_sync_summary_sync_enabled">あなたのデータがバックアップされ、同期した端末で利用可能になりました。</string>
+<string name="preferences_enable_sync_title">この端末を同期する</string>
 </resources>

@@ -303,6 +303,8 @@
   <string name="browser_menu_webcompat_reporter_2">Report broken site</string>
   <!-- Browser menu label for adding a tab to a tab group -->
   <string name="browser_menu_add_to_tab_group">Add to group</string>
+  <!-- Browser menu label for moving a tab to a tab group -->
+  <string name="browser_menu_move_to_tab_group">Move to group</string>
   <!-- Browser menu label that is displayed when the current page has been translated by the translation feature. -->
   <string name="browser_menu_translated">Translated</string>
   <!-- Browser menu label for the print feature -->
@@ -616,6 +618,14 @@
   <string name="nova_onboarding_sync_subtitle">Grab bookmarks, passwords and more on any device in a snap. Your personal data stays safe and secure with encryption.</string>
   <!-- Sync onboarding button. -->
   <string name="nova_onboarding_sync_button">Start synchronising</string>
+  <!-- Title of onboarding pairing card. Displayed when installing Firefox for Android by using a pairing link from Firefox for Desktop. "Scan" refers to scanning the QR code displayed on the computer. -->
+  <string name="nova_onboarding_sync_pairing_title">Scan to finish pairing with your computer</string>
+  <!-- Body of the onboarding pairing card. Provides troubleshooting instructions when the QR code is not being displayed on the pairing computer. The "firefox.com/pair" URL should not be translated or edited. Bold tags should be preserved. -->
+  <string name="nova_onboarding_sync_pairing_body"><![CDATA[No QR code? Go to <b>firefox.com/pair</b> on your computer.]]></string>
+  <!-- Primary button of the onboarding pairing card. Opens the camera to scan the pairing QR code. -->
+  <string name="nova_onboarding_sync_pairing_scan_button">Scan pairing code</string>
+  <!-- Secondary button of the onboarding pairing card. Opens the Mozilla account sign-in page. -->
+  <string name="nova_onboarding_sync_pairing_email_button">Sign in with email</string>
   <!-- Marketing onboarding title. -->
   <string name="nova_onboarding_marketing_title">Help us build a better internet</string>
   <!--
@@ -2488,6 +2498,12 @@
   <string name="snackbar_private_tab_closed">Private tab closed</string>
   <!-- Text shown in snackbar to undo deleting a tab, top site or collection -->
   <string name="snackbar_deleted_undo">UNDO</string>
+  <!-- Confirmation message displayed when user adds a page to a tab group. %1$s is the tab group's name. -->
+  <string name="snackbar_tab_added_to_group">Added to %1$s</string>
+  <!-- Confirmation message displayed when user moves a page from one tab group to another. %1$s is the tab group's name. -->
+  <string name="snackbar_tab_moved_to_group">Moved to %1$s</string>
+  <!-- Button text displayed with a confirmation message when the user adds or moves a page to a tab group. Tapping it displays the tab group. -->
+  <string name="snackbar_action_view">View</string>
   <!--
     QR code scanner prompt which appears after scanning a code, but before navigating to it
     %1$s is the name of the app (for example "Firefox"), %2$s is the URL or text scanned
@@ -4644,4 +4660,35 @@
   <string name="reader_mode_panel_listen_content_description">Read Aloud</string>
   <!-- Content description for media player displayed in Reader Mode when the Listen to Page (Read Aloud) feature is selected -->
   <string name="reader_mode_panel_media_player_content_description">Media Player</string>
+<string name="addon_remove_dialog_body">This removes the extension and its settings from this device.</string>
+<string name="addon_remove_dialog_cancel">Cancel</string>
+<string name="addon_remove_dialog_confirm">Remove</string>
+<string name="addon_remove_dialog_title">Remove %1$s?</string>
+<string name="ai_controls_listen_to_page_description">Your device may use AI to read aloud. The text and audio stay private.</string>
+<string name="ai_controls_listen_to_page_title">Listen to page</string>
+<string name="automotive_authentication_setup_dialog_cancel">Cancel</string>
+<string name="automotive_authentication_setup_dialog_message">Set up a device lock pattern, PIN or password to protect your saved sensitive data from being accessed if someone else is driving your car.</string>
+<string name="automotive_authentication_setup_dialog_set_up_now">Set up now</string>
+<string name="automotive_authentication_setup_dialog_title">Secure your sensitive data</string>
+<string name="browser_menu_read_or_listen">Reader view, read or listen to page</string>
+<string name="certificate_details_panel_secure_connection_title">Secure connection</string>
+<string name="customize_menu">Customise menu</string>
+<string name="download_item_source_data">(data)</string>
+<string name="ip_protection_location_selection_reset_snackbar">Selected VPN location unavailable. Switched to the recommended location.</string>
+<string name="lens_camera_image_load_failed_v2">Couldn’t load this image.</string>
+<string name="notification_privacy_report_body_has_trackers">Keep browsing. %1$s will keep blocking.</string>
+<string name="notification_privacy_report_channel_description">%1$s shows how many trackers were blocked while you browsed.</string>
+<string name="notification_privacy_report_channel_name">Privacy report</string>
+<string name="notification_privacy_report_headline_no_trackers">%1$s blocks trackers as you browse. You’ll see them here.</string>
+<string name="pdf_tools_sign_content_description_2">Add a signature</string>
+<string name="pdf_tools_signature_adding_content_description">Adding signature</string>
+<string name="preference_homepage_search_location_middle">Middle</string>
+<string name="preference_homepage_search_location_top">Top</string>
+<string name="preferences_enable_sync_summary_sync_disabled">Using saved data in your %1$s account.</string>
+<string name="preferences_enable_sync_summary_sync_enabled">Your data is backed up and available on synchronised devices.</string>
+<string name="preferences_enable_sync_title">Synchronise this device</string>
+<string name="preferences_homepage_search_location">Homepage search location</string>
+<string name="preferences_media_category">Media</string>
+<string name="preferences_open_links_in_youtube">Open links in YouTube app</string>
+<string name="reader_mode_panel_content_description_2">Reader View Options</string>
 </resources>

@@ -18,6 +18,7 @@ import org.mozilla.fenix.components.AppStore
 import org.mozilla.fenix.ext.components
 import org.mozilla.fenix.ext.isTallWindow
 import org.mozilla.fenix.ext.isWideWindow
+import org.mozilla.fenix.home.privatebrowsing.controller.DefaultPrivateBrowsingController
 import org.mozilla.fenix.home.toolbar.BrowserToolbarMiddleware
 import org.mozilla.fenix.home.toolbar.BrowserToolbarTelemetryMiddleware
 import org.mozilla.fenix.search.BrowserToolbarSearchMiddleware
@@ -65,6 +66,13 @@ object HomeToolbarStoreBuilder {
                             tabGroupLinkUseCases = context.components.core.tabGroupLinkUseCases,
                             navController = navController,
                             browsingModeManager = browsingModeManager,
+                            privateBrowsingController =
+                                DefaultPrivateBrowsingController(
+                                    navController = navController,
+                                    browsingModeManager = browsingModeManager,
+                                    fenixBrowserUseCases = context.components.useCases.fenixBrowserUseCases,
+                                    settings = context.components.settings,
+                                ),
                             settings = context.components.settings,
                             translationsFeatureSettings = TranslationsEnabledSettings.dataStore(context),
                             isWideScreen = { fragment.isWideWindow() },

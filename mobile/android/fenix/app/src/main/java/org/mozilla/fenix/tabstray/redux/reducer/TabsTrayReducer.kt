@@ -9,6 +9,7 @@ import org.mozilla.fenix.tabstray.navigation.TabManagerNavDestination
 import org.mozilla.fenix.tabstray.redux.action.TabGroupAction
 import org.mozilla.fenix.tabstray.redux.action.TabSearchAction
 import org.mozilla.fenix.tabstray.redux.action.TabsTrayAction
+import org.mozilla.fenix.tabstray.redux.ext.withStorageUpdate
 import org.mozilla.fenix.tabstray.redux.state.Page
 import org.mozilla.fenix.tabstray.redux.state.TabSearchState
 import org.mozilla.fenix.tabstray.redux.state.TabsTrayState
@@ -270,33 +271,20 @@ internal object TabsTrayReducer {
                                 state.backStack.lastOrNull() == TabManagerNavDestination.Root
                         }
 
-                state.copy(
-                    selectedTabId = action.tabStorageUpdate.selectedTabId,
-                    normalTabsState =
-                        state.normalTabsState.copy(
-                            items = action.tabStorageUpdate.normalItems,
-                            selectedItemIndex = action.tabStorageUpdate.selectedNormalItemIndex,
-                            tabCount = action.tabStorageUpdate.normalTabCount,
-                        ),
-                    inactiveTabs = state.inactiveTabs.copy(tabs = action.tabStorageUpdate.inactiveTabs),
-                    privateBrowsing =
-                        state.privateBrowsing.copy(
-                            tabs = action.tabStorageUpdate.privateTabs,
-                            selectedItemIndex = action.tabStorageUpdate.selectedPrivateItemIndex,
-                        ),
-                    tabGroupState = state.tabGroupState.copy(groups = action.tabStorageUpdate.tabGroups),
-                    backStack =
-                        if (selectedGroupToOpen != null) {
-                            state.backStack +
+                val nextState = state.withStorageUpdate(storageUpdate = action.tabStorageUpdate)
+
+                if (selectedGroupToOpen == null) {
+                    nextState
+                } else {
+                    nextState.copy(
+                        backStack =
+                            nextState.backStack +
                                 TabManagerNavDestination.ExpandedTabGroup(
                                     group = selectedGroupToOpen,
                                     skipOpeningAnimation = true,
                                 )
-                        } else {
-                            state.backStack
-                        },
-                    hasTabDataLoaded = true,
-                )
+                    )
+                }
             }
             is TabsTrayAction.PersistedUiStateUpdateReceived ->
                 state.copy(

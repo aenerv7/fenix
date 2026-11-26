@@ -4588,4 +4588,34 @@
   <string name="reader_mode_panel_listen_content_description">Laŭtlegi</string>
   <!-- Content description for media player displayed in Reader Mode when the Listen to Page (Read Aloud) feature is selected -->
   <string name="reader_mode_panel_media_player_content_description">Ludilo de aŭdvidaĵoj</string>
+<string name="automotive_authentication_setup_dialog_cancel">Nuligi</string>
+<string name="automotive_authentication_setup_dialog_message">Difinu blokan desegnon, PIN aŭ pasvorton por protekti viajn konservitajn datumojn se iu alia stiras vian aŭton.</string>
+<string name="automotive_authentication_setup_dialog_set_up_now">Agordi nun</string>
+<string name="automotive_authentication_setup_dialog_title">Sekurigu viajn delikatajn datumojn</string>
+<string name="browser_menu_extension_review_update_description">Kontroli la ĝisdatotajn agordojn</string>
+<string name="browser_menu_extensions_review_update_description">Kontroli ĝisdatigon por %1$s</string>
+<string name="browser_menu_read_or_listen">Legila vido, legi aŭ aŭskulti paĝon</string>
+<string name="compact_search_bar_widget_description">Kompakta serĉa strio</string>
+<string name="customize_menu">Personecigi menuon</string>
+<string name="download_item_source_data">(datumoj)</string>
+<string name="lens_camera_image_load_failed_v2">Ne eblis ŝargi tiun ĉi bildon.</string>
+<string name="lens_camera_loading_cancel_button">Nuligi</string>
+<string name="lens_camera_loading_status">Serĉata</string>
+<string name="lens_camera_upload_failed">Ne eblis ricevi rezultojn el Google Lens</string>
+<string name="lens_camera_upload_failed_retry_button">Provi denove</string>
+<string name="library_item_selected_content_description">Elektita</string>
+<string name="pdf_tools_sign_content_description_2">Aldoni subskribon</string>
+<string name="pdf_tools_signature_adding_content_description">Aldoni subskribon</string>
+<string name="preference_homepage_search_location_middle">Meze</string>
+<string name="preference_homepage_search_location_top">Supre</string>
+<string name="preferences_homepage_search_location">Loko por la eka paĝo</string>
+<string name="preferences_media_category">Aŭdvidaĵo</string>
+<string name="preferences_menu">Menuo</string>
+<string name="preferences_open_links_in_youtube">Malfermi ligilojn en la programo YouTube</string>
+<string name="reader_mode_panel_content_description_2">Ebloj de la legila vido</string>
+<string name="search_bar_widget_description">Serĉa strio kun privata kaj voĉa serĉo</string>
+<string name="search_bar_with_lens_widget_description">Serĉa strio kun bilda, privata kaj voĉa serĉo</string>
+<string name="search_widget_private_search">Privata serĉo</string>
+<string name="sync_send_tab_empty_state_link">Malkovri kiel konekti aparaton</string>
+<string name="tab_groups_strip_expand_group_content_description">Malfaldu por montri la langetojn plenekrane</string>
 </resources>

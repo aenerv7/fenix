@@ -4500,39 +4500,6 @@
   <!-- ==== End of Terms of use popup prompt. ==== -->
 
   <!--
-    Sports widget
-
-    Label shown on the sports widget scoreboard when a match is currently being played live.
-  -->
-  <string name="wrex_widget_match_live">LIVE</string>
-  <!-- Label shown on the sports widget match status badge when the start of a match has been delayed. -->
-  <string name="wrex_widget_match_delayed">Wokomuźony</string>
-  <!-- Label shown on the sports widget match status badge when a match has been suspended after it started. -->
-  <string name="wrex_widget_match_suspended">Wótgronjony</string>
-  <!-- Label shown on the sports widget match status badge when a match has been postponed to a later date. -->
-  <string name="wrex_widget_match_postponed">Wótstarcony</string>
-  <!-- Sports widget menu item to view the team's match results. -->
-  <string name="wrex_widget_results">Wuslědki</string>
-  <!-- Sports widget menu item to view the league standings table. -->
-  <string name="wrex_widget_standings">Stawy graśa</string>
-  <!-- Sports widget menu item to browse the team's wallpapers. -->
-  <string name="wrex_widget_wallpapers">Slězynowe wobraze</string>
-  <!-- Sports widget menu item to remove the widget from the homepage. -->
-  <string name="wrex_widget_remove_widget">Asistent wótwónoźeś</string>
-  <!-- Content description (for accessibility, not displayed) for the overflow (more options) menu button on the sports widget card. -->
-  <string name="wrex_widget_more_options_content_description">Dalšne nastajenja</string>
-  <!--
-    Content description (for accessibility, not displayed) used for the sports widget card header announcing a live match.
-    %s is the name of the competition the match belongs to (e.g. "FA Cup").
-  -->
-  <string name="wrex_widget_live_game_content_description">%s, graśe live</string>
-  <!--
-    Content description (for accessibility, not displayed) for a paginated item.
-    %1$s is the name of the competition the match belongs to (e.g. "FA Cup"),
-    %2$d is the current page number, and %3$d is the total number of pages.
-  -->
-  <string name="wrex_widget_page_position_content_description">%1$s, bok %2$d z %3$d</string>
-  <!--
     Privacy notice homepage banner
 
     A message we show the user on the homepage when there is a new version of the privacy notice. 'Firefox' is intentionally hardcoded.
@@ -4690,4 +4657,27 @@
   <string name="reader_mode_panel_listen_content_description">Głosnje cytaś</string>
   <!-- Content description for media player displayed in Reader Mode when the Listen to Page (Read Aloud) feature is selected -->
   <string name="reader_mode_panel_media_player_content_description">Medijowy wótgrawak</string>
+<string name="addon_remove_dialog_body">To rozšyrjenje a jogo nastajenja z toś togo rěda wótwónoźujo.</string>
+<string name="addon_remove_dialog_cancel">Pśetergnuś</string>
+<string name="addon_remove_dialog_confirm">Wótwónoźeś</string>
+<string name="addon_remove_dialog_title">%1$s wótwónoźeś?</string>
+<string name="ai_controls_listen_to_page_description">Waš rěd snaź KI wužywa, aby głosnje cytał. Tekst a awdio priwatnej wóstawatej.</string>
+<string name="ai_controls_listen_to_page_title">Na bok słuchaś</string>
+<string name="browser_menu_read_or_listen">Cytański naglěd, bok cytaś abo na nju słuchaś</string>
+<string name="certificate_details_panel_secure_connection_title">Wěsty zwisk</string>
+<string name="customize_menu">Meni pśiměriś</string>
+<string name="download_item_source_data">(daty)</string>
+<string name="ip_protection_location_selection_reset_snackbar">Wubrane stojnišćo VPN njejo k dispoziciji. Jo se pśejšło k dopóruconemu stojnišćoju.</string>
+<string name="notification_privacy_report_body_has_trackers">Pśeglědujśo dalej. %1$s buźo dalej blokěrowaś.</string>
+<string name="notification_privacy_report_channel_description">%1$s pokazujo, wjele pśeslědowakow se blokěrujo, mjaztym až sćo pśeglědował.</string>
+<string name="notification_privacy_report_channel_name">Rozpšawa priwatnosći</string>
+<string name="notification_privacy_report_headline_no_trackers">%1$s pśeslědowaki blokěrujo, gaž pśeglědujośo. Buźośo je how wiźeś.</string>
+<string name="pdf_tools_sign_content_description_2">Signaturu pśidaś</string>
+<string name="pdf_tools_signature_adding_content_description">Signaturu pśidaś</string>
+<string name="preferences_enable_sync_summary_sync_disabled">Skłaźone daty z wašogo konta %1$s se wužywaju.</string>
+<string name="preferences_enable_sync_summary_sync_enabled">Waše daty su se zawěsćili a su na synchronizěrowanych rědach k dispoziciji.</string>
+<string name="preferences_enable_sync_title">Toś ten rěd synchronizěrowaś</string>
+<string name="preferences_media_category">Medije</string>
+<string name="preferences_open_links_in_youtube">Wótkaze w nałoženju YouTube wócyniś</string>
+<string name="reader_mode_panel_content_description_2">Nastajenja cytańskego naglěda</string>
 </resources>

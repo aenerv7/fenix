@@ -742,4 +742,49 @@
   <string name="review_prompt_pre_prompt_header">%1$s نا باروٹ انت پارے؟</string>
   <!-- Content description for the button in the reader view panel that turns on the Listen to Page feature (playback of content begins when button is pressed) -->
   <string name="reader_mode_panel_listen_content_description">توار تون خواننگ</string>
+<string name="ai_controls_block_dialog_block">توربو</string>
+<string name="ai_controls_block_dialog_what_will_be_blocked">انت توننگو:</string>
+<string name="ai_controls_listen_to_page_title">صفحہ اے بنبو</string>
+<string name="applinks_prompt_negative_button">%1$s ٹی اڈ کننگ</string>
+<string name="awesomebar_clipboard_title">لینک اے کلپ بورڈ ان پر کبو</string>
+<string name="bookmark_menu_select_all_bookmarks">کل نشانی تے اتے گچین کبو</string>
+<string name="browser_menu_add_to_shortcuts">شارٹ کٹ تے ٹی شاغبو</string>
+<string name="browser_menu_page_badge_text">پوسکن</string>
+<string name="browser_menu_sign_back_in_to_sync">ہمگام کننگ کن وا سائن ان کبو</string>
+<string name="browser_menu_sign_in_caption_3">کلیت لوزاتے، نشانیتے، و پین ہمگام کبو</string>
+<string name="browser_menu_syncing_paused_caption">ہمگام سلوک اے</string>
+<string name="browser_menu_webcompat_reporter_2">پنوکا سائٹ اے رپورٹ کبو</string>
+<string name="certificate_details_panel_secure_connection_title">محفوظ کنیکشن</string>
+<string name="certificate_warning_homepage_card_update_now_button" tools:ignore="UnusedResources">داسہ اپڈیٹ کبو</string>
+<string name="connection_security_panel_not_secure">کنیکشن محفوظ اف</string>
+<string name="connection_security_panel_secure">محفوظ کنیکشن</string>
+<string name="context_menu_open_image_with_google_lens">Google Lens تون پٹبو</string>
+<string name="create_collection_select_all">کل ٹیب اتے گچین کبو</string>
+<string name="download_select_all_items">کل ڈاونلوڈ اتے گچین کبو</string>
+<string name="homepage_shortcuts_show_all">کل اے نشان ایت</string>
+<string name="lens_opt_out_title">پٹبو Google Lens تون</string>
+<string name="onboarding_redesign_sync_positive_button" tools:ignore="UnusedResources">ہمگام کننگ شروع کبو</string>
+<string name="preferences_passwords_saved_logins_description_empty_learn_more_link_2">ہمگام نا بارہ ٹی پین ہیل کبو</string>
+<string name="protection_panel_banner_not_secure_description">نما کنیکشن محفوظ اف.</string>
+<string name="protection_panel_banner_protected_no_blocked_trackers_description">نم حفاظت ٹی ارے.</string>
+<string name="protection_panel_banner_protected_title">%s گارڈ اٹے</string>
+<string name="resync_button_content_description">وا ہمگام کبو</string>
+<string name="search_settings_google_lens_title">لائخ کبو Google Lens تون پٹنگ کن</string>
+<string name="search_settings_menu_item">پٹ و پول نا سیٹنگاک</string>
+<string name="tab_tray_menu_select_all_tabs">کل ٹیب اتے گچین کبو</string>
+<string name="trackers_blocked_empty">نم حفاظت ٹی ارے</string>
+<string name="translation_in_progress_snackbar">مٹ مرسہ اے…</string>
+<string name="translations_bottom_sheet_info_message">نما رازداری کن، مٹ اک نما ڈیوائس اے ہچ الیپسہ. پوسکنو دووی و بہتریک زو برسہ او! %1$s</string>
+<string name="translations_bottom_sheet_positive_button">مٹ کبو</string>
+<string name="translations_bottom_sheet_restore_accessibility_announcement">اصل بے مٹ آ صفحہ لوڈ مس</string>
+<string name="translations_bottom_sheet_title">صفحہ اے مٹ کیرے؟</string>
+<string name="translations_bottom_sheet_title_first_time">%1$s ٹی خاص مٹ و بدل اے اربو</string>
+<string name="translations_bottom_sheet_title_translation_completed">صفحہ %1$s ان %2$s ٹی مٹ مس</string>
+<string name="translations_bottom_sheet_translate_from">دووی ان مٹ</string>
+<string name="translations_bottom_sheet_translate_to">دووی ٹی مٹ</string>
+<string name="translations_bottom_sheet_translating_in_progress">مٹ مرسہ اے</string>
+<string name="translations_bottom_sheet_translating_in_progress_content_description">مٹ مرسہ اے</string>
+<string name="unsubmitted_crash_dialog_checkbox_label">تینٹ پننگ نا رپورٹ اتے رائ کے</string>
+<string name="unsubmitted_crash_dialog_positive_button">پننگ نا رپورٹ اے رائی کبو</string>
+<string name="unsubmitted_crash_dialog_title_2">%s پنا. رپورٹ اے رای کیرے؟</string>
 </resources>

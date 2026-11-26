@@ -2573,5 +2573,607 @@
     in English.
   -->
   <string name="firefox_labs_title" tools:ignore="BrandUsage">Firefox Labs</string>
+<string name="about_terms_of_use" tools:ignore="UnusedResources">Mercên Bikaranînê</string>
+<string name="add_login_2">Şîfreyê lê zêde bike</string>
+<string name="add_login_navigate_back_button_content_description">Paşve here</string>
+<string name="add_login_save_new_login_button_content_description">Têketina nû tomar bike</string>
+<plurals name="add_to_exiting_tab_group_content_description">
+    <!--
+      Accessibility description for add to existing tab group.
+      %1$s is the group name, %2$d is the number of tabs, %3$s is the color name.
+    -->
+    <item quantity="one">Têxe nav koma hilpekînan ya %1$s,hilpekînek, reng %3$s</item>
+    <item quantity="other">Têxe nav koma hilpekînan ya %1$s, %2$d hilpekîn, reng %3$s</item>
+  </plurals>
+<string name="add_to_new_tab_group_content_description">Têxe nav koma hilpekînan ya nû</string>
+<string name="add_to_new_tab_group_title">Koma hilpekînan ya nû</string>
+<string name="add_to_tab_group_bottom_sheet_grabber_content_description">Têxe nav komeke hilpekînan, destgira kaşkirinê teng bike</string>
+<string name="add_to_tab_group_title">Têxe nav</string>
+<string name="addon_failure_retry_action">Dîsa biceribîne</string>
+<string name="addons_does_not_require_permissions">Ji vê pêvekê re ti destûr hewce nakin.</string>
+<string name="addons_permissions_allow_for_all_sites">Ji bo hemû malperan destûrê bide</string>
+<string name="addons_permissions_allow_for_all_sites_subtitle">Heke baweriya te bi vê pêvekê hbe, tu dikarî ji bo hemû malperan destûrê bidiyê.</string>
+<string name="addons_permissions_heading_optional_data_collection">Berhevkirina daneyan ya vebijarkî:</string>
+<string name="addons_permissions_heading_required_data_collection">Berhevkirina daneyên pêwist:</string>
+<string name="addons_permissions_heading_required_permissions">Destûrên pêwist:</string>
+<string name="addons_permissions_none_required_data_collection_description">Pêşdebir dibêje ku ev pêvek ne hewceyî berhevkirina daneyan e.</string>
+<string name="addons_permissions_required_data_collection_description_2">Pêşdebir dibêje ku ev pêvek van berhev dike: %1$s</string>
+<string name="addresses_area" tools:ignore="UnusedResources">Dever</string>
+<string name="addresses_country_only" tools:ignore="UnusedResources">Welat</string>
+<string name="addresses_county" tools:ignore="UnusedResources">Bajarok</string>
+<string name="addresses_department" tools:ignore="UnusedResources">Departman</string>
+<string name="addresses_district" tools:ignore="UnusedResources">Bajarçe</string>
+<string name="addresses_do_si" tools:ignore="UnusedResources">Do/Sî</string>
+<string name="addresses_eircode" tools:ignore="UnusedResources">Eircode</string>
+<string name="addresses_emirate" tools:ignore="UnusedResources">Îmarat</string>
+<string name="addresses_island" tools:ignore="UnusedResources">Girav</string>
+<string name="addresses_oblast" tools:ignore="UnusedResources">Oblast</string>
+<string name="addresses_parish" tools:ignore="UnusedResources">Parish</string>
+<string name="addresses_pin" tools:ignore="UnusedResources">Pin</string>
+<string name="addresses_post_town" tools:ignore="UnusedResources">Bajaroka postayê</string>
+<string name="addresses_postal_code" tools:ignore="UnusedResources">Koda posteyê</string>
+<string name="addresses_prefecture" tools:ignore="UnusedResources">Parêzgeh</string>
+<string name="addresses_suburb" tools:ignore="UnusedResources">Banliyo</string>
+<string name="addresses_townland" tools:ignore="UnusedResources">Bajarok</string>
+<string name="addressess_confirm_dialog_message_2">Vê navnîşanê jê bibe?</string>
+<string name="alternative_app_icon_group_solid_colors">Rengên yekreng</string>
+<string name="bookmark_close_button_content_description">Favoriyan bigire</string>
+<string name="bookmark_empty_list_guest_cta">Têkeve Sync’ê</string>
+<string name="bookmark_empty_list_root_title">Hemû fsvoriyên xwe yên bijare bi hev re bihêle</string>
+<string name="bookmark_error_add_folder">Peldank nehat lêzêdekirin</string>
+<string name="bookmark_error_edit_bookmark">Favorî nehat serastkirin</string>
+<string name="bookmark_error_edit_folder">Peldank nehat serastkirin</string>
+<string name="bookmark_error_select_folder">Peldanka jor nehat serastkirin</string>
+<string name="bookmark_import_bookmarks_button_content_description">Ji dosyeyê îtxal bike</string>
+<string name="bookmark_import_destination_default_name">Favoriyên îtxalkirî</string>
+<string name="bookmark_import_failure_snackbar">Favorî nehatin îtxalkirin. Dîsa biceribîne.</string>
+<string name="bookmark_import_menu_button">Ji dosyeyê îtxal bike</string>
+<string name="bookmark_item_menu_button_content_description">Menuya Hêmayan ji bo %s</string>
+<string name="bookmark_menu_select_all_bookmarks">Tevî hilbijêre</string>
+<string name="bookmark_menu_select_button">Hilbijêre</string>
+<string name="bookmark_moved_single_item">%1$s bo %2$s hat guhestin</string>
+<string name="bookmark_no_search_results">Ti hevgirtin nehat dîtin.</string>
+<string name="bookmark_select_folder_close_folder_content_description">Peldankê bigire: %s</string>
+<string name="bookmark_select_folder_expand_folder_content_description">Peldankê berfireh bike: %s</string>
+<string name="bookmark_select_folder_new_folder_button_title">Peldanka nû</string>
+<string name="bookmark_sort_menu_a_to_z">Li gorî A heta Z rêz bike</string>
+<string name="bookmark_sort_menu_content_desc">Vebijarkên rêzkirinê</string>
+<string name="bookmark_sort_menu_custom">Li gorî daxwaza şexsî rêz bike</string>
+<string name="bookmark_sort_menu_newest">Li gorî herî nû rêz bike</string>
+<string name="bookmark_sort_menu_oldest">Li gorî herî kevn rêz bike</string>
+<string name="bookmark_sort_menu_z_to_a">Li gorî Z heta A rêz bike</string>
+<string name="bookmarks_folder_description">Favoriyên di peldankê de: %s</string>
+<string name="browser_feature_desktop_site_off">Girtî</string>
+<string name="browser_feature_desktop_site_on">Vekirî</string>
+<string name="change_file_extension_cancel_button">Betal bike</string>
+<string name="change_file_extension_confirm_button">Belê, biguherîne</string>
+<string name="change_file_extension_description">Ev dibe ku pelî di sepaneke cûda de veke û ji bo cîhaza te xeternak be.</string>
+<string name="change_file_extension_title">Cureyê pelî biguherîne bo %s?</string>
+<string name="close_tab_and_delete_group_confirmation_dialog_body">Ev komê bi awayekî mayînde jê dibe.</string>
+<string name="close_tab_and_delete_group_confirmation_dialog_cancel">Betal bike</string>
+<string name="close_tab_and_delete_group_confirmation_dialog_confirm">Komê jê bibe</string>
+<string name="close_tab_and_delete_group_confirmation_dialog_title">Hilpekînê bigire û komê jê bibe?</string>
+<string name="crash_reporting_description">Raporên têkçûnê dihêlin ku em pirsgirêkên gerokê teşhîs bikin û çareser bikin. Dibe ku daneyên kesane yan hesas bikevin nav raporan.</string>
+<string name="crash_reporting_snack_bar_message">Raport hat şandin</string>
+<string name="crash_reports_data_category">Raporên Têkçûnê</string>
+<string name="create_collection_tab_saved_2">Hilpekîn hat tomarkirin</string>
+<string name="create_collection_tabs_saved_new_collection_2">Koleksiyon hat tomarkirin</string>
+<string name="create_tab_group_content_description">Koma hilpekînan biafirîne</string>
+<string name="create_tab_group_form_default_name">Koma %d</string>
+<string name="create_tab_group_name_label">Nav</string>
+<string name="create_tab_group_save_button">Tomar bike</string>
+<string name="create_tab_group_title">Koma hilpekînan biafirîne</string>
+<string name="custom_accessibility_action_reorder_tab_down">Hilpekînê veguhezîne jêrê</string>
+<string name="custom_accessibility_action_reorder_tab_left">Hilpekînê veguhezîne çepê</string>
+<string name="custom_accessibility_action_reorder_tab_right">Hilpekînê veguhezîne rastê</string>
+<string name="custom_accessibility_action_reorder_tab_up">Hilpekînê veguhezîne jorê</string>
+<string name="customize_menu">Menuyê taybet bike</string>
+<string name="customize_toggle_privacy_report">Rapora nepeniyê</string>
+<string name="delete_history_prompt_body_2">Raboriyê jê dibe (tevî raboriya ku ji cîhazên din hatiye senkronîzekirin)</string>
+<string name="delete_tab_group_confirmation_dialog_body">Ev komê bi awayekî mayînde jê dibe.</string>
+<string name="delete_tab_group_confirmation_dialog_cancel">Betal bike</string>
+<string name="delete_tab_group_confirmation_dialog_confirm">Komê jê bibe</string>
+<string name="delete_tab_group_confirmation_dialog_title">Koma hilpekînan jê bibî?</string>
+<string name="download_app_dialog_title">Dosyeyê bi vê jêbar bike:</string>
+<string name="download_completed_snackbar">Jêbarkirin qediya</string>
+<string name="download_delete_dialog_cancel">Betal bike</string>
+<string name="download_delete_dialog_confirm">Bipejirîne</string>
+<string name="download_delete_dialog_from_device">Ji ser cîhazê jê bibe</string>
+<string name="download_delete_dialog_from_history">Tenê ji raboriya jêbarkirinan jê bibe</string>
+<string name="download_delete_multiple_items_snackbar_2">Hêman hatin jêbirin: %1$d</string>
+<string name="download_delete_single_item_snackbar_2">“%1$s” hat jêbirin</string>
+<string name="download_file_has_not_enough_storage_dialog_cancel_button_text">Betal bike</string>
+<string name="download_file_has_not_enough_storage_dialog_confirm_button_text">Dosyeyan bi rê ve bibe</string>
+<string name="download_file_has_not_enough_storage_dialog_message"><![CDATA[Di vê cîhazê de têra xwe cî nîn e ji bo daxistina <b>%s</b>.]]></string>
+<string name="download_file_has_not_enough_storage_dialog_title">Cî têrê nake</string>
+<string name="download_in_progress_snackbar">Jêbarkirin dewam dike…</string>
+<string name="download_in_progress_snackbar_action_details">Hûrgilî</string>
+<string name="download_item_in_progress_description_2">%1$s / %2$s • di %3$s de.</string>
+<string name="download_item_in_progress_description_pending">%1$s / %2$s • li bendê ye</string>
+<string name="download_item_in_progress_description_preparing">Jêbarkirin tê amadekirin…</string>
+<string name="download_item_in_progress_description_unknown_total_size">%1$s • dema nayê zanîn</string>
+<string name="download_item_paused_description">%1$s / %2$s • hatiye rawestandin</string>
+<string name="download_item_paused_description_unknown_total_size">%1$s • hatiye rawestandin</string>
+<string name="download_item_source_data">(data)</string>
+<string name="download_navigate_back_description">Paşve here</string>
+<string name="download_pause_action">Bisekinîne</string>
+<string name="download_rename_and_change_location_dialog_title">Dosyeyê jêbar bikî?\n(%s)</string>
+<string name="download_rename_and_change_location_dialog_title_with_unknown_size">Dosyeyê jêbar bikî?</string>
+<string name="download_rename_dialog_cancel_button">Betal bike</string>
+<string name="download_rename_dialog_confirm_button">Tomar bike</string>
+<string name="download_rename_dialog_label">Nav</string>
+<string name="download_rename_dialog_title">Navê pelê biguherîne</string>
+<string name="download_rename_error_cannot_rename_description">Ji ber sînorkirinên sîstemê an depoyê, navê vî pelî nayê guhertin.</string>
+<string name="download_rename_error_cannot_rename_title">Navê pelê nayê guhertin</string>
+<string name="download_rename_error_case_only_error">Navê ku te nivîsand tenê tîpên mezin an biçûk diguherîne. Navekî pelê yê cuda biceribîne.</string>
+<string name="download_rename_error_dismiss_button">BAŞ E</string>
+<string name="download_rename_error_exists_error">Pelekî bi navê “%s” jixwe li vê derê heye</string>
+<string name="download_rename_error_invalid_name_error">Di navên peln de “/” nayê qebûlkirin</string>
+<string name="download_rename_file">Navê pelê biguherîne</string>
+<string name="download_resume_action">Bidomîne</string>
+<string name="download_retry_action">Dîsa biceribîne</string>
+<string name="download_time_period_last_30_days">30 rojên dawiyê</string>
+<string name="download_time_period_today">Îro</string>
+<string name="download_time_period_yesterday">Duh</string>
+<plurals name="downloads_delete_dialog_title">
+    <!-- Title for the download deletion confirmation dialog. The message changes depending on how many files are selected. %d is the number of files to be deleted. -->
+    <item quantity="one">Dosyeyê jê bibe?</item>
+    <item quantity="other">%d dosyeyan jê bibe?</item>
+  </plurals>
+<string name="edit_2">Şîfreyê serast bike</string>
+<string name="edit_login_button_content_description">Têketinê serast bike</string>
+<string name="edit_login_navigate_back_button_content_description">Paşve here</string>
+<string name="edit_tab_group_bottom_sheet_grabber_content_description">Koma nû, destgira kaşkirinê teng bike</string>
+<string name="edit_tab_group_title">Komê serast bike</string>
+<string name="email_masks_error_retrieving_masks">Maskeyên emaîlê niha peyda nînin. Piştî çend xulekan dîsa biceribîne.</string>
+<string name="email_masks_max_free_tier_reached">Te 5 maskeyên emaîlê yên belaş bi kar anîne, ji ber vê yekê me yek ji bo te hilbijart ku tu ji nû ve bi kar bînî.</string>
+<string name="etp_known_fingerprinters_description">Rê li berhevkirina zanyariyên derbarê amûra te de yên pêkan e biawayekî bêmînak bên pênasekirin digire ku pêkan e ji bo şopandinê bên bikaranîn.</string>
+<string name="etp_known_fingerprinters_title">Berhevkarên şoptiliyan yên naskirî</string>
+<string name="etp_suspected_fingerprinters_description">Ji bo rawestandina berhevkarên şoptiliyan yên gumanbar, parastin şoptiliyan çalak dike.</string>
+<string name="etp_suspected_fingerprinters_title">Berhevkarên şoptiliyan yên gumanbar</string>
+<plurals name="expanded_tab_group_header_description">
+    <!--
+      Accessibility description for the header of an expanded tab group.
+      %1$s is the group name, %2$d is the number of tabs, %3$s is the color name.
+    -->
+    <item quantity="one">%1$s koma hilpekînan bi %2$d hilpekîn, reng %3$s</item>
+    <item quantity="other">%1$s koma hilpekînan bi %2$d hilpekîn, reng %3$s</item>
+  </plurals>
+<string name="fxa_tabs_closed_notification_title">%1$s hilpekînên girtî: %2$d</string>
+<string name="fxa_tabs_closed_text">Hilpekînên dawiyê hatine girtin bibîne</string>
+<string name="help_catch_trackers">Alîkariya zeftkirina şopîneran bike</string>
+<string name="homepage_all_stories">Hemû raborî</string>
+<string name="homepage_shortcuts_add_to_homepage">Li serûpelê zêde bike</string>
+<string name="homepage_shortcuts_add_website">Malperê lê zêde bike</string>
+<string name="homepage_shortcuts_add_website_title">URL-yeke Malperê binivîse</string>
+<string name="homepage_shortcuts_popular_sites">Malperên populer</string>
+<string name="homepage_shortcuts_show_all">Hemûyan nîşan bide</string>
+<string name="homepage_shortcuts_show_less">Hindiktir nîşan bide</string>
+<string name="inactive_tabs_num_items">Hilpekîn: %d</string>
+<string name="ip_protection_connecting">Tê girêdan…</string>
+<string name="ip_protection_connection_error_snackbar">Nekarî bi VPN-ê ve bê girêdan. Piştî çend xulekan dîsa biceribîne.</string>
+<string name="ip_protection_data_limit_label">Lîmîta mehane ya daneyan</string>
+<string name="ip_protection_data_limit_reached_description">Te kotaya %1$d GB ya VPN-a xwe bi kar aniye. Kota meha pêş tê valakirin.</string>
+<string name="ip_protection_data_limit_reached_snackbar">Kotaya %1$d GB ya VPN hatiye bikaranîn. Kota dê meha pêş bê valkirin.</string>
+<string name="ip_protection_data_limit_value">%1$.1f GB ji %2$.1f GB maye</string>
+<string name="ip_protection_data_reset_info">Her serê mehê ji nû ve tê vesazkirin bo %1$.0f GB.</string>
+<string name="ip_protection_location_fastest_description" tools:ignore="BrandUsage">Firefox cîgeha herî bilez dibîne</string>
+<string name="ip_protection_location_picker_title" tools:ignore="UnusedResources">Cîgeha VPNê hilbijêre</string>
+<string name="ip_protection_location_recommended_label">Pêşniyarkirî</string>
+<string name="ip_protection_location_section">Cîgeh</string>
+<string name="ip_protection_location_selection_reset_snackbar">Cîgeha VPN-ê yê hilbijartî ne berdest e. Derbasî cîgeha pêşniyarkirî bû.</string>
+<string name="ip_protection_location_title" tools:ignore="UnusedResources">Cîgeh</string>
+<string name="ip_protection_location_unavailable" tools:ignore="UnusedResources">Cîgeh ne berdest e. Cîgeheke din hilbijêre.</string>
+<string name="ip_protection_location_unavailable_description">Ne berdest e</string>
+<string name="ip_protection_location_unavailable_recommended_snackbar" tools:ignore="UnusedResources">Cîgeha VPNê yê hilbijartî ne berdest e. Derbasî cîgeha pêşniyarkirî bû.</string>
+<string name="ip_protection_locations_unavailable_description">Derbasî cîgeha pêşniyarkirî bû.</string>
+<string name="ip_protection_locations_unavailable_title">Cîgeh ne berdest in</string>
+<string name="ip_protection_menu_connecting">Tê girêdan…</string>
+<string name="ip_protection_menu_error">Çewtî</string>
+<string name="ip_protection_menu_limit_reached">Gihîşte sînorê %1$d GB</string>
+<string name="ip_protection_menu_paused">Rawestandî</string>
+<string name="ip_protection_mozilla_vpn_upsell_body" tools:ignore="UnusedResources">Ji nav 300+ cîgehan hilbijêre û hemû sepanên xwe li ser heta 5 cîhazan biparêze.</string>
+<string name="ip_protection_mozilla_vpn_upsell_button" tools:ignore="UnusedResources,BrandUsage">VPNa Mozillayê bistîne</string>
+<string name="ip_protection_mozilla_vpn_upsell_headline" tools:ignore="UnusedResources,BrandUsage">Bi Mozilla VPN-ê bêtir biparêze</string>
+<string name="ip_protection_navigate_back_button_content_description">Paşve here</string>
+<string name="ip_protection_onboarding_body">%1$s bi veşartina cîgeha te, her wisa li ser Wi-Fi-yên giştî jî. Her meh %2$d GB belaş bistînin.</string>
+<string name="ip_protection_onboarding_not_now_button">Ne niha</string>
+<string name="ip_protection_recommended_location" tools:ignore="UnusedResources">Pêşniyarkirî</string>
+<string name="ip_protection_toggle_label">VPN</string>
+<string name="ip_protection_toolbar_pill_description">VPN çalak e.</string>
+<string name="ip_protection_toolbar_pill_description_off">VPN girtî ye.</string>
+<string name="ip_protection_toolbar_pill_label">VPN vekirî</string>
+<string name="ip_protection_toolbar_pill_label_off">VPN girtî</string>
+<string name="library_item_selected_content_description">Hilbijartî</string>
+<string name="link_shared_snackbar_message">Lînk hat parvekirin</string>
+<string name="link_sharing_toggle_body">Dema tu li ser Whatsapêê lînkan parve dikî, bi %1$s hevalên xwe vexwîne bo gera zûtir û ewletir.</string>
+<string name="link_sharing_toggle_title">Girêdana jêbarkirinê ya %1$s li parvekirinên WhatsApp-ê zêde bike</string>
+<string name="local_network_access_allowed_summary">Destûr hat dayîn</string>
+<string name="local_network_access_not_allowed_summary">Destûr nehat dayîn</string>
+<string name="login_deletion_confirmation_2">Tu ji dil dixwazî vê şîfreyê jê bibî?</string>
+<string name="login_detail_menu_button_content_description">Menuya hûrgiliyên têketinê</string>
+<string name="login_detail_menu_delete_button">Jê bibe</string>
+<string name="login_detail_menu_edit_button">Sererast bike</string>
+<string name="login_details_navigate_back_button_content_description">Paşve here</string>
+<string name="logins_biometric_leave_button">Derkeve</string>
+<string name="logins_biometric_prompt_message_2">Ji bo şîfreyên xwe yên tomarkirî bibînî, veke</string>
+<string name="logins_biometric_unlock_button">Kilîdê rake</string>
+<string name="logins_navigate_back_button_content_description">Paşve</string>
+<string name="logins_warning_dialog_message_2">Ji bo ku kesekî din li ser cîhaza te nikaribe bigihîje şîfreyên te yên tomarkirî nexşeyeke kilîtê, PIN-kodê an şîfreyekê çêke.</string>
+<string name="logins_warning_dialog_title_2">Şîfreyên xwe yên tomarkirî ewle bike</string>
+<string name="microsurvey_app_icon_content_description" tools:ignore="BrandUsage">Logoya Firefoxê</string>
+<string name="microsurvey_close_button_content_description">Bigire</string>
+<string name="microsurvey_close_handle_content_description">Anketê bigire</string>
+<string name="microsurvey_describe_your_experience_title" tools:ignore="BrandUsage,UnusedResources">Ji bo baştirkirina Firefoxê alîkariya me bike. Kîjan ezmûna te ya heta niha ya herî baş e?</string>
+<string name="microsurvey_feature_icon_content_description">Îkona taybetmendiya anketê</string>
+<string name="microsurvey_sync_title" tools:ignore="BrandUsage,UnusedResources">Tu ji ezmûna senkronîzasyona Firefoxê çiqasî razî yî?</string>
+<string name="microsurvey_uninstall_survey_title">Nêrînên te girîng in. Çima tu jê radikî?</string>
+<string name="notification_erase_text_android_14">Ji bo girtina hilpekînên nepen, li ser vê agahdariyê bikirtîne an jî bihejîne.</string>
+<string name="notification_erase_title_android_14">Hilpekînên nepen bigire?</string>
+<string name="notification_privacy_report_body_has_trackers">Gerê berdewam bike. %1$s dê astengkirinê berdewam bike.</string>
+<string name="notification_privacy_report_channel_name">Rapora nepeniyê</string>
+<string name="notification_privacy_report_headline_no_trackers">%1$s gava tu li ser înternetê digerî şopîneran asteng dike. Tu yê wan li virê bibînî.</string>
+<string name="nova_onboarding_customize_prompt_positive_button" tools:ignore="UnusedResources">Dest bi şexsîkirinê bike</string>
+<string name="nova_onboarding_marketing_body" tools:ignore="BrandUsage,UnusedResources">Bi hevkarên bazargeriyê yên Mozillayê re parve bike ka te Firefox çawa keşf kir û wê çawa bi kar tînî. Ev dane qet nayên firotin. %1$s</string>
+<string name="nova_onboarding_marketing_body_2" tools:ignore="BrandUsage,UnusedResources">Bi hevkarên bazargeriyê yên Mozillayê re parve bike ka te Firefox çawa keşf kir û wê çawa bi kar tînî. Ev dane qet nayên firotin.</string>
+<string name="nova_onboarding_marketing_body_3" tools:ignore="BrandUsage,UnusedResources">Heke tu destûrê bidî ku em li kanalên ku Mozilla Firefoxê dide nasandin diyar bikin ku tu bikarhênera/ê Firefoxê yî, em ê dikaribin xwe bigihînin zêdetir bikarhêneran.</string>
+<string name="nova_onboarding_marketing_body_4" tools:ignore="BrandUsage,UnusedResources">Heke tu destûrê bidî ku em li kanalên ku Mozilla Firefoxê dide nasandin diyar bikin ku tu Firefoxê bi kar tînî, em ê dikaribin xwe bigihînin zêdetir bikarhêneran.</string>
+<string name="nova_onboarding_marketing_body_5" tools:ignore="BrandUsage,UnusedResources">Heke tu destûrê bidî ku Mozilla ji ciyê tu jê hatî re bibêje tu Firefoxê bi kar tînî, em ê dikaribin xwe bigihînin zêdetir bikarhêneran.</string>
+<string name="nova_onboarding_marketing_body_6" tools:ignore="BrandUsage,UnusedResources">Heke tu destûrê bidî ku Mozilla ji ciyê tu jê hatî re bibêje tu Firefoxê bi kar tînî, em ê dikaribin xwe bigihînin zêdetir bikarhêneran. %1$s</string>
+<string name="nova_onboarding_marketing_body_7" tools:ignore="BrandUsage">Heke tu destûrê bidî ku Mozilla ji ciyê tu jê hatî re bibêje tu Firefoxê bi kar tînî, em ê dikaribin xwe bigihînin zêdetir bikarhêneran. %1$s</string>
+<string name="nova_onboarding_marketing_body_line_three" tools:ignore="BrandUsage">Ji kerema xwe re li hin dê bifikire, ka tu yê bi vê destûrdanê alîkariya serkeftinê bikî.</string>
+<string name="nova_onboarding_marketing_body_line_two" tools:ignore="BrandUsage">Firefox bi serbilindî serbixwe ye û ji bo parastina weba vekirî li dijî monopolên teknolojiyê dilsoz e.</string>
+<string name="nova_onboarding_marketing_body_link_text">Em daneyan çawa bi kar tînin</string>
+<string name="nova_onboarding_marketing_primary_button_text" tools:ignore="BrandUsage,UnusedResources">Alîkariya Firefoxê bike</string>
+<string name="nova_onboarding_marketing_primary_button_text_3">Erê</string>
+<string name="nova_onboarding_marketing_secondary_button_text" tools:ignore="UnusedResources">Na, spas</string>
+<string name="nova_onboarding_marketing_secondary_button_text_2">Na</string>
+<string name="nova_onboarding_marketing_title">Alîkariya me bike ku em înterneteke çêtir ava bikin</string>
+<string name="nova_onboarding_negative_button">Ne niha</string>
+<string name="nova_onboarding_notifications_button">Agahdariyan veke</string>
+<string name="nova_onboarding_notifications_subtitle" tools:ignore="BrandUsage,UnusedResources">Taybetmendiyên nepenîtiyê yên herî dawî yên Firefoxê kifş bike da ku çêtir bizanî ka xwe çawa biparêzî.</string>
+<string name="nova_onboarding_notifications_title" tools:ignore="BrandUsage,UnusedResources">Agahdarî dihêlin ku tu bi Firefoxê re ewletir bî</string>
+<string name="nova_onboarding_set_to_default_button">Bike geroka sereke</string>
+<string name="nova_onboarding_set_to_default_subtitle">Em daneyên te diparêzin û otomatîk rê li şîrketan digirin ku tikandinên te neşopînin.</string>
+<string name="nova_onboarding_set_to_default_title" tools:ignore="UnusedResources">Ji şopînerên tirsnak re bibêje, de bi wê de</string>
+<string name="nova_onboarding_skip_button">Derbas bike</string>
+<string name="nova_onboarding_sync_button">Dest bi senkronîzekirinê bike</string>
+<string name="nova_onboarding_sync_subtitle">Li ser hemû cîhazan xwe bilez bigihîne favorî, şîfre û tiştên din. Daneyên te yên şexsî bi şîfrekirinê ewle û parastî dimînin.</string>
+<string name="nova_onboarding_sync_title">Ji ciyê lê mayî dewam bike</string>
+<string name="nova_onboarding_tou_body_line_1">Bi berdewamkirinê, tu %1$s qebûl dikî.</string>
+<string name="nova_onboarding_tou_body_line_1_link_text" tools:ignore="BrandUsage">Mercên Bikaranînê Firefoxê</string>
+<string name="nova_onboarding_tou_body_line_2_link_text">Danezana Nihêniyê</string>
+<string name="nova_onboarding_tou_body_line_3" tools:ignore="BrandUsage">Ji bo çêtirkirina gerokê, Firefox daneyên teşhîs û têkiliyê ji Mozillayê re dişîne. %1$s</string>
+<string name="nova_onboarding_tou_subtitle">Zû, ewle, û îxanetê li te nake.\nGera li ser înternetê êdî çêtir e.</string>
+<string name="nova_onboarding_tou_title" tools:ignore="UnusedResources">Xwe ji azadiyê re amade bike</string>
+<string name="onboarding_marketing_body_1" tools:ignore="BrandUsage,UnusedResources">Bi hevkarên bazargeriyê yên Mozillayê re parve bike ka te Firefox çawa keşf kir û wê çawa bi kar tînî. Ev dane qet nayên firotin.</string>
+<string name="onboarding_marketing_redesign_learn_more" tools:ignore="UnusedResources">Em daneyan çawa bi kar tînin</string>
+<string name="onboarding_marketing_redesign_opt_out_checkbox" tools:ignore="BrandUsage,UnusedResources">Bi hevkarên bazargeriyê yên Mozillayê re parve bike ka te Firefox çawa keşf kir û wê çawa bi kar tînî. Ev dane qet nayên firotin.</string>
+<string name="onboarding_marketing_redesign_positive_button" tools:ignore="UnusedResources">Bipejirîne</string>
+<string name="onboarding_marketing_redesign_title" tools:ignore="BrandUsage">Alîkariya pêşxistina Firefoxê bike</string>
+<string name="onboarding_preferences_dialog_usage_data_description_2" tools:ignore="BrandUsage">Daneyên têkildarî cîhaza te, avaniha reqalavê û şêwaza bikaranîna te ya Firefoxê alîkariya me dikin ku em taybetiyan, performansê û biryardariyê ji bo her kesî çêtir bikin.</string>
+<string name="onboarding_preferences_dialog_usage_data_title" tools:ignore="BrandUsage">Agahiyên teknîkî û danûstandinê ji Mozillayê re bişîne</string>
+<string name="onboarding_redesign_customize_toolbar_title" tools:ignore="UnusedResources">Bila darikê navnîşanan loi ku derê be?</string>
+<string name="onboarding_redesign_set_default_browser_body" tools:ignore="UnusedResources">Tu dikarî bi tiliyekê rê li şirketan bigirî ku tikandinên te neşopînin.</string>
+<string name="onboarding_redesign_sync_body" tools:ignore="UnusedResources">Li ser hemû cîhayan xwe bigihîne favoriyan, tab û şîfreyan. Hemû bi şîfrekirinê têne parastin.</string>
+<string name="onboarding_redesign_sync_negative_button" tools:ignore="UnusedResources">Ne niha</string>
+<string name="onboarding_redesign_sync_positive_button" tools:ignore="UnusedResources">Dest bi senkronîzekirinê bike</string>
+<string name="onboarding_redesign_sync_title" tools:ignore="BrandUsage,UnusedResources">Li her dera ku tu Firefoxê bi kar tînî, senkronîze bike</string>
+<string name="onboarding_redesign_tou_body_one" tools:ignore="UnusedResources">Bi berdewamkirinê, tu %1$s qebûl dikî.</string>
+<string name="onboarding_redesign_tou_body_one_link_text" tools:ignore="BrandUsage,UnusedResources">Mercên Bikaranîna Firefoxê</string>
+<string name="onboarding_redesign_tou_body_three" tools:ignore="BrandUsage,UnusedResources">Ji bo çêtirkirina gerokê, Firefox daneyên teşhîs û têkiliyê ji Mozillayê re dişîne. %1$s</string>
+<string name="onboarding_redesign_tou_body_two_link_text" tools:ignore="UnusedResources">Danezana Nepeniyê</string>
+<string name="onboarding_redesign_tou_subheader_one" tools:ignore="UnusedResources">Malperan bi leza birûskê veke</string>
+<string name="onboarding_redesign_tou_subheader_three" tools:ignore="UnusedResources">Bi hezaran şexsîkirin</string>
+<string name="onboarding_redesign_tou_subheader_two" tools:ignore="UnusedResources">Parastina şopandinê ya otomatîk</string>
+<string name="onboarding_redesign_tou_title" tools:ignore="UnusedResources">Geroka Androidê ya herî pêşketî bide xebitandin</string>
+<string name="passwords_import_menu_button">Ji dosyeyê îtxal bike</string>
+<string name="pocket_stories_header_2">Çîrok</string>
+<string name="preference_bottom_tab_strip">Jêrê</string>
+<string name="preference_browser_feature_local_device_access">Sepan û xizmetên cîhazê</string>
+<string name="preference_browser_feature_local_network_access">Cîhazên tora herêmî</string>
+<string name="preference_doh_add_site_description">Malperê lê zêde bike</string>
+<string name="preference_doh_choose_provider">Pêşkêşkarê hilbijêre</string>
+<string name="preference_doh_default_protection_info_1">Pêşkêşkara tu hildibijêrî bi kar bîne</string>
+<string name="preference_doh_default_protection_info_3">Heke pêkan be be, pêşkêşkareke herêmî bi kar bîne. %1$s</string>
+<string name="preference_doh_default_protection_info_4">Dema ku VPN, kontrola dêûbavan, an polîtîkayên pargîdaniyê çalak in, bigire</string>
+<string name="preference_doh_default_protection_info_5">Dema ku torek ji %1$s`ê re bibêje ku divê DNS-a ewle bi kar neyne, bigire. %2$s</string>
+<string name="preference_doh_default_protection_summary">%1$s biryar dide kengê DNS-ya ewle bikar bîne da ku nepeniya te biparêze.</string>
+<string name="preference_doh_exceptions">Istisna</string>
+<string name="preference_doh_exceptions_add">Malperê lê zêde bike</string>
+<string name="preference_doh_exceptions_add_error">Divê domaineke derbasdar be</string>
+<string name="preference_doh_exceptions_add_placeholder">mînak.com</string>
+<string name="preference_doh_exceptions_add_save">Tomar bike</string>
+<string name="preference_doh_exceptions_add_site">Malper</string>
+<string name="preference_doh_exceptions_description">Istisna</string>
+<string name="preference_doh_exceptions_remove_all_exceptions">Hemû îstisnayan jê bibe</string>
+<string name="preference_doh_exceptions_summary">%1$s dê li ser van malperan û jêrdomainên wan DNS-ya ewle bi kar neyne.</string>
+<string name="preference_doh_increased_protection">Parastina Zêdekirî</string>
+<string name="preference_doh_increased_protection_info_1">Pêşkêşkara tu hildibijêrî bi kar bîne</string>
+<string name="preference_doh_increased_protection_summary">Tu kontrol dikî ka kengê DNS-ya ewle bi kar bînî û pêşkêşkara xwe hilbijêrî.</string>
+<string name="preference_doh_info_description">Agahî</string>
+<string name="preference_doh_max_protection">Parastina Herî Zêde</string>
+<string name="preference_doh_max_protection_info_1">Tenê pêşkêşkara tu hildibijêrî bi kar bîne</string>
+<string name="preference_doh_max_protection_info_2">Heke DNS-a ewle tune be, her tim hişyar bike</string>
+<string name="preference_doh_max_protection_info_3">Heke DNS-a ewle peyda nebe, malper dê bi rêkûpêk neyên barkirin an jî nexebitin</string>
+<string name="preference_doh_max_protection_summary">%1$s dê her tim DNS-ya ewle bi kar bîne. Berî ku em DNS-ya pergala we bikar bînin, tu yê hişyariyeke xetereya ewlehiyê bibînî.</string>
+<string name="preference_doh_off">Girtî</string>
+<string name="preference_doh_provider_custom">Şexsî</string>
+<string name="preference_doh_provider_custom_dialog_add">Lê zêde bike</string>
+<string name="preference_doh_provider_custom_dialog_cancel">Betal bike</string>
+<string name="preference_doh_provider_custom_dialog_error_https">URL divê bi \"https://\" dest pê bike</string>
+<string name="preference_doh_provider_custom_dialog_error_invalid">URL’ya nederbasdar</string>
+<string name="preference_doh_provider_custom_dialog_textfield">Pêşkêşkar</string>
+<string name="preference_doh_provider_custom_dialog_title">Pêşkêşkara şexsî</string>
+<string name="preference_doh_provider_default">(standard)</string>
+<string name="preference_downloads_folder_permission_lost" tools:ignore="UnusedResources">Destûra te nîn e ku vê peldankê bi kar bînî. Peldankeek din biceribîne.</string>
+<string name="preference_enhanced_tracking_protection_allow_list_baseline_2">Pirsgirêkên sereke yên malperê çareser bike (tê pêşniyarkirin)</string>
+<string name="preference_enhanced_tracking_protection_allow_list_convenience_description">Pêdivî ye ku di nav çareseriyên pirsgirêkên mezin de bê bikaranîn.</string>
+<string name="preference_enhanced_tracking_protection_allow_list_convenience_label">Pirsgirêkên piçûk ên malperê çareser bike</string>
+<string name="preference_enhanced_tracking_protection_allow_list_dialog_cancel">Çareseriyan vekirî bihêle</string>
+<string name="preference_enhanced_tracking_protection_allow_list_dialog_confirm">Çareserkirinan bigire</string>
+<string name="preference_enhanced_tracking_protection_allow_list_dialog_message">Ev mîheng dibe alîkar ku pirsgirêkên malperan ên herî gelemperî bên çareserkirin. Heke tu wê bigirî, dibe ku hin malper nexebitin, û %1$s dê nikaribe ji bo çareserkirina wan pirsgirêkan bibe alîkar.</string>
+<string name="preference_enhanced_tracking_protection_allow_list_dialog_title">Tu ji dil jî dixwazî çareserkirinan bigirî?</string>
+<string name="preference_enhanced_tracking_protection_allow_list_subheader">Pirsgirêkên malperê çareser bike</string>
+<string name="preference_enhanced_tracking_protection_custom_global_privacy_control">Ji malperan re bibêjin ku daneyan parve nekin û nefiroşin</string>
+<string name="preference_enhanced_tracking_protection_custom_known_fingerprinters">Berhevkarên şoptiliyan yên naskirî</string>
+<string name="preference_expanded_toolbar">Firehkirî</string>
+<string name="preference_gestures_swipe_toolbar_show_tabs_2">Ji bo dîtina hilpekînên vekirî, amûrê bi bi jorê ve bihejîne</string>
+<string name="preference_gestures_swipe_toolbar_switch_tabs_2">Ji bo derbasbnûna di nav hilpekînan de, darika amûran bi kêlekê ve biherikîne</string>
+<string name="preference_oled_theme">Tarîtirîn</string>
+<string name="preference_select_app_icon_title">Îkona Sepanê Hilbijêre</string>
+<string name="preference_simple_toolbar">Asan</string>
+<string name="preference_tab_strip_location_header">Ciyê darikê hilpekînan</string>
+<string name="preference_tab_strip_show">Darikê hilpekînan nîşan bide</string>
+<string name="preference_top_tab_strip">Jorê</string>
+<string name="preference_usage_data_2">Daneyên teknîkî û danûstandinê bişîne</string>
+<string name="preferences_account_and_sync_settings">Hesab û senkronîzekirin</string>
+<string name="preferences_account_default_name_2" tools:ignore="BrandUsage">Hesabê Mozillayê</string>
+<string name="preferences_add_search_widget_from_settings">Widgeta ekrana malê</string>
+<string name="preferences_app_icon">Îkona sepanê</string>
+<string name="preferences_category_delete_or_remove_downloads">Jêbarkirinan jê bibe yan jî rake</string>
+<string name="preferences_category_file_storage">Hilanîna pelan</string>
+<string name="preferences_category_permissions">Destûr</string>
+<string name="preferences_category_sync">Daneyên senkronîzekirî</string>
+<string name="preferences_category_sync_controls">Senkronîzekirin</string>
+<string name="preferences_customize_extension_collection">Koleksiyona pêvekan ya şexsî</string>
+<string name="preferences_daily_usage_ping_description" tools:ignore="BrandUsage">Ev alîkariya Mozillayê dike ku bikarhênerên çalak texmîn bike.</string>
+<string name="preferences_daily_usage_ping_title">Pinga bikaranîna rojane</string>
+<string name="preferences_device_name_category">Navê cîhazê</string>
+<string name="preferences_downloads_ask_when_to_delete_files">Dema ez pelan jê dibim, bipirse</string>
+<string name="preferences_downloads_default_location_title">Ciyê jêbarkirinê ya standard</string>
+<string name="preferences_downloads_delete_from_device">Ji ser cîhazê jê bibe</string>
+<string name="preferences_downloads_delete_from_device_description">Pel ji cîhaza te hat jêbirin û ji raboriya jêbarkirinan hat rakirin</string>
+<string name="preferences_downloads_no_folder_picker_available">Hilbijêra peldankan li ser vê cîhazê venabe.</string>
+<string name="preferences_downloads_remove_from_download_history">Ji raboriya jêbarkirinan rake</string>
+<string name="preferences_downloads_remove_from_download_history_description">Pel ji raboriya te ya jêbarkirinan hat rakirin, lê hê jî li ser cîhaya te ye</string>
+<string name="preferences_email_masks">Maskeyên emaîlê</string>
+<string name="preferences_email_masks_manage_title">Maskeyên emaîlê bi rê ve bibe</string>
+<string name="preferences_email_masks_suggest_summary">Ji bo parastina qutiya peyamên xwe ji spamê, e-nameya xwe ya rastîn veşêre. Hin malper maskeyên emaîlê piştgirî nakin.</string>
+<string name="preferences_email_masks_suggest_title">Maskeyên emaîlê pêşniyar bike</string>
+<string name="preferences_enable_gecko_logs">Tomarên Gecko çalak bike</string>
+<string name="preferences_inactive_tabs_toggle_title">Hilpekînên neçalak</string>
+<string name="preferences_install_local_extension">Pêvekê ji dosyeyê saz bike</string>
+<string name="preferences_ip_protection_beta_badge_label">BETA</string>
+<string name="preferences_ip_protection_off">Girtî</string>
+<string name="preferences_ip_protection_on">Vekirî</string>
+<string name="preferences_link_sharing">Parvekirina lînkan</string>
+<string name="preferences_local_network_access">Gihîştina Tora Herêmî / Amûrên Nêzîk</string>
+<string name="preferences_marketing_data_2">Daneyên pîvandina kampanyayê</string>
+<string name="preferences_marketing_data_description_4" tools:ignore="BrandUsage">Bi hevkarên bazargeriyê yên Mozillayê re parve bike ka te Firefox çawa keşf kir û wê çawa bi kar tînî.</string>
+<string name="preferences_marketing_data_title">Pîvana kampanyayê</string>
+<string name="preferences_media_category">Medya</string>
+<string name="preferences_open_links_in_youtube">Girêdanan di sepana YouTube de veke</string>
+<string name="preferences_override_account_server" tools:ignore="BrandUsage">Servera hesabê Mozillayê ya şesxî</string>
+<string name="preferences_passwords_exceptions_description_2">%s dê şîfreyên van malperan tomar neke.</string>
+<string name="preferences_passwords_exceptions_description_empty_2">%s dê şîfreyên malperên li virê hatine lîstekirin tomar neke.</string>
+<string name="preferences_passwords_save_logins_2">Şîfreyan tomar bike</string>
+<string name="preferences_passwords_saved_logins_description_empty_text_2">Şîfreyên ku tu tomar dikî yan jî bi %s`ê re senkronîze dikî dê li vir bên lîstekirin. Hemû şîfreyên ku tu tomar dikî şîfrekirî ne.</string>
+<string name="preferences_pbm_lock_screen_summary_3">Hilpekînên xwe bi şoptilî, PIN yan rûyê xwe bibîne. Çalakkirina vê yekê di heman demê de pêşî li kişandin û parvekirina wêneyê ekranê digire.</string>
+<string name="preferences_privacy_report">Rapora nepeniyê</string>
+<string name="preferences_privacy_report_title">Rapora nepeniyê çalak bike</string>
+<string name="preferences_show_nonsponsored_suggestions">Pêşniyarên ji %1$s`ê</string>
+<string name="preferences_show_search_optimization_cards" tools:ignore="BrandUsage">Di dema nivîsandinê de pêşniyaran ji Mozilla bistîne</string>
+<string name="preferences_show_sponsored_suggestions_summary">Bi pêşniyarên sponsorgerî yên carinan xuya dibin, piştgiriyê bide %1$s`ê</string>
+<string name="preferences_sign_in">Têkevê</string>
+<string name="preferences_sign_in_description">Hilpekînan, favoriyan, şîfreyan û hêj bêtir senkronîze bike.</string>
+<string name="preferences_sync_category_no_engine_selected_summary">Tu tiştek senkronîze nekiriye. Hilbijêre ka çi li ser cîhazên te senkronîze bimînin.</string>
+<string name="preferences_sync_category_summary">Tiştên ku li ser hemû cîhazên xwe yên girêdayî têne senkronîzekirin bi rê ve bibe</string>
+<string name="preferences_sync_change_device_name">Navê cîhazê biguherîne</string>
+<string name="preferences_tab_groups_description">Hilpekînên xwe di koman de serast bike, navên koman biguherîne û tomar bike.</string>
+<string name="preferences_tab_groups_title">Komên hilpekînan</string>
+<string name="preferences_tab_layout">Şêweya hilpekînan</string>
+<string name="preferences_tab_organization">Rêxistina hilpekînan</string>
+<string name="preferences_tab_strip">Xuyakirina darikê sepanan</string>
+<string name="preferences_toolbar_2">Ciyê darikê navnîşanan</string>
+<string name="preferences_toolbar_layout">Dirbê panela amûran</string>
+<string name="preferences_toolbar_select_shortcut">Kurtebirekê hilbijêre</string>
+<string name="preferences_toolbar_shortcut">Kurtebira darikê amûran</string>
+<string name="preferences_usage_data_description_1" tools:ignore="BrandUsage">Daneyên têkildarî cîhaza te, avaniha reqalavê û şêwaza bikaranîna te ya Firefoxê alîkariya me dikin ku em taybetiyan, performansê û biryardariyê ji bo her kesî çêtir bikin.</string>
+<string name="protection_panel_banner_not_protected_description">%s girtî ye. Em pêşniyar dikin ku parastin ji nû ve bên vekirin.</string>
+<string name="protection_panel_banner_not_protected_title">Te parastin girt</string>
+<string name="protection_panel_banner_not_secure_description">Girêdana te ne ewle ye.</string>
+<string name="protection_panel_banner_not_secure_title">Li ser vê malperê baldar be</string>
+<string name="protection_panel_banner_protected_title">%s li ser kar e</string>
+<string name="qr_code_display_close">Bigire</string>
+<string name="qr_code_display_download">Jêbar bike</string>
+<string name="qr_code_display_instructions">Ji bo parvekirina vê lînkê bi kesên nêzîk re, bila ew koda QR ya li jêr bişopînin.</string>
+<string name="qr_code_display_share_nearby">Girêdana li nêzîk parve bike</string>
+<string name="qr_code_display_title">Koda QR</string>
+<string name="qr_code_download_failure">Tomarkirina koda QR bi ser neket</string>
+<string name="qr_code_download_success">Koda QR li Jêbarkiriyan hat tomarkirin</string>
+<string name="quit_application">Ji bo sepandina guhertinan ji sepanê derdikeve…</string>
+<string name="remote_improvements_description" tools:ignore="BrandUsage">Firefox dê taybetmendî, performans û aramiya di navbera nûvekirinan de baştir bike. Guhertin ji dûr ve têne sepandin.</string>
+<string name="restart_warning_dialog_body_2">Dibe ku sepan bê girtin. Tenê li îkona xwe ya nû ya geş bitikîne da ku %1$s ji nû ve vekî.</string>
+<string name="restart_warning_dialog_button_positive_2">Îkonê biguherîne</string>
+<string name="restart_warning_dialog_title">Sembola sepanê biguherînî?</string>
+<string name="saved_login_hostname_required_2" tools:ignore="UnusedResources">Navnîşaneke webê binivîse</string>
+<string name="saved_login_password_required_2">Şîfreyekê binivîse</string>
+<string name="saved_login_username_required_2">Navekî bikarhêneriyê binivîse</string>
+<string name="saved_logins_add_new_login_button_content_description">Têketina nû lê zêde bike</string>
+<string name="saved_logins_menu_dropdown_chevron_icon_content_description_2">Menûya rêzkirina şîfreyan</string>
+<string name="send_to_devices_bottom_sheet_close_content_description">Şandina bo cîhazê bigire</string>
+<string name="send_to_devices_device_selected_content_description">Hate bijartin</string>
+<string name="sent_from_firefox_template" tools:ignore="UnusedResources">%1$s\n\nJi %2$s hatî şandin 🦊 Geroka mobîl biceribîne: %3$s</string>
+<string name="sent_from_firefox_template_short" tools:ignore="UnusedResources">%1$s\n\nJi %2$s hatiye şandin 🦊 %3$s</string>
+<string name="share_qr_code">Koda QR</string>
+<string name="shortcut_url_hint">URL-ya kurtebir</string>
+<string name="sign_out_dialog_confirm_button">Derkeve</string>
+<string name="sign_out_dialog_message">Daneyên senkronîzekirî di hesabê te de têne hilanîn.</string>
+<string name="sign_out_dialog_title">Ji hesabê xwe derkevî?</string>
+<string name="snackbar_message_bookmarks_saved_in_2">Favorî di “%s”ê de hatin qeydkirin</string>
+<string name="snackbar_num_tabs_closed">Hilpekîn hatin girtin: %1$s</string>
+<string name="standard_snackbar_error_dismiss">Bigire</string>
+<string name="startup_crash_negative">Na, spas</string>
+<string name="startup_crash_positive">Rapora têkçûnê bişîne</string>
+<string name="startup_crash_restart">%s`ê ji nû ve veke</string>
+<string name="stories_back_button_content_description">Paşve here</string>
+<string name="stories_discover_more_content_description">Çîrokên bêtir kifş bikin</string>
+<string name="stories_screen_text_news">Nûçe</string>
+<string name="studies_data_category">Lêkolîn</string>
+<string name="studies_description_4" tools:ignore="BrandUsage">Firefox bi awayekî rasthatî bikarhêneran hildibijêre da ku taybetmendiyan biceribîne, ku ev yek kalîteyê ji bo her kesî baştir dike.</string>
+<string name="studies_title_2">Destûrê bide lêkolînên taybetmendiyê</string>
+<string name="sync_send_tab_empty_state_description" tools:ignore="BrandUsage">Ji bo şandina hilpekînekê, herî kêm ji cîhazeke din têkeve Firefoxê.</string>
+<string name="sync_send_tab_empty_state_link">Fêr bibe ka mirov çawa amûrekê girêdide</string>
+<string name="sync_send_tab_empty_state_title">Cîhaza girêdayî tune ye</string>
+<string name="sync_send_tab_error_auth_button">Têkevê</string>
+<string name="sync_send_tab_error_auth_remove_account">Hesêb rake</string>
+<string name="sync_send_tab_error_auth_title">Ji bo şandina hilpekînan di navbera cîhazan de dîsa têkevê</string>
+<string name="sync_send_tab_error_connection_button">Dîsa biceribîne</string>
+<string name="sync_send_tab_error_connection_text">Piştre hewl bide ku tabloya xwe ji nû ve bişînî.</string>
+<string name="sync_send_tab_error_connection_title">Girêdana înterneta xwe kontrol bike</string>
+<string name="sync_send_to_selected_devices">Bişîne</string>
+<string name="sync_sent_tab_snackbar_2">Hilpekîn hat şandin</string>
+<string name="sync_sent_tabs_snackbar_2">Hilpekîn hatin şandin</string>
+<string name="tab_group_color_blue">Şîn</string>
+<string name="tab_group_color_cyan">Şînê vekirî</string>
+<string name="tab_group_color_green">Kesk</string>
+<string name="tab_group_color_grey">Gewr</string>
+<string name="tab_group_color_orange">Porteqalî</string>
+<string name="tab_group_color_pink">Pembe</string>
+<string name="tab_group_color_purple">Mor</string>
+<string name="tab_group_color_red">Sor</string>
+<string name="tab_group_color_yellow">Zer</string>
+<string name="tab_group_onboarding_grid_item_description">Ji bo komkirina wan, hilpekînekê kaş bike ser hilpekîneke din.</string>
+<string name="tab_group_onboarding_item_dismiss_content_description">Destpêkirina koma hilpekînan red bike</string>
+<string name="tab_group_onboarding_item_title">Komeke hilpekînan biafirîne</string>
+<string name="tab_group_onboarding_list_item_description">Ji bo afirandina komekê gelek hilpekînan hilbijêre.</string>
+<string name="tab_group_sheet_dismiss_description">Koma hilpekînan bibîne, destgirê kaşkirinê teng bike</string>
+<plurals name="tab_group_tabs_count_subtitle">
+    <!--
+      Subtitle for the number of tabs in a tab group.
+      %1$d is the number of tabs in a tab group.
+    -->
+    <item quantity="one">Hilpekînek</item>
+    <item quantity="other">%1$d hilpekîn</item>
+  </plurals>
+<string name="tab_group_three_dot_button_content_description">Vebijarkên zêdetir</string>
+<string name="tab_group_three_dot_menu_close">Bigire</string>
+<string name="tab_group_three_dot_menu_delete">Jê bibe</string>
+<string name="tab_group_three_dot_menu_edit">Sererast bike</string>
+<string name="tab_group_three_dot_menu_share">Parve bike</string>
+<string name="tab_group_three_dot_menu_ungroup">Ji komê derxe</string>
+<string name="tab_groups_strip_expand_group_content_description">Berfireh bike da ku hilpekînan li ser ekrana tevahî nîşan bide</string>
+<string name="tab_indicator_media_playing">Medya tê lêdan</string>
+<string name="tab_manager_close_all_tabs_dialog_body">Ev ê hemû hilpeînên vekirî bigire.</string>
+<string name="tab_manager_close_all_tabs_dialog_cancel">Betal bike</string>
+<string name="tab_manager_close_all_tabs_dialog_confirm">Hilpekînan bigire</string>
+<string name="tab_manager_close_all_tabs_dialog_title">Hemû hilpekînan bigire?</string>
+<string name="tab_manager_close_tabs">Bigire</string>
+<string name="tab_manager_empty_synced_tabs_page_description">Ji bo birêvebirina hilpekînên senkronîzekirî ji hemû cîhazên xwe, têkevê.</string>
+<string name="tab_manager_empty_synced_tabs_page_header">Hilpekînan ji hemû cîhazan wergire</string>
+<string name="tab_manager_empty_synced_tabs_page_sign_in_cta">Têkevê</string>
+<string name="tab_manager_empty_tab_groups_page_description">Ji bo afirandina komê hilpekînan hilbijêre. Ew li virê tên tomar kirin, û gava lazim bibin, amade ne.</string>
+<string name="tab_manager_empty_tab_groups_page_header">Ji bo hindiktir kaş bikî û zêdetir kar bikî, komên hilpekînan biceribîne</string>
+<string name="tab_manager_multiselect_menu_item_add_to_collection">Têxe nav koleksiyonan</string>
+<string name="tab_manager_multiselect_menu_item_add_to_tab_group">Têxe nav komê</string>
+<string name="tab_manager_multiselect_menu_item_bookmark_content_description">Hipekînên hilbijartî têxe nav bijareyan</string>
+<string name="tab_manager_multiselect_menu_item_close_content_description">Hilpekînên hilbijartî bigire</string>
+<string name="tab_manager_multiselect_menu_item_share">Parve bike</string>
+<string name="tab_manager_no_search_results">Ti hevgirtin nehat dîtin.</string>
+<string name="tab_manager_search_bar_back_content_description">Vegere rêveberiya hilpekînan</string>
+<string name="tab_tray_homepage_tab">Serrûpel</string>
+<string name="tab_tray_menu_select_all_tabs">Tevî hilbijêre</string>
+<string name="tabs_header_normal_tabs_counter_title">Hilpekînên Asayî yên Vekirî: %1$s. Ji bo guhertina hilpekînan bitikîne.</string>
+<string name="tabs_header_private_tabs_counter_title">Hilpekînên nepen yên vekirî: %1$s. Ji bo hilpekînan biguherînî, bitikîne.</string>
+<string name="tabs_header_synced_tabs_counter_title">Hilpekînên Senkronîzekirî yên Vekirî: %1$s. Ji bo hilpekînan biguherînî, bitikîne.</string>
+<plurals name="tabs_header_tab_group_counter_title">
+    <!--
+      Title for the list of tab groups used by a11y services
+      The %1$d will be replaced by the number of opened tab groups
+    -->
+    <item quantity="one">Komeke hilpekînan vekirî ye. Ji bo hilpekînan biguherînî, bitikîne.</item>
+    <item quantity="other">%1$d komên hilpekînan vekirî ne. Ji bo hilpekînan biguherînî, bitikîne.</item>
+  </plurals>
+<string name="technical_data_category">Daneyên Teknîkî</string>
+<string name="toast_customize_extension_collection_done">Koleksiyona pêvekan hat guhertin. Ji bo sepandina guhertinan ji bernamokê derdikeve…</string>
+<string name="toolbar_customize_shortcut_add_bookmark">Têxe nav favoriyan</string>
+<string name="toolbar_customize_shortcut_back">Paşve</string>
+<string name="toolbar_customize_shortcut_homepage">Serrûpel</string>
+<string name="toolbar_customize_shortcut_new_tab">Hilpekîneke nû veke</string>
+<string name="toolbar_customize_shortcut_none">Qet</string>
+<string name="toolbar_customize_shortcut_share">Parve bike</string>
+<string name="toolbar_customize_shortcut_translate">Wergerîne</string>
+<string name="toolbar_shortcut_menu_edit_option">Kurtebiran serast bike</string>
+<string name="top_sites_edit_dialog_save">Tomar bike</string>
+<string name="top_sites_edit_dialog_title">Kurtebirê serast bike</string>
+<string name="top_sites_edit_dialog_url_error">URL-yek derbasdar binivîse</string>
+<string name="top_sites_edit_dialog_url_title">URL</string>
+<string name="top_sites_edit_top_site">Sererast bike</string>
+<string name="trackers_blocked_empty">Tu parastî yî</string>
+<string name="translation_error_language_not_supported_warning_text_2">Bibore, em hîn wergerên ji %1$s`ê piştgirî nakin.</string>
+<string name="translation_settings_control_description">Hemû wergerandin li ser cîhaza te nepen dimînin.</string>
+<string name="translation_settings_control_title">Werger</string>
+<string name="trending_searches_header_2">Trend e li ser %s</string>
+<string name="unable_to_print_page_error">Ev rûpel nehat çapkirin</string>
+<string name="ungroup_tab_group_confirmation_dialog_body">Hilpekîn dê li ser vê cîhazê vekirî bimînin, lê kom dê bê jêbirin.</string>
+<string name="ungroup_tab_group_confirmation_dialog_cancel">Betal bike</string>
+<string name="ungroup_tab_group_confirmation_dialog_confirm">Ji komê derxistin</string>
+<string name="ungroup_tab_group_confirmation_dialog_dont_ask_again">Careke din nepirse</string>
+<string name="ungroup_tab_group_confirmation_dialog_title">Bila koma hilpekînan ji hev bê belavkirin?</string>
+<string name="uninstall_survey_button_label">Nirxandinê bişîne û rake</string>
+<string name="uninstall_survey_error_failed">Vekirina pêşniyara rakirina pergalê bi ser neket, ji kerema xwe çalakiya rakirina pergalê rasterast bi kar bîne.</string>
+<string name="uninstall_survey_option_1_v2">Hêdî ye an jî ne pêbawer e</string>
+<string name="uninstall_survey_option_2_v2">Malper bi rêkûpêk nexebitîn</string>
+<string name="uninstall_survey_option_3_v2">Taybetmendiyên ji imn re lazim jê kêm in</string>
+<string name="uninstall_survey_option_4_v2">Vidyo, jêbarkirin, an medyayê kar nekir</string>
+<string name="uninstall_survey_option_5_v2">Bikranîna wê zehmet e û sêwirandina wê xirab e</string>
+<string name="uninstall_survey_option_6_v2">Fikarên li ser nepenîtiyê an ewlehiyê</string>
+<string name="unsubmitted_crash_dialog_body">Raporên têkçûnê alîkariya me dikin ku pirsgirêkên gerokê teşhîs bikin û çareser bikin. Rapor dikarin daneyên kesane an hesas di nav xwe de bigirin. %s</string>
+<string name="unsubmitted_crash_dialog_negative_button_2">BIGIRE</string>
+<string name="unsubmitted_crash_dialog_positive_button_2">BIŞÎNE</string>
+<string name="unsubmitted_crash_dialog_title_2">%s têk çû. Raporekê bişîne?</string>
+<string name="unsubmitted_crash_requested_by_devs_dialog_never_button">Careke din nîşan nede</string>
+<string name="unsubmitted_crash_requested_by_devs_dialog_title">Raporeke te ya têkçûnê ya têkildarî têkçûnên ku têne lêkolînkirin nehatiye şandin heye. Şandina wê dê ji me re bibe alîkar ku em %1$s`ê baştir bikin. Girtina vê agahdariyê dê vê raporê paşguh bike.</string>
+<string name="unsubmitted_crashes_requested_by_devs_dialog_title">Raporên te yên têkçûnê yên nehatine şandin (%1$d) yên têkildarî qezayên ku têne lêkolînkirin hene. Şandina wan dê ji me re bibe alîkar ku em %2$s`ê baştir bikin. Girtina vê agahdariyê dê van raporan paşguh bike.</string>
+<string name="usage_data_category">Daneyên bikaranînê</string>
+<string name="wallpaper_artist_series_description">Koleksiyona Dengên Serbixwe.</string>
+<string name="wallpaper_artist_series_description_with_learn_more">Koleksiyona Dengên Serbixwe. %s</string>
+<string name="webcompat_reporter_clear_reason_content_description">Sedema bijartî paqij bike</string>
+<string name="webcompat_reporter_description_3">Rapora te alîkariya me dike ku em pirsgirêkên di %1$s de fam bikin û rast bikin da ku ew ji bo her kesî çêtir bibe. %2$s</string>
+<string name="webcompat_reporter_description_error">Ji kerema xwe herî kêm 10 karakteran binivîse</string>
+<string name="webcompat_reporter_edit_url_dialog_dismiss">Bigire</string>
+<string name="webcompat_reporter_edit_url_dialog_save">Tomar bike</string>
+<string name="webcompat_reporter_edit_url_dialog_title">Navnîşana malperê biguherîne</string>
+<string name="webcompat_reporter_etp_checkbox_text_2">Lîsteya tiştên ku ji hêla parastina şopandinê ve hatine astengkirin bişîne</string>
+<string name="webcompat_reporter_label_mandatory_description">Pirsgirêkê bi berfirehî rave bike da ku alîkariya me bike ku em li ser wê lêkolînê bikin</string>
+<string name="webcompat_reporter_label_optional_description">Pirsgirêkê bi berfirehî rave bike da ku alîkariya me bike ku em li ser wê lêkolînê bikin (vebijarkî)</string>
+<string name="webcompat_reporter_label_whats_broken_3">Çi naxebite?</string>
+<string name="webcompat_reporter_preview_bottom_sheet_header">Pêşdîtina Raporê</string>
+<string name="webcompat_reporter_preview_report">Pêşdîtina Raporê</string>
+<string name="webcompat_reporter_problem_description_placeholder_text_2">Çi qewimî? Te çi hêvî dikir? Ji kerema xwe gavên ji bo dubarekirina pirsgirêkê peyda bike.</string>
+<string name="webcompat_reporter_reason_account2">Têketin yan qeydkirin pêk nayê</string>
+<string name="webcompat_reporter_reason_checkout">Peredan û kirîn pêk nayên</string>
+<string name="webcompat_reporter_reason_content2">Naveroka kêm</string>
+<string name="webcompat_reporter_reason_load">Malper nayê barkirin</string>
+<string name="webcompat_reporter_reason_media2">Vidyo nayê lîstin an jî barkirin</string>
+<string name="webcompat_reporter_reason_notsupported_2">Gerok yan astengkirî ye yan jî nayê piştgirîkirin</string>
+<string name="webcompat_reporter_reason_other">Tiştekî din</string>
+<string name="webcompat_reporter_reason_site_is_deceptive">Ev malper xapînok e</string>
+<string name="webcompat_reporter_reason_slow2">Malper hêdî ye</string>
+<string name="webcompat_reporter_reason_turn_off_adblocker">Malper dixwaze ku astengkara reklaman bigirî</string>
+<string name="webcompat_reporter_screen_title">Malpera şikestî rapor bike</string>
+<string name="webcompat_reporter_send_report">Raporê bişîne</string>
+<string name="webcompat_reporter_success_snackbar_text_2">Rapor hat şandin</string>
 </resources>
 

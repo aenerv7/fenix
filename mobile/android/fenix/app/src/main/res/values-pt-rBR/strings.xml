@@ -299,6 +299,8 @@
   <string name="browser_menu_webcompat_reporter_2">Relatar site com problemas</string>
   <!-- Browser menu label for adding a tab to a tab group -->
   <string name="browser_menu_add_to_tab_group">Adicionar a grupo</string>
+  <!-- Browser menu label for moving a tab to a tab group -->
+  <string name="browser_menu_move_to_tab_group">Mover para um grupo</string>
   <!-- Browser menu label that is displayed when the current page has been translated by the translation feature. -->
   <string name="browser_menu_translated">Traduzido</string>
   <!-- Browser menu label for the print feature -->
@@ -612,6 +614,14 @@
   <string name="nova_onboarding_sync_subtitle">Acesse favoritos, senhas e muito mais em qualquer dispositivo num piscar de olhos. Seus dados pessoais permanecem seguros e protegidos com criptografia.</string>
   <!-- Sync onboarding button. -->
   <string name="nova_onboarding_sync_button">Iniciar sincronização</string>
+  <!-- Title of onboarding pairing card. Displayed when installing Firefox for Android by using a pairing link from Firefox for Desktop. "Scan" refers to scanning the QR code displayed on the computer. -->
+  <string name="nova_onboarding_sync_pairing_title">Capture o código para concluir o pareamento com o computador</string>
+  <!-- Body of the onboarding pairing card. Provides troubleshooting instructions when the QR code is not being displayed on the pairing computer. The "firefox.com/pair" URL should not be translated or edited. Bold tags should be preserved. -->
+  <string name="nova_onboarding_sync_pairing_body"><![CDATA[Não tem código QR? Acesse <b>firefox.com/pair</b> no computador.]]></string>
+  <!-- Primary button of the onboarding pairing card. Opens the camera to scan the pairing QR code. -->
+  <string name="nova_onboarding_sync_pairing_scan_button">Capturar código de pareamento</string>
+  <!-- Secondary button of the onboarding pairing card. Opens the Mozilla account sign-in page. -->
+  <string name="nova_onboarding_sync_pairing_email_button">Entrar na conta com email</string>
   <!-- Marketing onboarding title. -->
   <string name="nova_onboarding_marketing_title">Ajude-nos a construir uma internet melhor</string>
   <!--
@@ -2485,6 +2495,12 @@
   <string name="snackbar_private_tab_closed">Aba privativa fechada</string>
   <!-- Text shown in snackbar to undo deleting a tab, top site or collection -->
   <string name="snackbar_deleted_undo">DESFAZER</string>
+  <!-- Confirmation message displayed when user adds a page to a tab group. %1$s is the tab group's name. -->
+  <string name="snackbar_tab_added_to_group">Adicionada a %1$s</string>
+  <!-- Confirmation message displayed when user moves a page from one tab group to another. %1$s is the tab group's name. -->
+  <string name="snackbar_tab_moved_to_group">Movida para %1$s</string>
+  <!-- Button text displayed with a confirmation message when the user adds or moves a page to a tab group. Tapping it displays the tab group. -->
+  <string name="snackbar_action_view">Mostrar</string>
   <!--
     QR code scanner prompt which appears after scanning a code, but before navigating to it
     %1$s is the name of the app (for example "Firefox"), %2$s is the URL or text scanned
@@ -4651,4 +4667,17 @@
 
     Content description for accessibility (used by screen readers): Description for the button that triggers the start of a signature workflow on the PDF displayed on the screen.
   -->  <string name="pdf_tools_sign_content_description_2">Adicionar uma assinatura</string>
+<string name="addon_remove_dialog_body">A extensão e suas configurações são removidas deste dispositivo.</string>
+<string name="addon_remove_dialog_cancel">Cancelar</string>
+<string name="addon_remove_dialog_confirm">Remover</string>
+<string name="addon_remove_dialog_title">Remover %1$s?</string>
+<string name="ai_controls_listen_to_page_description">Seu dispositivo pode usar inteligência artificial para ler em voz alta. O texto e o áudio permanecem privativos.</string>
+<string name="ai_controls_listen_to_page_title">Ouvir página</string>
+<string name="browser_menu_extension_review_update_description">Revisar configurações para atualizar</string>
+<string name="browser_menu_extensions_review_update_description">Revisar atualização de %1$s</string>
+<string name="certificate_details_panel_secure_connection_title">Conexão segura</string>
+<string name="preferences_enable_sync_summary_sync_disabled">Usando dados salvos na sua conta %1$s.</string>
+<string name="preferences_enable_sync_summary_sync_enabled">Seus dados são salvos e estão disponíveis nos dispositivos sincronizados.</string>
+<string name="preferences_enable_sync_title">Sincronizar este dispositivo</string>
+<string name="preferences_menu">Menu</string>
 </resources>

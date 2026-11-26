@@ -303,6 +303,8 @@
   <string name="browser_menu_webcompat_reporter_2">Eman hondatutako gunearen berri</string>
   <!-- Browser menu label for adding a tab to a tab group -->
   <string name="browser_menu_add_to_tab_group">Gehitu taldera</string>
+  <!-- Browser menu label for moving a tab to a tab group -->
+  <string name="browser_menu_move_to_tab_group">Eraman taldera</string>
   <!-- Browser menu label that is displayed when the current page has been translated by the translation feature. -->
   <string name="browser_menu_translated">Itzulita</string>
   <!-- Browser menu label for the print feature -->
@@ -616,6 +618,14 @@
   <string name="nova_onboarding_sync_subtitle">Hartu laster-markak, pasahitzak eta gehiago edozein gailutatik ziztu-bizian. Zure datu pertsonalak zifratze bidez seguru mantentzen dira.</string>
   <!-- Sync onboarding button. -->
   <string name="nova_onboarding_sync_button">Hasi sinkronizatzen</string>
+  <!-- Title of onboarding pairing card. Displayed when installing Firefox for Android by using a pairing link from Firefox for Desktop. "Scan" refers to scanning the QR code displayed on the computer. -->
+  <string name="nova_onboarding_sync_pairing_title">Eskaneatu zure ordenagailuarekin parekatzen amaitzeko</string>
+  <!-- Body of the onboarding pairing card. Provides troubleshooting instructions when the QR code is not being displayed on the pairing computer. The "firefox.com/pair" URL should not be translated or edited. Bold tags should be preserved. -->
+  <string name="nova_onboarding_sync_pairing_body"><![CDATA[QR koderik ez duzu? Zoaz <b>firefox.com/pair</b> helbidera zure ordenagailuan.]]></string>
+  <!-- Primary button of the onboarding pairing card. Opens the camera to scan the pairing QR code. -->
+  <string name="nova_onboarding_sync_pairing_scan_button">Eskaneatu parekatzeko kodea</string>
+  <!-- Secondary button of the onboarding pairing card. Opens the Mozilla account sign-in page. -->
+  <string name="nova_onboarding_sync_pairing_email_button">Hasi saioa posta elektronikoa erabiliz</string>
   <!-- Marketing onboarding title. -->
   <string name="nova_onboarding_marketing_title">Lagun gaitzazu Internet hobeago bat eraikitzen</string>
   <!--
@@ -2488,6 +2498,12 @@
   <string name="snackbar_private_tab_closed">Fitxa pribatua itxita</string>
   <!-- Text shown in snackbar to undo deleting a tab, top site or collection -->
   <string name="snackbar_deleted_undo">DESEGIN</string>
+  <!-- Confirmation message displayed when user adds a page to a tab group. %1$s is the tab group's name. -->
+  <string name="snackbar_tab_added_to_group">%1$s fitxa-taldera gehituta</string>
+  <!-- Confirmation message displayed when user moves a page from one tab group to another. %1$s is the tab group's name. -->
+  <string name="snackbar_tab_moved_to_group">%1$s fitxa-taldera eramanda</string>
+  <!-- Button text displayed with a confirmation message when the user adds or moves a page to a tab group. Tapping it displays the tab group. -->
+  <string name="snackbar_action_view">Ikusi</string>
   <!--
     QR code scanner prompt which appears after scanning a code, but before navigating to it
     %1$s is the name of the app (for example "Firefox"), %2$s is the URL or text scanned
@@ -4644,4 +4660,35 @@
   <string name="reader_mode_panel_listen_content_description">Irakurri ozenki</string>
   <!-- Content description for media player displayed in Reader Mode when the Listen to Page (Read Aloud) feature is selected -->
   <string name="reader_mode_panel_media_player_content_description">Multimedia erreproduzigailua</string>
+<string name="addon_remove_dialog_body">Honek hedapena eta bere ezarpenak kentzen ditu gailu honetatik.</string>
+<string name="addon_remove_dialog_cancel">Utzi</string>
+<string name="addon_remove_dialog_confirm">Kendu</string>
+<string name="addon_remove_dialog_title">Kendu %1$s?</string>
+<string name="ai_controls_listen_to_page_description">Zure gailuak AA behar lezake ozenki irakurtzeko. Testu eta audioa pribatu mantentzen dira.</string>
+<string name="ai_controls_listen_to_page_title">Entzun orria</string>
+<string name="automotive_authentication_setup_dialog_cancel">Utzi</string>
+<string name="automotive_authentication_setup_dialog_message">Konfiguratu gailua blokeatzeko patroia, PINa edo pasahitza gordetako zure kontuzko datuak babesteko beste norbaitek zure autoa gidatuko balu.</string>
+<string name="automotive_authentication_setup_dialog_set_up_now">Konfiguratu orain</string>
+<string name="automotive_authentication_setup_dialog_title">Bermatu zure kontuzko datuak</string>
+<string name="browser_menu_read_or_listen">Irakurtzeko ikuspegia, irakurri edo entzun orria</string>
+<string name="certificate_details_panel_secure_connection_title">Konexio segurua</string>
+<string name="customize_menu">Pertsonalizatu menua</string>
+<string name="download_item_source_data">(datuak)</string>
+<string name="ip_protection_location_selection_reset_snackbar">Hautatutako VPN kokapena ez dago erabilgarri. Gomendatutako kokapenera aldatu da.</string>
+<string name="lens_camera_image_load_failed_v2">Ezin izan da irudia kargatu.</string>
+<string name="notification_privacy_report_body_has_trackers">Jarraitu nabigatzen. %1$s(e)k blokeatzen jarraituko du.</string>
+<string name="notification_privacy_report_channel_description">%1$s(e)k erakusten du zenbat jarraipen-elementu blokeatu diren zuk nabigatu bitartean.</string>
+<string name="notification_privacy_report_channel_name">Pribatutasun-txostena</string>
+<string name="notification_privacy_report_headline_no_trackers">%1$s(e)k jarraipen-elementuak blokeatzen ditu zuk nabigatu ahala. Hemen ikusiko dituzu.</string>
+<string name="pdf_tools_sign_content_description_2">Gehitu sinadura</string>
+<string name="pdf_tools_signature_adding_content_description">Sinadura gehitzen</string>
+<string name="preference_homepage_search_location_middle">Erdian</string>
+<string name="preference_homepage_search_location_top">Goian</string>
+<string name="preferences_enable_sync_summary_sync_disabled">Zure %1$s kontuan gordetako datuak erabiltzen.</string>
+<string name="preferences_enable_sync_summary_sync_enabled">Zure datuen babeskopia eginda eta sinkronizatutako gailuetan erabilgarri dago.</string>
+<string name="preferences_enable_sync_title">Sinkronizatu gailu hau</string>
+<string name="preferences_homepage_search_location">Hasiera-orriko bilaketaren kokapena</string>
+<string name="preferences_media_category">Multimedia</string>
+<string name="preferences_open_links_in_youtube">Ireki loturak YouTube aplikazioan</string>
+<string name="reader_mode_panel_content_description_2">Irakurtzeko ikuspegiaren aukerak</string>
 </resources>

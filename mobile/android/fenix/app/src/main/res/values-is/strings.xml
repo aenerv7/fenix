@@ -4617,4 +4617,12 @@
   <string name="reader_mode_panel_listen_content_description">Lesa upphátt</string>
   <!-- Content description for media player displayed in Reader Mode when the Listen to Page (Read Aloud) feature is selected -->
   <string name="reader_mode_panel_media_player_content_description">Margmiðlunarspilari</string>
+<string name="browser_menu_read_or_listen">Leshamur, les eða hlustar á síðu</string>
+<string name="customize_menu">Sérsníða valmynd</string>
+<string name="download_item_source_data">(gögn)</string>
+<string name="pdf_tools_sign_content_description_2">Bæta við undirritun</string>
+<string name="pdf_tools_signature_adding_content_description">Bæti við undirritun</string>
+<string name="preferences_media_category">Margmiðlunargögn</string>
+<string name="preferences_open_links_in_youtube">Opna tengla í YouTube-forritinu</string>
+<string name="reader_mode_panel_content_description_2">Valkostir leshams</string>
 </resources>

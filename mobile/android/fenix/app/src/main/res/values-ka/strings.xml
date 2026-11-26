@@ -4630,4 +4630,23 @@
 
     Content description for accessibility (used by screen readers): Description for the button that triggers the start of a signature workflow on the PDF displayed on the screen.
   -->  <string name="pdf_tools_sign_content_description_2">დაამატეთ ხელმოწერა</string>
+<string name="addon_remove_dialog_body">შედეგად, გაფართოება თავისივე გამართვით ამოიშლება მოწყობილობიდან.</string>
+<string name="addon_remove_dialog_cancel">გაუქმება</string>
+<string name="addon_remove_dialog_confirm">მოცილება</string>
+<string name="addon_remove_dialog_title">მოცილდეს %1$s?</string>
+<string name="ai_controls_listen_to_page_description">თქვენი მოწყობილობა შეიძლება ხელგონს იყენებდეს ხმამაღლა ამოსაკითხად. ნაწერი და გახმოვანებული რჩება საიდუმლოდ.</string>
+<string name="ai_controls_listen_to_page_title">გვერდის მოსმენა</string>
+<string name="browser_menu_extension_review_update_description">განახლებულის გადახედვა</string>
+<string name="browser_menu_extensions_review_update_description">%1$s განახლდა, გადახედვა</string>
+<string name="browser_menu_read_or_listen">კითხვის ხედი, გვერდის წაკითხვა ან მოსმენა</string>
+<string name="certificate_details_panel_secure_connection_title">დაცული კავშირი</string>
+<string name="download_item_source_data">(მონაცემი)</string>
+<string name="pdf_tools_signature_adding_content_description">ხელმოწერის დამატება</string>
+<string name="preferences_enable_sync_summary_sync_disabled">გამოიყენება შენახული მონაცემები %1$s-ანგარიშიდან.</string>
+<string name="preferences_enable_sync_summary_sync_enabled">თქვენი მონაცემები დამარქაფებულია და ხელმისაწვდომია დასინქრონებულ მოწყობილობებზე.</string>
+<string name="preferences_enable_sync_title">მოწყობილობის დასინქ.</string>
+<string name="preferences_media_category">ფაილები</string>
+<string name="preferences_menu">მენიუ</string>
+<string name="preferences_open_links_in_youtube">ბმულების გახსნა YouTube-აპით</string>
+<string name="reader_mode_panel_content_description_2">კითხვის ხედის გამართვა</string>
 </resources>

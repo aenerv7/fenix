@@ -4631,4 +4631,24 @@
 
     Content description for accessibility (used by screen readers): Description for the button that triggers the start of a signature workflow on the PDF displayed on the screen.
   -->  <string name="pdf_tools_sign_content_description_2">Legg til ein signatur</string>
+<string name="addon_remove_dialog_body">Dette fjerner utvidinga og innstillingane frå denne eininga.</string>
+<string name="addon_remove_dialog_cancel">Avbryt</string>
+<string name="addon_remove_dialog_confirm">Fjern</string>
+<string name="addon_remove_dialog_title">Fjerne %1$s?</string>
+<string name="ai_controls_listen_to_page_description">Eininga di kan bruke KI til å lese høgt. Teksten og lyden held fram med å vere private.</string>
+<string name="ai_controls_listen_to_page_title">Lytt til sida</string>
+<string name="browser_menu_extension_review_update_description">Vurder innstillingane for å oppdatere</string>
+<string name="browser_menu_extensions_review_update_description">Vurder oppdatering for %1$s</string>
+<string name="browser_menu_read_or_listen">Lesevising, lesing eller lytting til side</string>
+<string name="certificate_details_panel_secure_connection_title">Trygg tilkopling</string>
+<string name="download_item_source_data">(data)</string>
+<string name="lens_camera_image_load_failed_v2">Klarte ikkje å laste dette bildet.</string>
+<string name="pdf_tools_signature_adding_content_description">Legg til signatur</string>
+<string name="preferences_enable_sync_summary_sync_disabled">Brukar lagra data frå %1$s-kontoen din.</string>
+<string name="preferences_enable_sync_summary_sync_enabled">Dataa dine er sikringskopierte og tilgjengelege på synkroniserte einingar.</string>
+<string name="preferences_enable_sync_title">Synkroniser denne eininga</string>
+<string name="preferences_media_category">Media</string>
+<string name="preferences_menu">Meny</string>
+<string name="preferences_open_links_in_youtube">Opne lenker i YouTube-appen</string>
+<string name="reader_mode_panel_content_description_2">Innstillingar for lesevising</string>
 </resources>

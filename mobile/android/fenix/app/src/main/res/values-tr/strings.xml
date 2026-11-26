@@ -303,6 +303,8 @@
   <string name="browser_menu_webcompat_reporter_2">Bozuk siteyi rapor et</string>
   <!-- Browser menu label for adding a tab to a tab group -->
   <string name="browser_menu_add_to_tab_group">Gruba ekle</string>
+  <!-- Browser menu label for moving a tab to a tab group -->
+  <string name="browser_menu_move_to_tab_group">Gruba taşı</string>
   <!-- Browser menu label that is displayed when the current page has been translated by the translation feature. -->
   <string name="browser_menu_translated">Çevrildi</string>
   <!-- Browser menu label for the print feature -->
@@ -616,6 +618,14 @@
   <string name="nova_onboarding_sync_subtitle">Yer imlerinizi, parolalarınızı ve daha fazlasını istediğiniz cihazdan hızlıca alın. Kişisel verileriniz şifrelemeyle güvende kalır.</string>
   <!-- Sync onboarding button. -->
   <string name="nova_onboarding_sync_button">Eşitlemeyi başlat</string>
+  <!-- Title of onboarding pairing card. Displayed when installing Firefox for Android by using a pairing link from Firefox for Desktop. "Scan" refers to scanning the QR code displayed on the computer. -->
+  <string name="nova_onboarding_sync_pairing_title">Bilgisayarınızla eşleştirmeyi tamamlamak için kodu okutun</string>
+  <!-- Body of the onboarding pairing card. Provides troubleshooting instructions when the QR code is not being displayed on the pairing computer. The "firefox.com/pair" URL should not be translated or edited. Bold tags should be preserved. -->
+  <string name="nova_onboarding_sync_pairing_body"><![CDATA[QR kodunuz yok mu? Bilgisayarınızdan <b>firefox.com/pair</b> adresine gidin.]]></string>
+  <!-- Primary button of the onboarding pairing card. Opens the camera to scan the pairing QR code. -->
+  <string name="nova_onboarding_sync_pairing_scan_button">Eşleştirme kodunu okut</string>
+  <!-- Secondary button of the onboarding pairing card. Opens the Mozilla account sign-in page. -->
+  <string name="nova_onboarding_sync_pairing_email_button">E-posta ile giriş yap</string>
   <!-- Marketing onboarding title. -->
   <string name="nova_onboarding_marketing_title">Daha iyi bir internet inşa etmemize yardım edin</string>
   <!--
@@ -2494,6 +2504,12 @@
   <string name="snackbar_private_tab_closed">Gizli sekme kapatıldı</string>
   <!-- Text shown in snackbar to undo deleting a tab, top site or collection -->
   <string name="snackbar_deleted_undo">GERİ AL</string>
+  <!-- Confirmation message displayed when user adds a page to a tab group. %1$s is the tab group's name. -->
+  <string name="snackbar_tab_added_to_group">%1$s grubuna eklendi</string>
+  <!-- Confirmation message displayed when user moves a page from one tab group to another. %1$s is the tab group's name. -->
+  <string name="snackbar_tab_moved_to_group">%1$s grubuna taşındı</string>
+  <!-- Button text displayed with a confirmation message when the user adds or moves a page to a tab group. Tapping it displays the tab group. -->
+  <string name="snackbar_action_view">Göster</string>
   <!--
     QR code scanner prompt which appears after scanning a code, but before navigating to it
     %1$s is the name of the app (for example "Firefox"), %2$s is the URL or text scanned
@@ -4660,4 +4676,26 @@
   <string name="reader_mode_panel_listen_content_description">Sesli oku</string>
   <!-- Content description for media player displayed in Reader Mode when the Listen to Page (Read Aloud) feature is selected -->
   <string name="reader_mode_panel_media_player_content_description">Medya oynatıcı</string>
+<string name="addon_remove_dialog_body">Bu işlem, uzantıyı ve uzantının ayarlarını bu cihazdan kaldırır.</string>
+<string name="addon_remove_dialog_cancel">Vazgeç</string>
+<string name="addon_remove_dialog_confirm">Kaldır</string>
+<string name="addon_remove_dialog_title">%1$s kaldırılsın mı?</string>
+<string name="ai_controls_listen_to_page_description">Cihazınız metni sesli okumak için yapay zekâ kullanabilir. Metin ve sesler gizli kalır.</string>
+<string name="ai_controls_listen_to_page_title">Sayfayı dinle</string>
+<string name="browser_menu_read_or_listen">Okuyucu görüntüleme, sayfayı okuma ve dinleme</string>
+<string name="certificate_details_panel_secure_connection_title">Güvenli bağlantı</string>
+<string name="customize_menu">Menüyü özelleştir</string>
+<string name="download_item_source_data">(veri)</string>
+<string name="notification_privacy_report_body_has_trackers">Siz gezindikçe %1$s engellemeye devam edecek.</string>
+<string name="notification_privacy_report_channel_description">%1$s siz internette gezinirken kaç takip kodunun engellendiğini gösterir.</string>
+<string name="notification_privacy_report_channel_name">Gizlilik raporu</string>
+<string name="notification_privacy_report_headline_no_trackers">Siz internette gezinirken %1$s takip kodlarını engeller. Engellenenleri burada göreceksiniz.</string>
+<string name="pdf_tools_sign_content_description_2">İmza ekle</string>
+<string name="pdf_tools_signature_adding_content_description">İmza ekleniyor</string>
+<string name="preferences_enable_sync_summary_sync_disabled">%1$s hesabınızdaki kayıtlı veriler kullanılıyor.</string>
+<string name="preferences_enable_sync_summary_sync_enabled">Verileriniz yedeklenir ve eşitlenen cihazlarınızdan erişilebilir.</string>
+<string name="preferences_enable_sync_title">Bu cihazı eşitle</string>
+<string name="preferences_media_category">Ortam</string>
+<string name="preferences_open_links_in_youtube">Bağlantıları YouTube uygulamasında aç</string>
+<string name="reader_mode_panel_content_description_2">Okuyucu görünümü seçenekleri</string>
 </resources>

@@ -4508,4 +4508,9 @@
   <string name="pdf_tools_signature_clear_button">Limpiar</string>
   <!-- The text for the button that adds the signature the user has typed to the PDF. -->
   <string name="pdf_tools_signature_add_button">Añadir</string>
+<string name="browser_menu_customize_homepage">Personalizar la página de inicio</string>
+<string name="notification_privacy_report_body_has_trackers">Sigue navegando. %1$s seguirá bloqueando.</string>
+<string name="notification_privacy_report_channel_description">%1$s muestra cuántos rastreadores se bloquearon mientras navegabas.</string>
+<string name="notification_privacy_report_channel_name">Informe de privacidad</string>
+<string name="notification_privacy_report_headline_no_trackers">%1$s bloquea los rastreadores mientras navegas. Los verás aquí.</string>
 </resources>

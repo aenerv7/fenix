@@ -3699,4 +3699,12 @@
     <item quantity="one">%1$d sighidore blocadu custa chida</item>
     <item quantity="other">%1$d sighidores blocados custa chida</item>
   </plurals>
+<string name="automotive_authentication_setup_dialog_cancel">Annulla</string>
+<string name="automotive_authentication_setup_dialog_message">Cunfigura una secuèntzia de blocu, PIN o crae pro amparare is datos sensìbiles tuos de s’atzessu de àtera gente chi impreat sa màchina tua.</string>
+<string name="automotive_authentication_setup_dialog_set_up_now">Cunfigura immoe</string>
+<string name="automotive_authentication_setup_dialog_title">Ampara is datos sensìbiles</string>
+<string name="lens_camera_image_load_failed_v2">Impossìbile carrigare s’immàgine.</string>
+<string name="preference_homepage_search_location_middle">In mesu</string>
+<string name="preference_homepage_search_location_top">In artu</string>
+<string name="preferences_homepage_search_location">Positzione de sa barra de chirca in sa pàgina printzipale</string>
 </resources>

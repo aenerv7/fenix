@@ -4442,39 +4442,6 @@
   <!-- Link text for terms_of_use_prompt_body_line_two_alternative that links to a site with more information about the Terms of Use -->
   <string name="terms_of_use_prompt_body_line_two_alternative_link" tools:ignore="UnusedResources">in questa pagina</string>
   <!--
-    Sports widget
-
-    Label shown on the sports widget scoreboard when a match is currently being played live.
-  -->
-  <string name="wrex_widget_match_live">LIVE</string>
-  <!-- Label shown on the sports widget match status badge when the start of a match has been delayed. -->
-  <string name="wrex_widget_match_delayed">In ritardo</string>
-  <!-- Label shown on the sports widget match status badge when a match has been suspended after it started. -->
-  <string name="wrex_widget_match_suspended">Sospesa</string>
-  <!-- Label shown on the sports widget match status badge when a match has been postponed to a later date. -->
-  <string name="wrex_widget_match_postponed">Rinviata</string>
-  <!-- Sports widget menu item to view the team's match results. -->
-  <string name="wrex_widget_results">Risultati</string>
-  <!-- Sports widget menu item to view the league standings table. -->
-  <string name="wrex_widget_standings">Classifiche</string>
-  <!-- Sports widget menu item to browse the team's wallpapers. -->
-  <string name="wrex_widget_wallpapers">Sfondi</string>
-  <!-- Sports widget menu item to remove the widget from the homepage. -->
-  <string name="wrex_widget_remove_widget">Rimuovi widget</string>
-  <!-- Content description (for accessibility, not displayed) for the overflow (more options) menu button on the sports widget card. -->
-  <string name="wrex_widget_more_options_content_description">Altre opzioni</string>
-  <!--
-    Content description (for accessibility, not displayed) used for the sports widget card header announcing a live match.
-    %s is the name of the competition the match belongs to (e.g. "FA Cup").
-  -->
-  <string name="wrex_widget_live_game_content_description">%s, partita in corso</string>
-  <!--
-    Content description (for accessibility, not displayed) for a paginated item.
-    %1$s is the name of the competition the match belongs to (e.g. "FA Cup"),
-    %2$d is the current page number, and %3$d is the total number of pages.
-  -->
-  <string name="wrex_widget_page_position_content_description">%1$s, pagina %2$d di %3$d</string>
-  <!--
     Privacy notice homepage banner
 
     A message we show the user on the homepage when there is a new version of the privacy notice. 'Firefox' is intentionally hardcoded.
@@ -4630,4 +4597,34 @@
   <string name="reader_mode_panel_listen_content_description">Leggi ad alta voce</string>
   <!-- Content description for media player displayed in Reader Mode when the Listen to Page (Read Aloud) feature is selected -->
   <string name="reader_mode_panel_media_player_content_description">Riproduttore multimediale</string>
+<string name="addon_remove_dialog_body">Questa operazione rimuove l’estensione e le relative impostazioni dal dispositivo.</string>
+<string name="addon_remove_dialog_cancel">Annulla</string>
+<string name="addon_remove_dialog_confirm">Rimuovi</string>
+<string name="addon_remove_dialog_title">Rimuovere %1$s?</string>
+<string name="ai_controls_listen_to_page_description">Il dispositivo può usare l’intelligenza artificiale per leggere ad alta voce. Il testo e l’audio restano privati.</string>
+<string name="ai_controls_listen_to_page_title">Ascolta la pagina</string>
+<string name="automotive_authentication_setup_dialog_cancel">Annulla</string>
+<string name="automotive_authentication_setup_dialog_message">Imposta una sequenza di blocco, un PIN o una password per proteggere i dati sensibili salvati quando qualcun altro è alla guida della tua auto.</string>
+<string name="automotive_authentication_setup_dialog_set_up_now">Imposta adesso</string>
+<string name="automotive_authentication_setup_dialog_title">Proteggi i tuoi dati sensibili</string>
+<string name="browser_menu_read_or_listen">Modalità lettura, leggi o ascolta la pagina</string>
+<string name="certificate_details_panel_secure_connection_title">Connessione sicura</string>
+<string name="customize_menu">Personalizza menu</string>
+<string name="download_item_source_data">(data)</string>
+<string name="lens_camera_image_load_failed_v2">Impossibile caricare questa immagine.</string>
+<string name="notification_privacy_report_body_has_trackers">Continua a navigare. %1$s continuerà a bloccare.</string>
+<string name="notification_privacy_report_channel_description">%1$s mostra quanti elementi traccianti sono stati bloccati durante la navigazione.</string>
+<string name="notification_privacy_report_channel_name">Rapporto sulla privacy</string>
+<string name="notification_privacy_report_headline_no_trackers">%1$s blocca gli elementi traccianti mentre navighi. Li vedrai qui.</string>
+<string name="pdf_tools_sign_content_description_2">Aggiungi una firma</string>
+<string name="pdf_tools_signature_adding_content_description">Inserimento della firma</string>
+<string name="preference_homepage_search_location_middle">Al centro</string>
+<string name="preference_homepage_search_location_top">In alto</string>
+<string name="preferences_enable_sync_summary_sync_disabled">Usa i dati salvati nel tuo account %1$s.</string>
+<string name="preferences_enable_sync_summary_sync_enabled">I tuoi dati sono salvati e disponibili sui dispositivi sincronizzati.</string>
+<string name="preferences_enable_sync_title">Sincronizza questo dispositivo</string>
+<string name="preferences_homepage_search_location">Posizione della barra di ricerca nella pagina iniziale</string>
+<string name="preferences_media_category">Media</string>
+<string name="preferences_open_links_in_youtube">Apri link nell’app YouTube</string>
+<string name="reader_mode_panel_content_description_2">Opzioni della modalità lettura</string>
 </resources>

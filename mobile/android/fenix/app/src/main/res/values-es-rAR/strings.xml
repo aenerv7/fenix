@@ -4460,39 +4460,6 @@
   <!-- ==== End of Terms of use popup prompt. ==== -->
 
   <!--
-    Sports widget
-
-    Label shown on the sports widget scoreboard when a match is currently being played live.
-  -->
-  <string name="wrex_widget_match_live">EN VIVO</string>
-  <!-- Label shown on the sports widget match status badge when the start of a match has been delayed. -->
-  <string name="wrex_widget_match_delayed">Retrasado</string>
-  <!-- Label shown on the sports widget match status badge when a match has been suspended after it started. -->
-  <string name="wrex_widget_match_suspended">Suspendido</string>
-  <!-- Label shown on the sports widget match status badge when a match has been postponed to a later date. -->
-  <string name="wrex_widget_match_postponed">Pospuesto</string>
-  <!-- Sports widget menu item to view the team's match results. -->
-  <string name="wrex_widget_results">Resultados</string>
-  <!-- Sports widget menu item to view the league standings table. -->
-  <string name="wrex_widget_standings">Posiciones</string>
-  <!-- Sports widget menu item to browse the team's wallpapers. -->
-  <string name="wrex_widget_wallpapers">Fondos de pantalla</string>
-  <!-- Sports widget menu item to remove the widget from the homepage. -->
-  <string name="wrex_widget_remove_widget">Eliminar widget</string>
-  <!-- Content description (for accessibility, not displayed) for the overflow (more options) menu button on the sports widget card. -->
-  <string name="wrex_widget_more_options_content_description">Más opciones</string>
-  <!--
-    Content description (for accessibility, not displayed) used for the sports widget card header announcing a live match.
-    %s is the name of the competition the match belongs to (e.g. "FA Cup").
-  -->
-  <string name="wrex_widget_live_game_content_description">%s, juego en vivo</string>
-  <!--
-    Content description (for accessibility, not displayed) for a paginated item.
-    %1$s is the name of the competition the match belongs to (e.g. "FA Cup"),
-    %2$d is the current page number, and %3$d is the total number of pages.
-  -->
-  <string name="wrex_widget_page_position_content_description">%1$s, página %2$d de %3$d</string>
-  <!--
     Privacy notice homepage banner
 
     A message we show the user on the homepage when there is a new version of the privacy notice. 'Firefox' is intentionally hardcoded.
@@ -4667,4 +4634,24 @@
 
     Content description for accessibility (used by screen readers): Description for the button that triggers the start of a signature workflow on the PDF displayed on the screen.
   -->  <string name="pdf_tools_sign_content_description_2">Agregar una firma</string>
+<string name="addon_remove_dialog_body">Esto elimina la extensión y su configuración de este dispositivo.</string>
+<string name="addon_remove_dialog_cancel">Cancelar</string>
+<string name="addon_remove_dialog_confirm">Eliminar</string>
+<string name="addon_remove_dialog_title">¿Eliminar %1$s?</string>
+<string name="ai_controls_listen_to_page_description">Tu dispositivo puede usar IA para leer en voz alta. El texto y el audio se mantienen privados.</string>
+<string name="ai_controls_listen_to_page_title">Escuchar la página</string>
+<string name="browser_menu_read_or_listen">Vista de lectura, leer o escuchar la página</string>
+<string name="certificate_details_panel_secure_connection_title">Conexión segura</string>
+<string name="download_item_source_data">(datos)</string>
+<string name="lens_camera_image_load_failed_v2">No se pudo cargar esta imagen.</string>
+<string name="pdf_tools_signature_adding_content_description">Agregando firma</string>
+<string name="preference_homepage_search_location_middle">Medio</string>
+<string name="preference_homepage_search_location_top">Parte superior</string>
+<string name="preferences_enable_sync_summary_sync_disabled">Usando datos guardados en tu cuenta de %1$s.</string>
+<string name="preferences_enable_sync_summary_sync_enabled">Tus datos están respaldados y disponibles en dispositivos sincronizados.</string>
+<string name="preferences_enable_sync_title">Sincronizar este dispositivo</string>
+<string name="preferences_homepage_search_location">Ubicación de búsqueda en la página de inicio</string>
+<string name="preferences_media_category">Medios</string>
+<string name="preferences_open_links_in_youtube">Abrir enlaces en la aplicación de YouTube</string>
+<string name="reader_mode_panel_content_description_2">Opciones de vista de lectura</string>
 </resources>

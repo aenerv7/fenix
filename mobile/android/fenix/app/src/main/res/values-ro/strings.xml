@@ -4632,4 +4632,7 @@
   <string name="reader_mode_panel_listen_content_description">Citește cu voce tare</string>
   <!-- Content description for media player displayed in Reader Mode when the Listen to Page (Read Aloud) feature is selected -->
   <string name="reader_mode_panel_media_player_content_description">Player multimedia</string>
+<string name="customize_menu">Personalizează meniul</string>
+<string name="ip_protection_location_selection_reset_snackbar">Locația VPN selectată nu este disponibilă. S-a trecut la locația recomandată.</string>
+<string name="pdf_tools_sign_content_description_2">Adaugă o semnătură</string>
 </resources>
