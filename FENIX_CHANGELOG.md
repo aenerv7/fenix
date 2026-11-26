@@ -1,5 +1,170 @@
 # Fenix changes
 
+## 161.0-r1
+
+### 中文
+
+官方上游基线：`FIREFOX-ANDROID_161_0_RELEASE`（`9c70d5d48c86`）。上游增量 10813 个文件（650696 行新增、
+259307 行删除）。
+
+#### 本版变更（同步官方 161.0）
+
+- 采用上游的标签页数据重构：`feature-tabdata-coordinator` 的 `TabDataCoordinator`、`TabsSnapshot` 与
+  `TabsSnapshotMapper` 负责生成标签页托盘模型，`TabStorageMiddleware` 收缩为编排层。fork 的
+  `transformTabData` 由上游同名实现取代；三条 fork 专属存储动作（移出群组、关闭后清空群组、撤销恢复）
+  通过新增的 `tabGroupRepository` 参数保留。
+- 上游删除实验性首页头部（`ExperimentalHomepageHeader`、`HeaderState.Experimental`、新闻按钮动画），
+  首页工具栏新增「故事」与隐私模式按钮；fork 的「新建标签页快捷方式」动作与处理逻辑保留。
+- 菜单提供方接口改为 `itemsFlow`，`HistoryMenuItemProvider` 接收 `MenuTarget`；上游删除 `LazyMonitored`，
+  fork 剩余调用点改为 `by lazy`。
+- 移除上游新增的 Wrexham A.F.C. 首页赛事组件（固定期限赞助活动）：13 个 `home/sports` 源文件、25 个俱乐部
+  队徽图标、Wrexham 壁纸集合入口、2 个偏好键、25 条 `wrex_widget_*` 字符串与
+  `homepage-wrexham-widget` Nimbus 特性一并删除；与活动无关的地址栏 sports 建议保留。
+- 上游新增的 27 条英文串在 `values-zh-rCN` 中补译，相对 `values/strings.xml` 无缺失、无重复。
+- 版本号随基线为 `161.0`，沿用官方 arm64-v8a `versionCode 2016197106`。
+
+#### 上游改动（用户可见）
+
+- 扩展更新的权限变更确认：菜单中显示「查看更新」与「查看设置以更新」，并提供扩展移除确认对话框。
+- AI controls 新增「朗读页面」开关。
+- 首页搜索位置可选「中间」与「顶部」；链接可选择在 YouTube 应用中打开。
+- 账号设置新增「同步此设备」开关及其说明。
+- 下载列表中 `data:`/`blob:` 来源条目显示「（数据）」。
+- 证书面板新增「安全连接」分区标题；PDF 工具新增添加签名的无障碍描述；阅读模式菜单项改为
+  「阅读模式，阅读或朗读页面」。
+- Android Automotive 新增敏感数据设备锁设置对话框。
+
+#### 品牌与功能精简
+
+- 正式版 launcher、圆形图标、adaptive icon 与主题图标使用兔子品牌；新标签页左上角与关于页显示
+  「兔子 + Fenix」wordmark；Fenix Labs、关于页、主屏搜索小组件与 Custom Tab 的 “Powered by Fenix”
+  菜单项使用 Fenix 品牌；默认浏览器提示不显示 Mozilla 美术资源。
+- 界面与 Gecko 内置品牌资源中的产品名统一为 Fenix；上游来源与许可说明中必要的 Firefox、Mozilla、
+  GeckoView 名称保留。
+- 盾牌面板三种横幅状态仍为纯文本左对齐，不渲染上游狐狸插图；已防护状态的紫→橙渐变底板保留。
+- 密码、地址、信用卡与个人信息管理仍从 UI、Android 自动填充服务与默认同步数据范围中移除：
+  `BackgroundServices` 只同步历史、书签与标签页，账号设置页不恢复密码/信用卡/地址复选框；系统自动
+  填充提供方列表中仍不提供 Fenix，Play 商店评分与评论提示入口仍未恢复。
+
+#### 标签页与标签页组
+
+- 标签页托盘只保留卡片（网格）布局；浏览器工具栏下方的标签页条仍使用原地重排列表。
+- 展开群组保留完整功能集：群组作用域多选、复用全部标签页样式的选择工具栏与二级菜单、选择期间的系统
+  返回键消费、手动收起只折叠群组，以及始终可见的新建标签页动作。
+- 群组底部弹窗只有全高与收起两种状态；群组内标签页的移出群组、关闭后清空群组、撤销恢复到原群组三条
+  存储动作保留，`TabStorageMiddlewareTest` 覆盖这些动作与聚焦群组自动展开、末个非群组标签页移除、
+  非连续群组标签页索引三处行为。
+- 群组页面产生的新标签默认留在当前群组，并提供「在标签页群组内打开」与「新建标签页组打开」长按菜单项。
+
+#### 本地化
+
+- `values/strings.xml` 合并后保留 fork 的 5 条本地串（关于页修订号、菜单横幅关闭、群组多选移除标签、
+  两条「在群组内打开链接」），并采用上游 161.0 新增串。
+- 20 个仍冲突的 locale 文件全部按 fork 措辞裁决，其余 locale 采用上游译文；`values-zh-rCN` 0 缺失、
+  0 重复。
+
+#### 发布与验证
+
+- 仅发布 `arm64-v8a` APK，使用官方 161.0 多语言 GeckoView，沿用官方 `versionCode 2016197106` 与上游
+  `versionName 161.0`；未进行本地 GeckoView 编译或打包。
+- `fenix:spotlessKotlinCheck`、`fenix:compileDebugKotlin`、`fenix:compileDebugUnitTestKotlin`、
+  `fenix:compileDebugAndroidTestKotlin` 与 arm64-v8a release 构建通过。
+- `fenix:testDebugUnitTest`：7288 项，271 失败、1806 跳过。失败全部是已记录的 Windows 环境限制：249 项 megazord/JNA 原生库缺失、11 项下载路径分隔符、5 项目录重命名、4 项 Robolectric SQLite，以及既有的 `markAsTriggered` 与 `PackageManager` 两项。
+- `docs/` 有 17 个文件变化，文档门禁用新输出目录重跑：`Failures: 0`、`Known Failures: 30`。
+- 161.0 基线把 `CLOBBER` 推进到 2026-11-18 合并日，因此先完成一次完整本地 Gecko 构建，随后
+  `fenix:assembleDebug` 与单元测试才可运行；发布 APK 仍使用固定官方 GeckoView 包，未在本地编译或打包
+  GeckoView。
+- APK：`Fenix-161.0-r1-arm64-v8a-release.apk`，大小 `133109425` 字节，SHA-256：
+  `8A2D3E434D1E8DBE4C34AFAD6152B0F25A6B408BB364E557C07CE987366B5925`。
+
+### English
+
+Official upstream baseline: `FIREFOX-ANDROID_161_0_RELEASE` (`9c70d5d48c86`). Upstream delta: 10813 files,
+650696 insertions, 259307 deletions.
+
+#### This change (the 161.0 sync)
+
+- Adopts the upstream tab data refactor: `TabDataCoordinator`, `TabsSnapshot`, and the new
+  `TabsSnapshotMapper` in `feature-tabdata-coordinator` build the tray models, and `TabStorageMiddleware`
+  becomes an orchestration layer. The fork's `transformTabData` is replaced by the upstream mapper with the
+  same ordering; its three storage actions (removed from group, closed from group, undo restore) survive
+  through a new `tabGroupRepository` argument.
+- Upstream deleted the experimental homepage header (`ExperimentalHomepageHeader`, `HeaderState.Experimental`,
+  the news-button animation) and added Stories and private-mode home toolbar actions; the fork's new-tab
+  shortcut action and handler are kept.
+- `MenuItemProvider` now exposes `itemsFlow`, `HistoryMenuItemProvider` takes a `MenuTarget`, and upstream
+  deleted `LazyMonitored`, so the remaining fork sites use `by lazy`.
+- The upstream Wrexham A.F.C. homepage widget, a fixed-term sponsorship campaign, is removed: 13
+  `home/sports` sources, 25 club badge drawables, the Wrexham wallpaper collection entry, 2 preference keys,
+  25 `wrex_widget_*` strings, and the `homepage-wrexham-widget` Nimbus feature. The unrelated awesomebar
+  sports suggestions are retained.
+- The 27 English strings this baseline adds are translated in `values-zh-rCN`, which has no missing and no
+  duplicate name against `values/strings.xml`.
+- The version is `161.0` and the upstream arm64-v8a `versionCode` is `2016197106`.
+
+#### Upstream changes (user-visible)
+
+- Extension updates that change permissions are surfaced as "Review update" / "Review settings to update",
+  and removing an extension asks for confirmation.
+- AI controls gain a "Listen to page" switch.
+- The homepage search bar can be placed in the middle or at the top, and links can open in the YouTube app.
+- Account settings gain a "Sync this device" switch with its explanations.
+- Downloads from `data:`/`blob:` URLs show "(data)" instead of a website name.
+- The certificate panel gains a "Secure connection" section title, the PDF tools gain an adding-signature
+  description, and the reader mode item reads "Reader view, read or listen to page".
+- Android Automotive gains a sensitive-data device-lock dialog.
+
+#### Branding and feature reductions
+
+- The launcher, round icon, adaptive icon, and themed icon use the rabbit branding; the new tab and the
+  About page show the rabbit plus Fenix wordmark; Fenix Labs, the About page, the home-screen search
+  widget, and the Custom Tab "Powered by Fenix" item use Fenix branding; the default-browser prompt shows
+  no Mozilla artwork.
+- The product name is Fenix throughout the UI and Gecko's built-in brand resources; Firefox, Mozilla, and
+  GeckoView names remain where upstream provenance and licensing require them.
+- The three shield panel banner states stay text-only and left-aligned instead of drawing upstream's fox
+  illustrations; the protected state keeps its purple-to-orange gradient plate.
+- Passwords, addresses, credit cards, and personal information stay out of the UI, the Android autofill
+  service, and the default sync scope: `BackgroundServices` syncs only history, bookmarks, and tabs, the
+  account settings screen restores no passwords/credit-card/address switches, Fenix is not offered as a
+  system autofill provider, and the Play Store rating and review prompt entry points stay removed.
+
+#### Tabs and tab groups
+
+- The tabs tray keeps only the grid layout; the browser tab strip keeps the in-place reorder list.
+- Expanded groups keep the full feature set: group-scoped multi-select, the selection toolbar and menu
+  reusing the all-tabs styling, Back consumed by the group while that toolbar is open, manual dismissal
+  collapsing only the group, and an always-visible new-tab action.
+- The group bottom sheet has exactly two states, and the storage actions for tabs removed from a group,
+  tabs closed from a group, and undo restoring tabs into their group are kept; `TabStorageMiddlewareTest`
+  covers them together with the focused-group auto-open, last-ungrouped-tab, and noncontiguous-group-index
+  behaviour.
+- Tabs opened from a group page stay in that group, with the "open link in tab group" and "open link in
+  new tab group" menu items.
+
+#### Localization
+
+- After the merge `values/strings.xml` keeps the fork's 5 local strings (the About revision, the menu banner
+  dismiss, the group multi-select remove label, and the two "open link in group" labels) and takes the
+  strings 161.0 adds.
+- The 20 locale files that still conflicted resolve to the fork's wording, and the remaining locales take
+  upstream's translations; `values-zh-rCN` has 0 missing and 0 duplicate names.
+
+#### Release and validation
+
+- Only the `arm64-v8a` APK is published, using the official 161.0 multi-locale GeckoView with the official
+  `versionCode 2016197106` and upstream `versionName 161.0`; no local GeckoView was compiled or packaged.
+- `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`, `fenix:compileDebugUnitTestKotlin`,
+  `fenix:compileDebugAndroidTestKotlin`, and the arm64-v8a release build pass.
+- `fenix:testDebugUnitTest`: 7288 tests, 271 failed, 1806 skipped. Every failure is a recorded Windows environment limitation: 249 megazord/JNA native-library failures, 11 download path separators, 5 directory renames, 4 Robolectric SQLite, and the known `markAsTriggered` and `PackageManager` cases.
+- 17 files under `docs/` changed, so the documentation gate was rerun into a new output directory:
+  `Failures: 0` with `Known Failures: 30`.
+- The 161.0 baseline advances `CLOBBER` to the 2026-11-18 merge day, so one full local Gecko build was
+  completed before `fenix:assembleDebug` and the unit tests could run; the release APK still uses the
+  pinned official GeckoView package, and no GeckoView was compiled or packaged locally.
+- APK: `Fenix-161.0-r1-arm64-v8a-release.apk`, `133109425` bytes, SHA-256:
+  `8A2D3E434D1E8DBE4C34AFAD6152B0F25A6B408BB364E557C07CE987366B5925`.
+
 ## 160.0.1-r1
 
 ### 中文

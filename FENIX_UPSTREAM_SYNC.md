@@ -779,6 +779,79 @@ Fenix-authored native source changed. The exact official arm64-v8a versionCode i
 the official APK SHA-256 is `1C811BBDC8D7488B9340D379889CF04105525596D21A7C596B3A664D833858EA`.
 No file under `docs/` changed, so the documentation gate keeps the baseline merge result.
 
+## Firefox Android 161.0 synchronization
+
+The 161.0 update was prepared from the official `FIREFOX-ANDROID_161_0_RELEASE` tag (`9c70d5d48c86`) on
+the candidate branch `sync/firefox-android-161.0`, starting from the 160.0.1-r1 tree. The upstream delta
+spans 10813 files (1929 added, 694 deleted, 8153 modified, 37 renamed; 650696 insertions, 259307
+deletions). `git apply --3way` rejected it, so the tree came from `git merge-tree --write-tree` with the
+160.0.1 tag as the merge base. 45 paths conflicted: 23 locale `values-*/strings.xml`, the English
+`values/strings.xml`, and 21 `mobile/android/fenix` files, including three delete/modify pairs for
+features the fork removes and one add/add artwork file.
+
+### Conflicts
+
+Line endings again produced most of them: the fork's `values/strings.xml` and its locale files are CRLF
+while upstream's are LF, so every line differs on both sides. Each conflicted text file was merged from
+line-ending-normalized copies with `git merge-file`; 20 locale files still conflicted, and every hunk was
+a re-translation of a string the fork already carries, so they resolved to the fork. Locale files then
+received upstream's translation for each name the English file gained, and `values-zh-rCN` received 27
+hand-written translations because upstream carries none for them; it has no missing name against
+`values/strings.xml` and no duplicate name.
+
+### Upstream moves the fork adopts
+
+- Tab data moved into the android-components module `feature-tabdata-coordinator`: `TabDataCoordinator`,
+  `TabsSnapshot`, and the new `TabsSnapshotMapper` now build the tray models, and `TabStorageMiddleware`
+  shrank to a thin delegator. The fork's `transformTabData` disappears with it because the upstream mapper
+  implements the same ordering. The fork keeps a `tabGroupRepository` argument for its three extra actions
+  (`SelectedTabsRemovedFromGroup`, `SelectedTabsClosedFromGroup`, `RestoreTabsToGroup`), which the
+  coordinator does not expose.
+- `TabsTrayReducer` calls upstream's `withStorageUpdate`; the fork's auto-open of a focused group is
+  applied on top of the result.
+- The homepage experimental header is gone upstream: `ExperimentalHomepageHeader`,
+  `HeaderState.Experimental`, and the news-button animation went with it, and the home toolbar gains the
+  Stories and private-mode actions. The fork's `NewTabShortcut` action and
+  `AddNewTabFromToolbarShortcut` handler are kept.
+- `MenuItemProvider` now emits `itemsFlow: StateFlow<List<MenuItem>>`, so the fork's
+  `EmptyMenuItemProvider` returns an empty list, and `HistoryMenuItemProvider` takes the `MenuTarget`.
+- Upstream deleted `LazyMonitored.kt`, so the fork's remaining `lazyMonitored` sites use `by lazy`.
+- `TabsTrayTelemetryMiddleware` lists the fork-only `TabGroupTabLongClicked` action as a no-op.
+
+### Fork behaviour reapplied
+
+- The three extra tab-group actions keep their repository writes. `TabStorageMiddlewareTest` keeps the
+  fork's tests for them plus its focused-group auto-open, last-ungrouped-tab, and noncontiguous-group
+  index cases, ported to the new `TabDataCoordinator` fixtures.
+- Password and autofill entry points stay removed: `FenixMenuItem.Passwords` maps to
+  `EmptyMenuItemProvider`, `PasswordsMenuItemProvider` and its test stay deleted, the autofill service is
+  not registered, and the review prompt stays out.
+- `TabsTrayBanner` keeps the fork's three-dot multi-select menu and its
+  `AboveToolbarMenuPositionProvider`; the beta and release `AndroidManifest.xml` files stay deleted.
+
+### Limited-time activity policy
+
+The delta adds the Wrexham A.F.C. homepage widget: the `homepage-wrexham-widget` Nimbus feature, 13 files
+under `org.mozilla.fenix.home.sports`, 25 club badge drawables, the Wrexham wallpaper collection entry,
+its two preference keys, and 25 `wrex_widget_*` strings. It is a fixed-term sponsorship campaign, so it is
+removed at the product level: sources, artwork, settings, entry points, strings, Nimbus feature, and its
+test cases. The unrelated awesomebar sports suggestions (`shouldShowSearchOptimizationSportCard`) are
+retained.
+
+### Release pins and hazards
+
+The release uses the pinned official 161.0 arm64-v8a GeckoView package recorded in
+`FENIX_UPSTREAM_GECKOVIEW.json`; local GeckoView packaging remains prohibited because no Fenix-authored
+Gecko, C++, Rust, or Gecko locale source changed. The exact official arm64-v8a versionCode is `2016197106`,
+and the official APK SHA-256 is
+`47572915A37E1B45FA92AA8BF16DE57127F962EE014AADE02AF570ECE9EF6967`.
+
+The delta advances `CLOBBER` to the 2026-11-18 merge-day clobber. `mach build faster` therefore reports the
+missing `CLOBBER` acknowledgement and empties `dist/bin`, which leaves `:machStagePackage` without
+`libxul.so` and `libmozglue.so`; one full local Gecko build (about 60 minutes here) is required before the
+debug and unit-test tasks can run again. That build was completed for validation, and `fenix:assembleDebug`
+and `fenix:testDebugUnitTest` then ran against it; the release APK does not use it.
+
 ## Source-to-binary traceability
 
 If APKs are distributed, record their SHA-256 hashes and the exact Fenix tag in release notes. The

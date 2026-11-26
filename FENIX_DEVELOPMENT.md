@@ -174,6 +174,29 @@ are kept in [FENIX_CHANGELOG.md](FENIX_CHANGELOG.md).
 
 ### Current validation state
 
+The 161.0-r1 release synchronizes the official 161.0 baseline. The upstream delta spans 10813 files, and
+`git apply --3way` rejected it, so the merge tree came from `git merge-tree`; 45 paths conflicted (23
+locale files, the English `values/strings.xml`, and 21 `mobile/android/fenix` files, three of them
+delete/modify pairs for features the fork removes). The candidate changes 10814 files against its Fenix
+parent. The Wrexham A.F.C. homepage widget is the only fixed-term activity in the delta and is removed at
+the product level. [FENIX_UPSTREAM_SYNC.md](FENIX_UPSTREAM_SYNC.md) records the merge and the release pins.
+
+Validation: `fenix:spotlessKotlinCheck`, `fenix:compileDebugKotlin`,
+`fenix:compileDebugUnitTestKotlin`, `fenix:compileDebugAndroidTestKotlin`, and the arm64-v8a release build
+pass. 17 files under `docs/` changed, so the documentation gate was rerun into
+`artifacts/docs-full-20261127-0100` and reports `Failures: 0` with `Known Failures: 30`.
+`fenix:testDebugUnitTest` reports 7288 tests with 271 failures and 1806 skips, all in the Windows limitation categories below: 249 megazord/JNA, 11 download path separators, 5 directory rename, 4 Robolectric SQLite, and the known `markAsTriggered` and `PackageManager` cases. The 161.0 baseline carries the 2026-11-18 merge-day
+`CLOBBER`, so one full local Gecko build is required before `assembleDebug` and `testDebugUnitTest`; that
+build was completed, and both tasks then pass. The release build still uses the pinned official GeckoView
+package and no GeckoView was compiled or packaged locally.
+
+The arm64-v8a release uses the pinned official 161.0 GeckoView package through `-UseUpstreamGecko` and the
+exact official versionCode `2016197106`; no local GeckoView build is permitted because no Fenix-authored
+Gecko, C++, Rust, or Gecko locale source changed. The signed APK
+`Fenix-161.0-r1-arm64-v8a-release.apk` (133109425 bytes, SHA-256
+`8A2D3E434D1E8DBE4C34AFAD6152B0F25A6B408BB364E557C07CE987366B5925`) supersedes
+`Fenix-160.0.1-r1-arm64-v8a-release.apk`.
+
 The 160.0.1-r1 release synchronizes the official 160.0.1 baseline and carries the whole `160.0-r6`
 content. The upstream delta spans 560 files, and `git apply --3way` rejected it, so all 114 conflicted
 paths are `values-*/strings.xml` locale files that resolve to the fork because the delta adds no English
